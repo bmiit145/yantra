@@ -16,8 +16,8 @@
                     <img src="{{ asset('storage/logo/logo.png') }}" alt="Avatar" class="avatar">
                     </div>
                 <h2 class="common_title">Login</h2>
-                <form action="/action_page.php" method="post">
-
+                <form action="{{ route('login') }}" method="post">
+                    @csrf
                     <div class="form_inner">
                     <label for="uname">Email</label>
                     <input type="email" placeholder="Email" name="login">
