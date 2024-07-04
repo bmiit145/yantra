@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+
+/* ==============Common CSS========================*/
+
+a,
+div a:hover,
+div a:active,
+div a:focus,
+button {
+    text-decoration: none;
+    -webkit-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+}
+a,
+span,
+a:hover,
+a:active,
+button {
+    text-decoration: none;
+}
+
+*::after,
+*::before,
+* {
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+}
+a:focus,
+button:focus,
+input:focus,
+select:focus {
+    outline: none;
+}
+
+a {
+    color: black;
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6 {
+    margin: 0;
+    padding: 0;
+}
+
+input::placeholder,input {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    color:#222;
+}
+button {
+    font-family: "Poppins", sans-serif;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+svg {
+    display: inline-block;
+}
+
+
+/*==========================container-css===============================*/
+
+.container {
+    max-width: 1440px;
+    margin: auto;
+    padding: 0 15px;
+}
+@media (max-width: 1499px) {
+    .container {
+        max-width: 1340px;
+    }
+}
+@media (max-width: 1399px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+@media (max-width: 1199px) {
+    .container {
+        max-width: 960px;
+    }
+}
+@media (max-width: 991px) {
+    .container {
+        max-width: 720px;
+    }
+}
+@media (max-width: 767px) {
+    .container {
+        max-width: 540pxx;
+    }
+}
+@media (max-width: 575px) {
+    .container {
+        max-width: 100%;
+    }
+}
+@media (min-width: 768px) {
+    .logo-home-section .container {
+        max-width: 850px !important;
+    }
+}
+
+
+/*==========================login-page-css===============================*/
+
+.common_title {
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 30px;
+    line-height: 1.2;
+    color: #00A5A8;
+}
+.common_btn {
+    background-color: #00A5A8;
+    color: #fff;
+    padding: 12px 20px;
+    margin: 0 0 15px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.2;
+}
+.common_btn:hover {
+    opacity: 0.8;
+}
+.form_inner_bottom {
+    text-align: center;
+    margin: 0 0 15px 0;
+}
+.login_main_row {
+    max-width: 40%;
+    margin: auto;
+    padding: 25px 15px;
+    border: 2px solid #00a5a8;
+    border-radius: 5px;
+    background-color: #e8f7f7;
+}
+.login_main_info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+.form_inner_bottom a {
+    color: #00A5A8;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-size: 18px;
+    line-height: 1.2;
+}
+img.avatar {
+    width: 100%;
+    margin: auto;
+    max-width: 45%;
+}
+.form_inner label {
+    font-size: 20px;
+    margin: 0 0 10px 0;
+    display: inline-block;
+    width: 100%;
+    line-height: 1.2;
+}
+.form_inner input {
+    width: 100%;
+    padding: 12px 10px;
+    margin: 0 0 15px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+.form_inner .login_form_btn {
+    background-color: #00A5A8;
+    color: #fff;
+    padding: 12px 20px;
+    margin: 0 0 15px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.2;
+}
+.imgcontainer {
+    text-align: center;
+    margin: 0px 0 20px 0;
+}
+
+
+
