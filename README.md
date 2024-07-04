@@ -10,3 +10,7 @@
 ### Features
 
 1. we can run on single command as  ``npm run serve:all``
+
+
+### package command that used in this project
+``npm install concurrently --save-dev``
