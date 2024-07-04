@@ -6,3 +6,7 @@
 4. php artisan serve
 5. npm install
 6. npm run dev
+
+### Features
+
+1. we can run on single command as  ``npm run serve:all``
