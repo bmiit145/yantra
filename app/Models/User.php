@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
+use Ramsey\Uuid\Uuid;
 
 class User extends Authenticatable
 {
@@ -44,4 +46,27 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Automatically generate UUID for primary key
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string)Uuid::uuid4();
+            }
+        });
+    }
+
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = Crypt::encryptString($value);
+    }
+
+    public function getEmailAttribute($value)
+    {
+        return Crypt::decryptString($value);
+    }
+
 }

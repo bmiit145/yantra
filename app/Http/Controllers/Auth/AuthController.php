@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -27,7 +28,7 @@ class AuthController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
-
+        $credentials['email'] = Crypt::encryptString($credentials['email']);
         if (Auth::attempt($credentials)) {
             // Authentication passed...
             return redirect()->intended('dashboard');
