@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -47,17 +48,36 @@ class User extends Authenticatable
         ];
     }
 
-    protected static function boot()
-    {
-        parent::boot();
+//    protected static function boot()
+//    {
+//        parent::boot();
+//
+//        // Automatically generate UUID for primary key
+//        static::creating(function ($model) {
+//            if (empty($model->id)) {
+//                $model->id = (string)Uuid::uuid4();
+//            }
+//        });
+//    }
 
-        // Automatically generate UUID for primary key
+    protected static function booted()
+    {
         static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string)Uuid::uuid4();
-            }
+            $model->id = Uuid::uuid4()->toString();
         });
     }
+
+    /**
+     * Get the name of the unique identifier for the user.
+     *
+     * @return string
+     */
+    public function getAuthIdentifierName()
+    {
+        return 'id';
+    }
+
+
 
     public function setEmailAttribute($value)
     {

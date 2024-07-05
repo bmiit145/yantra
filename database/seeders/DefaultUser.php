@@ -29,7 +29,9 @@ class DefaultUser extends Seeder
             ],
         ];
 
-        User::insert($users);
-
+        // loop through the array of data and create a new user
+        foreach ($users as $user) {
+            User::create($user);
+        }
     }
 }
