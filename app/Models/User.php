@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Services\EncryptionService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -67,6 +68,8 @@ class User extends Authenticatable
         });
     }
 
+    //give the
+
     /**
      * Get the name of the unique identifier for the user.
      *
@@ -81,12 +84,14 @@ class User extends Authenticatable
 
     public function setEmailAttribute($value)
     {
-        $this->attributes['email'] = Crypt::encryptString($value);
+//        $this->attributes['email'] = Crypt::encryptString($value);
+        $this->attributes['email'] = EncryptionService::encrypt($value);
     }
 
     public function getEmailAttribute($value)
     {
-        return Crypt::decryptString($value);
+//        return Crypt::decryptString($value);
+        return EncryptionService::decrypt($value);
     }
 
 }

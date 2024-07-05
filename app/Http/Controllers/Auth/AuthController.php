@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Services\EncryptionService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +19,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        dd($request->all());
+//        dd($request->all());
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|min:8',
@@ -28,10 +30,12 @@ class AuthController extends Controller
         }
 
         $credentials = $request->only('email', 'password');
-        $credentials['email'] = Crypt::encryptString($credentials['email']);
+//        $credentials['email'] = Crypt::encryptString($credentials['email']);
+        $credentials['email'] = EncryptionService::encrypt($credentials['email']);
+
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            return redirect()->intended('dashboard');
+            $request->session()->regenerate();
+            return redirect()->intended('home');
         }
 
         return back()->withErrors([

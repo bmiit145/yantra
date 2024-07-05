@@ -20,10 +20,10 @@
                     @csrf
                     <div class="form_inner">
                     <label for="uname">Email</label>
-                    <input type="email" placeholder="Email" name="login">
+                    <input type="email" placeholder="Email" name="email">
 
                     <label for="psw">Password</label>
-                    <input type="password" placeholder="Enter Password" name="psw" required>
+                    <input type="password" placeholder="Enter Password" name="password" required>
 
                     <button class="common_btn" type="submit">Login</button>
 
