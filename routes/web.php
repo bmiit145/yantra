@@ -24,5 +24,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');
+    Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
 
 });

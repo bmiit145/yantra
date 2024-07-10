@@ -23,14 +23,14 @@
     <div class="main_header_wrapper">
         <div class="crmtop_header">
             <div class="top_left_navbar">
-                <a href="#" class="o_menu_toggle">
-                    <img src="assets/images/crmlogo.png" alt="Avatar" class="crm_logo">
+                <a href="{{ route('dashboard') }}" class="o_menu_toggle">
+                    <img src="images/CRM.png" alt="Avatar" class="crm_logo">
                     <a class="o_menu_brand">CRM</a>
                 </a>
                 <div class="top_left_navbar_menu">
                     <ul class="navbar_menu_wapper">
                         <li><a href="#">Sales</a></li>
-                        <li><a href="#">Leads</a></li>
+                        <li><a href="{{ url('lead') }}">Leads</a></li>
                         <li><a href="#">Reporting</a></li>
                         <li><a href="#">Configuration</a></li>
                     </ul>
@@ -524,7 +524,11 @@
                                             </g>
                                         </svg>
                                     </div>
-                                    <img src="assets/images/r_logo.png" class="r_card_logo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve" class="">
+                                        <g>
+                                            <path d="M349.899 313.5v-.3c-7.5-7.8-15.599-15.601-25.199-23.101 65.4-20.7 101.999-70.499 101.999-140.4 0-62.999-33.3-116.1-84.6-135.901C317.501 4.499 280.299 0 228.099 0H35.5v512h124.2V309.899c36.711 0 34.854 5.895 47.999 20.101 15.312 16.735 67.089 98.459 120.901 182h147.9c-60.864-101.473-104.654-174.391-126.601-198.5zM159.7 111.299c26.206-.084 92.305-.437 104.099 1.201 23.701 4.2 35.7 18.6 35.7 43.2 0 21.599-9 36.299-26.1 42.299-19.349 6.912-86.441 4.801-113.699 4.801z" fill="#00a5a8" opacity="1" data-original="#000000" class=""></path>
+                                        </g>
+                                    </svg>
                                 </div>
                             </div>
                         </div>
