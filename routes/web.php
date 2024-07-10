@@ -9,8 +9,7 @@ use App\Http\Controllers\LeadController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')
-        ->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
 });
 
 Route::middleware(['auth'])->group(function () {

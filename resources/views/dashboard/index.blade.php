@@ -29,7 +29,7 @@
                         <a href="#">Option 3</a>
                     </div>
                 </li>
-                
+
                 <li>
                     <a href="#" class="dropdown-toggle footer_class">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -75,16 +75,16 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('logout') }}" class="dropdown-toggle footer_class" title="Logout">
+                    <a href="{{ route('logout') }}" class="logout-btn footer_class" title="Logout">
                         <svg class="svg-icon" style="width: 1em; height: 1em; vertical-align: middle; fill: currentColor; overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
                             <path d="M868 732v68c0 47.6-38.4 86-86 86H214c-47.6 0-86-38.4-86-86V224c0-47.6 38.4-86 86-86h568c47.6 0 86 38.4 86 86v68h-60v-68c0-14.4-11.6-26-26-26H214c-14.4 0-26 11.6-26 26v576c0 14.4 11.6 26 26 26h568c14.4 0 26-11.6 26-26v-68h60zM574.6 507.4L462.6 395.4c-12.4-12.4-32.6-12.4-45 0s-12.4 32.6 0 45l79.4 79.4H168c-17.6 0-32 14.4-32 32s14.4 32 32 32h329.4l-79.4 79.4c-12.4 12.4-12.4 32.6 0 45s32.6 12.4 45 0l112-112c12.4-12.4 12.4-32.6 0-45z"/>
                         </svg>
                     </a>
-                    <div class="dropdown-menu" style="width: 300%;">
-                        <a href="#">Option 1</a>
-                        <a href="#">Option 2</a>
-                        <a href="#">Option 3</a>
-                    </div>
+{{--                    <div class="dropdown-menu" style="width: 300%;">--}}
+{{--                        <a href="#">Option 1</a>--}}
+{{--                        <a href="#">Option 2</a>--}}
+{{--                        <a href="#">Option 3</a>--}}
+{{--                    </div>--}}
                 </li>
             </ul>
         </div>

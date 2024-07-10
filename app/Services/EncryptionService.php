@@ -8,15 +8,32 @@ class EncryptionService
 {
     public static function encrypt(string $value): string
     {
-        // Example: You can use a custom encryption method here
-        // Replace with your encryption logic
         return base64_encode($value);
     }
 
     public static function decrypt(string $encryptedValue): string
     {
-        // Example: You can use a custom decryption method here
-        // Replace with your decryption logic
+
         return base64_decode($encryptedValue);
+    }
+
+    // function to encrypt whole request
+    public static function encryptRequest($request)
+    {
+        $data = $request->all();
+        foreach ($data as $key => $value) {
+            $data[$key] = self::encrypt($value);
+        }
+        return $data;
+    }
+
+    // function to decrypt whole request
+    public static function decryptRequest($request)
+    {
+        $data = $request->all();
+        foreach ($data as $key => $value) {
+            $data[$key] = self::decrypt($value);
+        }
+        return $data;
     }
 }
