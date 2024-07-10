@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('home');
+            return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
@@ -43,9 +43,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function home()
-    {
-        return view('home');
+    public function logout(){
+        dd('logout');
     }
 
 }
