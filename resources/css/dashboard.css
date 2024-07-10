@@ -224,7 +224,7 @@ ul.top_right_navbar {
   padding: 9px 0;
   gap: 15px;
   align-items: end;
-  margin-right: 3%;  
+  margin-right: 3%;
   /* disha change */
 }
 ul.top_right_navbar li,.dropbtn .footer_class {
@@ -499,7 +499,7 @@ img.avatar {
   margin-right: 10px;
 }
 
-.dropdown-toggle {
+.dropdown-toggle , .logout-btn {
   text-decoration: none;
   color: inherit;
   display: inline-block;
