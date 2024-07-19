@@ -7,6 +7,7 @@ function GetFilesArray(query) {
 }
 
 const cssFiles = GetFilesArray('resources/css/**/*.css');
+const jsFiles = GetFilesArray('resources/js/**/*.js');
 
 export default defineConfig({
     plugins: [
@@ -18,6 +19,7 @@ export default defineConfig({
             {
             input: [
                 ...cssFiles,
+                ...jsFiles,
                  'resources/js/app.js'
             ],
             refresh: true,
