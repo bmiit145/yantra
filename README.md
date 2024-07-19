@@ -35,6 +35,7 @@ Sure, here's a refined and professionally formatted version of your instructions
    ```bash
    npm run dev
    ```
+---
 
 ### Handling Permission Changes
 
@@ -59,6 +60,7 @@ or
 ```bash
 php artisan db:seed --class=AssignPermissionSeeder
 ```
+---
 
 ### Additional Features
 
