@@ -1,17 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
+@extends('layout.header')
+@section('content')
+@vite('resources/css/lead.css')
+@vite('resources/css/crm.css')
+@section('title', 'CRM')
+@section('image_url', 'images/CRM.png')
+@section('navbar_menu')
+     <li><a href="#">Sales</a></li>
+    <li><a href="{{ url('lead') }}">Leads</a></li>
+    <li><a href="#">Reporting</a></li>
+    <li><a href="#">Configuration</a></li>
+@endsection
+
+
     @vite('resources/css/newlead.css')
     @vite('resources/css/crm.css')
-    <title></title>
-    <link rel="stylesheet" href="assets/css/new-leads.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-</head>
-<body>
+
     <div class="main_header_wrapper">
         <div class="crmtop_header">
             <div class="top_left_navbar">
@@ -788,5 +793,5 @@
     </section>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
-</html>
+
+    @endsection
