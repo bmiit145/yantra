@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DefaultUser extends Seeder
 {
@@ -14,25 +15,52 @@ class DefaultUser extends Seeder
      */
     public function run(): void
     {
-        // create a default user as admin and student with array of data
-        $users = [
-            [
-                'name' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('password'),
-                'role' => '2',
-            ],
+        // User Role
+        Role::create([
+            'name' => 'user',
+            'guard_name' => 'web',
+        ]);
+
+
+        $userUsers = [
             [
                 'name' => 'User',
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('password'),
-                'role' => '1',
+//                'role' => '1',
+            ]
+        ];
+
+        // loop through the array of data and create a new user
+        foreach ($userUsers as $user) {
+            $user = User::create($user);
+            $user->assignRole('user');
+        }
+
+
+        //admin Role
+        Role::create([
+            'name' => 'admin',
+            'guard_name' => 'web',
+        ]);
+
+        $adminUsers = [
+            [
+                'name' => 'Admin',
+                'email' => 'admin@gmail.com',
+                'password' => Hash::make('password'),
+//                'role' => '2',
             ],
         ];
 
         // loop through the array of data and create a new user
-        foreach ($users as $user) {
-            User::create($user);
+        foreach ($adminUsers as $user) {
+            $user = User::create($user);
+            $user->assignRole('admin');
         }
+
+
+
+
     }
 }

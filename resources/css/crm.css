@@ -478,7 +478,7 @@ p.head_breadcrumb_title {
   display: flex;
   justify-content: space-between;
   white-space: normal;
-  width: 305px;
+  /*width: 305px;*/
   padding: 10px;
   border-bottom: 1px solid #00a5a8;
 }
