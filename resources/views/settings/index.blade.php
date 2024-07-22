@@ -155,7 +155,7 @@
                                                     </div>
                                                 @endif
 
-                                                <form action="{{ route('setting.invitMail') }}">
+                                                <form action="{{ route('setting.invitMail') }}" method="POST">
                                                     @csrf
                                                     <div class="d-flex">
                                                         <input class="o_user_emails o_input mt8 text-truncate" type="text" name="mail" placeholder="Enter e-mail address">
