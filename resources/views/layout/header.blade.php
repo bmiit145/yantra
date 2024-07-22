@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     @vite([
-    'resources/css/crm.css' ,
+//    'resources/css/crm.css' ,
+    'resources/css/common/header.css',
     'resources/css/all.css' ,
     ])
 {{--     font awesome by npm  --}}

@@ -15,6 +15,7 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/head', [DashboardController::class, 'head'])->name('head');
@@ -28,8 +29,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
 
+    // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
-    Route::get('/users', [SettingController::class, 'userIndex'])->name('setting.userIndex');
-    Route::get('/users_creat', [SettingController::class, 'usercreat'])->name('setting.usercreat');
+
+    Route::get('/users', [SettingController::class, 'userIndex'])->name('setting.users');
+    Route::get('/users_create', [SettingController::class, 'usercreate'])->name('setting.user.create');
+
+    // mail invite
     Route::post('/invitMail', [SettingController::class, 'invitMail'])->name('setting.invitMail');
 });

@@ -145,7 +145,7 @@
                                 <div class="teb_users_info">
                                     <div class="teb_user_inner_row">
                                         <div class="teb_user_inner_col">
-                                            <div class="teb_user_inner_main">
+                                            <div class="teb_user_inner_main ">
                                                 <div class="teb_user-title">
                                                     <p>Invite New Users</p>
                                                 </div>
@@ -170,6 +170,13 @@
 {{--                                                        <button class="teb_user_btn" type="submit">Invite</button>--}}
 {{--                                                    </div>--}}
 {{--                                                </form>--}}
+
+                                                <p class="o_form_label pt-3">Pending Invitations:</p>
+                                                    @foreach($panddingUsers as $panndingUser)
+                                                <span>
+                                                    <a href="#" class="badge rounded-pill text-primary border border-primary o_web_settings_user">{{ $panndingUser->email }}</a>
+                                                </span>
+                                                    @endforeach
                                             </div>
 
                                         </div>
@@ -181,7 +188,12 @@
                                         <div class="o_setting_right_pane" data-tooltip-delay="800" data-tooltip=""><div class="mt16"><span class="fa fa-lg fa-users" aria-label="Number of active users"></span><div name="active_user_count" class="o_field_widget o_readonly_modifier o_field_integer w-auto ps-3 fw-bold"><span>8</span></div><span class="o_form_label"><span searchabletext="
                                         Active Users">
                                         Active Users
-                                    </span></span><a href="https://www.odoo.com/documentation/saas-17.2/applications/general/users.html" title="Documentation" class="o_doc_link" target="_blank"></a><br><button class="btn btn-link o_web_settings_access_rights" name="69" type="action"><i class="o_button_icon oi oi-fw oi-arrow-right me-1"></i><span searchabletext="Manage Users">Manage Users</span></button></div></div>
+                                    </span></span>
+                                                <a href="https://www.odoo.com/documentation/saas-17.2/applications/general/users.html" title="Documentation" class="o_doc_link" target="_blank"></a><br>
+                                                <a href="{{ route('setting.users') }}" class="btn btn-link o_web_settings_access_rights" name="69" type="action" target="_blank">
+                                                    <i class="o_button_icon oi oi-fw oi-arrow-right me-1"></i>
+                                                    <span searchabletext="Manage Users">Manage Users</span>
+                                                </a></div></div>
                                     </div>
                                 </div>
                             </div>

@@ -11,7 +11,11 @@ class SettingController extends Controller
 {
     public function index()
     {
-        return view('settings.index');
+        $panddingUsers = User::where('email_verified_at' , null)
+            ->where('role' , '!=' , 2 )
+            ->get();
+
+        return view('settings.index' , compact('panddingUsers'));
     }
 
     public function userIndex()
@@ -19,9 +23,9 @@ class SettingController extends Controller
         return view('settings.users.index');
     }
 
-    public function usercreat()
+    public function usercreate()
     {
-        return view('settings.users.creat');
+        return view('settings.users.create');
     }
 
     public function invitMail(Request $request)
@@ -32,18 +36,16 @@ class SettingController extends Controller
 
         $user = new User;
         $user->email = $email;
-        $user->name = $name; 
-        $user->role = 1; 
+        $user->name = $name;
+        $user->role = 1;
         $user->remember_token = Str::random(60);
         $user->save();
 
-        
 
-       
         $link = route('login.updatePassword', ['id' => $user->remember_token]);
-       
 
-       
+
+
         Mail::to($email)->send(new InviteMail($link , $user));
 
         return redirect()->back()->with('success', 'Invitation sent successfully!');

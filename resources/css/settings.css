@@ -39,7 +39,7 @@ select:focus {
 
 a {
   text-decoration: none !important;
-  color: #000 !important;
+  /*color: #000 !important;*/
 }
 
 a:hover {
@@ -201,4 +201,12 @@ button.teb_user_btn:hover {
 }
 .about_box-left {
   width: 50%;
+}
+
+
+/* badge */
+.o_web_settings_user
+{
+    font-size: 95% !important;
+    font-weight: 500 !important;
 }
