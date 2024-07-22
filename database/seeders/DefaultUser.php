@@ -27,6 +27,7 @@ class DefaultUser extends Seeder
                 'email' => 'user@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => '1',
+                'is_confirmed' => true
             ]
         ];
 
@@ -49,6 +50,7 @@ class DefaultUser extends Seeder
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('password'),
                 'role' => '2',
+                'is_confirmed' => true
             ],
         ];
 

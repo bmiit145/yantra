@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CRMController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UserController;
 
 
 Route::middleware(['web'])->group(function () {
@@ -16,6 +17,9 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+
+    // datatable
+    Route::get('/dataTable/users', [UserController::class, 'getUsers'])->name('api.users');
 
     Route::get('/', [DashboardController::class, 'index'])->name('home');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

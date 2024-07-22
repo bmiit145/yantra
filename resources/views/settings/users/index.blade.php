@@ -1,7 +1,8 @@
 @extends('layout.header')
 @section('content')
 
-@vite('resources/css/settings.css')
+@vite(['resources/css/settings.css',
+    'resources/css/odoo/web.assets_web.css'])
 @section('title', 'Setting')
 @section('image_url', 'images/Settings.png')
 @section('navbar_menu')
@@ -14,7 +15,7 @@
 <div class="card">
     <div class="card-body">
         <div class="table-responsive text-nowrap">
-            <table id="example" class="display nowrap" style="width:100%">
+            <table id="userDataTable" class="display nowrap" style="width:100%">
                 <thead>
                     <tr>
                         <th>Sr No.</th>
@@ -24,17 +25,6 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Example data, replace with your actual data -->
-                    <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>1234567890</td>
-                        <td>john.doe@example.com</td>
-                        <td>Action</td>
-                    </tr>
-                    <!-- More rows here -->
-                </tbody>
             </table>
         </div>
     </div>
@@ -46,7 +36,44 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
+        var UserDataTable = $('#userDataTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{{ route('api.users') }}",
+                "type": "GET"
+            },
+            "columns": [{
+                    name: 'id',
+                render: function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'email',
+                    name: 'email'
+                },
+                {
+                    data: 'last_login_at',
+                    name: 'last_login_at'
+                },
+                {
+                    data: 'status',
+                    name: 'status',
+                    render: function(data, type, row) {
+                        if(row.is_confirmed != null){
+                            return '<span class="badge rounded-pill text-bg-success">Confirmed</span>';
+                        }else{
+                            return '<span class="badge rounded-pill text-bg-info">Never Connected</span>';
+                        }
+                    }
+                }
+            ]
+        });
     });
 </script>
 

@@ -35,6 +35,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            // add last login time and ip
+            $user = Auth::user();
+            $user->last_login_at = now();
+            $user->last_login_ip = $request->ip();
+            $user->save();
+
             return redirect()->intended('dashboard');
         }
 

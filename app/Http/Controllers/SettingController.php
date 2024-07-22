@@ -22,7 +22,9 @@ class SettingController extends Controller
 
     public function userIndex()
     {
-        return view('settings.users.index');
+        $users = User::where('role' , '!=' , 2)->get();
+
+        return view('settings.users.index' , compact('users'));
     }
 
     public function usercreate()
@@ -37,6 +39,7 @@ class SettingController extends Controller
 
         $user = new User;
         $user->email = $email;
+
         $user->name = $name;
         $user->role = 1;
         $user->remember_token = Str::random(60);
@@ -74,6 +77,7 @@ class SettingController extends Controller
 
         // Update password
         $user->password = Hash::make($request->input('password'));
+        $user->is_confirmed = true;
         $user->update();
 
         // Redirect to showPassword route with token
