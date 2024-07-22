@@ -18,22 +18,22 @@
                 <h2 class="common_title"></h2>
                 <form action="{{ route('login.updatePassword') }}" method="post">
                     @csrf
+                    <input type="hidden" name="token" value="{{ $user->remember_token }}">
                     <div class="form_inner">
-                    <label for="uname">Name</label>
-                    <input type="text" placeholder="name" name="name" value="{{ $user->name }}" disabled>
-                    <label for="uname">Email</label>
-                    <input type="email" placeholder="Email" name="email" value="{{ $user->email }}" disabled>
-
-                    <label for="psw">Password</label>
-                    <input type="password" placeholder="Enter Password" name="password" required>
-                    <label for="psw">Confirm Password</label>
-                    <input type="password" placeholder="Enter Confirm Password" name="password_confirmation" required>
-
-                    <button class="common_btn" type="submit">Reset Password</button>
-
-
+                        <label for="uname">Name</label>
+                        <input type="text" placeholder="Name" name="name" value="{{ $user->name }}" disabled>
+                        <label for="uname">Email</label>
+                        <input type="email" placeholder="Email" name="email" value="{{ $user->email }}" disabled>
+                
+                        <label for="psw">Password</label>
+                        <input type="password" placeholder="Enter Password" name="password" required>
+                        <label for="psw">Confirm Password</label>
+                        <input type="password" placeholder="Confirm Password" name="password_confirmation" required>
+                
+                        <button class="common_btn" type="submit">Reset Password</button>
                     </div>
                 </form>
+                          
                
             </div>
         </div>
