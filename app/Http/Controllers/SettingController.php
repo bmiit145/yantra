@@ -17,7 +17,9 @@ class SettingController extends Controller
             ->where('role' , '!=' , 2 )
             ->get();
 
-        return view('settings.index' , compact('panddingUsers'));
+        $totalUsers = User::where('role' , '!=' , 2)->count();
+
+        return view('settings.index' , compact('panddingUsers' , 'totalUsers'));
     }
 
     public function userIndex()
@@ -25,6 +27,12 @@ class SettingController extends Controller
         $users = User::where('role' , '!=' , 2)->get();
 
         return view('settings.users.index' , compact('users'));
+    }
+
+    public function UserEdit($id)
+    {
+        $user = User::find($id);
+        return view('settings.users.edit' , compact('user'));
     }
 
     public function usercreate()
@@ -70,7 +78,6 @@ class SettingController extends Controller
 
         // Find user by remember_token
         $user = User::where('remember_token', $request->token)->first();
-        // dd($user->toArray());
 
         if (!$user) {
             return redirect()->back()->with('error', 'Invalid token.');
@@ -79,6 +86,7 @@ class SettingController extends Controller
         // Update password
         $user->password = Hash::make($request->input('password'));
         $user->is_confirmed = true;
+        $user->remember_token = null;
         $user->update();
 
         // Redirect to showPassword route with token

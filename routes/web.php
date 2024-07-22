@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
 
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
+    Route::get('/settings/res.users/{id}', [SettingController::class, 'UserEdit'])->name('setting.edit.blade.php');
 
     Route::get('/users', [SettingController::class, 'userIndex'])->name('setting.users');
     Route::get('/users_create', [SettingController::class, 'usercreate'])->name('setting.user.create');

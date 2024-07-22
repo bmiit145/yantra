@@ -43,6 +43,11 @@
                 "url": "{{ route('api.users') }}",
                 "type": "GET"
             },
+            "scrollCollapse": true,
+            "deferRender": true,
+            "scroller": {
+                "loadingIndicator": true
+            },
             "columns": [{
                     name: 'id',
                 render: function(data, type, row, meta) {
@@ -65,7 +70,7 @@
                     data: 'status',
                     name: 'status',
                     render: function(data, type, row) {
-                        if(row.is_confirmed != null){
+                        if(row.is_confirmed != 0){
                             return '<span class="badge rounded-pill text-bg-success">Confirmed</span>';
                         }else{
                             return '<span class="badge rounded-pill text-bg-info">Never Connected</span>';

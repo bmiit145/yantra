@@ -31,11 +31,11 @@ class AssignPermissions extends Command
             'admin' => [
                 'manage user',
                 'create user',
-                'edit user',
+                'edit.blade.php user',
                 'delete user',
                 'manage role',
                 'create role',
-                'edit role',
+                'edit.blade.php role',
                 'delete role',
                 'manage permission',
                 'manage crm',

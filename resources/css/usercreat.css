@@ -127,7 +127,7 @@ p.probability_label {
     line-height: 1.2;
 }
 
-.po_field_widget {
+.py_field_widget {
     font-size: 18px;
     line-height: 1.2;
     font-weight: 500;
@@ -139,7 +139,7 @@ p.probability_label {
 .new_leads_name {
     margin-bottom: 15px;
 }
-.o_action_manager .o_input {
+.y_action_manager .y_input {
     width: 10%;
     border: 0;
     border-bottom: 1px solid;
@@ -249,7 +249,7 @@ input.company_input_info {
     border: 1px solid #2222;
     border-top: 0;
 }
-.tab-contentextra-info .o_input {
+.tab-contentextra-info .y_input {
     width: 100%;
 }
 
@@ -263,13 +263,21 @@ input.company_input_info {
 
 
 
-.o_horizontal_separator {
+.y_horizontal_separator {
     font-size: 16px !important;
     font-weight: 600 !important;
     line-height: 1.2 !important;
     margin: 20px 0 15px 0 !important;
 }
-.o_form_label {
+.y_form_label {
     font-size: 14px;
     font-weight: 500;
+}
+/*================================*/
+.o_statusbar_buttons button,.o_statusbar_status button{
+    font-size: 12px;
+    background: #e7e9ed;
+    color: #1F2937;
+    border: 0;
+    font-weight: 600;
 }

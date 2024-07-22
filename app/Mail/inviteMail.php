@@ -37,8 +37,8 @@ class inviteMail extends Mailable
 
     public function build()
 {
-    return $this->view('settings.users.invite')
-                ->subject('You are invited')
+    return $this->view('mail.users.invite')
+                ->subject('Password Reset')
                 ->with([
                     'link' => $this->link,
                     'user' => $this->user,
@@ -54,7 +54,7 @@ class inviteMail extends Mailable
         //     view: 'view.name',
         // );
         return new Content(
-            view: 'settings.users.invite',
+            view: 'mail.users.invite',
             with: [
                 'link' => $this->link,
                 'user' => $this->user,

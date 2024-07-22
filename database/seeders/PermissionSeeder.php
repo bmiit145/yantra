@@ -24,7 +24,7 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit user',
+                'name' => 'edit.blade.php user',
                 'guard_name' => 'web',
             ],
             [
@@ -40,7 +40,7 @@ class PermissionSeeder extends Seeder
                 'guard_name' => 'web',
             ],
             [
-                'name' => 'edit role',
+                'name' => 'edit.blade.php role',
                 'guard_name' => 'web',
             ],
             [
