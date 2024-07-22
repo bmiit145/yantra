@@ -30,4 +30,5 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
     Route::get('/users', [SettingController::class, 'userIndex'])->name('setting.userIndex');
     Route::get('/users_creat', [SettingController::class, 'usercreat'])->name('setting.usercreat');
+    Route::post('/invitMail', [SettingController::class, 'invitMail'])->name('setting.invitMail');
 });

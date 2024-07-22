@@ -320,7 +320,7 @@
                         </a>
                     </div>
                     <div class="main_inner_block">
-                        <a role="option" class="main_inner_wrapper" id="result_app_32" aria-selected="false"
+                        <a href="{{ url('settings') }}" role="option" class="main_inner_wrapper" id="result_app_32" aria-selected="false"
                             data-menu-xmlid="base.menu_administration" href="#">
                             <img class="home_app_icon" src="{{ asset('images/Settings.png') }}">
                             <div class="home_caption">Settings</div>

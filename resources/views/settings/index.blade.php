@@ -149,11 +149,14 @@
                                                 <div class="teb_user-title">
                                                     <p>Invite New Users</p>
                                                 </div>
-                                                <div class="teb_user-input-group input-group">
-                                                    <input type="text" class="teb_user_input" placeholder="Enter e-mail address" aria-label="Recipient's username with two button addons">
-                                                    <button class="teb_user_btn" type="button">Invite</button>
-                                                </div>
+                                                <form action="">
+                                                    <div class="teb_user-input-group input-group">
+                                                        <input type="text" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons">
+                                                        <button class="teb_user_btn" type="button">Invite</button>
+                                                    </div>
+                                                </form>
                                             </div>
+
                                         </div>
                                         <div class="teb_user_inner_col">
 

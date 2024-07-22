@@ -20,4 +20,17 @@ class SettingController extends Controller
     {
         return view('settings.users.creat');
     }
+
+    public function invitMail(Request $request)
+    {
+         $mail = $request->mail;
+
+         if($user->status == 'active'){
+ 
+            $link = route('login.showPassword', ['id' => $id]);
+            
+           
+            Mail::to($email)->send(new InviteMail($link));
+        }
+    }
 }
