@@ -11,6 +11,7 @@ use App\Http\Controllers\SettingController;
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
+    Route::get('/updatePassword/{id}', [SettingController::class, 'updatePassword'])->name('login.updatePassword');
 });
 
 Route::middleware(['auth'])->group(function () {

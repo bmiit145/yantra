@@ -155,13 +155,18 @@
 {{--                                                </div>--}}
 {{--                                                    </form>--}}
 
-                                                <form action="">
+                                                @if(session()->has('message'))
+                                                    <div class="alert alert-success">
+                                                        {{ session()->get('message') }}
+                                                    </div>
+                                                @endif
+                                                <form action="{{ route('setting.invitMail') }}" method="POST">
+                                                    @csrf
                                                     <div class="teb_user-input-group input-group">
-                                                        <input type="text" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons" style="width: initial">
-                                                        <button class="teb_user_btn" type="button">Invite</button>
+                                                        <input type="email" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons" style="width: initial">
+                                                        <button class="teb_user_btn" type="submit">Invite</button>
                                                     </div>
                                                 </form>
-
                                             </div>
 
                                         </div>
