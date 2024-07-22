@@ -13,12 +13,16 @@ class inviteMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $link;
+    public $user;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($link)
+    public function __construct($link, $user)
     {
         $this->link = $link;
+        $this->user = $user;
     }
 
     /**
@@ -32,13 +36,15 @@ class inviteMail extends Mailable
     }
 
     public function build()
-    {
-        return $this->view('emails.invites')
-                    ->subject('You are invited')
-                    ->with([
-                        'link' => $this->link,
-                    ]);
-    }
+{
+    return $this->view('settings.users.invite')
+                ->subject('You are invited')
+                ->with([
+                    'link' => $this->link,
+                    'user' => $this->user,
+                ]);
+}
+
     /**
      * Get the message content definition.
      */
@@ -48,9 +54,10 @@ class inviteMail extends Mailable
         //     view: 'view.name',
         // );
         return new Content(
-            view: 'emails.invites',
+            view: 'settings.users.invite',
             with: [
                 'link' => $this->link,
+                'user' => $this->user,
             ],
         );
     }

@@ -140,7 +140,7 @@
                         <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
                             <div class="tab-pane-row">
                                 <div class="tab-content-inner">
-                                    <h2>Users</h2>
+                                    <h2>Users</h2
                                 </div>
                                 <div class="teb_users_info">
                                     <div class="teb_user_inner_row">
@@ -149,10 +149,16 @@
                                                 <div class="teb_user-title">
                                                     <p>Invite New Users</p>
                                                 </div>
-                                                <form action="">
+                                                @if(session()->has('message'))
+                                                    <div class="alert alert-success">
+                                                        {{ session()->get('message') }}
+                                                    </div>
+                                                @endif
+                                                <form action="{{ route('setting.invitMail') }}" method="POST">
+                                                    @csrf
                                                     <div class="teb_user-input-group input-group">
-                                                        <input type="text" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons">
-                                                        <button class="teb_user_btn" type="button">Invite</button>
+                                                        <input type="email" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons">
+                                                        <button class="teb_user_btn" type="submit">Invite</button>
                                                     </div>
                                                 </form>
                                             </div>
