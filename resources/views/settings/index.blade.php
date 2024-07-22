@@ -149,12 +149,19 @@
                                                 <div class="teb_user-title">
                                                     <p>Invite New Users</p>
                                                 </div>
+{{--                                                    <form action="">--}}
+{{--                                                <div class="d-flex">--}}
+{{--                                                    <input class="o_user_emails o_input mt8 text-truncate" type="text" placeholder="Enter e-mail address"><button class="btn btn-primary teb_user_btn o_web_settings_invite flex-shrink-0"><strong>Invite</strong></button>--}}
+{{--                                                </div>--}}
+{{--                                                    </form>--}}
+
                                                 <form action="">
                                                     <div class="teb_user-input-group input-group">
-                                                        <input type="text" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons">
+                                                        <input type="text" class="teb_user_input" placeholder="Enter e-mail address" name="mail" aria-label="Recipient's username with two button addons" style="width: initial">
                                                         <button class="teb_user_btn" type="button">Invite</button>
                                                     </div>
                                                 </form>
+
                                             </div>
 
                                         </div>
