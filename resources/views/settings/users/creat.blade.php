@@ -481,31 +481,7 @@
                    </div>
                </div>
            </div>
-           <div class="new_rightleads_main">
-               <div class="new_rightleads-mail-DateSection d-flex align-items-center fw-bolder w-100"><hr class="ms-3 flex-grow-1"><span class="px-3 text-muted">Today</span><hr class="me-3 flex-grow-1"></div>
-               <div class="o-mail-Message position-relative undefined o-selfAuthored py-1 mt-2 px-3" role="group" aria-label="System notification">
-                   <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                      <div class="o-mail-Message-sidebar d-flex flex-shrink-0">
-                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"src="assets/images/r_logo.png" alt="google_play"></div>
-                      </div>
-                      <div class="w-100 o-min-width-0">
-                         <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline mb-1 lh-1"><span class="o-mail-Message-author cursor-pointer" aria-label="Open card"><strong class="me-1 text-truncate">Rohit Pansara</strong></span><small class="o-mail-Message-date text-muted opacity-75 me-2" title="7/9/2024, 12:45:04 PM">- 1 minute ago</small><span class="o-mail-MessageSeenIndicator position-relative d-flex opacity-50 o-all-seen text-primary ms-1"></span></div>
-                         <div class="position-relative d-flex">
-                            <div class="o-mail-Message-content o-min-width-0">
-                               <div class="o-mail-Message-textContent position-relative d-flex">
-                                  <div>
-                                     <div class="o-mail-Message-body text-break mb-0 w-100">Creating a new record...</div>
-                                  </div>
-                                  <div class="o-mail-Message-actions ms-2 mt-1 invisible">
-                                     <div class="d-flex rounded-1 bg-view shadow-sm overflow-hidden"></div>
-                                  </div>
-                               </div>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-           </div>
+      
        </div>
    </div>
 </section>
