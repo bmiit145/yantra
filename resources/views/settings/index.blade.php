@@ -1,17 +1,17 @@
 
 @extends('layout.header')
 @section('content')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    @vite(['resources/css/settings.css' ,
+            'resources/css/odoo/web.assets_web.css'
+])
 
-    @vite('resources/css/settings.css')
     @section('title', 'Setting')
     @section('image_url', 'images/Settings.png')
     @section('navbar_menu')
         <li><a href="#">General Settings</a></li>
         <li><a href="#">Users & Companies</a></li>
-  
     @endsection
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 
 
@@ -158,9 +158,15 @@
                                             </div>
 
                                         </div>
-                                        <div class="teb_user_inner_col">
-
-                                        </div>
+{{--                                        <div class="teb_user_inner_col">--}}
+{{--                                            <div class="mt16"><span class="fa fa-lg fa-users" aria-label="Number of active users"></span><div name="active_user_count" class="o_field_widget o_readonly_modifier o_field_integer w-auto ps-3 fw-bold"><span>6</span></div><span class="o_form_label"><span searchabletext="Active Users">--}}
+{{--                                        Active Users--}}
+{{--                                            </span></span><a href="https://www.odoo.com/documentation/saas-17.2/applications/general/users.html" title="Documentation" class="o_doc_link" target="_blank"></a><br><button class="btn btn-link o_web_settings_access_rights" name="69" type="action"><i class="o_button_icon oi oi-fw oi-arrow-right me-1"></i><span searchabletext="Manage Users">Manage Users</span></button></div>--}}
+{{--                                        </div>--}}
+                                        <div class="o_setting_right_pane" data-tooltip-delay="800" data-tooltip=""><div class="mt16"><span class="fa fa-lg fa-users" aria-label="Number of active users"></span><div name="active_user_count" class="o_field_widget o_readonly_modifier o_field_integer w-auto ps-3 fw-bold"><span>8</span></div><span class="o_form_label"><span searchabletext="
+                                        Active Users">
+                                        Active Users
+                                    </span></span><a href="https://www.odoo.com/documentation/saas-17.2/applications/general/users.html" title="Documentation" class="o_doc_link" target="_blank"></a><br><button class="btn btn-link o_web_settings_access_rights" name="69" type="action"><i class="o_button_icon oi oi-fw oi-arrow-right me-1"></i><span searchabletext="Manage Users">Manage Users</span></button></div></div>
                                     </div>
                                 </div>
                             </div>
@@ -181,7 +187,7 @@
                                 </div>
                                 <div class="languages_box">
                                     <div class="languages_box_inner">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +197,7 @@
                                 </div>
                                 <div class="languages_box">
                                     <div class="languages_box_inner">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +207,7 @@
                                 </div>
                                 <div class="languages_box">
                                     <div class="languages_box_inner">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -211,7 +217,7 @@
                                 </div>
                                 <div class="languages_box">
                                     <div class="languages_box_inner">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +227,7 @@
                                 </div>
                                 <div class="languages_box">
                                     <div class="languages_box_inner">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -231,7 +237,7 @@
                                 </div>
                                 <div class="languages_box">
                                     <div class="languages_box_inner">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -266,12 +272,12 @@
                                             <div class="about_box_wapper">
                                                 <div class="about_imgbox_wapper">
                                                     <a href="#"><img src="assets/images/google_play.png" alt="google_play"></a>
-                                                   
-                                                </div>   
+
+                                                </div>
                                                 <div class="about_imgbox_wapper">
                                                     <a href="#"><img src="assets/images/app_store.png" alt="app_store"></a>
-                                                    
-                                                </div>  
+
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="about_box-right">

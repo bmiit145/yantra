@@ -8,6 +8,7 @@ function GetFilesArray(query) {
 
 const cssFiles = GetFilesArray('resources/css/**/*.css');
 const jsFiles = GetFilesArray('resources/js/**/*.js');
+// const odooFontsFile = GetFilesArray('public/oddoo/fonts/**/*.*');
 
 export default defineConfig({
     plugins: [
@@ -20,6 +21,7 @@ export default defineConfig({
             input: [
                 ...cssFiles,
                 ...jsFiles,
+                // ...odooFontsFile,
                  'resources/js/app.js'
             ],
             refresh: true,
