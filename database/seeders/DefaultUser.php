@@ -16,7 +16,10 @@ class DefaultUser extends Seeder
     public function run(): void
     {
         // User Role
-        $userRole = Role::create([
+        $userRole = Role::firstOrcreate(
+            ['name' => 'user'],
+            
+        [
             'name' => 'user',
             'guard_name' => 'web',
         ]);
@@ -32,13 +35,15 @@ class DefaultUser extends Seeder
 
         // loop through the array of data and create a new user
         foreach ($userUsers as $user) {
-            $user = User::firstOrCreate('email', $user['email'], $user);
+            $user = User::firstOrCreate(['email' => $user['email']], $user);
             $user->assignRole($userRole);
         }
 
 
         //admin Role
-        $adminRole = Role::create([
+        $adminRole = Role::firstOrcreate(
+        ['name' => 'admin'],
+        [ 
             'name' => 'admin',
             'guard_name' => 'web',
         ]);
@@ -54,7 +59,7 @@ class DefaultUser extends Seeder
 
         // loop through the array of data and create a new user
         foreach ($adminUsers as $user) {
-            $user = User::firstOrCreate('email', $user['email'], $user);
+            $user = User::firstOrCreate(['email'=> $user['email']], $user);
             $user->assignRole($adminRole);
         }
 

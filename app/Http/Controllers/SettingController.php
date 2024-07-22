@@ -33,6 +33,7 @@ class SettingController extends Controller
     public function invitMail(Request $request)
     {
         $email = $request->input('mail');
+        // dd($email);
         $name = strstr($email, '@', true);
 
         $user = new User;
