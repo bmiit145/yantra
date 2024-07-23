@@ -102,6 +102,9 @@ class User extends Authenticatable
     public function getEmailAttribute($value)
     {
 //        return Crypt::decryptString($value);
+        if ($value === null) {
+            return null;
+        }
         return EncryptionService::decrypt($value);
     }
 

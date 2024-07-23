@@ -18,9 +18,11 @@
         <div class="container-full">
             <div class="mx-3 o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0 mt16">
                 <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
+                    @if(!empty($user->id))
                     <button invisible="state != 'active'" class="btn btn-secondary" name="action_reset_password" type="object">
                         <span>Re-send Invitation Email</span>
                     </button>
+                    @endif
                     <button type="button" class="head_new_btn save_user_btn border-0" id="save_user_btn">save</button>
                 </div>
                 <div name="state" class="o_field_widget o_readonly_modifier o_field_statusbar">
@@ -29,8 +31,8 @@
                         @if($user->is_confirmed && $user->remember_token)
                         <button type="button" class="btn btn-secondary o_arrow_button o_first {{ $user->is_confirmed && $user->remember_token ? 'o_arrow_button_current' : '' }}" role="radio" disabled="" aria-label="Not active state" aria-checked="false" data-value="active">Reset Password</button>
                         @endif
-                        <button type="button" class="btn btn-secondary o_arrow_button {{ $user->is_confirmed && $user->remember_token ? 'o_last' : 'o_first' }} {{ $user->email_verified_at ? 'o_arrow_button_current' : '' }}" role="radio" disabled="" aria-label="Not active state" aria-checked="false" data-value="active">Confirmed</button>
-                        <button type="button" class="btn btn-secondary o_arrow_button  o_last {{ $user->is_confirmed ? '': 'o_arrow_button_current'  }}" role="radio" disabled="" aria-label="Current state" aria-checked="true" aria-current="step" data-value="new">Never Connected</button>
+                        <button type="button" class="btn btn-secondary o_arrow_button {{isset($user) && $user->is_confirmed && $user->remember_token ? 'o_last' : 'o_first' }} {{ $user->email_verified_at ? 'o_arrow_button_current' : '' }}" role="radio" disabled="" aria-label="Not active state" aria-checked="false" data-value="active">Confirmed</button>
+                        <button type="button" class="btn btn-secondary o_arrow_button  o_last {{ isset($user) && $user->is_confirmed ? '': 'o_arrow_button_current'  }}" role="radio" disabled="" aria-label="Current state" aria-checked="true" aria-current="step" data-value="new">Never Connected</button>
                         <button type="button" class="btn btn-secondary dropdown-toggle o_arrow_button o_last o-dropdown dropdown d-none" disabled="" aria-expanded="false"> ... </button>
                         <button type="button" class="btn btn-secondary dropdown-toggle o-dropdown dropdown d-none" disabled="" aria-expanded="false">Never Connected</button>
                     </div>
@@ -75,7 +77,9 @@
 
                     <form method="post" enctype="multipart/form-data" id="user_update_form">
                         @csrf
-                        <input type="hidden" name="id" value="{{ $user->id }}">
+                        @if(!empty($user->id))
+                            <input type="hidden" name="id" value="{{ $user->id }}">
+                        @endif
                     <div class="new_leads_top">
                         <div class="new_leads_name">
                             <label class="d-block m-0">Name </label>
@@ -216,10 +220,13 @@
     <script>
         // name action_reset_password click
         $(document).on('ready' , function () {
+
             // reset password
+            @if(!empty($user->id))
             $('button[name="action_reset_password"]').click(function () {
                 window.location.href = "{{ route('reset.password' , ['encEmail' => $user->email]) }}"
             });
+            @endif
 
             // user update save
             $('#save_user_btn').click(function () {
@@ -230,11 +237,16 @@
                     method: 'post',
                     data: data,
                     success: function (response) {
+                        if(response.create){
+                            location.href = response.create;
+                            return;
+                        }
                         if (response.success) {
                             console.log(response);
                             toastr.success(response.success);
                             return;
-                        }else{
+                        }
+                        else{
                             toastr.error(response.error);
                         }
                     },
@@ -243,23 +255,7 @@
                     }
                 });
             });
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
+
         });
     </script>
 @endpush
