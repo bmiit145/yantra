@@ -87,6 +87,7 @@
                             <button class="new_litablist-btn nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Preferences</button>
                         </li>
                     </ul>
+
                     <div class="tab-contentextra-info tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                             <div class="form-floating">
