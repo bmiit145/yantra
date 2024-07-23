@@ -77,7 +77,9 @@
 
                     <form method="post" enctype="multipart/form-data" id="user_update_form">
                         @csrf
-                        <input type="hidden" name="id" value="{{ $user->id }}">
+                        @if(!empty($user->id))
+                            <input type="hidden" name="id" value="{{ $user->id }}">
+                        @endif
                     <div class="new_leads_top">
                         <div class="new_leads_name">
                             <label class="d-block m-0">Name </label>
@@ -235,11 +237,16 @@
                     method: 'post',
                     data: data,
                     success: function (response) {
+                        if(response.create){
+                            location.href = response.create;
+                            return;
+                        }
                         if (response.success) {
                             console.log(response);
                             toastr.success(response.success);
                             return;
-                        }else{
+                        }
+                        else{
                             toastr.error(response.error);
                         }
                     },

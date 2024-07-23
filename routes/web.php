@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
 
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
-    Route::get('/settings/res.users/{id?}', [SettingController::class, 'UserEdit'])->name('setting.edit.blade.php');
+    Route::get('/settings/res.users/{id?}', [SettingController::class, 'UserEdit'])->name('setting.user');
 
     Route::get('/users', [SettingController::class, 'userIndex'])->name('setting.users');
     Route::get('/users_create', [SettingController::class, 'usercreate'])->name('setting.user.create');
@@ -47,5 +47,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/invitMail', [SettingController::class, 'invitMail'])->name('setting.invitMail');
 
     // user update
-    Route::post('/user-update', [userController::class, 'userUpdate'])->name('user.update');
+    Route::post('/user-update', [userController::class, 'userNewOrUpdate'])->name('user.update');
 });

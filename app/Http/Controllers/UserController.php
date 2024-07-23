@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PasswordResetHelper;
 use App\Models\User;
+use App\Services\EncryptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -25,34 +27,44 @@ class UserController extends Controller
 
     }
 
-    public function userUpdate(Request $request){
-
-
+    public function userNewOrUpdate(Request $request)
+    {
         $validator = Validator::make($request->all(), [
-            'id' => 'required',
+            'id' => 'sometimes|exists:users,id',
             'name' => 'required',
             'email' => 'required|email',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return $request->ajax() ?
+                response()->json(['error' => $validator->errors()->first()], 422) :
+                redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $user = User::find($request->input('id'));
+        $user = $request->input('id') ? User::find($request->input('id')) : new User();
         if (!$user) {
-            if($request->ajax()){
-                return response()->json(['error' => 'User not found'], 404);
+            return $request->ajax() ?
+                response()->json(['error' => 'User not found'], 404) :
+                redirect()->back()->with('error', 'User not found');
+        }
+
+        $user->fill($request->only(['name', 'email']))->save();
+        $user->role = 1;
+        //    $user->save();
+
+        if (!$request->input('id')) {
+            $encEmail = EncryptionService::encrypt($request->input('email'));
+            $newUser = User::where('email', $encEmail)->first();
+            $res = PasswordResetHelper::sendResetPasswordLink($encEmail);
+
+            if ($res) {
+                $response = ['success' => 'User created successfully', 'create' => route('setting.user', ['id' => $newUser->id])];
+                return $request->ajax() ? response()->json($response, 200) : redirect()->route('setting.user', ['id' => $newUser->id])->with('success', 'User created successfully');
             }
-            return redirect()->back()->with('error', 'User not found');
         }
 
-        $user->name = $request->input('name');
-        $user->email = $request->input('email');
-        $user->save();
-
-        if($request->ajax()){
-            return response()->json(['success' => 'User updated successfully'], 200);
-        }
-        return redirect()->back()->with('success', 'User updated successfully');
+        $successMessage = ['success' => $request->input('id') ? 'User updated successfully' : 'User created successfully'];
+        return $request->ajax() ? response()->json($successMessage, 200) : redirect()->back()->with('success', $successMessage['success']);
     }
+
 }
