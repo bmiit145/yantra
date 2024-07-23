@@ -532,6 +532,13 @@
     @if(Session::has('error'))
     toastr.error("{{ Session::get('error') }}");
     @endif
+
+    @if ($errors->any())
+    @foreach ($errors->all() as $error)
+    toastr.error("{{ $error }}");
+    @endforeach
+    @endif
+
 </script>
 @stack('scripts')
 </body>
