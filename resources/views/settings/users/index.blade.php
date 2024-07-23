@@ -5,6 +5,7 @@
     'resources/css/odoo/web.assets_web.css'])
 @section('title', 'Setting')
 @section('image_url', 'images/Settings.png')
+@section('head_new_btn_link' , route('setting.user'))
 @section('navbar_menu')
     <li><a href="#">General Settings</a></li>
     <li><a href="#">Users & Companies</a></li>
@@ -18,6 +19,7 @@
             <table id="userDataTable" class="display nowrap" style="width:100%">
                 <thead>
                     <tr>
+                        <th><input type="checkbox" name="select_all" id="select_all"></th>
                         <th>Sr No.</th>
                         <th>Name</th>
                         <th>Login.</th>
@@ -49,6 +51,14 @@
                 "loadingIndicator": true
             },
             "columns": [
+                {
+                    name: 'checkbox',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type, row, meta) {
+                        return '<input type="checkbox" name="user_checkbox" value="' + row.id + '">';
+                    }
+                },
                 {
                     name: 'id',
                     render: function(data, type, row, meta) {
@@ -82,12 +92,22 @@
         });
 
         $('#userDataTable tbody').on('click', 'tr', function () {
+            if ($(event.target).is('input[type="checkbox"]') || $(event.target).closest('td').index() === 0) {
+                return;
+            }
             var data = UserDataTable.row(this).data();
             var userId = data.id;
             var url = '{{ route("setting.edit.blade.php", ":id") }}';
             url = url.replace(':id', userId);
             window.location.href = url;
         });
+
+        $('#select_all').on('click', function() {
+            var rows = UserDataTable.rows({ 'search': 'applied' }).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+
+        
     });
 </script>
 
