@@ -48,11 +48,12 @@
             "scroller": {
                 "loadingIndicator": true
             },
-            "columns": [{
+            "columns": [
+                {
                     name: 'id',
-                render: function(data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                }
+                    render: function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
                 },
                 {
                     data: 'name',
@@ -72,12 +73,20 @@
                     render: function(data, type, row) {
                         if(row.is_confirmed != 0){
                             return '<span class="badge rounded-pill text-bg-success">Confirmed</span>';
-                        }else{
+                        } else {
                             return '<span class="badge rounded-pill text-bg-info">Never Connected</span>';
                         }
                     }
                 }
             ]
+        });
+
+        $('#userDataTable tbody').on('click', 'tr', function () {
+            var data = UserDataTable.row(this).data();
+            var userId = data.id;
+            var url = '{{ route("setting.edit.blade.php", ":id") }}';
+            url = url.replace(':id', userId);
+            window.location.href = url;
         });
     });
 </script>
