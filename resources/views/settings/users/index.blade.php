@@ -7,9 +7,8 @@
 @section('image_url', 'images/Settings.png')
 @section('head_new_btn_link' , route('setting.user'))
 @section('navbar_menu')
-    <li><a href="#">General Settings</a></li>
-    <li><a href="#">Users & Companies</a></li>
-
+    <li><a href="{{ route('setting.index') }}">General Settings</a></li>
+    <li><a href="{{ route('setting.users')  }}">Users</a></li>
 @endsection
 
 
@@ -107,7 +106,7 @@
             $('input[type="checkbox"]', rows).prop('checked', this.checked);
         });
 
-        
+
     });
 </script>
 

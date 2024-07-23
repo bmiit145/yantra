@@ -9,8 +9,8 @@
     @section('title', 'Setting')
     @section('image_url', 'images/Settings.png')
     @section('navbar_menu')
-        <li><a href="#">General Settings</a></li>
-        <li><a href="#">Users & Companies</a></li>
+        <li><a href="{{ route('setting.index') }}">General Settings</a></li>
+        <li><a href="{{ route('setting.users')  }}">Users</a></li>
     @endsection
 
 @section('head_new_btn_link' , route('setting.user'))
@@ -22,7 +22,7 @@
                 <div class="se_form_main_left nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
                         <span class="nav-link-icon">
-                            <img src="images/Settings.png" alt="Avatar" class="crm_logo">
+                            <img src="/images/Settings.png" alt="Avatar" class="crm_logo">
                         </span>
                         General Settings
                     </button>
@@ -80,9 +80,9 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                            
-                            
+
+
+
                         </div>
                         <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">test2</div>
                         <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">test3</div>
