@@ -82,7 +82,7 @@ class SettingController extends Controller
         $user = User::where('remember_token' , $token)->first();
         if(!$user){
             // return 404 error
-            return response()->json(['error' => 'Invalid token'], 404);
+            return redirect()->route('error_404')->with('error', 'User Not Found!');
         }
         return view('settings.users.passowrdupdate', compact('user'));
     }
@@ -97,7 +97,7 @@ class SettingController extends Controller
 //        Mail::to($email)->send(new InviteMail($link , $user));
 
         if(!$response){
-            return redirect()->back()->with('error', 'User Not Found!');
+            return redirect()->route('error_404')->with('error', 'User Not Found!');
         }
 
         return redirect()->back()->with('success', 'reset link sent successfully!');
@@ -132,6 +132,11 @@ class SettingController extends Controller
     public function error_404()
     {
         return view('errors.404');
+    }
+
+    public function error_500()
+    {
+        return view('errors.500');
     }
 
 
