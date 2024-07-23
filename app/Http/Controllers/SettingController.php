@@ -32,9 +32,9 @@ class SettingController extends Controller
         return view('settings.users.index' , compact('users'));
     }
 
-    public function UserEdit($id)
+    public function UserEdit($id = null)
     {
-        $user = User::find($id);
+        $user = $id ? User::find($id) : new User();
         return view('settings.users.edit' , compact('user'));
     }
 
