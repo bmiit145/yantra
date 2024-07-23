@@ -81,7 +81,6 @@ class SettingController extends Controller
     {
         $user = User::where('remember_token' , $token)->first();
         if(!$user){
-            // return 404 error
             return response()->json(['error' => 'Invalid token'], 404);
         }
         return view('settings.users.passowrdupdate', compact('user'));
