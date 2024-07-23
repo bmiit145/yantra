@@ -1,9 +1,10 @@
 
 @extends('layout.header')
-@section('content')
+@section('head')
     @vite(['resources/css/settings.css' ,
             'resources/css/odoo/web.assets_web.css'
 ])
+    @endsection
 
     @section('title', 'Setting')
     @section('image_url', 'images/Settings.png')
@@ -12,8 +13,8 @@
         <li><a href="#">Users & Companies</a></li>
     @endsection
 
-
-
+@section('head_new_btn_link' , route('setting.user'))
+@section('content')
 <body>
     <section class="se_form_renderer">
         <div class="se_form_main_row">
@@ -173,7 +174,7 @@
                                                 <p class="o_form_label pt-3">Pending Invitations:</p>
                                                     @foreach($panddingUsers as $panndingUser)
                                                 <span>
-                                                    <a href="{{ route('setting.edit.blade.php' , [ 'id' => $panndingUser->id ]) }}" class="badge rounded-pill text-primary border border-primary o_web_settings_user">{{ $panndingUser->email }}</a>
+                                                    <a href="{{ route('setting.user' , [ 'id' => $panndingUser->id ]) }}" class="badge rounded-pill text-primary border border-primary o_web_settings_user">{{ $panndingUser->email }}</a>
                                                 </span>
                                                     @endforeach
                                             </div>

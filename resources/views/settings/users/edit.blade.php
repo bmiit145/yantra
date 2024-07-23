@@ -1,18 +1,20 @@
 @extends('layout.header')
-@section('content')
 
+@section('head')
     @vite([
         'resources/css/common/header.css',
        'resources/css/usercreat.css',
        'resources/css/odoo/web.assets_web.css',
     ])
-
+@endsection
     @section('title', 'Setting')
     @section('image_url', '/images/Settings.png')
     @section('navbar_menu')
         <li><a href="#">General Settings</a></li>
         <li><a href="#">Users & Companies</a></li>
     @endsection
+    @section('head_new_btn_link' , route('setting.user'))
+@section('content')
 
     <section class="new_leads_section">
         <div class="container-full">
