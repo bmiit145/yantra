@@ -13,7 +13,7 @@
 
             <div class="login_main_row">
                 <div class="imgcontainer">
-                    <img src="{{ asset('storage/logo/logo.png') }}" alt="Avatar" class="avatar">
+                    <img src="{{ asset('/images/logo.png') }}" alt="Avatar" class="avatar">
                     </div>
                 <h2 class="common_title">Login</h2>
                 <form action="{{ route('login') }}" method="post">

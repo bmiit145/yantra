@@ -128,6 +128,11 @@ class SettingController extends Controller
                         ->with('success', 'Password updated successfully.');
     }
 
+    public function error_404()
+    {
+        return view('errors.404');
+    }
+
 
 
 }

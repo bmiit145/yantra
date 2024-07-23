@@ -15,6 +15,7 @@ Route::middleware(['web'])->group(function () {
     Route::get('/showPassword/{token}', [SettingController::class, 'showPassword'])->name('login.showPassword');
     Route::post('/updatePassword', [SettingController::class, 'updatePassword'])->name('login.updatePassword');
     Route::get('/reset-password/{encEmail}' , [SettingController::class, 'resetPassword'])->name('reset.password');
+    Route::get('/404' , [SettingController::class, 'error_404'])->name('error_404');
 });
 
 Route::middleware(['auth'])->group(function () {
