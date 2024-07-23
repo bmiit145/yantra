@@ -14,6 +14,7 @@ Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
     Route::get('/showPassword/{token}', [SettingController::class, 'showPassword'])->name('login.showPassword');
     Route::post('/updatePassword', [SettingController::class, 'updatePassword'])->name('login.updatePassword');
+    Route::get('/reset-password/{encEmail}' , [SettingController::class, 'resetPassword'])->name('reset.password');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -43,4 +44,7 @@ Route::middleware(['auth'])->group(function () {
 
     // mail invite
     Route::post('/invitMail', [SettingController::class, 'invitMail'])->name('setting.invitMail');
+
+    // user update
+    Route::post('/user-update', [userController::class, 'userUpdate'])->name('user.update');
 });

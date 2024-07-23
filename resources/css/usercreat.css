@@ -272,11 +272,3 @@ input.company_input_info {
     font-size: 14px !important;
     font-weight: 500 !important;
 }
-/*================================*/
-.o_statusbar_buttons button,.o_statusbar_status button{
-    font-size: 12px !important;
-    background: #e7e9ed !important;
-    color: #1F2937 !important;
-    border: 0 !important;
-    font-weight: 600 !important;
-}

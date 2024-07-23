@@ -6246,59 +6246,59 @@ textarea.form-control-lg {
     filter: invert(1) grayscale(100%) brightness(200%);
 }
 
-.toast {
-    width: 320px;
-    max-width: 100%;
-    font-size: 0.875rem;
-    pointer-events: auto;
-    background-color: rgba(255, 255, 255, 0.7);
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    border-radius: 0;
-}
+/*.toast {*/
+/*    width: 320px;*/
+/*    max-width: 100%;*/
+/*    font-size: 0.875rem;*/
+/*    pointer-events: auto;*/
+/*    background-color: rgba(255, 255, 255, 0.7);*/
+/*    background-clip: padding-box;*/
+/*    border: 1px solid rgba(0, 0, 0, 0.1);*/
+/*    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);*/
+/*    border-radius: 0;*/
+/*}*/
 
-.toast.showing {
-    opacity: 0;
-}
+/*.toast.showing {*/
+/*    opacity: 0;*/
+/*}*/
 
-.toast:not(.show) {
-    display: none;
-}
+/*.toast:not(.show) {*/
+/*    display: none;*/
+/*}*/
 
-.toast-container {
-    width: max-content;
-    max-width: 100%;
-    pointer-events: none;
-}
+/*.toast-container {*/
+/*    width: max-content;*/
+/*    max-width: 100%;*/
+/*    pointer-events: none;*/
+/*}*/
 
-.toast-container > :not(:last-child) {
-    margin-bottom: 16px;
-}
+/*.toast-container > :not(:last-child) {*/
+/*    margin-bottom: 16px;*/
+/*}*/
 
-.toast-header {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1.5rem;
-    color: #5f636f;
-    background-color: rgba(255, 255, 255, 0.7);
-    background-clip: padding-box;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
+/*.toast-header {*/
+/*    display: -webkit-box;*/
+/*    display: -webkit-flex;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    padding: 0.5rem 1.5rem;*/
+/*    color: #5f636f;*/
+/*    background-color: rgba(255, 255, 255, 0.7);*/
+/*    background-clip: padding-box;*/
+/*    border-bottom: 1px solid rgba(0, 0, 0, 0.05);*/
+/*    border-top-left-radius: 0;*/
+/*    border-top-right-radius: 0;*/
+/*}*/
 
-.toast-header .btn-close {
-    margin-right: -0.75rem;
-    margin-left: 1.5rem;
-}
+/*.toast-header .btn-close {*/
+/*    margin-right: -0.75rem;*/
+/*    margin-left: 1.5rem;*/
+/*}*/
 
-.toast-body {
-    padding: 1.5rem;
-    word-wrap: break-word;
-}
+/*.toast-body {*/
+/*    padding: 1.5rem;*/
+/*    word-wrap: break-word;*/
+/*}*/
 
 .modal {
     position: fixed;

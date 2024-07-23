@@ -342,7 +342,7 @@ ul.top_right_navbar li a,.dropbtn {
 }
 
 img.crm_logo {
-    max-width: 30px;
+    max-width: 30px !important;
 }
 .crmtop_header {
     display: flex;

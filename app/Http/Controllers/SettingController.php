@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Models\User;
+use App\Services\EncryptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InviteMail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\PasswordResetHelper;
+
 
 class SettingController extends Controller
 {
@@ -43,22 +46,33 @@ class SettingController extends Controller
     public function invitMail(Request $request)
     {
         $email = $request->input('mail');
+
+        //check for email
+        $encEmail = EncryptionService::encrypt($email);
+
+        $exuser = User::where('email', $encEmail)->first();
+
+        if($exuser){
+            return redirect()->back()->with('error', 'User already Exits!');
+        }
+
         // dd($email);
         $name = strstr($email, '@', true);
-
         $user = new User;
         $user->email = $email;
-
         $user->name = $name;
         $user->role = 1;
-        $user->remember_token = Str::random(60);
         $user->save();
 
+        $response = PasswordResetHelper::sendResetPasswordLink($encEmail);
 
-        $link = route('login.showPassword', ['token' => $user->remember_token]);
+//        $link = route('login.showPassword', ['token' => $user->remember_token]);
 
+//        Mail::to($email)->send(new InviteMail($link , $user));
 
-        Mail::to($email)->send(new InviteMail($link , $user));
+        if(!$response){
+            return redirect()->back()->with('error', 'User Not Found!');
+        }
 
         return redirect()->back()->with('success', 'Invitation sent successfully!');
     }
@@ -67,6 +81,22 @@ class SettingController extends Controller
     {
         $user = User::where('remember_token' , $token)->first();
         return view('settings.users.passowrdupdate', compact('user'));
+    }
+
+    public function resetPassword($email){
+        $encEmail = EncryptionService::encrypt($email);
+
+        $response = PasswordResetHelper::sendResetPasswordLink($encEmail);
+
+//        $link = route('login.showPassword', ['token' => $user->remember_token]);
+
+//        Mail::to($email)->send(new InviteMail($link , $user));
+
+        if(!$response){
+            return redirect()->back()->with('error', 'User Not Found!');
+        }
+
+        return redirect()->back()->with('success', 'reset link sent successfully!');
     }
 
     public function updatePassword(Request $request)
@@ -87,6 +117,7 @@ class SettingController extends Controller
         $user->password = Hash::make($request->input('password'));
         $user->is_confirmed = true;
         $user->remember_token = null;
+        $user->email_verified_at = now();
         $user->update();
 
         // Redirect to showPassword route with token
