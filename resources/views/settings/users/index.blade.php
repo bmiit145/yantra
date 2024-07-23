@@ -97,7 +97,7 @@
             }
             var data = UserDataTable.row(this).data();
             var userId = data.id;
-            var url = '{{ route("setting.edit.blade.php", ":id") }}';
+            var url = '{{ route("setting.user", ":id") }}';
             url = url.replace(':id', userId);
             window.location.href = url;
         });
