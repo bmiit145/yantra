@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\FailedAttempt;
 use App\Models\User;
+use App\Services\ConfigService;
 use App\Services\EncryptionService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +16,17 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    protected $maxAttempts = 3; // Max failed attempts
-    protected $lockoutTime = 10; // Lockout time in minutes
+//    protected $maxAttempts = 3; // Max failed attempts
+//    protected $lockoutTime = 10; // Lockout time in minutes
+
+    protected $maxAttempts;
+    protected $lockoutTime;
+
+    public function __construct()
+    {
+        $this->maxAttempts = ConfigService::get('MAX_LOGIN_ATTEMPTS', 3);
+        $this->lockoutTime = ConfigService::get('LOCKOUT_TIME', 10);
+    }
 
     public function  loginPage()
     {
