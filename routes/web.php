@@ -7,6 +7,7 @@ use App\Http\Controllers\CRMController;
 use App\Http\Controllers\LeadController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ContactController;
 
 
 Route::middleware(['web'])->group(function () {
@@ -32,6 +33,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/crmview', [CRMController::class, 'index'])->name('crm.index');
     Route::post('/crmvstore', [CRMController::class, 'store'])->name('crm.store');
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
+
+    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');
