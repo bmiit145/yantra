@@ -100,6 +100,7 @@
                 <div class="new_btn_info">
                     <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
                 </div>
+                
 
                 <div class="head_breadcrumb_info">
                     <p class="head_breadcrumb_title">Pipeline</p>
@@ -114,6 +115,7 @@
                             </g>
                         </svg></a>
                 </div>
+                <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" style="position: relative;" title=""><i class="fa fa-cloud-upload fa-fw"></i></button>
             </div>
             <div class="crm_head_centerside">
 
