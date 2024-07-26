@@ -35,7 +35,6 @@
                         {{ session('success') }}
                     </div>
                 @endif
-
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <div class="form_inner">
