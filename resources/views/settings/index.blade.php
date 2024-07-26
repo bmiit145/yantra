@@ -59,7 +59,7 @@
                                                 <p class="o_form_label pt-3">Pending Invitations:</p>
                                                     @foreach($panddingUsers as $panndingUser)
                                                 <span>
-                                                    <a href="{{ route('setting.user' , [ 'id' => $panndingUser->id ]) }}" class="badge rounded-pill text-primary border border-primary o_web_settings_user">{{ $panndingUser->email }}</a>
+                                                    <a href="{{ route('setting.user' , [ 'id' => $panndingUser->id ]) }}" class="badge rounded-pill text-primary border border-primary o_web_settings_user mb-1">{{ $panndingUser->email }}</a>
                                                 </span>
                                                     @endforeach
                                             </div>
@@ -110,7 +110,5 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-
 
 @endsection
