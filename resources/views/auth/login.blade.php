@@ -5,6 +5,19 @@
     @vite('resources/css/login.css')
 </head>
 <body>
+    <style>
+        .send_otp {
+    background-color: #00A5A8;
+    color: #fff;
+    padding: 12px 20px;
+    margin: 0 0 15px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    line-height: 1.2;
+}
+    </style>
 
 
 <section class="login_page_info">
@@ -45,7 +58,7 @@
                     <input type="password" placeholder="Enter Password" name="password" required>
                     <div style="display: flex">
                         <input type="text" placeholder="Enter OTP" name="otp" required>
-                        <button class="common_btn send_otp" type="button" style="width: 27%">Send OTP</button>
+                        <button class=" send_otp" type="button" style="width: 27%">Send OTP</button>
                     </div>
                    
 
@@ -60,6 +73,49 @@
         </div>
     </div>
 </section>
+<script>
+    $(document).ready(function(){
+        $('.send_otp . ').click(function(){
+            $email = $('#email').val();
+      
+            $.ajax({
+                url: '{{ route('sendOTP') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    email: email
+                },
+                success: function(response){
+                         console.log(response);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    // Close alert box when the close button is clicked
+    document.addEventListener('DOMContentLoaded', function() {
+        var closeButtons = document.querySelectorAll('.alert .close');
+        closeButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var alertBox = this.parentElement;
+                alertBox.style.display = 'none';
+            });
+        });
+    });
+
+    // reset btn click as take a email input and set a href as /reset-password/{encEmail}
+    document.querySelector('.form_inner_bottom a').addEventListener('click', function(e) {
+        e.preventDefault();
+        var email = document.querySelector('input[name="email"]').value;
+        if (email) {
+            window.location.href = '/reset-password/' + email;
+        }else{
+            alert('Please enter email address');
+        }
+    });
+</script>
 
 </body>
 </html>

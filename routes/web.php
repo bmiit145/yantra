@@ -13,6 +13,7 @@ use App\Http\Controllers\ContactController;
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login')->name('login');
+    Route::post('/sendOTP', [AuthController::class, 'sendOTP'])->name('sendOTP');
     Route::get('/showPassword/{token}', [SettingController::class, 'showPassword'])->name('login.showPassword');
     Route::post('/updatePassword', [SettingController::class, 'updatePassword'])->name('login.updatePassword');
     Route::get('/reset-password/{encEmail}' , [SettingController::class, 'resetPassword'])->name('reset.password');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FailedAttempt;
 use App\Models\LoginActivity;
 use App\Models\User;
+use App\Models\OTPverifiction;
 use App\Services\ConfigService;
 use App\Services\EncryptionService;
 use Illuminate\Support\Carbon;
@@ -117,6 +118,16 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
+    }
+
+    public function sendOTP(Request $request)
+    {
+        $email = $request->email;
+        $otp = new OTPverifiction;
+        $otp->ip = $request->ip();;
+        $otp->OTP = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $otp->save();
+        return response()->json($otp);
     }
 
     public function logout(){
