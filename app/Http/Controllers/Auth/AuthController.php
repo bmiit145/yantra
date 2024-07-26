@@ -107,12 +107,19 @@ class AuthController extends Controller
             $user->last_login_ip = $request->ip();
             $user->save();
 
+            $this->recordLoginActivity($request , $user , '1');
             FailedAttempt::where('email', $email)->delete();
 
             return redirect()->intended('dashboard');
         }
 
         $this->recordFailedAttempt($email);
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            $this->recordLoginActivity($request , $user , '0');
+        }else{
+            $this->recordLoginActivity($request , null , '0');
+        }
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -152,15 +159,15 @@ class AuthController extends Controller
         }
     }
 
-    protected function recordLoginActivity($user , $status)
+    protected function recordLoginActivity($request ,  $user = null , $status)
     {
         $agent = new Agent();
 
         // add details to login activity table
         $loginAct =  new LoginActivity();
-        $loginAct->user_id = $user->id;
-        $loginAct->ip = request()->ip();
-        $loginAct->user_agent = request()->userAgent();
+        $loginAct->user_id = $user->id ?? null;
+        $loginAct->ip = $request->ip();
+        $loginAct->user_agent = $request->userAgent();
         $loginAct->login_at = now();
         $loginAct->status = $status;
         $loginAct->device = $agent->device();
@@ -168,8 +175,8 @@ class AuthController extends Controller
         $loginAct->platform = $agent->platform();
 
         // Get geolocation data from ip-api
-        $location = $this->getGeolocation(request()->ip());
-        if ($location) {
+        $location = $this->getGeolocation($request->ip());
+        if ($location->status === 'success') {
             $loginAct->location = $location->lat . ',' . $location->lon;
             $loginAct->country = $location->country;
             $loginAct->state = $location->regionName;
