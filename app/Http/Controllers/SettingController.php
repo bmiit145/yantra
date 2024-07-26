@@ -88,6 +88,11 @@ class SettingController extends Controller
     }
 
     public function resetPassword($email){
+
+        if (!$email) {
+            return back()->with('error', 'Invalid Email.');
+        }
+
         $encEmail = EncryptionService::encrypt($email);
 
         $response = PasswordResetHelper::sendResetPasswordLink($encEmail);
@@ -138,7 +143,5 @@ class SettingController extends Controller
     {
         return view('errors.500');
     }
-
-
 
 }
