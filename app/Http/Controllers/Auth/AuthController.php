@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\FailedAttempt;
+use App\Models\LoginActivity;
 use App\Models\User;
 use App\Services\ConfigService;
 use App\Services\EncryptionService;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Agent;
 
 class AuthController extends Controller
 {
@@ -117,6 +119,12 @@ class AuthController extends Controller
         ]);
     }
 
+    public function logout(){
+        Auth::logout();
+        return redirect()->route('login');
+    }
+
+
     protected function recordFailedAttempt($email)
     {
         $failedAttempt = FailedAttempt::where('email', $email)->first();
@@ -144,8 +152,52 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(){
-        Auth::logout();
-        return redirect()->route('login');
+    protected function recordLoginActivity($user , $status)
+    {
+        $agent = new Agent();
+
+        // add details to login activity table
+        $loginAct =  new LoginActivity();
+        $loginAct->user_id = $user->id;
+        $loginAct->ip = request()->ip();
+        $loginAct->user_agent = request()->userAgent();
+        $loginAct->login_at = now();
+        $loginAct->status = $status;
+        $loginAct->device = $agent->device();
+        $loginAct->browser = $agent->browser();
+        $loginAct->platform = $agent->platform();
+
+        // Get geolocation data from ip-api
+        $location = $this->getGeolocation(request()->ip());
+        if ($location) {
+            $loginAct->location = $location->lat . ',' . $location->lon;
+            $loginAct->country = $location->country;
+            $loginAct->state = $location->regionName;
+            $loginAct->city = $location->city;
+            $loginAct->postal_code = $location->zip;
+        } else {
+            $loginAct->location = null;
+            $loginAct->country = null;
+            $loginAct->state = null;
+            $loginAct->city = null;
+            $loginAct->postal_code = null;
+        }
+
+        $loginAct->save();
     }
+
+
+
+    protected function getGeolocation($ipAddress)
+    {
+        $url = "http://ip-api.com/json/{$ipAddress}";
+        $response = file_get_contents($url);
+
+        if ($response === FALSE) {
+            return null; // Handle error appropriately
+        }
+
+        return json_decode($response);
+    }
+
 }
