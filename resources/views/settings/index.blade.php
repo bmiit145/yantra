@@ -59,7 +59,7 @@
                                                 <p class="o_form_label pt-3">Pending Invitations:</p>
                                                     @foreach($panddingUsers as $panndingUser)
                                                 <span>
-                                                    <a href="{{ route('setting.user' , [ 'id' => $panndingUser->id ]) }}" class="badge rounded-pill text-primary border border-primary o_web_settings_user">{{ $panndingUser->email }}</a>
+                                                    <a href="{{ route('setting.user' , [ 'id' => $panndingUser->id ]) }}" class="badge rounded-pill text-primary border border-primary o_web_settings_user mb-2">{{ $panndingUser->email }}</a>
                                                 </span>
                                                     @endforeach
                                             </div>
