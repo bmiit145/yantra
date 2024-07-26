@@ -20,10 +20,15 @@
                     @csrf
                     <div class="form_inner">
                     <label for="uname">Email</label>
-                    <input type="email" placeholder="Email" name="email">
+                    <input type="email" placeholder="Email" name="email" required id="email">
 
                     <label for="psw">Password</label>
                     <input type="password" placeholder="Enter Password" name="password" required>
+                    <div style="display: flex">
+                        <input type="text" placeholder="Enter OTP" name="otp" required>
+                        <button class="common_btn send_otp" type="button" style="width: 27%">Send OTP</button>
+                    </div>
+                   
 
                     <button class="common_btn" type="submit">Login</button>
 
@@ -37,6 +42,24 @@
         </div>
     </div>
 </section>
-
+<script>
+    $(document).ready(function(){
+        $('.send_otp').click(function(){
+            $email = $('#email').val();
+      
+            $.ajax({
+                url: '{{ route('forecasting') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    email: email
+                },
+                success: function(response){
+                         console.log(response);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -57,6 +57,11 @@ class ContactController extends Controller
        $address->state = $address_state;
        $address->country = $country;
        $address->save();
+    
+       $id = $data->id;
+       $data = Contact::find($id);
+       $data->address_id = $address->id;
+       $data->update();
 
        return response()->json($data);
         
