@@ -131,7 +131,7 @@
                         </a>
                     </div>
                     <div class="main_inner_block" id="box5">
-                        <a role="option" class="main_inner_wrapper" id="result_app_5" aria-selected="false"
+                        <a  href="{{ route('contact.index') }}" role="option" class="main_inner_wrapper" id="result_app_5" aria-selected="false"
                             data-menu-xmlid="contacts.menu_contacts" href="#">
                             <img class="home_app_icon" src="{{ asset('images/Contacts.png') }}">
                             <div class="home_caption">Contacts</div>
