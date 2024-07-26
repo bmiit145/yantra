@@ -28,10 +28,18 @@
                     </div>
                 @endif
 
+{{--                 Display success Message --}}
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        <button type="button" class="close" aria-label="Close">&times;</button>
+                        {{ session('success') }}
+                    </div>
+                @endif
+
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <div class="form_inner">
-                    <label for="uname">Email</label>
+                    <label for="email">Email</label>
                     <input type="email" placeholder="Email" name="email" value="{{ old('email') }}">
 
                     <label for="psw">Password</label>
@@ -59,6 +67,17 @@
                 alertBox.style.display = 'none';
             });
         });
+    });
+
+    // reset btn click as take a email input and set a href as /reset-password/{encEmail}
+    document.querySelector('.form_inner_bottom a').addEventListener('click', function(e) {
+        e.preventDefault();
+        var email = document.querySelector('input[name="email"]').value;
+        if (email) {
+            window.location.href = '/reset-password/' + email;
+        }else{
+            alert('Please enter email address');
+        }
     });
 </script>
 
