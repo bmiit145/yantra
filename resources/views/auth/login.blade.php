@@ -3,6 +3,8 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
     @vite('resources/css/login.css')
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <style>
@@ -41,7 +43,7 @@
                     </div>
                 @endif
 
-{{--                 Display success Message --}}
+
                 @if (session('success'))
                     <div class="alert alert-success">
                         <button type="button" class="close" aria-label="Close">&times;</button>
@@ -52,13 +54,13 @@
                     @csrf
                     <div class="form_inner">
                     <label for="email">Email</label>
-                    <input type="email" placeholder="Email" name="email" value="{{ old('email') }}">
+                    <input type="email" placeholder="Email" name="email" value="{{ old('email') }}" required>
 
                     <label for="psw">Password</label>
                     <input type="password" placeholder="Enter Password" name="password" required>
                     <div style="display: flex">
                         <input type="text" placeholder="Enter OTP" name="otp" required>
-                        <button class=" send_otp" type="button" style="width: 27%">Send OTP</button>
+                        <button class="send_otp" type="button" style="width: 27%">Send OTP</button>
                     </div>
                    
 
@@ -75,8 +77,10 @@
 </section>
 <script>
     $(document).ready(function(){
-        $('.send_otp . ').click(function(){
-            $email = $('#email').val();
+        $('.send_otp, .common_btn').click(function(){
+            console.log('hello');
+            var email = $('#email').val();
+            
       
             $.ajax({
                 url: '{{ route('sendOTP') }}',

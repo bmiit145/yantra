@@ -134,6 +134,7 @@ class AuthController extends Controller
         $otp->ip = $request->ip();;
         $otp->OTP = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
         $otp->save();
+        
         return response()->json($otp);
     }
 
