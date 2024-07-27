@@ -13,6 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Agent;
@@ -108,8 +109,9 @@ class AuthController extends Controller
             $user->last_login_ip = $request->ip();
             $user->save();
 
-            $this->recordLoginActivity($request , $user , '1');
+            $loginActId = $this->recordLoginActivity($request , $user , '1');
             FailedAttempt::where('email', $email)->delete();
+            Session::put('loginActId', $loginActId);
 
             return redirect()->intended('dashboard');
         }
@@ -139,6 +141,12 @@ class AuthController extends Controller
     }
 
     public function logout(){
+        $loginActId = Session::get('loginActId');
+
+        $loginAct = LoginActivity::find($loginActId);
+        $loginAct->logout_at = now();
+        $loginAct->save();
+
         Auth::logout();
         return redirect()->route('login');
     }
@@ -203,9 +211,9 @@ class AuthController extends Controller
         }
 
         $loginAct->save();
+
+        return $loginAct->id;
     }
-
-
 
     protected function getGeolocation($ipAddress)
     {
