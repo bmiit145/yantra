@@ -14,53 +14,54 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $arrPermission = [
-            [
-                'name' => 'manage users',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'create user',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'edit user',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'delete user',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'manage role',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'create role',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'edit role',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'delete role',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'manage permission',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'manage crm',
-                'guard_name' => 'web',
-            ],
-            [
-                'name' => 'manage lead',
-                'guard_name' => 'web',
-            ]
-        ];
+//        $arrPermission = [
+//            [
+//                'name' => 'manage users',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'create user',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'edit user',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'delete user',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'manage role',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'create role',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'edit role',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'delete role',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'manage permission',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'manage crm',
+//                'guard_name' => 'web',
+//            ],
+//            [
+//                'name' => 'manage lead',
+//                'guard_name' => 'web',
+//            ]
+//        ];
 
+        $arrPermission = config('rolePermissions.permissions');
         // create if not exists
         foreach ($arrPermission as $permission) {
             Permission::firstOrCreate(
