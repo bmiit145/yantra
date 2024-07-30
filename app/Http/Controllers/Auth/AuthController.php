@@ -85,16 +85,23 @@ class AuthController extends Controller
         }
 
         $email = EncryptionService::encrypt($request->input('email'));
+        $otp = $request->input('otp');
         $credentials = [
             'email' => $email,
             'password' => $request->input('password'),
         ];
+        $validOtp = OTPverifiction::where('ip', $request->ip())->where('otp', $otp)->first();
+        if (!$validOtp) {
+            return redirect()->back()->withErrors(['otp' => 'Invalid OTP'])->withInput();
+        }
+        
+
 
         $failedAttempt = FailedAttempt::where('email', $email)->first();
 
         if ($failedAttempt && $failedAttempt->locked_until && Carbon::now()->lt(Carbon::parse($failedAttempt->locked_until))) {
-//            $minutesLeft = (Carbon::now()->diffInMinutes(Carbon::parse($failedAttempt->locked_until)));
-//            return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $minutesLeft minutes."]);
+            //            $minutesLeft = (Carbon::now()->diffInMinutes(Carbon::parse($failedAttempt->locked_until)));
+            //            return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $minutesLeft minutes."]);
 
             $lockoutTime = Carbon::parse($failedAttempt->locked_until)->diffForHumans(null, true, false);
             return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $lockoutTime."]);
@@ -108,6 +115,9 @@ class AuthController extends Controller
             $user->last_login_at = now();
             $user->last_login_ip = $request->ip();
             $user->save();
+
+            OTPverifiction::where('ip', $request->ip())->delete();
+            
 
             $loginActId = $this->recordLoginActivity($request , $user , '1');
             FailedAttempt::where('email', $email)->delete();

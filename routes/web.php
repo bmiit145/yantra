@@ -39,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
     Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
+    Route::post('/contact-save', [ContactController::class, 'save'])->name('contact.save');
 
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');

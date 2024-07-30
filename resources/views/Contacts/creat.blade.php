@@ -48,7 +48,7 @@
                                         class="o_field_widget o_required_modifier o_field_field_partner_autocomplete text-break o_field_invalid">
                                         <div class="o-autocomplete dropdown">
                                             <input type="text"
-                                                class="o-autocomplete--input o_input" autocomplete="off" role="combobox" name="contact_name"
+                                                class="o-autocomplete--input o_input" autocomplete="off" role="combobox" name="contact_name" id="contact_name"
                                                 aria-autocomplete="list" aria-haspopup="listbox"
                                                 placeholder="e.g. Lumber Inc" aria-expanded="false"></div>
                                     </div>
@@ -65,18 +65,18 @@
                                             <div class="o_address_format">
                                                 <div name="street"
                                                     class="o_field_widget o_field_char o_address_street"><input
-                                                        class="o_input" id="street_0" type="text" autocomplete="off" name="address_1"
+                                                        class="o_input" type="text" autocomplete="off" name="address_1" id="address_1"
                                                         placeholder="Street..."></div>
                                                 <div name="street2"
                                                     class="o_field_widget o_field_char o_address_street"><input
-                                                        class="o_input" id="street2_0" type="text" autocomplete="off" name="address_2"
+                                                        class="o_input"  type="text" autocomplete="off" name="address_2" id="address_2"
                                                         placeholder="Street 2..."></div>
                                                 <div name="city" class="o_field_widget o_field_char o_address_city">
-                                                    <input class="o_input" id="city_0" type="text" name="address_city"
+                                                    <input class="o_input"  type="text" name="address_city" id="address_city"
                                                         autocomplete="off" placeholder="City">
                                                 </div>
                                                 <div name="zip" class="o_field_widget o_field_char o_address_zip">
-                                                    <input class="o_input" id="zip_0" type="text" name="address_zip"
+                                                    <input class="o_input" type="text" name="address_zip" id="address_zip" 
                                                         autocomplete="off" placeholder="ZIP">
                                                 </div>
                                                 <div name="state_id"
@@ -84,10 +84,10 @@
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input" name="address_state"
+                                                                    class="o-autocomplete--input o_input" name="address_state" id="address_state"
                                                                     autocomplete="off" role="combobox"
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="state_id_0" placeholder="State"
+                                                                    placeholder="State"
                                                                     aria-expanded="false">
                                                             </div><span class="o_dropdown_button"></span>
                                                         </div>
@@ -105,7 +105,7 @@
                                                                         class="o-autocomplete--input o_input"
                                                                         autocomplete="off" role="combobox"
                                                                         aria-autocomplete="list" name="country"
-                                                                        aria-haspopup="listbox" id="country_id_0"
+                                                                        aria-haspopup="listbox" id="country"
                                                                         placeholder="Country" aria-expanded="false">
                                                                 </div><span class="o_dropdown_button"></span>
                                                             </div>
@@ -125,7 +125,7 @@
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
                                             <div name="l10n_in_gst_treatment"
-                                                class="o_field_widget o_field_selection"><select class="o_input pe-3" name="gst_treatment"
+                                                class="o_field_widget o_field_selection"><select class="o_input pe-3" name="gst_treatment" id="gst_treatment"
                                                     id="l10n_in_gst_treatment_0">
                                                     <option value="false" style=""></option>
                                                     <option value="&quot;regular&quot;">Registered Business -
@@ -154,8 +154,8 @@
                                             <div name="vat_vies_container">
                                                 <div name="vat"
                                                     class="o_field_widget o_field_field_partner_autocomplete oe_inline">
-                                                    <div class="o-autocomplete dropdown"><input type="text" name="gstin"
-                                                            class="o-autocomplete--input o_input" autocomplete="off"
+                                                    <div class="o-autocomplete dropdown"><input type="text" name="gstin" id="gstin"
+                                                            class="o-autocomplete--input o_input" autocomplete="off" 
                                                             role="combobox" aria-autocomplete="list"
                                                             aria-haspopup="listbox" placeholder="e.g. BE0477472701"
                                                             aria-expanded="false">
@@ -175,7 +175,7 @@
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
                                             <div name="l10n_in_pan" class="o_field_widget o_field_char"><input
-                                                    class="o_input" id="l10n_in_pan_0" type="text" name="pan_number"
+                                                    class="o_input" type="text" name="pan_number" id="pan_number"
                                                     autocomplete="off" placeholder="e.g. ABCTY1234D"></div>
                                         </div>
                                     </div>
@@ -189,8 +189,8 @@
                                             <div class="o_row o_row_readonly">
                                                 <div name="phone" class="o_field_widget o_field_phone">
                                                     <div class="o_phone_content d-inline-flex w-100"><input
-                                                            class="o_input" type="tel" autocomplete="off" name="phone_number"
-                                                            id="phone_0"></div>
+                                                            class="o_input" type="tel" autocomplete="off" name="phone_number" id="phone_number"
+                                                            ></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -203,8 +203,8 @@
                                             <div class="o_row o_row_readonly">
                                                 <div name="mobile" class="o_field_widget o_field_phone">
                                                     <div class="o_phone_content d-inline-flex w-100"><input
-                                                            class="o_input" type="tel" autocomplete="off" name="mobile_number"
-                                                            id="mobile_0"></div>
+                                                            class="o_input" type="tel" autocomplete="off" name="mobile_number" id="mobile_number"
+                                                            ></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -216,8 +216,8 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="email" class="o_field_widget o_field_email">
-                                                    <div class="d-inline-flex w-100"><input class="o_input" name="contact_email"
-                                                            type="email" autocomplete="off" id="email_0">
+                                                    <div class="d-inline-flex w-100"><input class="o_input" name="contact_email" id="contact_email"
+                                                            type="email" autocomplete="off" >
                                                     </div>
                                                 </div>
                                             </div>
@@ -231,8 +231,8 @@
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
                                             <div name="website" class="o_field_widget o_field_url">
-                                                <div class="d-inline-flex w-100"><input class="o_input" name="contact_Website"
-                                                        type="text" autocomplete="off" id="website_0"
+                                                <div class="d-inline-flex w-100"><input class="o_input" name="contact_Website" id="contact_Website"
+                                                        type="text" autocomplete="off" 
                                                         placeholder="e.g. https://www.odoo.com"></div>
                                             </div>
                                         </div>
@@ -250,10 +250,10 @@
                                                     <div class="o_field_many2many_selection d-inline-flex w-100">
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input" name="contact_tages"
+                                                                    class="o-autocomplete--input o_input" name="contact_tages" id="contact_tages"
                                                                     autocomplete="off" role="combobox"
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="category_id_0"
+                                                                  
                                                                     placeholder="e.g. &quot;B2B&quot;, &quot;VIP&quot;, &quot;Consulting&quot;, ..."
                                                                     aria-expanded="false"></div><span
                                                                 class="o_dropdown_button"></span>
@@ -1274,7 +1274,7 @@
                     </header>
                     <footer class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100"
                         style="order:2"><button class="btn btn-primary o_form_button_save" data-hotkey="c">Save
-                            &amp; Close</button><button class="btn btn-primary o_form_button_save_new"
+                            &amp; Close</button><button class="btn btn-primary o_form_button_save_new save_new_contact"
                             data-hotkey="n">Save &amp; New</button><button
                             class="btn btn-secondary o_form_button_cancel" data-hotkey="j">Discard</button></footer>
                     <main class="modal-body p-0">
@@ -1284,7 +1284,7 @@
                                     <div name="type" class="o_field_widget o_required_modifier o_field_radio">
                                         <div role="radiogroup" class="o_horizontal" aria-label="Address Type">
                                             <div class="form-check o_radio_item" aria-atomic="true"><input
-                                                type="radio" class="form-check-input o_radio_input"
+                                                type="radio" class="form-check-input o_radio_input" value="1"
                                                 name="radio_field_2" data-value="other" data-index="4" 
                                                 id="radio_field_2_other"><label
                                                 class="form-check-label o_form_label"
@@ -1292,26 +1292,26 @@
                                     
                                             <div class="form-check o_radio_item" aria-atomic="true"><input
                                                     type="radio" class="form-check-input o_radio_input"
-                                                    name="radio_field_2" data-value="invoice" data-index="1"
+                                                    name="radio_field_2" data-value="invoice" data-index="1" value="2" name="creat_contact"
                                                     id="radio_field_2_invoice"><label
                                                     class="form-check-label o_form_label"
                                                     for="radio_field_2_invoice">Invoice Address</label></div>
                                             <div class="form-check o_radio_item" aria-atomic="true"><input
                                                     type="radio" class="form-check-input o_radio_input"
-                                                    name="radio_field_2" data-value="delivery" data-index="2"
+                                                    name="radio_field_2" data-value="delivery" data-index="2" value="3" name="creat_contact"
                                                     id="radio_field_2_delivery"><label
                                                     class="form-check-label o_form_label"
                                                     for="radio_field_2_delivery">Delivery Address</label></div>
                                             <div class="form-check o_radio_item" aria-atomic="true"><input
                                                     type="radio" class="form-check-input o_radio_input"
-                                                    name="radio_field_2" data-value="followup" data-index="3"
+                                                    name="radio_field_2" data-value="followup" data-index="3" value="4" name="creat_contact"
                                                     id="radio_field_2_followup"><label
                                                     class="form-check-label o_form_label"
                                                     for="radio_field_2_followup">Follow-up Address</label></div>
                                  
                                                     <div class="form-check o_radio_item" aria-atomic="true"><input checked
                                                         type="radio" class="form-check-input o_radio_input"
-                                                        name="radio_field_2" data-value="contact" data-index="0"
+                                                        name="radio_field_2" data-value="contact" data-index="0" value="5" name="creat_contact"
                                                         id="radio_field_2_contact"><label
                                                         class="form-check-label o_form_label"
                                                         for="radio_field_2_contact">Other Address</label></div>
@@ -1417,386 +1417,7 @@
                                             </div>
                                         </div>
                                     </div> 
-                                    <div class="o_group row align-items-start invoice_address_show" style="display: none"> 
-                                        <div class="o_inner_group grid col-lg-6">
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="name_0">Contact Name</label>
-                                                </div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="name"
-                                                        class="o_field_widget o_field_field_partner_autocomplete">
-                                                        <input class="o_input" id="name_0" type="text"
-                                                            autocomplete="off" placeholder="e.g. New Address">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                    style=""><label class="o_form_label"
-                                                        for="street_0">Address</label></div>
-                                                <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                    <div>
-                                                        <div class="o_address_format" name="div_address">
-                                                            <div name="street"
-                                                                class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="Street...">
-                                                            </div>
-                                                            <div name="street2"
-                                                                class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street2_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="Street 2...">
-                                                            </div>
-                                                            <div name="city"
-                                                                class="o_field_widget o_field_char o_address_city">
-                                                                <input class="o_input" id="city_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="City">
-                                                            </div>
-                                                            <div name="zip"
-                                                                class="o_field_widget o_field_char o_address_zip">
-                                                                <input class="o_input" id="zip_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="ZIP">
-                                                            </div>
-                                                            <div name="state_id"
-                                                                class="o_field_widget o_field_many2one o_address_state">
-                                                                <div class="o_field_many2one_selection">
-                                                                    <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
-                                                                                type="text"
-                                                                                class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
-                                                                                aria-autocomplete="list"
-                                                                                aria-haspopup="listbox"
-                                                                                id="state_id_0" placeholder="State"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="o_field_many2one_extra"></div>
-                                                            </div>
-                                                            <div name="country_id"
-                                                                class="o_field_widget o_field_many2one o_address_country">
-                                                                <div class="o_field_many2one_selection">
-                                                                    <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
-                                                                                type="text"
-                                                                                class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
-                                                                                aria-autocomplete="list"
-                                                                                aria-haspopup="listbox"
-                                                                                id="country_id_0"
-                                                                                placeholder="Country"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="o_field_many2one_extra"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_inner_group grid col-lg-6">
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="email_0">Email</label>
-                                                </div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="email" class="o_field_widget o_field_email">
-                                                        <div class="d-inline-flex w-100"><input class="o_input"
-                                                                type="email" autocomplete="off" id="email_0">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="phone_0">Phone</label>
-                                                </div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="phone" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="phone_0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="mobile_0">Mobile</label>
-                                                </div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="mobile" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="mobile_0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_group row align-items-start delivery_address_show" style="display:none">
-                                        <div class="o_inner_group grid col-lg-6">
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="name_0">Contact Name</label>
-                                                </div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="name"
-                                                        class="o_field_widget o_field_field_partner_autocomplete">
-                                                        <input class="o_input" id="name_0" type="text"
-                                                            autocomplete="off" placeholder="e.g. New Address"></div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                    style=""><label class="o_form_label"
-                                                        for="street_0">Address</label></div>
-                                                <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                    <div>
-                                                        <div class="o_address_format" name="div_address">
-                                                            <div name="street"
-                                                                class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="Street..."></div>
-                                                            <div name="street2"
-                                                                class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street2_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="Street 2..."></div>
-                                                            <div name="city"
-                                                                class="o_field_widget o_field_char o_address_city">
-                                                                <input class="o_input" i    d="city_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="City"></div>
-                                                            <div name="zip"
-                                                                class="o_field_widget o_field_char o_address_zip">
-                                                                <input class="o_input" id="zip_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="ZIP"></div>
-                                                            <div name="state_id"
-                                                                class="o_field_widget o_field_many2one o_address_state">
-                                                                <div class="o_field_many2one_selection">
-                                                                    <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
-                                                                                type="text"
-                                                                                class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
-                                                                                aria-autocomplete="list"
-                                                                                aria-haspopup="listbox"
-                                                                                id="state_id_0" placeholder="State"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="o_field_many2one_extra"></div>
-                                                            </div>
-                                                            <div name="country_id"
-                                                                class="o_field_widget o_field_many2one o_address_country">
-                                                                <div class="o_field_many2one_selection">
-                                                                    <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
-                                                                                type="text"
-                                                                                class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
-                                                                                aria-autocomplete="list"
-                                                                                aria-haspopup="listbox"
-                                                                                id="country_id_0"
-                                                                                placeholder="Country"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="o_field_many2one_extra"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_inner_group grid col-lg-6">
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="email_0">Email</label></div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="email" class="o_field_widget o_field_email">
-                                                        <div class="d-inline-flex w-100"><input class="o_input"
-                                                                type="email" autocomplete="off" id="email_0">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="phone_0">Phone</label></div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="phone" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="phone_0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="mobile_0">Mobile</label></div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="mobile" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="mobile_0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_group row align-items-start follow_up_address_show" style="display: none">
-                                        <div class="o_inner_group grid col-lg-6">
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="name_0">Contact Name</label>
-                                                </div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="name"
-                                                        class="o_field_widget o_field_field_partner_autocomplete">
-                                                        <input class="o_input" id="name_0" type="text"
-                                                            autocomplete="off" placeholder="e.g. New Address"></div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                    style=""><label class="o_form_label"
-                                                        for="street_0">Address</label></div>
-                                                <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                    <div>
-                                                        <div class="o_address_format" name="div_address">
-                                                            <div name="street"
-                                                                class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="Street..."></div>
-                                                            <div name="street2"
-                                                                class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street2_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="Street 2..."></div>
-                                                            <div name="city"
-                                                                class="o_field_widget o_field_char o_address_city">
-                                                                <input class="o_input" id="city_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="City"></div>
-                                                            <div name="zip"
-                                                                class="o_field_widget o_field_char o_address_zip">
-                                                                <input class="o_input" id="zip_0"
-                                                                    type="text" autocomplete="off"
-                                                                    placeholder="ZIP"></div>
-                                                            <div name="state_id"
-                                                                class="o_field_widget o_field_many2one o_address_state">
-                                                                <div class="o_field_many2one_selection">
-                                                                    <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
-                                                                                type="text"
-                                                                                class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
-                                                                                aria-autocomplete="list"
-                                                                                aria-haspopup="listbox"
-                                                                                id="state_id_0" placeholder="State"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="o_field_many2one_extra"></div>
-                                                            </div>
-                                                            <div name="country_id"
-                                                                class="o_field_widget o_field_many2one o_address_country">
-                                                                <div class="o_field_many2one_selection">
-                                                                    <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
-                                                                                type="text"
-                                                                                class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
-                                                                                aria-autocomplete="list"
-                                                                                aria-haspopup="listbox"
-                                                                                id="country_id_0"
-                                                                                placeholder="Country"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="o_field_many2one_extra"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_inner_group grid col-lg-6">
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="email_0">Email</label></div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="email" class="o_field_widget o_field_email">
-                                                        <div class="d-inline-flex w-100"><input class="o_input"
-                                                                type="email" autocomplete="off" id="email_0">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="phone_0">Phone</label></div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="phone" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="phone_0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                <div
-                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                    <label class="o_form_label" for="mobile_0">Mobile</label></div>
-                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                    style="width: 100%;">
-                                                    <div name="mobile" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="mobile_0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                  
                                     <div class="o_group row align-items-start contact_show" >
                                         <div class="o_inner_group grid col-lg-6">
                                             <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
@@ -1808,7 +1429,7 @@
                                                     style="width: 100%;">
                                                     <div name="name"
                                                         class="o_field_widget o_field_field_partner_autocomplete">
-                                                        <input class="o_input" id="name_0" type="text"
+                                                        <input class="o_input" id="parent_name" type="text" name="parent_name"
                                                             autocomplete="off" placeholder="e.g. New Address"></div>
                                                 </div>
                                             </div>
@@ -1821,22 +1442,22 @@
                                                         <div class="o_address_format" name="div_address">
                                                             <div name="street"
                                                                 class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street_0"
+                                                                <input class="o_input" id="parent_address_1" name="parent_address_1"
                                                                     type="text" autocomplete="off"
                                                                     placeholder="Street..."></div>
                                                             <div name="street2"
                                                                 class="o_field_widget o_field_char o_address_street">
-                                                                <input class="o_input" id="street2_0"
+                                                                <input class="o_input" id="parent_address_2"  name="parent_address_2"
                                                                     type="text" autocomplete="off"
                                                                     placeholder="Street 2..."></div>
                                                             <div name="city"
                                                                 class="o_field_widget o_field_char o_address_city">
-                                                                <input class="o_input" id="city_0"
+                                                                <input class="o_input" id="parent_city" name="parent_city"
                                                                     type="text" autocomplete="off"
                                                                     placeholder="City"></div>
                                                             <div name="zip"
                                                                 class="o_field_widget o_field_char o_address_zip">
-                                                                <input class="o_input" id="zip_0"
+                                                                <input class="o_input" id="parent_zip" name="parent_zip"
                                                                     type="text" autocomplete="off"
                                                                     placeholder="ZIP"></div>
                                                             <div name="state_id"
@@ -1846,10 +1467,10 @@
                                                                         <div class="o-autocomplete dropdown"><input
                                                                                 type="text"
                                                                                 class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
+                                                                                autocomplete="off" role="combobox" name="parent_state"
                                                                                 aria-autocomplete="list"
                                                                                 aria-haspopup="listbox"
-                                                                                id="state_id_0" placeholder="State"
+                                                                                id="parent_state" placeholder="State"
                                                                                 aria-expanded="false"></div><span
                                                                             class="o_dropdown_button"></span>
                                                                     </div>
@@ -1863,10 +1484,10 @@
                                                                         <div class="o-autocomplete dropdown"><input
                                                                                 type="text"
                                                                                 class="o-autocomplete--input o_input"
-                                                                                autocomplete="off" role="combobox"
+                                                                                autocomplete="off" role="combobox" name="parent_country"
                                                                                 aria-autocomplete="list"
                                                                                 aria-haspopup="listbox"
-                                                                                id="country_id_0"
+                                                                                id="parent_country"
                                                                                 placeholder="Country"
                                                                                 aria-expanded="false"></div><span
                                                                             class="o_dropdown_button"></span>
@@ -1887,8 +1508,8 @@
                                                 <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                     style="width: 100%;">
                                                     <div name="email" class="o_field_widget o_field_email">
-                                                        <div class="d-inline-flex w-100"><input class="o_input"
-                                                                type="email" autocomplete="off" id="email_0">
+                                                        <div class="d-inline-flex w-100"><input class="o_input" name="parent_email"
+                                                                type="email" autocomplete="off" id="parent_email">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1900,9 +1521,9 @@
                                                 <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                     style="width: 100%;">
                                                     <div name="phone" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="phone_0"></div>
+                                                        <div class="o_phone_content d-inline-flex w-100"><input 
+                                                                class="o_input" type="tel" autocomplete="off" name="parent_phone"
+                                                                id="parent_phone"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1914,8 +1535,8 @@
                                                     style="width: 100%;">
                                                     <div name="mobile" class="o_field_widget o_field_phone">
                                                         <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                id="mobile_0"></div>
+                                                                class="o_input" type="tel" autocomplete="off" name="parent_mobile"
+                                                                id="parent_mobile"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2074,51 +1695,122 @@
 
     $('input[type="radio"]').on('change', function() {
         var value = $(this).data('value');
-        
-        // Hide all sections first
-        // $('.o_group.row.align-items-start').hide();
-        
-        // Show the section corresponding to the selected value
         switch(value) {
             case 'contact':
-                $('.contact_show').show();
-                $('.invoice_address_show').hide();
-                $('.delivery_address_show').hide();
-                $('.follow_up_address_show').hide();
-                $('.other_address_show').hide();
+            $('.contact_show').show();
+            $('.other_address_show').hide();
+
                 break;
             case 'invoice':
-                $('.invoice_address_show').show();
-                $('.contact_show').hide();
-                $('.delivery_address_show').hide();
-                $('.follow_up_address_show').hide();
+                $('.contact_show').show();
                 $('.other_address_show').hide();
+     
                 break;
             case 'delivery':
-                $('.delivery_address_show').show();
-                $('.invoice_address_show').hide();
-                $('.contact_show').hide();
-                $('.follow_up_address_show').hide();
+                $('.contact_show').show();
                 $('.other_address_show').hide();
              
                 break;
             case 'followup':
-                $('.follow_up_address_show').show();
-                $('.delivery_address_show').hide();
-                $('.invoice_address_show').hide();
-                $('.contact_show').hide();
+                $('.contact_show').show();
                 $('.other_address_show').hide();
              
                 break;
             case 'other':
                 $('.other_address_show').show();
-                $('.follow_up_address_show').hide();
-                $('.delivery_address_show').hide();
-                $('.invoice_address_show').hide();
                 $('.contact_show').hide();
                 break;
         }
     });
+
+    $('.save_contacts').click(function() {
+        var contact_name = $('#contact_name').val();
+        var address_1 = $('#address_1').val();
+        var address_city = $('#address_city').val();
+        var address_zip = $('#address_zip').val();
+        var address_state = $('#address_state').val();
+        var country = $('#country').val();
+        var gst_treatment = $('#gst_treatment').val();
+        var gstin = $('#gstin').val();
+        var pan_number = $('#pan_number').val();
+        var phone_number = $('#phone_number').val();
+        var mobile_number = $('#mobile_number').val();
+        var contact_email = $('#contact_email').val();
+        var contact_Website = $('#contact_Website').val();
+        var contact_tages = $('#contact_tages').val();
+
+        if(!contact_name)
+        {
+            toastr.error('Contact name is required');
+        }
+       
+            $.ajax({
+                url: '{{ route('contact.save') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    contact_name: contact_name,
+                    address_1 :address_1,
+                    address_city : address_city,
+                    address_zip : address_zip,
+                    address_state : address_state,
+                    country : country,
+                    gst_treatment : gst_treatment,
+                    gstin : gstin,
+                    pan_number : pan_number,
+                    phone_number : phone_number,
+                    mobile_number : mobile_number,
+                    contact_email : contact_email,
+                    contact_Website : contact_Website,
+                    contact_tages : contact_tages
+                },
+                success: function(response) {
+                    console.log(response);
+                }
+            });
+        });
+
+        $('.save_new_contact').click(function(){
+
+            var parent_name = $('#parent_name').val();
+            var parent_address_1 = $('#parent_address_1').val();
+            var parent_address_2 = $('#parent_address_2').val();
+            var parent_city = $('#parent_city').val();
+            var parent_zip = $('#parent_zip').val();
+            var parent_state = $('#parent_state').val();
+            var parent_country = $('#parent_country').val();
+            var parent_email = $('#parent_email').val();
+            var parent_phone = $('#parent_phone').val();
+            var parent_mobile = $('#parent_mobile').val();
+
+                if(!parent_name)
+                {
+                    toastr.error('Name is required');
+                }
+            
+
+            $.ajax({
+                url: '{{ route('contact.save') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    parent_name: parent_name,
+                    parent_address_1 :parent_address_1,
+                    parent_address_2 : parent_address_2,
+                    parent_city : parent_city,
+                    parent_zip : parent_zip,
+                    parent_state : parent_state,
+                    parent_country : parent_country,
+                    parent_email : parent_email,
+                    parent_phone : parent_phone,
+                    parent_mobile : parent_mobile,
+                },
+                success: function(response) {
+                    console.log(response);
+                }
+            });
+            
+        });
 </script>
 
 @endsection

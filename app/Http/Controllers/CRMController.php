@@ -12,7 +12,7 @@ class CRMController extends Controller
     {
         $data = Opportunity::all();
         $pipeline = Pipeline::all();
-        return view('CRM.crmview', compact('data','pipeline'));
+        return view('CRM.crmview_2', compact('data','pipeline'));
     }
 
     public function store(Request $request)

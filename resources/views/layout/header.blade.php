@@ -97,8 +97,9 @@
     <div class="crmcenter_header">
         <div class="crmcenter_header_main">
             <div class="crm_head_leftside">
+                
                 <div class="new_btn_info">
-                    <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
+                    <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="#">New</a>
                 </div>
                 
 
