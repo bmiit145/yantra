@@ -96,6 +96,11 @@ Make sure to update the `PermissionSeeder` file with any new permissions you nee
 ```bash
 php artisan db:seed --class=PermissionSeeder
 ```
+or
+```bash
+php artisan make:permissions
+```
+
 
 #### Assigning Permissions After Changes ( Role Management )
 
