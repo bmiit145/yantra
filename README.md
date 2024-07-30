@@ -39,15 +39,39 @@ Sure, here's a refined and professionally formatted version of your instructions
 
 ### Handling Permission Changes
 
-#### Updating Permissions
+**Edit the Permissions Configuration:**
 
-1. **Edit the Permissions Configuration:**
-
-    Add any new permissions to the `config/permissions.php` file. This file serves as a centralized location for managing all application permissions.
+Add any new permissions to the `config/rolePermissions.php` file. This file serves as a centralized location for managing all application permissions.
    ```php
    <?php
-   
+
    return [
+       'permissions' => [
+            [
+                'name' => 'manage users',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'create user',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'edit user',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'delete user',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'manage crm',
+                'guard_name' => 'web',
+            ],
+            [
+                'name' => 'manage lead',
+                'guard_name' => 'web',
+            ],
+      ],
        'role_permissions' => [
            'admin' => [
                'manage users',
@@ -63,27 +87,31 @@ Sure, here's a refined and professionally formatted version of your instructions
    ];
    ```
 
-2. **Seed the Updated Permissions:**
+This will reflate to the `AssignPermissionSeeder` as well as `PermissionSeeder` and the `AssignPermissions` command located in `app/Console`.
 
-   After updating the configuration, run the `PermissionSeeder` to reflect the changes in your database. Execute the following command:
+#### Updating Permissions
+
+Make sure to update the `PermissionSeeder` file with any new permissions you need. Then, run the following command to seed the updated permissions:
+
+```bash
+php artisan db:seed --class=PermissionSeeder
+```
+
+#### Assigning Permissions After Changes ( Role Management )
+
+Run either of the following commands to assign the updated permissions:
+1. **Using Command:**
+ 
+    ```bash
+   php artisan assign:rolePermissions
+    ```
+
+2. **Using the Seeder:**
 
    ```bash
-   php artisan db:seed --class=PermissionSeeder
+   php artisan db:seed --class=AssignPermissionSeeder
    ```
-
-#### Assigning Permissions After Changes
-
-Add new permissions to the `AssignPermissionSeeder` or the `AssignPermissions` command located in `app/Console`. Run either of the following commands to assign the updated permissions:
-
-```bash
-php artisan assign:permission
-```
-
-or
-
-```bash
-php artisan db:seed --class=AssignPermissionSeeder
-```
+   
 ---
 
 ### Additional Features
