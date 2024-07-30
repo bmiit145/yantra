@@ -16,7 +16,7 @@ class PermissionSeeder extends Seeder
     {
         $arrPermission = [
             [
-                'name' => 'manage user',
+                'name' => 'manage users',
                 'guard_name' => 'web',
             ],
             [

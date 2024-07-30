@@ -66,6 +66,7 @@
 
                                         </div>
 
+                                        @can('manage user')
                                         <div class="o_setting_right_pane" data-tooltip-delay="800" data-tooltip=""><div class="mt16"><span class="fa fa-lg fa-users" aria-label="Number of active users"></span><div name="active_user_count" class="o_field_widget o_readonly_modifier o_field_integer w-auto ps-3 fw-bold">
                                                     <span>{{ $totalUsers }}</span>
                                                 </div>
@@ -76,7 +77,10 @@
                                                 <a href="{{ route('setting.users') }}" class="btn btn-link o_web_settings_access_rights" name="69" type="action" target="_blank">
                                                     <i class="o_button_icon oi oi-fw oi-arrow-right me-1"></i>
                                                     <span searchabletext="Manage Users">Manage Users</span>
-                                                </a></div></div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

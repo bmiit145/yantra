@@ -13,7 +13,7 @@ class AssignPermissions extends Command
      *
      * @var string
      */
-    protected $signature = 'assign:permissions';
+    protected $signature = 'assign:rolePermissions';
 
     /**
      * The console command description.
@@ -27,25 +27,27 @@ class AssignPermissions extends Command
      */
     public function handle()
     {
-        $rolePermissions = [
-            'admin' => [
-                'manage user',
-                'create user',
-                'edit.blade.php user',
-                'delete user',
-                'manage role',
-                'create role',
-                'edit.blade.php role',
-                'delete role',
-                'manage permission',
-                'manage crm',
-                'manage lead'
-            ],
-            'user' => [
-                'manage crm',
-                'manage lead'
-            ],
-        ];
+//        $rolePermissions = [
+//            'admin' => [
+//                'manage user',
+//                'create user',
+//                'edit.blade.php user',
+//                'delete user',
+//                'manage role',
+//                'create role',
+//                'edit.blade.php role',
+//                'delete role',
+//                'manage permission',
+//                'manage crm',
+//                'manage lead'
+//            ],
+//            'user' => [
+//                'manage crm',
+//                'manage lead'
+//            ],
+//        ];
+
+        $rolePermissions = config('rolePermissions.role_permissions');
 
         // Loop through each role
         foreach ($rolePermissions as $roleName => $permissions) {

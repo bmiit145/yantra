@@ -14,25 +14,27 @@ class AssignPermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $rolePermissions = [
-            'admin' => [
-                'manage user',
-                'create user',
-                'edit.blade.php user',
-                'delete user',
-                'manage role',
-                'create role',
-                'edit.blade.php role',
-                'delete role',
-                'manage permission',
-                'manage crm',
-                'manage lead'
-            ],
-            'user' => [
-                'manage crm',
-                'manage lead'
-            ],
-        ];
+//        $rolePermissions = [
+//            'admin' => [
+//                'manage users',
+//                'create user',
+//                'edit.blade.php user',
+//                'delete user',
+//                'manage role',
+//                'create role',
+//                'edit.blade.php role',
+//                'delete role',
+//                'manage permission',
+//                'manage crm',
+//                'manage lead'
+//            ],
+//            'user' => [
+//                'manage crm',
+//                'manage lead'
+//            ],
+//        ];
+
+        $rolePermissions = config('rolePermissions.role_permissions');
 
         // Loop through each role
         foreach ($rolePermissions as $roleName => $permissions) {

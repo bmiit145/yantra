@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Services\EncryptionService;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +19,7 @@ class DefaultUser extends Seeder
         // User Role
         $userRole = Role::firstOrcreate(
             ['name' => 'user'],
-            
+
         [
             'name' => 'user',
             'guard_name' => 'web',
@@ -36,7 +37,8 @@ class DefaultUser extends Seeder
 
         // loop through the array of data and create a new user
         foreach ($userUsers as $user) {
-            $user = User::firstOrCreate(['email' => $user['email']], $user);
+            $user = User::firstOrCreate(['email' => EncryptionService::encrypt($user['email'])], $user);
+            $user = User::where('email', EncryptionService::encrypt($user['email']))->first();
             $user->assignRole($userRole);
         }
 
@@ -44,7 +46,7 @@ class DefaultUser extends Seeder
         //admin Role
         $adminRole = Role::firstOrcreate(
         ['name' => 'admin'],
-        [ 
+        [
             'name' => 'admin',
             'guard_name' => 'web',
         ]);
@@ -61,10 +63,9 @@ class DefaultUser extends Seeder
 
         // loop through the array of data and create a new user
         foreach ($adminUsers as $user) {
-            $user = User::firstOrCreate(['email'=> $user['email']], $user);
+            $user = User::firstOrCreate(['email'=> EncryptionService::encrypt($user['email'])], $user);
+            $user = User::where('email', EncryptionService::encrypt($user['email']))->first();
             $user->assignRole($adminRole);
         }
-
-
     }
 }

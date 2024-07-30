@@ -4,18 +4,22 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\EncryptionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\InviteMail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\PasswordResetHelper;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 
 class SettingController extends Controller
 {
     public function index()
     {
+//        dd(auth()->user()->getAllPermissions()->pluck('name') ,Auth::user()->can('manage users'));
         $panddingUsers = User::where('email_verified_at' , null)
             ->where('role' , '!=' , 2 )
             ->get();
