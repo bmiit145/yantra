@@ -53,14 +53,14 @@
                         </div>
                     @endif
                     <form action="{{ route('login') }}" method="post">
-                        @csrf   
+                        @csrf
                         <div class="form_inner">
                             <label for="email">Email</label>
                             <input type="email" id="email" placeholder="Email" name="email"
                                 value="{{ old('email') }}" required>
 
                             <label for="psw">Password</label>
-                            <input type="password" placeholder="Enter Password" name="password" required>
+                            <input type="password" placeholder="Enter Password" name="password" value="{{ old('password') }}" required>
 
                             <div style="display: flex">
                                 <input type="text" id="otp" placeholder="Enter OTP" name="otp" required>
@@ -122,7 +122,7 @@
             }
         });
     </script>
-    
+
 
 </body>
 

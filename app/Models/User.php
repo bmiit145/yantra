@@ -108,4 +108,10 @@ class User extends Authenticatable
         return EncryptionService::decrypt($value);
     }
 
+
+    //otp
+    public function otp()
+    {
+        return $this->hasMany(OTPverifiction::class);
+    }
 }

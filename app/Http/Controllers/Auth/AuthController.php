@@ -42,7 +42,6 @@ class AuthController extends Controller
 
 //    public function login(Request $request)
 //    {
-////        dd($request->all());
 //        $validator = Validator::make($request->all(), [
 //            'email' => 'required|email',
 //            'password' => 'required|min:8',
@@ -52,20 +51,61 @@ class AuthController extends Controller
 //            return redirect()->back()->withErrors($validator)->withInput();
 //        }
 //
-//        $credentials = $request->only('email', 'password');
-////        $credentials['email'] = Crypt::encryptString($credentials['email']);
-//        $credentials['email'] = EncryptionService::encrypt($credentials['email']);
+//        $email = EncryptionService::encrypt($request->input('email'));
+//        $otp = $request->input('otp');
+//
+//        $credentials = [
+//            'email' => $email,
+//            'password' => $request->input('password'),
+//        ];
+//
+//        $failedAttempt = FailedAttempt::where('email', $email)->first();
+//
+//        if ($failedAttempt && $failedAttempt->locked_until && Carbon::now()->lt(Carbon::parse($failedAttempt->locked_until))) {
+//            //            $minutesLeft = (Carbon::now()->diffInMinutes(Carbon::parse($failedAttempt->locked_until)));
+//            //            return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $minutesLeft minutes."]);
+//
+//            $lockoutTime = Carbon::parse($failedAttempt->locked_until)->diffForHumans(null, true, false);
+//            return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $lockoutTime."]);
+//
+//        }
 //
 //        if (Auth::attempt($credentials)) {
 //            $request->session()->regenerate();
 //
-//            // add last login time and ip
 //            $user = Auth::user();
+//
+//            $validOtp = OTPverifiction::where('ip', $request->ip())
+//                ->where('user_id', $user->id)
+//                ->where('otp', $otp)->first();
+//
+//            if (!$validOtp) {
+//                Auth::logout();
+//                $this->recordFailedAttempt($email);
+//                return redirect()->back()
+//                    ->withErrors(['otp' => 'Invalid OTP'])
+//                    ->withInput();
+//            }
+//
 //            $user->last_login_at = now();
 //            $user->last_login_ip = $request->ip();
 //            $user->save();
 //
+//            OTPverifiction::where('ip', $request->ip())->delete();
+//
+//            $loginActId = $this->recordLoginActivity($request , $user , '1');
+//            FailedAttempt::where('email', $email)->delete();
+//            Session::put('loginActId', $loginActId);
+//
 //            return redirect()->intended('dashboard');
+//        }
+//
+//        $this->recordFailedAttempt($email);
+//        $user = User::where('email', $email)->first();
+//        if ($user) {
+//            $this->recordLoginActivity($request , $user , '0');
+//        }else{
+//            $this->recordLoginActivity($request , null , '0');
 //        }
 //
 //        return back()->withErrors([
@@ -86,40 +126,32 @@ class AuthController extends Controller
 
         $email = EncryptionService::encrypt($request->input('email'));
         $otp = $request->input('otp');
-        $credentials = [
-            'email' => $email,
-            'password' => $request->input('password'),
-        ];
-        $validOtp = OTPverifiction::where('ip', $request->ip())->where('otp', $otp)->first();
-        if (!$validOtp) {
-            return redirect()->back()->withErrors(['otp' => 'Invalid OTP'])->withInput();
-        }
-        
-
+        $credentials = ['email' => $email, 'password' => $request->input('password')];
 
         $failedAttempt = FailedAttempt::where('email', $email)->first();
-
         if ($failedAttempt && $failedAttempt->locked_until && Carbon::now()->lt(Carbon::parse($failedAttempt->locked_until))) {
-            //            $minutesLeft = (Carbon::now()->diffInMinutes(Carbon::parse($failedAttempt->locked_until)));
-            //            return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $minutesLeft minutes."]);
-
             $lockoutTime = Carbon::parse($failedAttempt->locked_until)->diffForHumans(null, true, false);
             return redirect()->back()->withErrors(['email' => "Too many failed attempts. Try again in $lockoutTime."]);
-
         }
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
             $user = Auth::user();
-            $user->last_login_at = now();
-            $user->last_login_ip = $request->ip();
-            $user->save();
 
+            $validOtp = OTPverifiction::where('ip', $request->ip())
+                ->where('user_id', $user->id)
+                ->where('otp', $otp)->first();
+
+            if (!$validOtp) {
+                Auth::logout();
+                $this->recordFailedAttempt($email);
+                return redirect()->back()->withErrors(['otp' => 'Invalid OTP'])->withInput();
+            }
+
+            $user->update(['last_login_at' => now(), 'last_login_ip' => $request->ip()]);
             OTPverifiction::where('ip', $request->ip())->delete();
-            
 
-            $loginActId = $this->recordLoginActivity($request , $user , '1');
+            $loginActId = $this->recordLoginActivity($request, $user, '1');
             FailedAttempt::where('email', $email)->delete();
             Session::put('loginActId', $loginActId);
 
@@ -128,26 +160,24 @@ class AuthController extends Controller
 
         $this->recordFailedAttempt($email);
         $user = User::where('email', $email)->first();
-        if ($user) {
-            $this->recordLoginActivity($request , $user , '0');
-        }else{
-            $this->recordLoginActivity($request , null , '0');
-        }
+        $this->recordLoginActivity($request, $user, '0');
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
     }
 
     public function sendOTP(Request $request)
     {
         $email = $request->email;
-        $otp = new OTPverifiction;
-        $otp->ip = $request->ip();;
-        $otp->OTP = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-        $otp->save();
-        
-        return response()->json($otp);
+        $encEmail = EncryptionService::encrypt($email);
+        $user = User::where('email', $encEmail)->first();
+
+        $rendomOtp = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $otp = OTPverifiction::updateOrCreate(
+            ['ip' => $request->ip(), 'user_id' => $user->id],
+            ['otp' => $rendomOtp]
+        );
+
+        return response()->json(['success' => 'OTP sent successfully']);
     }
 
     public function logout(){
