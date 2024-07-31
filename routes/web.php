@@ -24,8 +24,8 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-
-    // datatable
+    
+    
     Route::get('/dataTable/users', [UserController::class, 'getUsers'])->name('api.users');
 
     Route::get('/', [DashboardController::class, 'index'])->name('home');
@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/crmview', [CRMController::class, 'index'])->name('crm.index');
     Route::post('/crmvstore', [CRMController::class, 'store'])->name('crm.store');
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
+    Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
 
     Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
     Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
