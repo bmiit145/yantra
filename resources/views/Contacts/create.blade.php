@@ -1,21 +1,21 @@
 @extends('layout.header')
-@section('content')
 
-    @vite('resources/css/contactcreat.css')
 @section('title', 'Contacts')
-@section('image_url', 'images/CRM.png')
-@section('save_class', 'save_contacts')
+@section('head_title_link' , route('contact.index'))
+@section('image_url', asset('images/contacts.png'))
 @section('head_new_btn_link', route('contact.create'))
+@section('save_class', 'save_contacts')
+@section('head')
+@vite([
+        "resources/css/odoo/web.assets_web.css",
+        "resources/css/contactcreate.css",
+])
+@endsection
 @section('navbar_menu')
     <li><a href="{{ route('contact.index') }}">Contacts</a></li>
     <li><a href="#"></a>Configuration</li>
 @endsection
-<style>
-    .o_input{
-        background-color : white;
-    }
-</style>
-
+@section('content')
 <div class="o_action_manager">
     <div class="o_xxl_form_view h-100 o_form_view o_view_controller o_action">
         <div class="o_form_view_container">
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <div class="oe_title mb24">
-                              
+
                                 <h1>
                                     <div name="name"
                                         class="o_field_widget o_required_modifier o_field_field_partner_autocomplete text-break o_field_invalid">
@@ -76,7 +76,7 @@
                                                         autocomplete="off" placeholder="City">
                                                 </div>
                                                 <div name="zip" class="o_field_widget o_field_char o_address_zip">
-                                                    <input class="o_input" type="text" name="address_zip" id="address_zip" 
+                                                    <input class="o_input" type="text" name="address_zip" id="address_zip"
                                                         autocomplete="off" placeholder="ZIP">
                                                 </div>
                                                 <div name="state_id"
@@ -155,7 +155,7 @@
                                                 <div name="vat"
                                                     class="o_field_widget o_field_field_partner_autocomplete oe_inline">
                                                     <div class="o-autocomplete dropdown"><input type="text" name="gstin" id="gstin"
-                                                            class="o-autocomplete--input o_input" autocomplete="off" 
+                                                            class="o-autocomplete--input o_input" autocomplete="off"
                                                             role="combobox" aria-autocomplete="list"
                                                             aria-haspopup="listbox" placeholder="e.g. BE0477472701"
                                                             aria-expanded="false">
@@ -168,7 +168,7 @@
                                         <div
                                             class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
                                             <label class="o_form_label" for="l10n_in_pan_0">PAN<sup
-                                                    class="text-info p-1" data-tooltip-template="web.FieldTooltip" 
+                                                    class="text-info p-1" data-tooltip-template="web.FieldTooltip"
                                                     data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;PAN enables the department to link all transactions of the person with the department.\nThese transactions include taxpayments, TDS/TCS credits, returns of income/wealth/gift/FBT, specified transactions, correspondence, and so on.\nThus, PAN acts as an identifier for the person with the tax department.&quot;}}"
                                                     data-tooltip-touch-tap-to-show="true">?</sup></label>
                                         </div>
@@ -232,7 +232,7 @@
                                             style="width: 100%;">
                                             <div name="website" class="o_field_widget o_field_url">
                                                 <div class="d-inline-flex w-100"><input class="o_input" name="contact_Website" id="contact_Website"
-                                                        type="text" autocomplete="off" 
+                                                        type="text" autocomplete="off"
                                                         placeholder="e.g. https://www.odoo.com"></div>
                                             </div>
                                         </div>
@@ -253,7 +253,7 @@
                                                                     class="o-autocomplete--input o_input" name="contact_tages" id="contact_tages"
                                                                     autocomplete="off" role="combobox"
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
-                                                                  
+
                                                                     placeholder="e.g. &quot;B2B&quot;, &quot;VIP&quot;, &quot;Consulting&quot;, ..."
                                                                     aria-expanded="false"></div><span
                                                                 class="o_dropdown_button"></span>
@@ -1285,11 +1285,11 @@
                                         <div role="radiogroup" class="o_horizontal" aria-label="Address Type">
                                             <div class="form-check o_radio_item" aria-atomic="true"><input
                                                 type="radio" class="form-check-input o_radio_input" value="1"
-                                                name="radio_field_2" data-value="other" data-index="4" 
+                                                name="radio_field_2" data-value="other" data-index="4"
                                                 id="radio_field_2_other"><label
                                                 class="form-check-label o_form_label"
                                                 for="radio_field_2_other">Contact</label></div>
-                                    
+
                                             <div class="form-check o_radio_item" aria-atomic="true"><input
                                                     type="radio" class="form-check-input o_radio_input"
                                                     name="radio_field_2" data-value="invoice" data-index="1" value="2" name="creat_contact"
@@ -1308,7 +1308,7 @@
                                                     id="radio_field_2_followup"><label
                                                     class="form-check-label o_form_label"
                                                     for="radio_field_2_followup">Follow-up Address</label></div>
-                                 
+
                                                     <div class="form-check o_radio_item" aria-atomic="true"><input checked
                                                         type="radio" class="form-check-input o_radio_input"
                                                         name="radio_field_2" data-value="contact" data-index="0" value="5" name="creat_contact"
@@ -1317,7 +1317,7 @@
                                                         for="radio_field_2_contact">Other Address</label></div>
                                         </div>
                                     </div>
-                                 
+
                                     <div class="o_group row align-items-start other_address_show" style="display: none">
                                         <div class="o_inner_group grid col-lg-6">
                                              <input type="hidden" name="maincontact" id="maincontact" value="">
@@ -1413,8 +1413,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> 
-                                  
+                                    </div>
+
                                     <div class="o_group row align-items-start contact_show" >
                                         <div class="o_inner_group grid col-lg-6">
                                             <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
@@ -1518,7 +1518,7 @@
                                                 <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                     style="width: 100%;">
                                                     <div name="phone" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input 
+                                                        <div class="o_phone_content d-inline-flex w-100"><input
                                                                 class="o_input" type="tel" autocomplete="off" name="parent_phone"
                                                                 id="parent_phone"></div>
                                                     </div>
@@ -1655,8 +1655,9 @@
     </div>
 </div>
 
+@endsection
 
-
+@push('scripts')
 <script>
     $(document).ready(function() {
         $('li.nav-item a.nav-link').on('click', function(e) {
@@ -1701,17 +1702,17 @@
             case 'invoice':
                 $('.contact_show').show();
                 $('.other_address_show').hide();
-     
+
                 break;
             case 'delivery':
                 $('.contact_show').show();
                 $('.other_address_show').hide();
-             
+
                 break;
             case 'followup':
                 $('.contact_show').show();
                 $('.other_address_show').hide();
-             
+
                 break;
             case 'other':
                 $('.other_address_show').show();
@@ -1720,7 +1721,7 @@
         }
     });
 
-        $('.save_contacts').click(function() {
+        $('#main_save_btn').click(function() {
             var contact_name = $('#contact_name').val();
             var address_1 = $('#address_1').val();
             var address_city = $('#address_city').val();
@@ -1740,7 +1741,7 @@
             {
                 toastr.error('Contact name is required');
             }
-        
+
                 $.ajax({
                     url: '{{ route('contact.save') }}',
                     type: 'POST',
@@ -1768,7 +1769,6 @@
         });
 
         $('.save_new_contact').click(function(){
-
             var parent_name = $('#parent_name').val();
             var parent_address_1 = $('#parent_address_1').val();
             var parent_address_2 = $('#parent_address_2').val();
@@ -1784,7 +1784,7 @@
                 {
                     toastr.error('Name is required');
                 }
-            
+
 
             $.ajax({
                 url: '{{ route('contact.save') }}',
@@ -1806,8 +1806,9 @@
                     console.log(response);
                 }
             });
-            
+
         });
+
 </script>
 
-@endsection
+@endpush

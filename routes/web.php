@@ -24,8 +24,8 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    
-    
+
+
     Route::get('/dataTable/users', [UserController::class, 'getUsers'])->name('api.users');
 
     Route::get('/', [DashboardController::class, 'index'])->name('home');
@@ -33,14 +33,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/head', [DashboardController::class, 'head'])->name('head');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/crmview', [CRMController::class, 'index'])->name('crm.index');
-    Route::post('/crmvstore', [CRMController::class, 'store'])->name('crm.store');
+    // crm
+    Route::resource('/crm', CRMController::class , [ 'except' => [] ]);
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
 
-    Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-    Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
-    Route::post('/contact-save', [ContactController::class, 'save'])->name('contact.save');
+    //contact
+    Route::resource('/contact', ContactController::class , [ 'except' => [] ]);
+//    Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
+    Route::post('/contact/save', [ContactController::class, 'save'])->name('contact.save');
 
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');

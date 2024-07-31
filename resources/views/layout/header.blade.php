@@ -34,11 +34,11 @@
             padding: 0;
             margin: 0;
         }
-    
+
         .dropdown {
             position: relative;
         }
-    
+
         .dropdown-content {
             display: none;
             position: absolute;
@@ -47,23 +47,22 @@
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             z-index: 4;
         }
-    
+
         .dropdown-content a {
             color: black;
             padding: 12px 16px;
             text-decoration: none;
             display: block;
         }
-    
+
         .dropdown-content a:hover {
             background-color: #ddd;
         }
-    
+
         .dropdown.active .dropdown-content {
             display: block;
         }
     </style>
-
 </head>
 <body>
 
@@ -72,8 +71,8 @@
         <div class="top_left_navbar">
             <a href="{{ route('dashboard') }}" class="o_menu_toggle">
                 {{-- <img src="images/CRM.png" alt="Avatar" class="crm_logo"> --}}
-                <img src="@yield('image_url', 'images/CRM.png')" alt="Avatar" class="crm_logo">
-                <a class="o_menu_brand">@yield('title' , "CRM")</a>
+                <img src="@yield('image_url', asset('images/CRM.png') )" alt="Avatar" class="crm_logo">
+                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title' , "Yantra")</a>
             </a>
             <div class="top_left_navbar_menu">
                 <ul class="navbar_menu_wapper">
@@ -110,7 +109,7 @@
                                 d="M678.4 691.2l-60.8 60.8-179.2-176V243.2h86.4v294.4l153.6 153.6z m288-169.6c0 249.6-201.6 454.4-454.4 454.4S57.6 774.4 57.6 521.6C57.6 272 262.4 70.4 512 67.2c249.6 3.2 454.4 204.8 454.4 454.4z m-86.4 0C880 320 713.6 156.8 512 156.8S144 320 144 521.6c0 201.6 163.2 368 368 368 201.6 0 368-163.2 368-368z" />
                         </svg></a></li>
                 <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg"
-                            style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"version="1.1"
+                            style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" version="1.1"
                             xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0"
                             viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve"
                             class="">
@@ -127,11 +126,12 @@
     <div class="crmcenter_header">
         <div class="crmcenter_header_main">
             <div class="crm_head_leftside">
-                
+
                 <div class="new_btn_info">
-                    <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="#">New</a>
+{{--                    <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="#">New</a>--}}
+                    <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
                 </div>
-                
+
 
                 <div class="head_breadcrumb_info">
                     <p class="head_breadcrumb_title">Pipeline</p>
@@ -146,7 +146,9 @@
                             </g>
                         </svg></a>
                 </div>
-                <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" style="position: relative;" title=""><i class="fa fa-cloud-upload fa-fw"></i></button>
+                <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")"  id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" style="position: relative;" title="Save Button">
+                    <i class="fa fa-cloud-upload fa-fw"></i>
+                </button>
             </div>
             <div class="crm_head_centerside">
 
@@ -540,7 +542,6 @@
     </div>
 </div>
 @yield('content')
-
 <script>
     toastr.options = {
         "closeButton": true,
@@ -573,9 +574,7 @@
     toastr.error("{{ $error }}");
     @endforeach
     @endif
-
 </script>
 @stack('scripts')
 </body>
 </html>
-

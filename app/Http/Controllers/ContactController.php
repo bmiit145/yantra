@@ -10,16 +10,32 @@ class ContactController extends Controller
 {
     public function index()
     {
-        return view('Contacts.index');
+        $contacts = Contact::all();
+        return view('Contacts.index' , compact('contacts'));
     }
+
+    public function show($id)
+    {
+        $contact = Contact::find($id);
+        return view('Contacts.create' , compact('contact'));
+    }
+
 
     public function create()
     {
-        return view('Contacts.creat');
+        return view('Contacts.create');
     }
 
     public function save(Request $request)
     {
+        // validate the request
+        $request->validate([
+            'contact_name' => 'required',
+        ],
+        [
+            'contact_name.required' => 'Contact Name is required',
+        ]);
+
        $contact_name = $request->contact_name;
        $gst_treatment = $request->gst_treatment;
        $gstin = $request->gstin;
@@ -57,13 +73,14 @@ class ContactController extends Controller
        $address->state = $address_state;
        $address->country = $country;
        $address->save();
-    
+
        $id = $data->id;
        $data = Contact::find($id);
        $data->address_id = $address->id;
        $data->update();
 
        return response()->json($data);
-        
+
     }
+
 }

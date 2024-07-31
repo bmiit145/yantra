@@ -139,7 +139,7 @@
                     </div>
                     <div class="main_inner_block" id="box6">
                         <a role="option" class="main_inner_wrapper" id="result_app_6" aria-selected="false"
-                            data-menu-xmlid="crm.crm_menu_root" href="{{ url('crmview') }}">
+                            data-menu-xmlid="crm.crm_menu_root" href="{{ route('crm.index') }}">
                             <img class="home_app_icon" src="{{ asset('images/CRM.png') }}">
                             <div class="home_caption">CRM</div>
                         </a>

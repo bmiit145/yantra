@@ -191,7 +191,6 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-
     protected function recordFailedAttempt($email)
     {
         $failedAttempt = FailedAttempt::where('email', $email)->first();

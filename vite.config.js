@@ -24,7 +24,7 @@ export default defineConfig({
                 // ...odooFontsFile,
                  'resources/js/app.js'
             ],
-            refresh: false,
+            refresh: true,
         }),
     ],
 });
