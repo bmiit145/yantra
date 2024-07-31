@@ -36,5 +36,10 @@ class CRMController extends Controller
         return response()->json($data);
     }
 
+    public function addActivityView()
+    {
+        return view('CRM.addactivity');
+    }
+
 
 }

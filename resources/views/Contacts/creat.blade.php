@@ -1317,13 +1317,10 @@
                                                         for="radio_field_2_contact">Other Address</label></div>
                                         </div>
                                     </div>
-                                    <div class="text-muted oe_edit_only">
-                                        <p class="mb-0"><span>Other address for the company (e.g. subsidiary,
-                                                ...)</span></p>
-                                    </div>
-                                    <hr>
+                                 
                                     <div class="o_group row align-items-start other_address_show" style="display: none">
                                         <div class="o_inner_group grid col-lg-6">
+                                             <input type="hidden" name="maincontact" id="maincontact" value="">
                                             <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                 <div
                                                     class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
@@ -1723,51 +1720,51 @@
         }
     });
 
-    $('.save_contacts').click(function() {
-        var contact_name = $('#contact_name').val();
-        var address_1 = $('#address_1').val();
-        var address_city = $('#address_city').val();
-        var address_zip = $('#address_zip').val();
-        var address_state = $('#address_state').val();
-        var country = $('#country').val();
-        var gst_treatment = $('#gst_treatment').val();
-        var gstin = $('#gstin').val();
-        var pan_number = $('#pan_number').val();
-        var phone_number = $('#phone_number').val();
-        var mobile_number = $('#mobile_number').val();
-        var contact_email = $('#contact_email').val();
-        var contact_Website = $('#contact_Website').val();
-        var contact_tages = $('#contact_tages').val();
+        $('.save_contacts').click(function() {
+            var contact_name = $('#contact_name').val();
+            var address_1 = $('#address_1').val();
+            var address_city = $('#address_city').val();
+            var address_zip = $('#address_zip').val();
+            var address_state = $('#address_state').val();
+            var country = $('#country').val();
+            var gst_treatment = $('#gst_treatment').val();
+            var gstin = $('#gstin').val();
+            var pan_number = $('#pan_number').val();
+            var phone_number = $('#phone_number').val();
+            var mobile_number = $('#mobile_number').val();
+            var contact_email = $('#contact_email').val();
+            var contact_Website = $('#contact_Website').val();
+            var contact_tages = $('#contact_tages').val();
 
-        if(!contact_name)
-        {
-            toastr.error('Contact name is required');
-        }
-       
-            $.ajax({
-                url: '{{ route('contact.save') }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    contact_name: contact_name,
-                    address_1 :address_1,
-                    address_city : address_city,
-                    address_zip : address_zip,
-                    address_state : address_state,
-                    country : country,
-                    gst_treatment : gst_treatment,
-                    gstin : gstin,
-                    pan_number : pan_number,
-                    phone_number : phone_number,
-                    mobile_number : mobile_number,
-                    contact_email : contact_email,
-                    contact_Website : contact_Website,
-                    contact_tages : contact_tages
-                },
-                success: function(response) {
-                    console.log(response);
-                }
-            });
+            if(!contact_name)
+            {
+                toastr.error('Contact name is required');
+            }
+        
+                $.ajax({
+                    url: '{{ route('contact.save') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        contact_name: contact_name,
+                        address_1 :address_1,
+                        address_city : address_city,
+                        address_zip : address_zip,
+                        address_state : address_state,
+                        country : country,
+                        gst_treatment : gst_treatment,
+                        gstin : gstin,
+                        pan_number : pan_number,
+                        phone_number : phone_number,
+                        mobile_number : mobile_number,
+                        contact_email : contact_email,
+                        contact_Website : contact_Website,
+                        contact_tages : contact_tages
+                    },
+                    success: function(response) {
+                        console.log(response);
+                    }
+                });
         });
 
         $('.save_new_contact').click(function(){

@@ -17,8 +17,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-{{--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"--}}
-{{--        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">--}}
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -29,6 +28,41 @@
 
     @yield('head')
     @yield('css')
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        .dropdown {
+            position: relative;
+        }
+    
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9fafb;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 4;
+        }
+    
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+    
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+    
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+    </style>
 
 </head>
 <body>
@@ -43,10 +77,6 @@
             </a>
             <div class="top_left_navbar_menu">
                 <ul class="navbar_menu_wapper">
-                    {{-- <li><a href="#">Sales</a></li>
-                    <li><a href="{{ url('lead') }}">Leads</a></li>
-                    <li><a href="#">Reporting</a></li>
-                    <li><a href="#">Configuration</a></li> --}}
                     @yield('navbar_menu')
                 </ul>
             </div>
