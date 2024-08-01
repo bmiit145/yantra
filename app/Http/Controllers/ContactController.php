@@ -97,11 +97,12 @@ class ContactController extends Controller
 
 
         // Log changes if updated
-        if ($contact->wasChanged() || $address->wasChanged()) {
+        if (($contact->wasChanged() || $address->wasChanged()) && !empty($originalContact)) {
             $this->logChanges($originalContact, $currentContact, $originalAddress, $currentAddress, $contact);
+            return response()->json(['action' => 'update'  , 'message' => 'Contact updated successfully' , 'contact' => $contact]);
         }
 
-        return response()->json(['action' => ''  , 'message' => 'Contact saved successfully' , 'contact' => $contact]);
+        return response()->json(['action' => 'create'  , 'message' => 'Contact saved successfully' , 'contact' => $contact]);
 
     }
 
@@ -111,12 +112,16 @@ class ContactController extends Controller
         // Detect changes in contact fields
         $contactFields = ['name', 'GSTIN', 'PAN', 'phone', 'mobile', 'email', 'website', 'tages'];
 
-        $contactChanges = array_filter(array_combine($contactFields, array_map(function($field) use ($originalContact, $currentContact) {
-            return isset($originalContact[$field]) && $originalContact[$field] != $currentContact[$field] ? [
-                'old' => $originalContact[$field] ?? 'None',
-                'new' => $currentContact[$field] ?? 'None'
+        $contactChanges = array_filter(array_combine($contactFields , (array_map(function($field) use ($originalContact, $currentContact) {
+            $originalValue = $originalContact[$field] ?? 'None';
+            $currentValue = $currentContact[$field] ?? 'None';
+
+            return $originalValue !== $currentValue ? [
+                'old' => $originalValue,
+                'new' => $currentValue
             ] : null;
-        }, $contactFields)));
+        }, $contactFields))));
+
 
         // Get the original and current complete addresses
         $mergeOriginalAddress = ContactAddress::formatCompleteAddress($originalAddress);

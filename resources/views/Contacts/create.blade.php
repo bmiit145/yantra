@@ -1161,7 +1161,7 @@
                     </div>
                     <div class="o-mail-ChatterContainer o-mail-Form-chatter o-aside">
                         <div
-                            class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto o-chatter-disabled">
+                            class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto {{ isset($contact) ? '' :  'o-chatter-disabled' }} ">
                             <div class="o-mail-Chatter-top position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
                                     <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2"
@@ -1240,21 +1240,7 @@
                                                                     <strong class="me-1 text-truncate">{{ $log->user->email }}</strong>
                                                                 </span>
                                                                 <small class="o-mail-Message-date text-muted opacity-75 o-smaller" title="{{ $log->created_at->format('n/j/Y, g:i:s a') }}">- {{ $log->created_at->diffForHumans() }} </small>
-                                                                <div class="o-mail-Message-actions d-print-none ms-2 my-n2 invisible">
-                                                                    <div class="d-flex rounded-1 overflow-hidden">
-                                                                        <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction">
-                                                                            <i class="oi fa-lg oi-smile-add"></i>
-                                                                        </button>
-                                                                        <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star">
-                                                                            <i class="fa fa-lg fa-star-o"></i>
-                                                                        </button>
-                                                                        <div class="d-flex rounded-0">
-                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false">
-                                                                                <i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                <div class="o-mail-Message-actions d-print-none ms-2 my-n2 invisible"><div class="d-flex rounded-1 overflow-hidden"><button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button><button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button><div class="d-flex rounded-0"><button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropdown" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button></div></div></div>
                                                             </div>
                                                             <div class="position-relative d-flex">
                                                                 <div class="o-mail-Message-content o-min-width-0 pt-1">
@@ -1373,6 +1359,7 @@
                                         @endforeach
                                             @endforeach
 
+
                                         @else
                                             <div class="o-mail-Message position-relative undefined o-selfAuthored py-1 mt-2" role="group" aria-label="System notification">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
@@ -1388,9 +1375,9 @@
                                                             class="o-mail-Message-header d-flex flex-wrap align-items-baseline mb-1 lh-1">
                                                         <span class="o-mail-Message-author cursor-pointer"
                                                               aria-label="Open card"><strong
-                                                                class="me-1 text-truncate">info@yantradesign.co.in</strong></span><small
+                                                                class="me-1 text-truncate">{{ auth()->user()->email }}</strong></span><small
                                                                 class="o-mail-Message-date text-muted opacity-75 me-2"
-                                                                title="25/7/2024, 9:24:59 am">- 21 minutes
+                                                                title=" {{  }}">- 21 minutes
                                                                 ago</small><span
                                                                 class="o-mail-MessageSeenIndicator position-relative d-flex opacity-50 o-all-seen text-primary ms-1"></span>
                                                         </div>
@@ -1956,9 +1943,12 @@
                         contact_tages : contact_tages
                     },
                     success: function(response) {
-                        console.log(response);
                         $('#contact_id').val(response.contact.id);
                         toastr.success(response.message);
+                        // send to show if action is create
+                        if(response.action == 'create') {
+                            window.location.href = '{{ route('contact.show', '') }}/' + response.contact.id;
+                        }
                     }
                 });
         });

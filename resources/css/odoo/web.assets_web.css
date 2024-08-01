@@ -34156,7 +34156,7 @@ a.o_mail_redirect:disabled, a.o_mail_redirect.disabled, a.o_channel_redirect:dis
     display: none;
 }
 
-.o-chatter-disabled .o-mail-Message-actions {
+    .o-chatter-disabled .o-mail-Message-actions {
     display: none;
 }
 
