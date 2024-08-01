@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\ContactAddress;
+use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
@@ -17,70 +18,127 @@ class ContactController extends Controller
     public function show($id)
     {
         $contact = Contact::find($id);
+        if (!$contact) {
+            return view('errors.404', ['message' => 'Contact not found']);
+//        abort(404 , 'Contact not found');
+        }
         return view('Contacts.create' , compact('contact'));
     }
-
 
     public function create()
     {
         return view('Contacts.create');
     }
 
-    public function save(Request $request)
+    public function save(Request $request , $is_user = null)
     {
-        // validate the request
+            // Validate the request
         $request->validate([
+            'contact_id' => 'sometimes',
             'contact_name' => 'required',
-        ],
-        [
+        ], [
             'contact_name.required' => 'Contact Name is required',
         ]);
 
-       $contact_name = $request->contact_name;
-       $gst_treatment = $request->gst_treatment;
-       $gstin = $request->gstin;
-       $pan_number = $request->pan_number;
-       $phone_number = $request->phone_number;
-       $mobile_number = $request->mobile_number;
-       $contact_email = $request->contact_email;
-       $contact_Website = $request->contact_Website;
-       $contact_tages = $request->contact_tages;
-       $address_1 = $request->address_1;
-       $address_2 = $request->address_2;
-       $address_city = $request->address_city;
-       $address_zip = $request->address_zip;
-       $address_state = $request->address_state;
-       $country = $request->country;
+        // Extract request data
+        $data = $request->only([
+            'contact_id', 'contact_name', 'gst_treatment', 'gstin', 'pan_number',
+            'phone_number', 'mobile_number', 'contact_email', 'contact_Website',
+            'contact_tages', 'address_1', 'address_2', 'address_city',
+            'address_zip', 'address_state', 'country'
+        ]);
 
-       $data = new Contact;
-       $data->name = $contact_name;
-       $data->GST_treatment = $gst_treatment;
-       $data->GSTIN = $gstin;
-       $data->PAN = $pan_number;
-       $data->phone = $phone_number;
-       $data->mobile = $mobile_number;
-       $data->email = $contact_email;
-       $data->website = $contact_Website;
-       $data->tages = $contact_tages;
-       $data->save();
+        // Find or create contact
+        $contact = Contact::find($data['contact_id']) ?? new Contact;
+        $address = ContactAddress::where('contact_id', $contact->id)->first() ?? new ContactAddress;
 
-       $address = new ContactAddress;
-       $address->contact_id = $data->id;
-       $address->address_1 = $address_1;
-       $address->address_2 = $address_2;
-       $address->city = $address_city;
-       $address->zip = $address_zip;
-       $address->state = $address_state;
-       $address->country = $country;
-       $address->save();
+        // Capture original data before update
+        $originalContact = $contact->getOriginal();
+        $originalAddress = $address->getOriginal();
 
-       $id = $data->id;
-       $data = Contact::find($id);
-       $data->address_id = $address->id;
-       $data->update();
+        // Update contact details
+        $contact->fill(
+//            $data
+            [
+            'name' => $data['contact_name'],
+            'GST_treatment' => $data['gst_treatment'],
+            'GSTIN' => $data['gstin'],
+            'PAN' => $data['pan_number'],
+            'phone' => $data['phone_number'],
+            'mobile' => $data['mobile_number'],
+            'email' => $data['contact_email'],
+            'website' => $data['contact_Website'],
+            'tages' => $data['contact_tages'],
+            'is_user' => $is_user,
+            ]
+        )->save();
 
-       return response()->json($data);
+        // Save address
+        $address = ContactAddress::updateOrCreate(
+            ['id' => $contact->address_id],
+//            $data
+            [
+                'contact_id' => $contact->id,
+                'address_1' => $data['address_1'],
+                'address_2' => $data['address_2'],
+                'city' => $data['address_city'],
+                'zip' => $data['address_zip'],
+                'state' => $data['address_state'],
+                'country' => $data['country']
+            ]
+        );
 
+        // Update contact with address ID
+        $contact->update(['address_id' => $address->id]);
+
+        // Get the updated values
+        $currentContact = $contact->toArray();
+        $currentAddress = $address->toArray();
+
+
+        // Log changes if updated
+        if ($contact->wasChanged() || $address->wasChanged()) {
+            $this->logChanges($originalContact, $currentContact, $originalAddress, $currentAddress, $contact);
+        }
+
+        return response()->json(['action' => ''  , 'message' => 'Contact saved successfully' , 'contact' => $contact]);
+
+    }
+
+
+    protected function logChanges($originalContact, $currentContact, $originalAddress, $currentAddress, $contact)
+    {
+        // Detect changes in contact fields
+        $contactFields = ['name', 'GSTIN', 'PAN', 'phone', 'mobile', 'email', 'website', 'tages'];
+
+        $contactChanges = array_filter(array_combine($contactFields, array_map(function($field) use ($originalContact, $currentContact) {
+            return isset($originalContact[$field]) && $originalContact[$field] != $currentContact[$field] ? [
+                'old' => $originalContact[$field] ?? 'None',
+                'new' => $currentContact[$field] ?? 'None'
+            ] : null;
+        }, $contactFields)));
+
+        // Get the original and current complete addresses
+        $mergeOriginalAddress = ContactAddress::formatCompleteAddress($originalAddress);
+        $mergeCurrentAddress = ContactAddress::formatCompleteAddress($currentAddress);
+
+        // Compare the addresses and return changes if different
+        $addressChanges = $mergeOriginalAddress !== $mergeCurrentAddress ? [
+            'address' => [
+                'old' => $mergeOriginalAddress != '' ? $mergeOriginalAddress : 'None',
+                'new' => $mergeCurrentAddress != '' ? $mergeCurrentAddress : 'None',
+            ]
+        ] : [];
+
+        // Merge contact and address changes
+        $changes = array_merge($contactChanges, $addressChanges);
+
+        // Log changes if any
+        if (!empty($changes)) {
+            $message = json_encode($changes, JSON_PRETTY_PRINT);
+            $contact->ContactLog('updated', $message);
+            Log::info('Detected changes:', ['changes' => $changes]);
+        }
     }
 
 }

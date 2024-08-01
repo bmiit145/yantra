@@ -38,19 +38,21 @@
                                     </div>
                                     <input type="file" class="o_input_file d-none" accept="image/*">
                                     <img loading="lazy" class="img img-fluid" alt="Binary file"
-                                        src="{{ asset('images/placeholder.png') }}" name="image_1920" style="">
+                                        src="{{ asset($contact->image ?? 'images/placeholder.png') }}" name="image_1920" style="">
                                 </div>
                             </div>
                             <div class="oe_title mb24">
-
                                 <h1>
+                                    <input type="text" name="main_contact_id" value="{{ $contact->id ?? ''}}" id="contact_id" hidden />
                                     <div name="name"
                                         class="o_field_widget o_required_modifier o_field_field_partner_autocomplete text-break o_field_invalid">
                                         <div class="o-autocomplete dropdown">
                                             <input type="text"
                                                 class="o-autocomplete--input o_input" autocomplete="off" role="combobox" name="contact_name" id="contact_name"
                                                 aria-autocomplete="list" aria-haspopup="listbox"
-                                                placeholder="e.g. Lumber Inc" aria-expanded="false"></div>
+                                                placeholder="e.g. Lumber Inc" aria-expanded="false"
+                                                value="{{ $contact->name ?? ''}}">
+                                        </div>
                                     </div>
                                 </h1>
                                 <div class="o_row"></div>
@@ -66,29 +68,30 @@
                                                 <div name="street"
                                                     class="o_field_widget o_field_char o_address_street"><input
                                                         class="o_input" type="text" autocomplete="off" name="address_1" id="address_1"
-                                                        placeholder="Street..."></div>
+                                                        placeholder="Street..." value="{{ $contact->address->address_1 ?? '' }}"></div>
                                                 <div name="street2"
                                                     class="o_field_widget o_field_char o_address_street"><input
                                                         class="o_input"  type="text" autocomplete="off" name="address_2" id="address_2"
-                                                        placeholder="Street 2..."></div>
+                                                        placeholder="Street 2..." value="{{ $contact->address->address_2 ?? '' }}"></div>
                                                 <div name="city" class="o_field_widget o_field_char o_address_city">
                                                     <input class="o_input"  type="text" name="address_city" id="address_city"
-                                                        autocomplete="off" placeholder="City">
+                                                        autocomplete="off" placeholder="City" value="{{ $contact->address->city ?? '' }}">
                                                 </div>
                                                 <div name="zip" class="o_field_widget o_field_char o_address_zip">
                                                     <input class="o_input" type="text" name="address_zip" id="address_zip"
-                                                        autocomplete="off" placeholder="ZIP">
+                                                        autocomplete="off" placeholder="ZIP" value="{{ $contact->address->zip ?? '' }}">
                                                 </div>
                                                 <div name="state_id"
                                                     class="o_field_widget o_field_many2one o_address_state">
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
+                                                            <div class="o-autocomplete dropdown">
+                                                                <input type="text"
                                                                     class="o-autocomplete--input o_input" name="address_state" id="address_state"
                                                                     autocomplete="off" role="combobox"
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
                                                                     placeholder="State"
-                                                                    aria-expanded="false">
+                                                                    aria-expanded="false" value="{{ $contact->address->zip ?? '' }}">
                                                             </div><span class="o_dropdown_button"></span>
                                                         </div>
                                                     </div>
@@ -100,13 +103,15 @@
                                                         class="o_field_widget o_field_many2one o_address_country">
                                                         <div class="o_field_many2one_selection">
                                                             <div class="o_input_dropdown">
-                                                                <div class="o-autocomplete dropdown"><input
+                                                                <div class="o-autocomplete dropdown">
+                                                                    <input
                                                                         type="text"
                                                                         class="o-autocomplete--input o_input"
                                                                         autocomplete="off" role="combobox"
                                                                         aria-autocomplete="list" name="country"
                                                                         aria-haspopup="listbox" id="country"
-                                                                        placeholder="Country" aria-expanded="false">
+                                                                        placeholder="Country" aria-expanded="false"
+                                                                        value="{{ $contact->address->country ?? '' }}">
                                                                 </div><span class="o_dropdown_button"></span>
                                                             </div>
                                                         </div>
@@ -127,38 +132,38 @@
                                             <div name="l10n_in_gst_treatment"
                                                 class="o_field_widget o_field_selection"><select class="o_input pe-3" name="gst_treatment" id="gst_treatment"
                                                     id="l10n_in_gst_treatment_0">
-                                                    <option value="false" style=""></option>
-                                                    <option value="&quot;regular&quot;">Registered Business -
-                                                        Regular</option>
-                                                    <option value="&quot;composition&quot;">Registered Business -
-                                                        Composition</option>
-                                                    <option value="&quot;unregistered&quot;">Unregistered Business
-                                                    </option>
-                                                    <option value="&quot;consumer&quot;">Consumer</option>
-                                                    <option value="&quot;overseas&quot;">Overseas</option>
-                                                    <option value="&quot;special_economic_zone&quot;">Special
-                                                        Economic Zone</option>
-                                                    <option value="&quot;deemed_export&quot;">Deemed Export
-                                                    </option>
-                                                    <option value="&quot;uin_holders&quot;">UIN Holders</option>
+                                                    <option value="false" {{ isset($contact) && optional($contact)->GST_treatment == 'false' ? 'selected' : '' }}>Option Label</option>
+                                                    <option value="regular" {{ isset($contact) && optional($contact)->GST_treatment == 'regular' ? 'selected' : '' }}>Registered Business - Regular</option>
+                                                    <option value="composition" {{ isset($contact) && optional($contact)->GST_treatment == 'composition' ? 'selected' : '' }}>Registered Business - Composition</option>
+                                                    <option value="unregistered" {{ isset($contact) && optional($contact)->GST_treatment == 'unregistered' ? 'selected' : '' }}>Unregistered Business</option>
+                                                    <option value="consumer" {{ isset($contact) && optional($contact)->GST_treatment == 'consumer' ? 'selected' : '' }}>Consumer</option>
+                                                    <option value="overseas" {{ isset($contact) && optional($contact)->GST_treatment == 'overseas' ? 'selected' : '' }}>Overseas</option>
+                                                    <option value="special_economic_zone" {{ isset($contact) && optional($contact)->GST_treatment == 'special_economic_zone' ? 'selected' : '' }}>Special Economic Zone</option>
+                                                    <option value="deemed_export" {{ isset($contact) && optional($contact)->GST_treatment == 'deemed_export' ? 'selected' : '' }}>Deemed Export</option>
+                                                    <option value="uin_holders" {{ isset($contact) && optional($contact)->GST_treatment == 'uin_holders' ? 'selected' : '' }}>UIN Holders</option>
                                                 </select></div>
                                         </div>
                                     </div>
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                            style=""><label class="o_form_label" for="vat_0">GSTIN<sup
+                                            style="">
+                                            <label class="o_form_label" for="vat_0">GSTIN<sup
                                                     class="text-info p-1" data-tooltip-template="web.FieldTooltip"
                                                     data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;The Tax Identification Number. Values here will be validated based on the country format. You can use '/' to indicate that the partner is not subject to tax.&quot;}}"
-                                                    data-tooltip-touch-tap-to-show="true">?</sup></label></div>
+                                                    data-tooltip-touch-tap-to-show="true">?</sup>
+                                            </label>
+                                        </div>
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div name="vat_vies_container">
                                                 <div name="vat"
                                                     class="o_field_widget o_field_field_partner_autocomplete oe_inline">
-                                                    <div class="o-autocomplete dropdown"><input type="text" name="gstin" id="gstin"
+                                                    <div class="o-autocomplete dropdown">
+                                                        <input type="text" name="gstin" id="gstin"
                                                             class="o-autocomplete--input o_input" autocomplete="off"
                                                             role="combobox" aria-autocomplete="list"
                                                             aria-haspopup="listbox" placeholder="e.g. BE0477472701"
-                                                            aria-expanded="false">
+                                                            aria-expanded="false"
+                                                               value="{{ $contact->GSTIN ?? '' }}">
                                                     </div>
                                                 </div><span class="text-nowrap ps-2"></span>
                                             </div>
@@ -174,9 +179,11 @@
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
-                                            <div name="l10n_in_pan" class="o_field_widget o_field_char"><input
+                                            <div name="l10n_in_pan" class="o_field_widget o_field_char">
+                                                <input
                                                     class="o_input" type="text" name="pan_number" id="pan_number"
-                                                    autocomplete="off" placeholder="e.g. ABCTY1234D"></div>
+                                                    autocomplete="off" placeholder="e.g. ABCTY1234D"
+                                                    value="{{ $contact->PAN ?? '' }}"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,9 +195,11 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="phone" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input
+                                                    <div class="o_phone_content d-inline-flex w-100">
+                                                        <input
                                                             class="o_input" type="tel" autocomplete="off" name="phone_number" id="phone_number"
-                                                            ></div>
+                                                            value="{{ $contact->phone ?? '' }}">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,9 +211,11 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="mobile" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input
+                                                    <div class="o_phone_content d-inline-flex w-100">
+                                                        <input
                                                             class="o_input" type="tel" autocomplete="off" name="mobile_number" id="mobile_number"
-                                                            ></div>
+                                                            value="{{ $contact->mobile ?? '' }}">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -216,8 +227,9 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="email" class="o_field_widget o_field_email">
-                                                    <div class="d-inline-flex w-100"><input class="o_input" name="contact_email" id="contact_email"
-                                                            type="email" autocomplete="off" >
+                                                    <div class="d-inline-flex w-100">
+                                                        <input class="o_input" name="contact_email" id="contact_email"
+                                                            type="email" autocomplete="off"  value="{{ $contact->email ?? '' }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -231,9 +243,11 @@
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
                                             <div name="website" class="o_field_widget o_field_url">
-                                                <div class="d-inline-flex w-100"><input class="o_input" name="contact_Website" id="contact_Website"
+                                                <div class="d-inline-flex w-100">
+                                                    <input class="o_input" name="contact_Website" id="contact_Website"
                                                         type="text" autocomplete="off"
-                                                        placeholder="e.g. https://www.odoo.com"></div>
+                                                        placeholder="e.g. https://www.odoo.com" value="{{ $contact->website ?? '' }}">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -249,14 +263,16 @@
                                                     class="o_field_tags d-inline-flex flex-wrap gap-1 o_tags_input o_input">
                                                     <div class="o_field_many2many_selection d-inline-flex w-100">
                                                         <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
+                                                            <div class="o-autocomplete dropdown">
+                                                                <input type="text"
                                                                     class="o-autocomplete--input o_input" name="contact_tages" id="contact_tages"
                                                                     autocomplete="off" role="combobox"
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
 
                                                                     placeholder="e.g. &quot;B2B&quot;, &quot;VIP&quot;, &quot;Consulting&quot;, ..."
-                                                                    aria-expanded="false"></div><span
-                                                                class="o_dropdown_button"></span>
+                                                                    aria-expanded="false" value="{{ $contact->tages ?? '' }}">
+                                                            </div>
+                                                            <span class="o_dropdown_button"></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1182,56 +1198,224 @@
                             <div class="o-mail-Chatter-content">
                                 <div class="o-mail-Thread position-relative flex-grow-1 d-flex flex-column overflow-auto pb-4"
                                     tabindex="-1">
-                                    <div class="d-flex flex-column position-relative flex-grow-1"><span
-                                            class="position-absolute w-100 invisible top-0"
-                                            style="height: Min(2500px, 100%)"></span><span></span>
-                                        <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold pt-2">
-                                            <hr class="flex-grow-1"><span
-                                                class="px-3 opacity-75 small text-muted">Today</span>
-                                            <hr class="flex-grow-1">
-                                        </div>
-                                        <div class="o-mail-Message position-relative undefined o-selfAuthored py-1 mt-2"
-                                            role="group" aria-label="System notification">
-                                            <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                                                <div class="o-mail-Message-sidebar d-flex flex-shrink-0">
-                                                    <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
-                                                        aria-label="Open card"><img
-                                                            class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                            src="https://yantradesign.odoo.com/web/image/res.partner/3/avatar_128?unique=1721388544000">
+                                    <div class="d-flex flex-column position-relative flex-grow-1">
+                                        @if( isset($contact) && optional($contact->logs)->count() > 0)
+                                            @php
+                                                // Get logs and sort them by creation date in descending order
+                                                $logs = $contact->logs->sortByDesc('created_at')->groupBy(function($log) {
+                                                    return $log->created_at->format('Y-m-d');
+                                                });
+                                            @endphp
+
+                                            @foreach($logs as $date => $logGroup)
+                                               @php
+                                                    $date = match ($date) {
+                                                        now()->format('Y-m-d') => 'Today',
+                                                        now()->subDay()->format('Y-m-d') => 'Yesterday',
+                                                        default => Carbon\Carbon::parse($date)->format('d M Y'),
+                                                    };
+                                                @endphp
+                                                <span class="position-absolute w-100 invisible top-0" style="height: Min(2500px, 100%)"></span>
+                                                <span></span>
+                                                <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold pt-2">
+                                                    <hr class="flex-grow-1">
+                                                    <span class="px-3 opacity-75 small text-muted">{{ $date }}</span>
+                                                    <hr class="flex-grow-1">
+                                                </div>
+                                                @foreach($logGroup as $log)
+                                                    @php
+                                                        $profile_pic = optional($log->user->contact)->image;
+                                                    @endphp
+                                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Note">
+                                                    <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                                        <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                                            <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
+                                                                <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
+                                                                     src=" {{ $profile_pic ??  'https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722494284000' }}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="w-100 o-min-width-0">
+                                                            <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1">
+                                                                <span class="o-mail-Message-author cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                                    <strong class="me-1 text-truncate">{{ $log->user->email }}</strong>
+                                                                </span>
+                                                                <small class="o-mail-Message-date text-muted opacity-75 o-smaller" title="{{ $log->created_at->format('n/j/Y, g:i:s a') }}">- {{ $log->created_at->diffForHumans() }} </small>
+                                                                <div class="o-mail-Message-actions d-print-none ms-2 my-n2 invisible">
+                                                                    <div class="d-flex rounded-1 overflow-hidden">
+                                                                        <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction">
+                                                                            <i class="oi fa-lg oi-smile-add"></i>
+                                                                        </button>
+                                                                        <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star">
+                                                                            <i class="fa fa-lg fa-star-o"></i>
+                                                                        </button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false">
+                                                                                <i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="position-relative d-flex">
+                                                                <div class="o-mail-Message-content o-min-width-0 pt-1">
+                                                                    @if($log->action != 'updated')
+                                                                    <div class="o-mail-Message-textContent position-relative d-flex">
+                                                                        <div class="position-relative overflow-x-auto d-inline-block">
+                                                                            <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 rounded-end-3"></div>
+                                                                            <div class="position-relative text-break o-mail-Message-body p-1">
+                                                                                {{ $log->message  }}
+                                                                            </div>
+                                                                            <div class="o-mail-Message-seenContainer position-absolute bottom-0"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    @endif
+                                                                    @if($log->action == 'updated')
+                                                                        @php
+                                                                            $changedFields = json_decode($log->message, true);
+                                                                        @endphp
+                                                                            <div class="o-mail-Message-textContent position-relative d-flex">
+                                                                                <div>
+                                                                                    <ul class="mb-0 ps-4">
+                                                                                        @foreach($changedFields as $field => $data)
+                                                                                            <li class="o-mail-Message-tracking mb-1" style=" list-style-type: disc;" role="group">
+                                                                                            <span class="o-mail-Message-trackingOld me-1 px-1 text-muted fw-bold">{{ $data['old'] }}</span>
+                                                                                            <i class="o-mail-Message-trackingSeparator fa fa-long-arrow-right mx-1 text-600"></i>
+                                                                                            <span class="o-mail-Message-trackingNew me-1 fw-bold text-info">{{ $data['new'] }}</span>
+                                                                                            <span class="o-mail-Message-trackingField ms-1 fst-italic text-muted">({{ $field }})</span>
+                                                                                        </li>
+                                                                                        @endforeach
+                                                                                    </ul>
+                                                                                    <div>
+                                                                                        <div class="o-mail-Message-body text-break mb-0 w-100">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                    @endif
+                                                                    @if($log->attachments != null)
+                                                                    <div class="o-mail-AttachmentList overflow-y-auto d-flex flex-column mt-1">
+                                                                        <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu"></div>
+                                                                        <div class="grid row-gap-0 column-gap-0">
+                                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 bg-300" role="menu" title="vdb.xlsx" aria-label="vdb.xlsx">
+                                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1" role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+                                                                                <div class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                                    <div class="text-truncate">vdb.xlsx</div>
+                                                                                    <small class="text-uppercase">xlsx</small>
+                                                                                </div>
+                                                                                <div class="flex-grow-1"></div>
+                                                                                <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                                    <button class="o-mail-AttachmentCard-unlink btn top-0 align-items-center justify-content-center d-flex w-100 h-100 rounded-0 border-0 bg-300" title="Remove">
+                                                                                        <i class="fa fa-trash" role="img" aria-label="Remove"></i>
+                                                                                    </button>
+                                                                                    <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300" title="Download">
+                                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                        @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="w-100 o-min-width-0">
-                                                    <div
-                                                        class="o-mail-Message-header d-flex flex-wrap align-items-baseline mb-1 lh-1">
-                                                        <span class="o-mail-Message-author cursor-pointer"
-                                                            aria-label="Open card"><strong
-                                                                class="me-1 text-truncate">info@yantradesign.co.in</strong></span><small
-                                                            class="o-mail-Message-date text-muted opacity-75 me-2"
-                                                            title="25/7/2024, 9:24:59 am">- 21 minutes
-                                                            ago</small><span
-                                                            class="o-mail-MessageSeenIndicator position-relative d-flex opacity-50 o-all-seen text-primary ms-1"></span>
+
+
+
+{{--                                            <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="System notification">--}}
+{{--                                            <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">--}}
+{{--                                                <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">--}}
+{{--                                                    <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">--}}
+{{--                                                        <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722494284000">--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                                <div class="w-100 o-min-width-0">--}}
+{{--                                                    <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1">--}}
+{{--                                                        <span class="o-mail-Message-author cursor-pointer o-hover-text-underline" aria-label="Open card">--}}
+{{--                                                            <strong class="me-1 text-truncate">info@yantradesign.co.in</strong></span>--}}
+{{--                                                        <small class="o-mail-Message-date text-muted opacity-75 o-smaller" title="1/8/2024, 11:50:00 am">- 2 hours ago</small>--}}
+{{--                                                        <div class="o-mail-Message-actions d-print-none ms-2 my-n2 invisible">--}}
+{{--                                                            <div class="d-flex rounded-1 overflow-hidden">--}}
+{{--                                                                <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction">--}}
+{{--                                                                    <i class="oi fa-lg oi-smile-add"></i>--}}
+{{--                                                                </button>--}}
+{{--                                                                <button class="btn px-1 py-0 rounded-0 rounded-end-1" title="Mark as Todo" name="toggle-star">--}}
+{{--                                                                    <i class="fa fa-lg fa-star-o"></i>--}}
+{{--                                                                </button>--}}
+{{--                                                            </div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                    <div class="position-relative d-flex">--}}
+{{--                                                        <div class="o-mail-Message-content o-min-width-0 pt-1">--}}
+{{--                                                            <div class="o-mail-Message-textContent position-relative d-flex"><div>--}}
+{{--                                                                    <ul class="mb-0 ps-4">--}}
+{{--                                                                        <li class="o-mail-Message-tracking mb-1" role="group">--}}
+{{--                                                                            <span class="o-mail-Message-trackingOld me-1 px-1 text-muted fw-bold">None</span>--}}
+{{--                                                                            <i class="o-mail-Message-trackingSeparator fa fa-long-arrow-right mx-1 text-600"></i>--}}
+{{--                                                                            <span class="o-mail-Message-trackingNew me-1 fw-bold text-info">24FEZPB4648D1ZA</span>--}}
+{{--                                                                            <span class="o-mail-Message-trackingField ms-1 fst-italic text-muted">(Tax ID)</span>--}}
+{{--                                                                            </li>--}}
+{{--                                                                        <li class="o-mail-Message-tracking mb-1" role="group"><span class="o-mail-Message-trackingOld me-1 px-1 text-muted fw-bold">145  , Rajeshwari Society, Kamrej, Surat 394180, Daman and Diu DD, India</span><i class="o-mail-Message-trackingSeparator fa fa-long-arrow-right mx-1 text-600"></i><span class="o-mail-Message-trackingNew me-1 fw-bold text-info">145  , Rajeshwari Society, Kamrej, Surat 394180, Gujarat GJ, India</span><span class="o-mail-Message-trackingField ms-1 fst-italic text-muted">(Inlined Complete Address)</span></li></ul>--}}
+{{--                                                                    <div>--}}
+{{--                                                                        <div class="o-mail-Message-body text-break mb-0 w-100">--}}
+{{--                                                                        </div>--}}
+{{--                                                                    </div>--}}
+{{--                                                                </div>--}}
+{{--                                                            </div>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+
+
+                                        @endforeach
+                                            @endforeach
+
+                                        @else
+                                            <div class="o-mail-Message position-relative undefined o-selfAuthored py-1 mt-2" role="group" aria-label="System notification">
+                                                <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                                    <div class="o-mail-Message-sidebar d-flex flex-shrink-0">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
+                                                             aria-label="Open card"><img
+                                                                class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
+                                                                src="https://yantradesign.odoo.com/web/image/res.partner/3/avatar_128?unique=1721388544000">
+                                                        </div>
                                                     </div>
-                                                    <div class="position-relative d-flex">
-                                                        <div class="o-mail-Message-content o-min-width-0">
-                                                            <div
-                                                                class="o-mail-Message-textContent position-relative d-flex">
-                                                                <div>
-                                                                    <div
-                                                                        class="o-mail-Message-body text-break mb-0 w-100">
-                                                                        Creating a new record...</div>
-                                                                </div>
+                                                    <div class="w-100 o-min-width-0">
+                                                        <div
+                                                            class="o-mail-Message-header d-flex flex-wrap align-items-baseline mb-1 lh-1">
+                                                        <span class="o-mail-Message-author cursor-pointer"
+                                                              aria-label="Open card"><strong
+                                                                class="me-1 text-truncate">info@yantradesign.co.in</strong></span><small
+                                                                class="o-mail-Message-date text-muted opacity-75 me-2"
+                                                                title="25/7/2024, 9:24:59 am">- 21 minutes
+                                                                ago</small><span
+                                                                class="o-mail-MessageSeenIndicator position-relative d-flex opacity-50 o-all-seen text-primary ms-1"></span>
+                                                        </div>
+                                                        <div class="position-relative d-flex">
+                                                            <div class="o-mail-Message-content o-min-width-0">
                                                                 <div
-                                                                    class="o-mail-Message-actions ms-2 mt-1 invisible">
+                                                                    class="o-mail-Message-textContent position-relative d-flex">
+                                                                    <div>
+                                                                        <div
+                                                                            class="o-mail-Message-body text-break mb-0 w-100">
+                                                                            Creating a new record...</div>
+                                                                    </div>
                                                                     <div
-                                                                        class="d-flex rounded-1 bg-view shadow-sm overflow-hidden">
-                                                                        <button class="btn px-1 py-0 rounded-0"
-                                                                            tabindex="1" title="Add a Reaction"
-                                                                            aria-label="Add a Reaction"><i
-                                                                                class="oi fa-lg oi-smile-add"></i></button><button
-                                                                            class="btn px-1 py-0 rounded-0"
-                                                                            title="Mark as Todo"
-                                                                            name="toggle-star"><i
-                                                                                class="fa fa-lg fa-star-o"></i></button>
+                                                                        class="o-mail-Message-actions ms-2 mt-1 invisible">
+                                                                        <div
+                                                                            class="d-flex rounded-1 bg-view shadow-sm overflow-hidden">
+                                                                            <button class="btn px-1 py-0 rounded-0"
+                                                                                    tabindex="1" title="Add a Reaction"
+                                                                                    aria-label="Add a Reaction"><i
+                                                                                    class="oi fa-lg oi-smile-add"></i></button><button
+                                                                                class="btn px-1 py-0 rounded-0"
+                                                                                title="Mark as Todo"
+                                                                                name="toggle-star"><i
+                                                                                    class="fa fa-lg fa-star-o"></i></button>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1239,7 +1423,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -1441,35 +1625,38 @@
                                                                 class="o_field_widget o_field_char o_address_street">
                                                                 <input class="o_input" id="parent_address_1" name="parent_address_1"
                                                                     type="text" autocomplete="off"
-                                                                    placeholder="Street..."></div>
+                                                                    placeholder="Street..." value="{{ $contact->address->address_1 ?? '' }}"> </div>
                                                             <div name="street2"
                                                                 class="o_field_widget o_field_char o_address_street">
                                                                 <input class="o_input" id="parent_address_2"  name="parent_address_2"
                                                                     type="text" autocomplete="off"
-                                                                    placeholder="Street 2..."></div>
+                                                                    placeholder="Street 2..." value="{{ $contact->address->address_2 ?? '' }}"></div>
                                                             <div name="city"
                                                                 class="o_field_widget o_field_char o_address_city">
                                                                 <input class="o_input" id="parent_city" name="parent_city"
                                                                     type="text" autocomplete="off"
-                                                                    placeholder="City"></div>
+                                                                    placeholder="City" value="{{ $contact->address->city ?? '' }}"></div>
                                                             <div name="zip"
                                                                 class="o_field_widget o_field_char o_address_zip">
                                                                 <input class="o_input" id="parent_zip" name="parent_zip"
                                                                     type="text" autocomplete="off"
-                                                                    placeholder="ZIP"></div>
+                                                                    placeholder="ZIP" value="{{ $contact->address->zip ?? '' }}"></div>
                                                             <div name="state_id"
                                                                 class="o_field_widget o_field_many2one o_address_state">
                                                                 <div class="o_field_many2one_selection">
                                                                     <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
+                                                                        <div class="o-autocomplete dropdown">
+                                                                            <input
                                                                                 type="text"
                                                                                 class="o-autocomplete--input o_input"
                                                                                 autocomplete="off" role="combobox" name="parent_state"
                                                                                 aria-autocomplete="list"
                                                                                 aria-haspopup="listbox"
                                                                                 id="parent_state" placeholder="State"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
+                                                                                aria-expanded="false"
+                                                                                value="{{ $contact->address->state ?? '' }}">
+                                                                        </div>
+                                                                        <span class="o_dropdown_button"></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="o_field_many2one_extra"></div>
@@ -1478,7 +1665,8 @@
                                                                 class="o_field_widget o_field_many2one o_address_country">
                                                                 <div class="o_field_many2one_selection">
                                                                     <div class="o_input_dropdown">
-                                                                        <div class="o-autocomplete dropdown"><input
+                                                                        <div class="o-autocomplete dropdown">
+                                                                            <input
                                                                                 type="text"
                                                                                 class="o-autocomplete--input o_input"
                                                                                 autocomplete="off" role="combobox" name="parent_country"
@@ -1486,8 +1674,10 @@
                                                                                 aria-haspopup="listbox"
                                                                                 id="parent_country"
                                                                                 placeholder="Country"
-                                                                                aria-expanded="false"></div><span
-                                                                            class="o_dropdown_button"></span>
+                                                                                aria-expanded="false"
+                                                                                value="{{ $contact->address->country ?? '' }}">
+                                                                        </div>
+                                                                        <span class="o_dropdown_button"></span>
                                                                     </div>
                                                                 </div>
                                                                 <div class="o_field_many2one_extra"></div>
@@ -1505,8 +1695,8 @@
                                                 <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                     style="width: 100%;">
                                                     <div name="email" class="o_field_widget o_field_email">
-                                                        <div class="d-inline-flex w-100"><input class="o_input" name="parent_email"
-                                                                type="email" autocomplete="off" id="parent_email">
+                                                        <div class="d-inline-flex w-100">
+                                                            <input class="o_input" name="parent_email" type="email" autocomplete="off" id="parent_email" value="{{ $contact->address ?? '' }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1695,9 +1885,8 @@
         var value = $(this).data('value');
         switch(value) {
             case 'contact':
-            $('.contact_show').show();
-            $('.other_address_show').hide();
-
+                $('.contact_show').show();
+                $('.other_address_show').hide();
                 break;
             case 'invoice':
                 $('.contact_show').show();
@@ -1722,8 +1911,10 @@
     });
 
         $('#main_save_btn').click(function() {
+            var contact_id = $('#contact_id').val();
             var contact_name = $('#contact_name').val();
             var address_1 = $('#address_1').val();
+            var address_2 = $('#address_2').val();
             var address_city = $('#address_city').val();
             var address_zip = $('#address_zip').val();
             var address_state = $('#address_state').val();
@@ -1747,8 +1938,10 @@
                     type: 'POST',
                     data: {
                         _token: '{{ csrf_token() }}',
+                        contact_id: contact_id,
                         contact_name: contact_name,
                         address_1 :address_1,
+                        address_2 : address_2,
                         address_city : address_city,
                         address_zip : address_zip,
                         address_state : address_state,
@@ -1764,6 +1957,8 @@
                     },
                     success: function(response) {
                         console.log(response);
+                        $('#contact_id').val(response.contact.id);
+                        toastr.success(response.message);
                     }
                 });
         });

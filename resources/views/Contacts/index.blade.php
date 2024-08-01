@@ -2,7 +2,7 @@
 
 @section('title', 'Contacts')
 @section('head_title_link' , route('contact.index'))
-@section('image_url', 'images/CRM.png')
+@section('image_url', asset('images/contacts.png'))
 @section('head_new_btn_link', route('contact.create'))
 @section('navbar_menu')
 <li><a href="{{ route('contact.index') }}">Contacts</a></li>
@@ -31,7 +31,7 @@
                     <div>
                         <strong class="o_kanban_record_title oe_partner_heading">
                             <span> {{ $contact->name }}</span>
-                            <span> {{ $contact->email }}</span>
+{{--                            <span> {{ $contact->email }}</span>--}}
                         </strong>
                         <div class="o_kanban_tags_section oe_kanban_partner_categories">
                             <span
@@ -40,6 +40,19 @@
                                     <div class="d-flex flex-wrap gap-1"></div>
                                 </div>
                             </span>
+                        </div>
+                        @php
+                            $address = optional($contact->address);
+                            $city = $address->city;
+                            $country = $address->country;
+                        @endphp
+
+                        <div>
+                            <span>{{ $city }}</span>
+                            @if($city && $country)
+                                <span>, </span>
+                            @endif
+                            <span>{{ $country }}</span>
                         </div>
                         <ul>
                             <li class="o_text_overflow"><span>{{ $contact->email }}</span></li>
@@ -52,7 +65,9 @@
                                     class="o-mail-ActivityButton" role="button" aria-label="Show activities"
                                     title="Show activities"><i
                                         class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"
-                                        role="img"></i></a></div>
+                                        role="img"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -77,6 +77,15 @@ class User extends Authenticatable
         static::creating(function ($model) {
             $model->id = Uuid::uuid4()->toString();
         });
+
+        // creation of contact
+        static::created(function ($model) {
+            Contact::create([
+                'name' => $model->name,
+                'email' => $model->email,
+                'is_user' => $model->id,
+            ]);
+        });
     }
 
     //give the
@@ -113,5 +122,17 @@ class User extends Authenticatable
     public function otp()
     {
         return $this->hasMany(OTPverifiction::class);
+    }
+
+    //contact logs
+    public function contactLogs()
+    {
+        return $this->hasMany(ContactLog::class);
+    }
+
+    //contact
+    public function contact()
+    {
+        return $this->hasOne(Contact::class , 'is_user'  , 'id');
     }
 }

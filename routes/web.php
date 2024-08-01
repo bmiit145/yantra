@@ -25,7 +25,6 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['auth'])->group(function () {
 
-
     Route::get('/dataTable/users', [UserController::class, 'getUsers'])->name('api.users');
 
     Route::get('/', [DashboardController::class, 'index'])->name('home');
