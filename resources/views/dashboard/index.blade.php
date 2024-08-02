@@ -279,7 +279,7 @@
                     </div>
                     <div class="main_inner_block">
                         <a role="option" class="main_inner_wrapper" id="result_app_26" aria-selected="false"
-                            data-menu-xmlid="hr.menu_hr_root" href="{{ route('employees.index') }}">
+                            data-menu-xmlid="hr.menu_hr_root" href="{{ route('employee.index') }}">
                             <img class="home_app_icon" src="{{ asset('images/Employees.png') }}">
                             <div class="home_caption">Employees</div>
                         </a>

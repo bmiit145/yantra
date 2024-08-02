@@ -13,6 +13,8 @@
 @endsection
 @section('navbar_menu')
     <li><a href="{{ route('employee.index') }}">Employees</a></li>
+    <li><a href="#"></a>Departments</li>
+    <li><a href="#"></a>Reporting</li>
     <li><a href="#"></a>Configuration</li>
 @endsection
 @section('content')
@@ -21,7 +23,7 @@
     <div class="o_action_manager">
         <div class="o_xxl_form_view h-100 o_form_view o_hr_employee_form_view o_view_controller o_action">
             <div class="o_form_view_container">
-                <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3" data-command-category="actions">
+                <!-- <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3" data-command-category="actions">
                     <div
                         class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-3 flex-grow-1">
                         <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
@@ -115,7 +117,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="o_content">
                     <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100 o_form_saved">
                         <div class="o_form_sheet_bg">
