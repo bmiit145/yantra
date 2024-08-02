@@ -8,7 +8,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
-
+use App\Http\Controllers\EmployeeController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
@@ -41,7 +41,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/contact', ContactController::class , [ 'except' => [] ]);
 //    Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
     Route::post('/contact/save', [ContactController::class, 'save'])->name('contact.save');
+    
+    // Employee
+    Route::resource('employee', EmployeeController::class);
 
+    // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
@@ -58,4 +62,5 @@ Route::middleware(['auth'])->group(function () {
 
     // user update
     Route::post('/user-update', [userController::class, 'userNewOrUpdate'])->name('user.update');
+
 });

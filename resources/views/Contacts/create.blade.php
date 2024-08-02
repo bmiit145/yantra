@@ -1869,6 +1869,11 @@
 
     $('input[type="radio"]').on('change', function() {
         var value = $(this).data('value');
+
+        $('.tab-pane').removeClass('active');
+        $('.form-check-input').parent().removeClass('active');
+        $(this).parent().addClass('active');\
+
         switch(value) {
             case 'contact':
                 $('.contact_show').show();

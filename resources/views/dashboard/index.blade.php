@@ -279,11 +279,12 @@
                     </div>
                     <div class="main_inner_block">
                         <a role="option" class="main_inner_wrapper" id="result_app_26" aria-selected="false"
-                            data-menu-xmlid="hr.menu_hr_root" href="#">
+                            data-menu-xmlid="hr.menu_hr_root" href="{{ route('employees.index') }}">
                             <img class="home_app_icon" src="{{ asset('images/Employees.png') }}">
                             <div class="home_caption">Employees</div>
                         </a>
                     </div>
+
                     <div class="main_inner_block">
                         <a role="option" class="main_inner_wrapper" id="result_app_27" aria-selected="false"
                             data-menu-xmlid="hr_recruitment.menu_hr_recruitment_root" href="#">
