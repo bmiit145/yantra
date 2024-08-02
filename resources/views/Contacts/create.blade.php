@@ -1377,8 +1377,7 @@
                                                               aria-label="Open card"><strong
                                                                 class="me-1 text-truncate">{{ auth()->user()->email }}</strong></span><small
                                                                 class="o-mail-Message-date text-muted opacity-75 me-2"
-                                                                title=" {{  }}">- 21 minutes
-                                                                ago</small><span
+                                                                title="now">- now</small><span
                                                                 class="o-mail-MessageSeenIndicator position-relative d-flex opacity-50 o-all-seen text-primary ms-1"></span>
                                                         </div>
                                                         <div class="position-relative d-flex">
