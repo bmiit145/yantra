@@ -60,35 +60,42 @@ class User extends Authenticatable
         ];
     }
 
-//    protected static function boot()
+
+//    protected static function booted()
 //    {
-//        parent::boot();
-//
-//        // Automatically generate UUID for primary key
 //        static::creating(function ($model) {
-//            if (empty($model->id)) {
-//                $model->id = (string)Uuid::uuid4();
-//            }
+//            $model->id = Uuid::uuid4()->toString();
+//        });
+//
+//        // creation of contact
+//        static::created(function ($model) {
+//            Contact::create([
+//                'name' => $model->name,
+//                'email' => $model->email,
+//                'is_user' => $model->id,
+//            ]);
 //        });
 //    }
 
     protected static function booted()
     {
         static::creating(function ($model) {
-            $model->id = Uuid::uuid4()->toString();
+            if (empty($model->id)) {
+                $model->id = Uuid::uuid4()->toString();
+            }
         });
 
-        // creation of contact
         static::created(function ($model) {
-            Contact::create([
-                'name' => $model->name,
-                'email' => $model->email,
-                'is_user' => $model->id,
-            ]);
+                $encEmail = EncryptionService::encrypt($model->email);
+                $user = User::where('email', $encEmail)->first();
+                Contact::create([
+                    'name' => $model->name,
+                    'email' => $model->email,
+                    'is_user' => $user->id,
+                ]);
         });
     }
 
-    //give the
 
     /**
      * Get the name of the unique identifier for the user.
