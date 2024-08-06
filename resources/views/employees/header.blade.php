@@ -1,4 +1,4 @@
-<!-- resources/views/includes/header.blade.php -->
+<!-- resources/views/employees/header.blade.php -->
 <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3" data-command-category="actions">
     <div
         class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-3 flex-grow-1">

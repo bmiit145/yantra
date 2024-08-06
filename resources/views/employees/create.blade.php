@@ -17,6 +17,7 @@
     <li><a href="#"></a>Reporting</li>
     <li><a href="#"></a>Configuration</li>
 @endsection
+
 @section('content')
 <body>
 
@@ -156,7 +157,7 @@
                                                             class="fa fa-trash-o fa-fw"></i></button><input type="file"
                                                         class="o_input_file d-none" accept="image/*"></div><img
                                                     loading="lazy" class="img img-fluid" alt="Binary file"
-                                                    src="https://yantra-design2.odoo.com/web/image/hr.employee/2/avatar_128?unique=1722574431000"
+                                                    src="http://127.0.0.1:8000/images/employees.png"
                                                     name="image_1920" style=""
                                                     data-tooltip-template="web.ImageZoomTooltip"
                                                     data-tooltip-info="{&quot;url&quot;:&quot;https://yantra-design2.odoo.com/web/image/hr.employee/2/image_1920?unique=1722574431000&quot;}">
@@ -581,7 +582,8 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                               
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -648,7 +650,7 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -709,7 +711,7 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -778,7 +780,7 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -858,7 +860,7 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -919,7 +921,7 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -972,7 +974,7 @@
                                                         <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
                                                             aria-label="Open card"><img
                                                                 class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
+                                                                src="http://127.0.0.1:8000/images/employees.png">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
