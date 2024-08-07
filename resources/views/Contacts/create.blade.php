@@ -8,7 +8,9 @@
 @section('head')
 @vite([
         "resources/css/odoo/web.assets_web.css",
+//        "resources/css/odoo/web.assets_web_print.min.css",
         "resources/css/contactcreate.css",
+        "resources/js/common.js",
 ])
 @endsection
 @section('navbar_menu')
@@ -1194,6 +1196,46 @@
                                         </button>
                                     </div>
                                 </div>
+                                    <div class="d-flex flex-shrink-0 pt-3 text-truncate small mb-2 ms-5">
+                                        <span class="fw-bold">To:</span>
+                                        <span class="ps-1">
+                                            <span class="text-muted" title="21bmiit145@gmail.com">21bmiit145</span>
+                                        </span>
+                                        <button class="o-mail-Chatter-recipientListButton btn btn-link badge rounded-pill border-0 p-1 ms-1" title="Show all recipients"><i class="fa fa-caret-down"></i></button>
+                                    </div>
+                                <div style="margin-left:48px;"></div>
+                                <div>
+                                    <div class="o-mail-Composer d-grid flex-shrink-0 pt-0 pb-2 o-extended o-hasSelfAvatar">
+                                        <div class="o-mail-Composer-sidebarMain flex-shrink-0">
+                                            <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="{{  asset('images/placeholder.png') }}"></div>
+                                        <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
+                                            <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
+                                                <div class="position-relative flex-grow-1">
+                                                    <textarea class="o-mail-Composer-input form-control bg-view px-3 border-0 rounded-3 shadow-none overflow-auto" style="height:40px;" placeholder="Send a message to followers…"></textarea>
+                                                    <textarea class="o-mail-Composer-fake position-absolute" disabled="1"></textarea></div>
+                                                <div class="o-mail-Composer-actions d-flex bg-view rounded mx-3 border-top p-1">
+                                                    <div class="d-flex flex-grow-1 align-items-baseline mt-1">
+                                                        <button class="btn border-0 p-1 rounded-pill" aria-label="Emojis"><i class="fa fa-fw fa-smile-o"></i></button>
+                                                        <span style="display:contents">
+                                                            <button class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1" title="Attach files" aria-label="Attach files" type="button">
+                                                                <i class="fa fa-fw fa-paperclip"></i>
+                                                            </button>
+                                                        </span>
+                                                        <input type="file" class="o_input_file d-none" multiple="multiple" accept="*">
+                                                    </div>
+                                                    <button class="o-mail-Composer-fullComposer btn p-1 border-0 rounded-pill" title="Full composer" aria-label="Full composer" type="button" data-hotkey="shift+c" style="position: relative;">
+                                                        <i class="fa fa-fw fa-expand"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center mt-2 gap-2">
+{{--                                                <button class="o-mail-Composer-send btn btn-primary" disabled="" aria-label="Send">Send</button>--}}
+                                                <button class="o-mail-Composer-send btn btn-primary" aria-label="Send">Send</button>
+                                            </div>
+                                        </div>
+                                        <div class="o-mail-Composer-footer overflow-auto"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="o-mail-Chatter-content">
                                 <div class="o-mail-Thread position-relative flex-grow-1 d-flex flex-column overflow-auto pb-4"
@@ -1872,7 +1914,7 @@
 
         $('.tab-pane').removeClass('active');
         $('.form-check-input').parent().removeClass('active');
-        $(this).parent().addClass('active');\
+        $(this).parent().addClass('active');
 
         switch(value) {
             case 'contact':

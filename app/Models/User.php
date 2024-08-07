@@ -40,12 +40,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-//    protected $casts = [
-//        'email_verified_at' => 'datetime',
-//        'password' => 'hashed',
-//        'id' => 'string', // Ensure id is cast to string
-//    ];
-
     /**
      * Get the attributes that should be cast.
      *
