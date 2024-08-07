@@ -83,7 +83,7 @@ class User extends Authenticatable
             Contact::create([
                 'name' => $model->name,
                 'email' => $model->email,
-                'is_user' => $model->id,
+                'is_user' => $model->id ?? null,
             ]);
         });
     }
