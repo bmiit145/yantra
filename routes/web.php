@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Employee
     Route::resource('employee', EmployeeController::class);
+    Route::post('/save-employee', [EmployeeController::class, 'store']);
 
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');

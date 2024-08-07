@@ -21,6 +21,10 @@
 @section('content')
 <body>
 
+    <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm" id="main_save_btn" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+        <i class="fa fa-cloud-upload fa-fw"></i>
+    </button>
+
     <div class="o_action_manager">
         <div class="o_xxl_form_view h-100 o_form_view o_hr_employee_form_view o_view_controller o_action">
             <div class="o_form_view_container">
@@ -130,170 +134,128 @@
                                         type="action"><span>Launch Plan</span></button></div>
                             </div>
                             <div class="o_form_sheet position-relative">
-                                <div class="row justify-content-between position-relative w-100 m-0 mb-2">
-                                    <div class="oe_title mw-75 ps-0 pe-2">
-                                        <h1 class="d-flex flex-row align-items-center">
-                                            <div name="name" class="o_field_widget o_required_modifier o_field_char"
-                                                style="font-size: min(4vw, 2.6rem);"><input class="o_input" id="name_0"
-                                                    type="text" autocomplete="off" placeholder="Employee's Name"></div>
-                                        </h1>
-                                        <h2>
-                                            <div name="job_title" class="o_field_widget o_field_char"><input
-                                                    class="o_input" id="job_title_0" type="text" autocomplete="off"
-                                                    placeholder="Job Title"></div>
-                                        </h2>
+
+
+                                <form action="" method="POST" id="employeeForm">
+                                    @csrf
+
+                                    <div class="row justify-content-between position-relative w-100 m-0 mb-2">
+                                        <div class="oe_title mw-75 ps-0 pe-2">
+                                            <h1 class="d-flex flex-row align-items-center">
+                                                <div name="name" class="o_field_widget o_required_modifier o_field_char"
+                                                    style="font-size: min(4vw, 2.6rem);"><input class="o_input" name="name" id="name_0"
+                                                        type="text" autocomplete="off" placeholder="Employee's Name"></div>
+                                            </h1>
+                                            <h2>
+                                                <div name="job_title" class="o_field_widget o_field_char"><input
+                                                        class="o_input" name="job_title" id="job_title_0" type="text" autocomplete="off"
+                                                        placeholder="Job Title"></div>
+                                            </h2>
+                                        </div>
+                                        <div class="o_employee_avatar m-0 p-0">
+                                            <div name="image_1920" class="o_field_widget o_field_image oe_avatar m-0">
+                                                <div class="d-inline-block position-relative opacity-trigger-hover">
+                                                    <div aria-atomic="true"
+                                                        class="position-absolute d-flex justify-content-between w-100 bottom-0 opacity-0 opacity-100-hover"
+                                                        style=""><span style="display:contents"><button
+                                                                class="o_select_file_button btn btn-light border-0 rounded-circle m-1 p-1"
+                                                                data-tooltip="Edit" aria-label="Edit"><i
+                                                                    class="fa fa-pencil fa-fw"></i></button></span><button
+                                                            class="o_clear_file_button btn btn-light border-0 rounded-circle m-1 p-1"
+                                                            data-tooltip="Clear" aria-label="Clear"><i
+                                                                class="fa fa-trash-o fa-fw"></i></button><input type="file"
+                                                            class="o_input_file d-none" accept="image/*"></div><img
+                                                        loading="lazy" name="profile_image" class="img img-fluid" alt="Binary file"
+                                                        src="http://127.0.0.1:8000/images/employees.png"
+                                                        name="image_1920" style=""
+                                                        data-tooltip-template="web.ImageZoomTooltip"
+                                                        data-tooltip-info="{&quot;url&quot;:&quot;https://yantra-design2.odoo.com/web/image/hr.employee/2/image_1920?unique=1722574431000&quot;}">
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="o_employee_avatar m-0 p-0">
-                                        <div name="image_1920" class="o_field_widget o_field_image oe_avatar m-0">
-                                            <div class="d-inline-block position-relative opacity-trigger-hover">
-                                                <div aria-atomic="true"
-                                                    class="position-absolute d-flex justify-content-between w-100 bottom-0 opacity-0 opacity-100-hover"
-                                                    style=""><span style="display:contents"><button
-                                                            class="o_select_file_button btn btn-light border-0 rounded-circle m-1 p-1"
-                                                            data-tooltip="Edit" aria-label="Edit"><i
-                                                                class="fa fa-pencil fa-fw"></i></button></span><button
-                                                        class="o_clear_file_button btn btn-light border-0 rounded-circle m-1 p-1"
-                                                        data-tooltip="Clear" aria-label="Clear"><i
-                                                            class="fa fa-trash-o fa-fw"></i></button><input type="file"
-                                                        class="o_input_file d-none" accept="image/*"></div><img
-                                                    loading="lazy" class="img img-fluid" alt="Binary file"
-                                                    src="http://127.0.0.1:8000/images/employees.png"
-                                                    name="image_1920" style=""
-                                                    data-tooltip-template="web.ImageZoomTooltip"
-                                                    data-tooltip-info="{&quot;url&quot;:&quot;https://yantra-design2.odoo.com/web/image/hr.employee/2/image_1920?unique=1722574431000&quot;}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_group row align-items-start">
-                                    <div class="o_inner_group grid col-lg-6">
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="mobile_phone_0">Work Mobile</label>
-                                            </div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="mobile_phone" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input
-                                                            class="o_input" type="tel" autocomplete="off"
-                                                            id="mobile_phone_0"></div>
+                                    <div class="o_group row align-items-start">
+                                        <div class="o_inner_group grid col-lg-6">
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="mobile_phone_0">Work Mobile</label>
+                                                </div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="mobile_phone" class="o_field_widget o_field_phone">
+                                                        <div class="o_phone_content d-inline-flex w-100"><input
+                                                                class="o_input" name="work_mobile" type="tel" autocomplete="off"
+                                                                id="mobile_phone_0"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="work_phone_0">Work Phone</label></div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="work_phone" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input
-                                                            class="o_input" type="tel" autocomplete="off"
-                                                            id="work_phone_0"></div>
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="work_phone_0">Work Phone</label></div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="work_phone" class="o_field_widget o_field_phone">
+                                                        <div class="o_phone_content d-inline-flex w-100"><input
+                                                                class="o_input" name="work_phone" type="tel" autocomplete="off"
+                                                                id="work_phone_0"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="work_email_0">Work Email</label></div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="work_email" class="o_field_widget o_field_email">
-                                                    <div class="d-inline-flex w-100"><input class="o_input" type="email"
-                                                            autocomplete="off" id="work_email_0"></div>
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="work_email_0">Work Email</label></div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="work_email" class="o_field_widget o_field_email">
+                                                        <div class="d-inline-flex w-100"><input class="o_input" name="work_email" type="email"
+                                                                autocomplete="off" id="work_email_0"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="category_ids_0">Tags</label></div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="category_ids" class="o_field_widget o_field_many2many_tags">
-                                                    <div
-                                                        class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
-                                                        <div class="o_field_many2many_selection d-inline-flex w-100">
-                                                            <div class="o_input_dropdown">
-                                                                <div class="o-autocomplete dropdown"><input type="text"
-                                                                        class="o-autocomplete--input o_input"
-                                                                        autocomplete="off" role="combobox"
-                                                                        aria-autocomplete="list" aria-haspopup="listbox"
-                                                                        id="category_ids_0" placeholder="Tags"
-                                                                        aria-expanded="false"></div><span
-                                                                    class="o_dropdown_button"></span>
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="category_ids_0">Tags</label></div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="category_ids" class="o_field_widget o_field_many2many_tags">
+                                                        <div
+                                                            class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
+                                                            <div class="o_field_many2many_selection d-inline-flex w-100">
+                                                                <div class="o_input_dropdown">
+                                                                    <div class="o-autocomplete dropdown"><input type="text" name="tags"
+                                                                            class="o-autocomplete--input o_input"
+                                                                            autocomplete="off" role="combobox"
+                                                                            aria-autocomplete="list" aria-haspopup="listbox"
+                                                                            id="category_ids_0" placeholder="Tags"
+                                                                            aria-expanded="false"></div><span
+                                                                        class="o_dropdown_button"></span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="o_inner_group grid col-lg-6">
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="department_id_0">Department</label>
-                                            </div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="department_id" class="o_field_widget o_field_many2one">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input"
-                                                                    autocomplete="off" role="combobox"
-                                                                    aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="department_id_0" placeholder=""
-                                                                    aria-expanded="false"></div><span
-                                                                class="o_dropdown_button"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
+                                        <div class="o_inner_group grid col-lg-6">
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="department_id_0">Department</label>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="job_id_0">Job Position</label></div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="job_id" class="o_field_widget o_field_many2one">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input"
-                                                                    autocomplete="off" role="combobox"
-                                                                    aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="job_id_0" placeholder="" aria-expanded="false">
-                                                            </div><span class="o_dropdown_button"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="parent_id_0">Manager</label></div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="parent_id"
-                                                    class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
-                                                    <div class="d-flex align-items-center gap-1"><span
-                                                            class="o_avatar o_m2o_avatar"><span
-                                                                class="o_avatar_empty o_m2o_avatar_empty"></span></span>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="department_id" class="o_field_widget o_field_many2one">
                                                         <div class="o_field_many2one_selection">
                                                             <div class="o_input_dropdown">
-                                                                <div class="o-autocomplete dropdown"><input type="text"
+                                                                <div class="o-autocomplete dropdown"><input type="text" name="department"
                                                                         class="o-autocomplete--input o_input"
                                                                         autocomplete="off" role="combobox"
                                                                         aria-autocomplete="list" aria-haspopup="listbox"
-                                                                        id="parent_id_0" placeholder=""
+                                                                        id="department_id_0" placeholder=""
                                                                         aria-expanded="false"></div><span
                                                                     class="o_dropdown_button"></span>
                                                             </div>
@@ -302,39 +264,89 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="coach_id_0">Coach<sup
-                                                        class="text-info p-1" data-tooltip-template="web.FieldTooltip"
-                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Select the \&quot;Employee\&quot; who is the coach of this employee.\nThe \&quot;Coach\&quot; has no specific rights or responsibilities by default.&quot;}}"
-                                                        data-tooltip-touch-tap-to-show="true">?</sup></label></div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="coach_id"
-                                                    class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
-                                                    <div class="d-flex align-items-center gap-1"><span
-                                                            class="o_avatar o_m2o_avatar"><span
-                                                                class="o_avatar_empty o_m2o_avatar_empty"></span></span>
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="job_id_0">Job Position</label></div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="job_id" class="o_field_widget o_field_many2one">
                                                         <div class="o_field_many2one_selection">
                                                             <div class="o_input_dropdown">
-                                                                <div class="o-autocomplete dropdown"><input type="text"
+                                                                <div class="o-autocomplete dropdown"><input type="text" name="job_position"
                                                                         class="o-autocomplete--input o_input"
                                                                         autocomplete="off" role="combobox"
                                                                         aria-autocomplete="list" aria-haspopup="listbox"
-                                                                        id="coach_id_0" placeholder=""
-                                                                        aria-expanded="false"></div><span
-                                                                    class="o_dropdown_button"></span>
+                                                                        id="job_id_0" placeholder="" aria-expanded="false">
+                                                                </div><span class="o_dropdown_button"></span>
                                                             </div>
                                                         </div>
                                                         <div class="o_field_many2one_extra"></div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="parent_id_0">Manager</label></div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="parent_id"
+                                                        class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
+                                                        <div class="d-flex align-items-center gap-1"><span
+                                                                class="o_avatar o_m2o_avatar"><span
+                                                                    class="o_avatar_empty o_m2o_avatar_empty"></span></span>
+                                                            <div class="o_field_many2one_selection">
+                                                                <div class="o_input_dropdown">
+                                                                    <div class="o-autocomplete dropdown"><input type="text" name="manager"
+                                                                            class="o-autocomplete--input o_input"
+                                                                            autocomplete="off" role="combobox"
+                                                                            aria-autocomplete="list" aria-haspopup="listbox"
+                                                                            id="parent_id_0" placeholder=""
+                                                                            aria-expanded="false"></div><span
+                                                                        class="o_dropdown_button"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="o_field_many2one_extra"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="coach_id_0">Coach<sup
+                                                            class="text-info p-1" data-tooltip-template="web.FieldTooltip"
+                                                            data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Select the \&quot;Employee\&quot; who is the coach of this employee.\nThe \&quot;Coach\&quot; has no specific rights or responsibilities by default.&quot;}}"
+                                                            data-tooltip-touch-tap-to-show="true">?</sup></label></div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="coach_id"
+                                                        class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
+                                                        <div class="d-flex align-items-center gap-1"><span
+                                                                class="o_avatar o_m2o_avatar"><span
+                                                                    class="o_avatar_empty o_m2o_avatar_empty"></span></span>
+                                                            <div class="o_field_many2one_selection">
+                                                                <div class="o_input_dropdown">
+                                                                    <div class="o-autocomplete dropdown"><input type="text" name="coach"
+                                                                            class="o-autocomplete--input o_input"
+                                                                            autocomplete="off" role="combobox"
+                                                                            aria-autocomplete="list" aria-haspopup="listbox"
+                                                                            id="coach_id_0" placeholder=""
+                                                                            aria-expanded="false"></div><span
+                                                                        class="o_dropdown_button"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="o_field_many2one_extra"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </form>
+
+
                                 <div name="employee_properties" class="o_field_widget o_field_properties">
                                     <div class="row d-none" columns="2">
                                         <div class="o_inner_group o_group col-lg-6 o_property_group" property-name="">
@@ -1028,8 +1040,45 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-        crossorigin="anonymous"></script>
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+        
+
+        <script>
+            $(document).ready(function() {
+                $(document).on('click', '#main_save_btn', function() {
+                    var form = $('#employeeForm')[0];
+                    var formData = new FormData(form);
+
+                    $.ajax({
+                        url: '/save-employee',
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                alert('Employee data saved successfully.');
+                                // Optionally, reset the form or perform other actions
+                            } else {
+                                alert('An error occurred while saving employee data.');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
+        </script>
+
+    @endpush
 
     @endsection
