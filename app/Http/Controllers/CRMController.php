@@ -7,6 +7,7 @@ use App\Models\Pipeline;
 
 use App\Models\Sale;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CRMController extends Controller
 {
@@ -78,6 +79,17 @@ class CRMController extends Controller
         $sale->stage_id = $request->stage_id;
         $sale->save();
         return response()->json($sale);
+    }
+
+    public function updateStageSequence(Request $request)
+    {
+        $stages = $request->stages;
+        foreach ($stages as $key => $stage) {
+            $data = CrmStage::find($stage['id']);
+            $data->seq_no = $key;
+            $data->save();
+        }
+        return response()->json($stages);
     }
 
     public function addActivityView()

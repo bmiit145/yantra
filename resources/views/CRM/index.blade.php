@@ -43,7 +43,8 @@
 
 <div class="o_content" style="height: 100%">
     <div class="o_kanban_renderer o_renderer d-flex o_kanban_grouped align-content-stretch">
-        @foreach(Auth::user()->crmStages as $stage)
+        @php($crmStages = Auth::user()->crmStages->sortBy('seq_no'))
+        @foreach($crmStages as $stage)
         <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable {{ $stage->sales->count() > 0 ? '' : 'o_kanban_no_records' }}" data-id="{{ $stage->id }}">
             <div class="o_kanban_header position-sticky top-0 z-index-1 py-2">
                 <div class="o_kanban_header_title position-relative d-flex lh-lg">
@@ -406,9 +407,8 @@
 @endsection
 @push('scripts')
 {{--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
 <script>
     $(document).ready(function() {
         var isContentAppendedNew = false;
@@ -535,19 +535,20 @@
             appendContent(firstContainer);
         });
 
-        $(".o_kanban_record").draggable({
-            revert: "invalid", // Revert back if not dropped in a droppable area
-            cursor: "move",
-            helper: "clone",
-            start: function(event, ui) {
-                ui.helper.addClass("o_dragged");
-                ui.helper.width($(this).width());
-                ui.helper.height($(this).height());
-            },
-            stop: function(event, ui) {
-                $(this).removeClass("o_dragged");
-            }
-        });
+        // $(".o_kanban_record").draggable({
+        //     revert: "invalid", // Revert back if not dropped in a droppable area
+        //     cursor: "move",
+        //     helper: "clone",
+        //     start: function(event, ui) {
+        //         ui.helper.addClass("o_dragged");
+        //         ui.helper.width($(this).width());
+        //         ui.helper.height($(this).height());
+        //         ui.helper.data('originalElement', $(this));
+        //     },
+        //     stop: function(event, ui) {
+        //         $(this).removeClass("o_dragged");
+        //     }
+        // });
 
         var insideCard =  $(document).find(".o_kanban_record");
         makeDropableInsideCard(insideCard);
@@ -573,6 +574,9 @@
         $(".o_kanban_group").droppable({
             accept: ".o_kanban_record",
             hoverClass: "o_kanban_hover",
+            classes: {
+                "ui-droppable-hover": "o_kanban_hover"
+            },
             drop: function(event, ui) {
                 // Clone the dragged record and remove the drag class
                 var droppedRecord = ui.helper.clone().removeClass("o_dragged");
@@ -707,5 +711,71 @@
             });
         });
 </script>
+
+<script>
+    // for sorting of stages
+    $(document).ready(function() {
+        $(".o_kanban_grouped").sortable({
+            // connectWith: ".o_kanban_group",
+            handle: ".o_kanban_header_title",
+            classes: {
+                "ui-sortable-placeholder": "o_kanban_group_placeholder",
+                "ui-sortable-helper": "o_dragged shadow",
+            },
+            // placeholder: "o_kanban_group_placeholder",
+            // forcePlaceholderSize: true,
+            start: function(event, ui) {
+                ui.placeholder.height(ui.item.height());
+            },
+            update: function(event, ui) {
+                // array with id and the sequence
+                var stages = [];
+                $(".o_kanban_grouped .o_kanban_group").each(function(index, element) {
+                    var stage_id = $(element).data('id');
+                    stages.push({
+                        id: stage_id,
+                        sequence: index,
+                    });
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('crm.updateStageSequence') }}",
+                    data: {
+                        stages : stages
+                    },
+                    success: function(response) {
+                        toastr.success("Stage Updated");
+                        // location.reload();
+                    },
+                    error: function(err) {
+                        console.log(err);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+                {{--var itemEl = evt.item; // dragged HTMLElement--}}
+                {{--var stage_id = itemEl.dataset.id;--}}
+                {{--var prev_stage_id = evt.from.dataset.id;--}}
+                {{--var next_stage_id = evt.to.dataset.id;--}}
+                {{--$.ajax({--}}
+                {{--    type: 'POST',--}}
+                {{--    url: "{{ route('crm.updateStage') }}",--}}
+                {{--    data: {--}}
+                {{--        stage_id: stage_id,--}}
+                {{--        prev_stage_id: prev_stage_id,--}}
+                {{--        next_stage_id: next_stage_id,--}}
+                {{--    },--}}
+                {{--    success: function(response) {--}}
+                {{--        toastr.success("Stage Updated");--}}
+                {{--        // location.reload();--}}
+                {{--    },--}}
+                {{--    error: function(err) {--}}
+                {{--        console.log(err);--}}
+                {{--    }--}}
+                {{--});--}}
 
 @endpush

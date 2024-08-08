@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     // crm
     Route::resource('/crm', CRMController::class , [ 'except' => [] ]);
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
+    Route::post('/stage/setSequence', [CRMController::class, 'updateStageSequence'])->name('crm.updateStageSequence');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
     Route::post('/sale/new' , [CRMController::class, 'newSales'])->name('crm.newSales');
 
