@@ -36,12 +36,19 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/crm', CRMController::class , [ 'except' => [] ]);
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
+    Route::post('/sale/new' , [CRMController::class, 'newSales'])->name('crm.newSales');
+
+
+    // sale
+    Route::post('sale/setPriority' , [CRMController::class, 'setPriority'])->name('sale.setPriority');
+    Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
+
 
     //contact
     Route::resource('/contact', ContactController::class , [ 'except' => [] ]);
 //    Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
     Route::post('/contact/save', [ContactController::class, 'save'])->name('contact.save');
-    
+
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::post('/save-employee', [EmployeeController::class, 'store']);

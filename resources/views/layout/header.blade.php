@@ -214,6 +214,14 @@
     @endforeach
     @endif
 </script>
+<script>
+    // ajax csrf token setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
 @stack('scripts')
 </body>
 </html>

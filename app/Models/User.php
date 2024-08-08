@@ -136,4 +136,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(Contact::class , 'is_user'  , 'id');
     }
+
+    // Crm Stage
+    public function crmStages()
+    {
+        return $this->hasMany(CrmStage::class);
+    }
 }

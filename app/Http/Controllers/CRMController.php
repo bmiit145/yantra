@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\CrmStage;
 use App\Models\Opportunity;
 use App\Models\Pipeline;
 
+use App\Models\Sale;
 use Illuminate\Http\Request;
 
 class CRMController extends Controller
@@ -12,7 +14,7 @@ class CRMController extends Controller
     {
         $data = Opportunity::all();
         $pipeline = Pipeline::all();
-        return view('CRM.crmview_2', compact('data','pipeline'));
+        return view('CRM.index', compact('data','pipeline'));
     }
 
     public function store(Request $request)
@@ -28,18 +30,62 @@ class CRMController extends Controller
     }
 
     public function newStage(Request $request)
-    { 
+    {
         $newStage = $request->newStage;
-        $data = New Pipeline;
+        $data = New CrmStage();
         $data->title = $newStage;
+        $data->user_id = auth()->user()->id;
         $data->save();
         return response()->json($data);
+    }
+
+    public function  newSales(Request $request)
+    {
+        $data = New Sale();
+        $data->contact_id = $request->contact_id;
+        $data->stage_id = $request->stage_id;
+        $data->user_id = auth()->user()->id;
+        $data->opportunity = $request->name;
+        $data->email = $request->email;
+        $data->phone = $request->phone;
+        $data->expected_revenue = $request->expected_revenue;
+        $data->priority = $request->priority ?? null;
+        $data->save();
+
+        if ($request->ajax()) {
+            $res = [
+                'status' => 'success',
+                'message' => 'Sale created successfully',
+                'data' => $data
+            ];
+            return response()->json($res , 200);
+        }
+        return back()->with('success', 'Sale created successfully');
+    }
+
+    // sale
+    public function setPriority(Request $request)
+    {
+        $sale = Sale::find($request->sale_id);
+        $sale->priority = $request->priority;
+        $sale->save();
+        return response()->json($sale);
+    }
+
+    public function setStage(Request $request)
+    {
+        $sale = Sale::find($request->id);
+        $sale->stage_id = $request->stage_id;
+        $sale->save();
+        return response()->json($sale);
     }
 
     public function addActivityView()
     {
         return view('CRM.addactivity');
     }
+
+
 
 
 }
