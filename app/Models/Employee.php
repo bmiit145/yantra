@@ -20,5 +20,6 @@ class Employee extends Model
         'manager',
         'tags',
         'coach',
+        'profile_image',
     ];
 }
