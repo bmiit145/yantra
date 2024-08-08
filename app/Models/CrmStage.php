@@ -9,7 +9,7 @@ class CrmStage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'is_won', 'is_lost', 'requirements' , 'user_id'];
+    protected $fillable = ['title', 'is_won', 'is_lost', 'requirements' , 'user_id' , 'seq_no'];
 
     public function user()
     {

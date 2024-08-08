@@ -528,32 +528,19 @@
             appendContent($(this));
         });
 
-
         $('.head_new_btn').click(function(event) {
             event.preventDefault();
             let firstContainer = $(document).find('.new-lead-btn').eq(0);
             appendContent(firstContainer);
         });
 
-        // $(".o_kanban_record").draggable({
-        //     revert: "invalid", // Revert back if not dropped in a droppable area
-        //     cursor: "move",
-        //     helper: "clone",
-        //     start: function(event, ui) {
-        //         ui.helper.addClass("o_dragged");
-        //         ui.helper.width($(this).width());
-        //         ui.helper.height($(this).height());
-        //         ui.helper.data('originalElement', $(this));
-        //     },
-        //     stop: function(event, ui) {
-        //         $(this).removeClass("o_dragged");
-        //     }
-        // });
+
 
         var insideCard =  $(document).find(".o_kanban_record");
         makeDropableInsideCard(insideCard);
         function makeDropableInsideCard(insideCard){
             insideCard.draggable({
+                connectToSortable: ".o_kanban_group",
                 revert: "invalid",
                 cursor: "move",
                 helper: "original",
@@ -589,7 +576,7 @@
                 ui.helper.remove();
 
                 // Reinitialize draggable on the newly added element
-                makeDropableInsideCard(droppedRecord);
+                // makeDropableInsideCard(droppedRecord);
 
                 // update in database by ajax as update stage_id
                 var sale_id = droppedRecord.data('id');
@@ -612,6 +599,50 @@
             }
 
         });
+
+
+        // for  o_kanban_record sorting
+        {{--$(".o_kanban_group").sortable({--}}
+        {{--    handle: ".oe_kanban_global_click ",--}}
+        {{--    revert: true,--}}
+        {{--    // classes: {--}}
+        {{--    //     "ui-sortable-placeholder": "o_kanban_group_placeholder",--}}
+        {{--    //     "ui-sortable-helper": "o_dragged shadow",--}}
+        {{--    // },--}}
+        {{--    // placeholder: "o_kanban_group_placeholder",--}}
+        {{--    // forcePlaceholderSize: true,--}}
+        {{--    start: function(event, ui) {--}}
+        {{--        ui.placeholder.height(ui.item.height());--}}
+        {{--    },--}}
+        {{--    update: function(event, ui) {--}}
+        {{--        var sales = [];--}}
+        {{--        $(ui.item).closest('.o_kanban_group').find('.o_kanban_record').each(function(index, element) {--}}
+        {{--            var sale_id = $(element).data('id');--}}
+        {{--            sales.push({--}}
+        {{--                id: sale_id,--}}
+        {{--                sequence: index,--}}
+        {{--            });--}}
+        {{--        });--}}
+
+        {{--        console.log(sales);--}}
+
+        {{--        $.ajax({--}}
+        {{--            type: 'POST',--}}
+        {{--            url: "{{ route('crm.updateSaleSequence') }}",--}}
+        {{--            data: {--}}
+        {{--                sales : sales--}}
+        {{--            },--}}
+        {{--            success: function(response) {--}}
+        {{--                toastr.success("Sale Updated");--}}
+        {{--                // location.reload();--}}
+        {{--            },--}}
+        {{--            error: function(err) {--}}
+        {{--                console.log(err);--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--});--}}
+
 
 
         // submit form by ajax onm o-kanban-button-new
@@ -671,6 +702,108 @@
         });
 
     });
+
+{{--    $(document).ready(function() {--}}
+{{--        var insideCard = $(document).find(".o_kanban_record");--}}
+{{--        makeDropableInsideCard(insideCard);--}}
+
+{{--        function makeDropableInsideCard(insideCard) {--}}
+{{--            insideCard.draggable({--}}
+{{--                connectToSortable: ".o_kanban_group",--}}
+{{--                revert: "invalid",--}}
+{{--                cursor: "move",--}}
+{{--                helper: "original",--}}
+{{--                start: function(event, ui) {--}}
+{{--                    ui.helper.addClass("o_dragged");--}}
+{{--                    ui.helper.width($(this).width());--}}
+{{--                    ui.helper.height($(this).height());--}}
+{{--                    $(this).data('originalElement', $(this));--}}
+{{--                },--}}
+{{--                stop: function(event, ui) {--}}
+{{--                    $(this).removeClass("o_dragged");--}}
+{{--                }--}}
+{{--            });--}}
+{{--        }--}}
+
+{{--        // Make kanban groups sortable and droppable--}}
+{{--        $(".o_kanban_group").sortable({--}}
+{{--            connectWith: ".o_kanban_group",--}}
+{{--            handle: ".oe_kanban_global_click",--}}
+{{--            revert: true,--}}
+{{--            classes: {--}}
+{{--                "ui-sortable-placeholder": "o_kanban_group_placeholder",--}}
+{{--                "ui-sortable-helper": "o_dragged shadow",--}}
+{{--            },--}}
+{{--            animation: 0,--}}
+{{--            start: function(event, ui) {--}}
+{{--                ui.placeholder.height(ui.item.height());--}}
+{{--            },--}}
+{{--            update: function(event, ui) {--}}
+{{--                ui.item.attr('style', '');--}}
+{{--                var sales = [];--}}
+{{--                $(ui.item).closest('.o_kanban_group').find('.o_kanban_record').each(function(index, element) {--}}
+{{--                    var sale_id = $(element).data('id');--}}
+{{--                    sales.push({--}}
+{{--                        id: sale_id,--}}
+{{--                        sequence: index,--}}
+{{--                    });--}}
+{{--                });--}}
+
+{{--                console.log(sales);--}}
+
+{{--                // Update the sequence in the database via AJAX--}}
+{{--                $.ajax({--}}
+{{--                    type: 'POST',--}}
+{{--                    url: "{{ route('crm.updateSaleSequence') }}",--}}
+{{--                    data: {--}}
+{{--                        sales: sales--}}
+{{--                    },--}}
+{{--                    success: function(response) {--}}
+{{--                        toastr.success("Sale Updated");--}}
+{{--                    },--}}
+{{--                    error: function(err) {--}}
+{{--                        console.log(err);--}}
+{{--                    }--}}
+{{--                });--}}
+{{--            },--}}
+{{--            receive: function(event, ui) {--}}
+{{--                var originalRecord = ui.item.data('originalElement');--}}
+{{--                var droppedRecord = ui.item.clone().removeClass("o_dragged");--}}
+{{--                droppedRecord.attr('style', '');--}}
+
+{{--                // originalRecord.remove();--}}
+{{--                // ui.helper.remove();--}}
+
+{{--                // Reinitialize draggable on the newly added element--}}
+{{--                // makeDropableInsideCard(droppedRecord);--}}
+
+{{--                // Update stage in database via AJAX--}}
+{{--                var sale_id = droppedRecord.data('id');--}}
+{{--                var stage_id = $(this).data('id');--}}
+{{--                $.ajax({--}}
+{{--                    type: 'POST',--}}
+{{--                    url: "{{ route('sale.setStage') }}",--}}
+{{--                    data: {--}}
+{{--                        id: sale_id,--}}
+{{--                        stage_id: stage_id,--}}
+{{--                    },--}}
+{{--                    success: function(response) {--}}
+{{--                        toastr.success("Stage Updated");--}}
+{{--                    },--}}
+{{--                    error: function(err) {--}}
+{{--                        console.log(err);--}}
+{{--                    }--}}
+{{--                });--}}
+{{--            }--}}
+{{--        }).droppable({--}}
+{{--            accept: ".o_kanban_record",--}}
+{{--            hoverClass: "o_kanban_hover",--}}
+{{--            classes: {--}}
+{{--                "ui-droppable-hover": "o_kanban_hover"--}}
+{{--            }--}}
+{{--        });--}}
+{{--    });--}}
+
 </script>
  <script>
         $(document).ready(function() {
@@ -754,6 +887,7 @@
                 });
             }
         });
+
     });
 </script>
 
