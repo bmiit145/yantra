@@ -576,7 +576,7 @@
                 ui.helper.remove();
 
                 // Reinitialize draggable on the newly added element
-                // makeDropableInsideCard(droppedRecord);
+                makeDropableInsideCard(droppedRecord);
 
                 // update in database by ajax as update stage_id
                 var sale_id = droppedRecord.data('id');
