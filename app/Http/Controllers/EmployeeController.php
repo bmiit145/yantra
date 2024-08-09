@@ -18,9 +18,12 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
-        return view('employees.create', ['employee' => $employee]);
+        $experiences = Experience::all(); 
+        $experience = Experience::where('employee_id', $id)->first(); 
+    
+        return view('employees.create', ['employee' => $employee, 'experience' => $experience, 'experiences' => $experiences]);
     }
-
+    
     public function create()
     {
         return view('employees.create');
@@ -28,12 +31,13 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        // Find or create the employee record
+        // Find the employee by ID, or create a new instance
         $employee = Employee::find($request->input('employee_id')); 
         if (!$employee) {
             $employee = new Employee();
         }
-    
+
+        // Update or set employee details
         $employee->name = $request->input('name');
         $employee->job_title = $request->input('job_title');
         $employee->work_mobile = $request->input('work_mobile');
@@ -44,51 +48,49 @@ class EmployeeController extends Controller
         $employee->job_position = $request->input('job_position');
         $employee->manager = $request->input('manager');
         $employee->coach = $request->input('coach');
-    
-        // Check if the request indicates that the image should be deleted
+
+        // Handle image deletion and upload
         if ($request->input('delete_image')) {
-            // Delete old image if exists
             if ($employee->profile_image && file_exists(public_path('uploads/' . $employee->profile_image))) {
                 unlink(public_path('uploads/' . $employee->profile_image));
             }
-            // Set profile_image to null
             $employee->profile_image = null;
         } elseif ($request->hasFile('profile_image')) {
-            // Handle new image upload
-            // Delete old image if exists
             if ($employee->profile_image && file_exists(public_path('uploads/' . $employee->profile_image))) {
                 unlink(public_path('uploads/' . $employee->profile_image));
             }
-    
-            // Save new image
+
             $file = $request->file('profile_image');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads'), $filename);
-    
+
             $employee->profile_image = $filename;
         }
-    
+
         if ($employee->save()) {
             return response()->json(['success' => true]);
         } else {
             return response()->json(['success' => false]);
         }
+
+        
     }
-    
 
     public function edit(string $id)
     {
         //
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
-    }
+       //
+    }    
 
     public function destroy(string $id)
     {
-        //
+        $employee = Experience::findOrFail($id); 
+        $employee->delete(); 
+        return back();
     }
 
     public function getEmployeeNames()
@@ -98,9 +100,10 @@ class EmployeeController extends Controller
     }
 
      // Handle Save & Close
-    public function saveAndClose(Request $request)
+    public function save(Request $request)
     {
-        // dd($request->all());
+        $experience = Experience::find($request->input('experience_id')) ?? new Experience();
+
         $data = [
             'employee_id' => $request->input('experience_id'), 
             'title' => $request->input('experience_title'),
@@ -111,28 +114,7 @@ class EmployeeController extends Controller
             'description' => $request->input('experience_description'),
         ];
 
-        // Create a new experience record
-        Experience::create($data);
-
-        return response()->json(['success' => true]);
-    }
-
-    // Handle Save & New
-    public function saveAndNew(Request $request)
-    {
-        // Validate and save the data
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'employee_id' => 'required|integer',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'type' => 'required|string',
-            'display_type' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
-
-        // Save the data
-        Experience::create($validatedData);
+        $experience->fill($data)->save();
 
         return response()->json(['success' => true]);
     }
@@ -140,7 +122,6 @@ class EmployeeController extends Controller
     // Handle Discard
     public function discard(Request $request)
     {
-        // You might not need to do anything specific for discard other than closing the modal
         return response()->json(['success' => true]);
     }
 
