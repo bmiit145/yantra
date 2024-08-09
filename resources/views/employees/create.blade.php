@@ -347,15 +347,14 @@
                                                 <form action="" id="employee-form" method="POST">
                                                     @csrf
                                                     <input type="hidden" class="experience_id" name="experience_id" value="{{ $employee->id ?? '' }}">
-                                                    <input type="hidden" class="edit_experience_id" name="edit_experience_id" value="{{ $experience->id ?? '' }}>
 
-                                                    <main class="modal-body p-0">
+                                                    <main class=" modal-body p-0">
                                                         <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
                                                             <div class="o_form_sheet_bg">
                                                                 <div class="o_form_sheet position-relative">
                                                                     <div class="oe_title"><label class="o_form_label" for="name_0">Title</label>
                                                                         <h1>
-                                                                            <div name="name" class="o_field_widget o_required_modifier o_field_char"><input name="experience_title" class="o_input o_field_translate experience_title" id="name_0" type="text" autocomplete="off" placeholder="e.g. Odoo Inc."></div>
+                                                                            <div name="name" class="o_field_widget o_required_modifier o_field_char"><input name="experience_title" class="o_input o_field_translate experience_title" id="edit_name_0" type="text" autocomplete="off" placeholder="e.g. Odoo Inc."></div>
                                                                         </h1>
                                                                     </div>
                                                                     <div class="o_group row align-items-start">
@@ -368,9 +367,8 @@
                                                                                         <div class="o_field_many2one_selection">
                                                                                             <div class="o_input_dropdown">
                                                                                                 <div class="o-autocomplete dropdown">
-                                                                                                    <input name="employee_name" type="text" class="o-autocomplete--input o_input employee_name" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="employee_id_0" placeholder="" aria-expanded="false">
-
-
+                                                                                                    <input type="hidden" name="employee_id" class="employee_id" value="{{ $employee->id ?? '' }}">
+                                                                                                    <input name="employee_name" type="text" class="o-autocomplete--input o_input employee_name" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="employee_name" placeholder="" aria-expanded="false">
                                                                                                     <ul role="menu" class="o-autocomplete--dropdown-menu ui-widget dropdown-menu ui-autocomplete" style="position: fixed; display: none;" id="employee_dropdown">
                                                                                                         <!-- Items will be dynamically generated here -->
                                                                                                     </ul>
@@ -401,7 +399,7 @@
                                                                                 <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
                                                                                     <label class="o_form_label" for="display_type_0">Display Type</label></div>
                                                                                 <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                                                                    <div name="display_type" class="o_field_widget o_required_modifier o_field_selection"><select name="experience_display_type" class="o_input pe-3 experience_display_type" id="display_type_0">
+                                                                                    <div name="display_type" class="o_field_widget o_required_modifier o_field_selection"><select name="experience_display_type" class="o_input pe-3 experience_display_type" id="edit_experience_display_type">
                                                                                             <option value="false" style="display:none"></option>
                                                                                             <option value="classic">Classic</option>
                                                                                             <option value="certification">Certification</option>
@@ -481,7 +479,7 @@
                                                                         </tr>
 
                                                                         @forelse($experiences as $experience)
-                                                                        <tr class="o_data_row" data-id="datapoint_{{ $loop->index }}">
+                                                                        <tr class="o_data_row" data-id="{{ $experience->id }}  " data-title="{{ $experience->title }}" data-employee="{{ $experience->employee_id }}" data-type="{{ $experience->type }}" data-display_type="{{ $experience->display_type }}" data-start_date="{{ $experience->start_date }}" data-end_date="{{ $experience->end_date }}" data-description="{{ $experience->description }}" data-employee_id="{{ $experience->employee_id }}">
                                                                             <td class="o_resume_timeline_cell position-relative pe-lg-2">
                                                                                 <div class="rounded-circle bg-info position-relative">
                                                                                 </div>
@@ -494,7 +492,7 @@
                                                                                         {{ $experience->end_date ? Carbon\Carbon::parse($experience->end_date)->format('d/m/Y') : 'Current' }}
                                                                                     </small>
 
-                                                                                    <h4 class="o_resume_line_title mt-2">
+                                                                                    <h4 class="o_resume_line_title mt-2" data-title="{{ $experience->title }}">
                                                                                         {{ $experience->title }}
                                                                                     </h4>
                                                                                     <p>{{ $experience->description }}</p>
@@ -3316,9 +3314,28 @@
 
             // Function to open the modal
             $editButton.on('click', function() {
+                // Assuming the data is stored in data attributes
+                var experienceId = $(this).data('id');
+                var experienceTitle = $(this).data('title');
+                var employeeName = $(this).data('employee');
+                var experienceType = $(this).data('type');
+                var experienceDisplayType = $(this).data('display_type');
+                var startDate = $(this).data('start_date');
+                var endDate = $(this).data('end_date');
+                var experienceDescription = $(this).data('description');
 
-                
+                // Set the values in the modal fields
+                 $('.experience_id').val(experienceId);
+                $('#edit_name_0').val(experienceTitle);
+                $('#edit_employee_id_0').val(employeeName); // Adjust if you need to set the ID
+                $('#line_type_id_0').val(experienceType);
+                $('#edit_experience_display_type').val(experienceDisplayType);
+                $('#date_start_0').val(startDate);
+                $('#date_end_0').val(endDate);
+                $('#description_0').val(experienceDescription);
 
+                // Set the hidden input field value
+                $('.experience_id').val(experienceId);
                 $modal.show();
             });
 
@@ -3395,33 +3412,20 @@
                 $('#category_ids_0').val('');
             }
 
-            $(document).on('click', '.o_form_button_save_data', function() {
-                saveData('/save-close', function(success) {
-                    if (success) {
-                        // close this modal
-                        resetModal()
-
-                        // hide the modal as #newResumeModal is the id of the modal
-                        $(document).find('#newResumeModal').modal('hide');
-                        $(document).find('#newResumeModal').hide();
-                    } else {
-                        alert('Failed to save data.');
-                    }
+                $(document).on('click', '.o_form_button_save_data, .o_form_button_save_new', function() {
+                    saveData("{{ route('experience.save') }}", function(success) {
+                        if (success) {
+                            resetModal();
+                            if ($(this).hasClass('o_form_button_save_data')) {
+                                $('#newResumeModal').hide();
+                            } else {
+                                $('#newResumeModal').show();
+                            }
+                        } else {
+                            alert('Failed to save data.');
+                        }
+                    }.bind(this));
                 });
-            });
-
-            $(document).on('click', '.o_form_button_save_new', function() {
-                saveData('/save-new', function(success) {
-                    if (success) {
-                        resetModal()
-
-                        // after saving data, show the modal again
-                        $('#newResumeModal').modal('show');
-                    } else {
-                        alert('Failed to save data.');
-                    }
-                });
-            });
 
             $(document).on('click', '.o_form_button_cancel', function() {
                 resetModal()
@@ -3432,7 +3436,7 @@
 
             function saveData(url, callback) {
                 var formData = {
-                    experience_id: $('.experience_id').val()
+                     experience_id: $('.experience_id').val()
                     , experience_title: $('.experience_title').val()
                     , employee_name: $('.employee_name').val()
                     , experience_type: $('.experience_type').val()
@@ -3458,7 +3462,6 @@
                     }
                 });
             }
-
 
 
         });
