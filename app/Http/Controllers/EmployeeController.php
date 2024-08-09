@@ -18,9 +18,12 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
-        return view('employees.create', ['employee' => $employee]);
+        $experiences = Experience::all(); 
+        $experience = Experience::where('employee_id', $id)->first(); 
+    
+        return view('employees.create', ['employee' => $employee, 'experience' => $experience, 'experiences' => $experiences]);
     }
-
+    
     public function create()
     {
         return view('employees.create');
@@ -74,21 +77,40 @@ class EmployeeController extends Controller
             return response()->json(['success' => false]);
         }
     }
-    
 
     public function edit(string $id)
     {
         //
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        dd($request->all(), "update");
+        // Find the experience record by ID
+        $experience = Experience::find($id);
+
+        // Update the experience record with new data
+        $experience->title = $request->input('experience_title');
+        $experience->employee_name = $request->input('employee_name');
+        $experience->type = $request->input('experience_type');
+        $experience->display_type = $request->input('experience_display_type');
+        $experience->start_date = $request->input('experience_start_date');
+        $experience->end_date = $request->input('experience_end_date');
+        $experience->description = $request->input('experience_description');
+
+        // Save the updated record
+        $experience->save();
+
+        // Redirect or return response
+        return redirect()->route('employee.show', ['id' => $experience->employee_id])->with('success', 'Experience updated successfully.');
     }
+
 
     public function destroy(string $id)
     {
-        //
+        $employee = Experience::findOrFail($id); 
+        $employee->delete(); 
+        return back();
     }
 
     public function getEmployeeNames()
@@ -100,7 +122,6 @@ class EmployeeController extends Controller
      // Handle Save & Close
     public function saveAndClose(Request $request)
     {
-        // dd($request->all());
         $data = [
             'employee_id' => $request->input('experience_id'), 
             'title' => $request->input('experience_title'),
@@ -111,7 +132,6 @@ class EmployeeController extends Controller
             'description' => $request->input('experience_description'),
         ];
 
-        // Create a new experience record
         Experience::create($data);
 
         return response()->json(['success' => true]);
@@ -120,19 +140,17 @@ class EmployeeController extends Controller
     // Handle Save & New
     public function saveAndNew(Request $request)
     {
-        // Validate and save the data
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'employee_id' => 'required|integer',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'type' => 'required|string',
-            'display_type' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
+        $data = [
+            'employee_id' => $request->input('experience_id'), 
+            'title' => $request->input('experience_title'),
+            'start_date' => $request->input('experience_start_date'),
+            'end_date' => $request->input('experience_end_date'),
+            'type' => $request->input('experience_type'),
+            'display_type' => $request->input('experience_display_type'),
+            'description' => $request->input('experience_description'),
+        ];
 
-        // Save the data
-        Experience::create($validatedData);
+        Experience::create($data);
 
         return response()->json(['success' => true]);
     }
@@ -140,7 +158,6 @@ class EmployeeController extends Controller
     // Handle Discard
     public function discard(Request $request)
     {
-        // You might not need to do anything specific for discard other than closing the modal
         return response()->json(['success' => true]);
     }
 

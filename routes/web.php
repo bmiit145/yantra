@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::post('/save-employee', [EmployeeController::class, 'store']);
+    Route::put('experience/{id}', [EmployeeController::class, 'update'])->name('experience.update');
     Route::get('/employees/names', [EmployeeController::class, 'getEmployeeNames'])->name('getEmployeeNames');
     Route::post('/save-close', [EmployeeController::class, 'saveAndClose'])->name('save.close');
     Route::post('/save-new', [EmployeeController::class, 'saveAndNew'])->name('save.new');
