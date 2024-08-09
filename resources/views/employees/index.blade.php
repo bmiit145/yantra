@@ -21,9 +21,9 @@
 
         {{-- <header class="o_navbar">
             <nav class="o_main_navbar d-print-none" data-command-category="disabled"><a href="/odoo"
-                    class="o_menu_toggle hasImage" accesskey="h" title="Home menu" aria-label="Home menu"><svg
-                        xmlns="http://www.w3.org/2000/svg" class="o_menu_toggle_icon pe-none" width="14px" height="14px"
-                        viewBox="0 0 14 14">
+                    class="o_menu_toggle hasImage" title="Home menu" aria-label="Home menu" data-hotkey="h"
+                    style="position: relative;"><svg xmlns="http://www.w3.org/2000/svg" class="o_menu_toggle_icon pe-none"
+                        width="14px" height="14px" viewBox="0 0 14 14">
                         <g xmlns="http://www.w3.org/2000/svg" fill="currentColor" id="o_menu_toggle_row_0">
                             <rect xmlns="http://www.w3.org/2000/svg" width="3" height="3" x="0" y="0"></rect>
                             <rect xmlns="http://www.w3.org/2000/svg" width="3" height="3" x="5" y="0"></rect>
@@ -44,16 +44,17 @@
                         alt="Employees"><span class="o_menu_brand d-flex ms-3 pe-0">Employees</span></a>
                 <div class="o_menu_sections d-flex flex-grow-1 flex-shrink-1 w-0" role="menu"><button
                         class="fw-normal o-dropdown dropdown-toggle dropdown" data-hotkey="1"
-                        data-menu-xmlid="hr.menu_hr_employee_payroll" aria-expanded="false"><span
-                            data-section="293">Employees</span></button><a
+                        data-menu-xmlid="hr.menu_hr_employee_payroll" aria-expanded="false"
+                        style="position: relative;"><span data-section="293">Employees</span></button><a
                         class="o-dropdown-item dropdown-item o-navigable o_nav_entry" role="menuitem" tabindex="0"
                         href="/odoo/departments" data-hotkey="2" data-menu-xmlid="hr.menu_hr_department_kanban"
-                        data-section="302">Departments</a><button class="fw-normal o-dropdown dropdown-toggle dropdown"
-                        data-hotkey="3" data-menu-xmlid="hr.hr_menu_hr_reports" aria-expanded="false"><span
+                        data-section="302" style="position: relative;">Departments</a><button
+                        class="fw-normal o-dropdown dropdown-toggle dropdown" data-hotkey="3"
+                        data-menu-xmlid="hr.hr_menu_hr_reports" aria-expanded="false" style="position: relative;"><span
                             data-section="296">Reporting</span></button><button
                         class="fw-normal o-dropdown dropdown-toggle dropdown" data-hotkey="4"
-                        data-menu-xmlid="hr.menu_human_resources_configuration" aria-expanded="false"><span
-                            data-section="298">Configuration</span></button></div>
+                        data-menu-xmlid="hr.menu_human_resources_configuration" aria-expanded="false"
+                        style="position: relative;"><span data-section="298">Configuration</span></button></div>
                 <div class="o_menu_systray d-flex flex-shrink-0 ms-auto" role="menu">
                     <div></div>
                     <div></div>
@@ -65,7 +66,8 @@
                                 aria-label="Messages"></i><span
                                 class="o-mail-MessagingMenu-counter badge rounded-pill">4</span></button></div>
                     <div></div><button aria-expanded="false" class="o-dropdown dropdown-toggle dropdown"><i
-                            class="fa fa-lg fa-clock-o" role="img" aria-label="Activities"></i></button>
+                            class="fa fa-lg fa-clock-o" role="img" aria-label="Activities"></i><span
+                            class="o-mail-ActivityMenu-counter badge rounded-pill">1</span></button>
                     <div></div>
                     <div></div>
                     <div class="o_switch_company_menu d-none d-md-block"><button data-hotkey="shift+u" disabled=""
@@ -80,7 +82,7 @@
                     <div class="o_user_menu d-none d-md-block pe-0"><button
                             class="py-1 py-lg-0 o-dropdown dropdown-toggle dropdown" aria-expanded="false"><img
                                 class="o_avatar o_user_avatar rounded" alt="User"
-                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722484284000"><small
+                                src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722989906000"><small
                                 class="oe_topbar_name d-none ms-2 text-start smaller lh-1 text-truncate"
                                 style="max-width: 200px">info@yantradesign.co.in<mark
                                     class="d-block font-monospace text-truncate"><i
@@ -89,16 +91,18 @@
                 </div>
             </nav>
         </header> --}}
+
         <div class="o_action_manager">
             <div class="o_kanban_view o_hr_employee_kanban o_view_controller o_action">
+
                 {{-- <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3" data-command-category="actions">
                     <div
                         class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-3 flex-grow-1">
                         <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
                             <div class="o_control_panel_main_buttons d-flex gap-1 d-empty-none d-print-none">
                                 <div class="d-inline-flex gap-1"><button type="button"
-                                        class="btn btn-primary o-kanban-button-new" accesskey="c" data-bounce-button="">
-                                        New </button>
+                                        class="btn btn-primary o-kanban-button-new" data-bounce-button="" data-hotkey="c"
+                                        style="position: relative;"> New </button>
                                     <div class="o_cp_buttons d-empty-none d-flex align-items-baseline gap-1"
                                         role="toolbar" aria-label="Main actions"></div>
                                 </div>
@@ -110,8 +114,8 @@
                                     <div class="o_cp_action_menus d-flex align-items-center pe-2 gap-1">
                                         <div class="lh-1"><button
                                                 class="d-print-none btn p-0 ms-1 lh-sm border-0 o-dropdown dropdown-toggle dropdown"
-                                                data-hotkey="u" data-tooltip="Actions" aria-expanded="false"><i
-                                                    class="fa fa-cog"></i></button></div>
+                                                data-hotkey="u" data-tooltip="Actions" aria-expanded="false"
+                                                style="position: relative;"><i class="fa fa-cog"></i></button></div>
                                     </div>
                                 </div>
                             </div>
@@ -124,13 +128,14 @@
                                     role="search" aria-autocomplete="list"><button class="d-print-none btn border-0 p-0"
                                         role="button" aria-label="Search..." title="Search..."><i
                                             class="o_searchview_icon oi oi-search me-2" role="img"></i></button>
-                                    <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1"><input
-                                            type="text"
+                                    <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1"
+                                        style="position: relative;"><input type="text"
                                             class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0"
-                                            accesskey="Q" placeholder="Search..." role="searchbox"></div>
+                                            placeholder="Search..." role="searchbox" data-hotkey="Q"></div>
                                 </div><button
                                     class="o_searchview_dropdown_toggler d-print-none btn btn-outline-secondary o-dropdown-caret rounded-start-0 o-dropdown dropdown-toggle dropdown"
-                                    data-hotkey="shift+q" title="Toggle Search Panel" aria-expanded="false"></button>
+                                    data-hotkey="shift+q" title="Toggle Search Panel" aria-expanded="false"
+                                    style="position: relative;"></button>
                             </div>
                         </div>
                         <div
@@ -138,8 +143,8 @@
                             <div class="o_cp_pager text-nowrap " role="search">
                                 <nav class="o_pager d-flex gap-2 h-100" aria-label="Pager"><span
                                         class="o_pager_counter align-self-center"><span
-                                            class="o_pager_value d-inline-block border-bottom border-transparent mb-n1">1-3</span><span>
-                                            / </span><span class="o_pager_limit">3</span></span><span
+                                            class="o_pager_value d-inline-block border-bottom border-transparent mb-n1">1-10</span><span>
+                                            / </span><span class="o_pager_limit">10</span></span><span
                                         class="btn-group d-print-none" aria-atomic="true"><button type="button"
                                             class="oi oi-chevron-left btn btn-secondary o_pager_previous px-2 rounded-start"
                                             aria-label="Previous" data-tooltip="Previous" tabindex="-1" data-hotkey="p"
@@ -148,7 +153,8 @@
                                             aria-label="Next" data-tooltip="Next" tabindex="-1" data-hotkey="n"
                                             disabled=""></button></span></nav>
                             </div>
-                            <nav class="o_cp_switch_buttons d-print-none d-inline-flex btn-group"><button
+                            <nav class="o_cp_switch_buttons d-print-none d-inline-flex btn-group"
+                                style="position: relative;"><button
                                     class="btn btn-secondary o_switch_view o_kanban active" data-tooltip="Kanban"><i
                                         class="oi oi-view-kanban"></i></button><button
                                     class="btn btn-secondary o_switch_view o_list" data-tooltip="List"><i
@@ -164,10 +170,11 @@
                         </div>
                     </div>
                 </div> --}}
+
                 <div class="o_content o_component_with_search_panel">
-                    <div
-                        class="o_search_panel flex-grow-0 flex-shrink-0 h-100 pb-5 bg-view overflow-auto position-relative pe-1 ps-3">
-                        <button class="btn btn-light btn-sm end-0 m-2 position-absolute px-2 py-1 top-0 z-1"><i
+                    <div class="o_search_panel flex-grow-0 flex-shrink-0 h-100 pb-5 bg-view overflow-auto position-relative pe-1 ps-3"
+                        style="min-width: 10px;"><button
+                            class="btn btn-light btn-sm end-0 m-2 position-absolute px-2 py-1 top-0 z-1"><i
                                 class="fa fa-fw fa-angle-double-left"></i></button>
                         <section class="o_search_panel_section o_search_panel_category">
                             <header class="o_search_panel_section_header pt-4 pb-2 text-uppercase cursor-default"><i
@@ -183,7 +190,8 @@
                                             <button
                                                 class="o_toggle_fold btn p-0 px-1 flex-shrink-0 text-center"></button><span
                                                 class="o_search_panel_label_title text-truncate fw-bold"
-                                                data-tooltip="All">All</span></div>
+                                                data-tooltip="All">All</span>
+                                        </div>
                                     </header>
                                 </li>
                                 <li
@@ -195,8 +203,8 @@
                                             <button
                                                 class="o_toggle_fold btn p-0 px-1 flex-shrink-0 text-center"></button><span
                                                 class="o_search_panel_label_title text-truncate"
-                                                data-tooltip="Administration">Administration</span></div><small
-                                            class="o_search_panel_counter text-muted mx-2 fw-bold">1</small>
+                                                data-tooltip="Administration">Administration</span>
+                                        </div><small class="o_search_panel_counter text-muted mx-2 fw-bold">3</small>
                                     </header>
                                 </li>
                             </ul>
@@ -205,177 +213,74 @@
                     <div class="h-100"><span class="o_search_panel_resize"></span></div>
                     <div
                         class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start">
-                        <article
-                            class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record"
-                            data-id="datapoint_2" tabindex="0">
-                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
-                                <div name="image_1024"
-                                    class="o_field_widget o_readonly_modifier o_field_background_image o_kanban_image_fill_left d-block">
-                                    <img loading="lazy" alt="Binary file" data-tooltip-template="web.ImageZoomTooltip"
-                                        data-tooltip-info="{&quot;url&quot;:&quot;https://yantra-design2.odoo.com/web/image/hr.employee/1/image_1024?unique=1722582818000&quot;}"
-                                        data-tooltip-delay="1000"
-                                        src="https://yantra-design2.odoo.com/web/image/hr.employee/1/image_1024?unique=1722582818000">
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <div class="o_kanban_record_top">
-                                        <div class="o_kanban_record_headings"><strong
-                                                class="o_kanban_record_title"><span>info@yantradesign.co.in</span>
-                                                <div class="float-end">
-                                                    <div>
-                                                        <div name="hr_icon_display"
-                                                            class="o_field_widget o_readonly_modifier o_field_hr_presence_status o_employee_availability">
-                                                            <span role="img"
-                                                                class="fa fa-circle fa-fw o_button_icon hr_presence align-middle text-success"
-                                                                aria-label="Present" title="Present"></span></div>
+                  
+                        @foreach($employee as $value)
+                          <article id="employee-card-{{ $value->id }}" class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record employee-list"
+                                    data-id="{{ $value->id }}" tabindex="0">
+                                <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
+                                    <div name="image_1024"
+                                        class="o_field_widget o_readonly_modifier o_field_background_image o_kanban_image_fill_left d-block">
+                                        
+                                        <img id="profile-image" loading="lazy" class="img img-fluid" alt="Profile Image" src="{{ asset('uploads/' . ($value->profile_image ?? 'default.png')) }}" name="image_1920">
+
+                                    </div>
+                                    <div class="oe_kanban_details">
+                                        <div class="o_kanban_record_top">
+                                            <div class="o_kanban_record_headings"><strong
+                                                    class="o_kanban_record_title"><span>{{$value->name}}</span>
+                                                    <div class="float-end"></div>
+                                                </strong><span class="o_kanban_record_subtitle"><span>
+                                                        {{$value->job_title}}</span></span></div>
+                                        </div>
+                                        <ul>
+                                            @if($value->work_email)
+                                            <li class="o_text_overflow"><i class="fa fa-fw me-2 fa-envelope text-primary"
+                                                    title="Email"></i><span>{{$value->work_email}}</span></li>
+                                            @endif
+                                            @if($value->work_phone)
+                                            <li class="o_force_ltr"><i class="fa fa-fw me-2 fa-phone text-primary"
+                                                    title="Phone"></i><span>{{$value->work_phone}}</span></li>
+                                            @endif
+                                            <div name="employee_properties" class="o_field_widget o_field_properties">
+                                                <div class="w-100 fw-normal text-muted"></div>
+                                            </div>
+                                            <li class="hr_tags">
+                                                <div name="category_ids" class="o_field_widget o_field_many2many_tags">
+                                                    <div class="d-flex flex-wrap gap-1"><span
+                                                            class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_6"
+                                                            tabindex="-1" data-color="6" title="testing">
+                                                            <div class="o_tag_badge_text text-truncate">testing</div>
+                                                        </span></div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div
+                                        class="oe_kanban_content o_hr_employee_kanban_bottom position-absolute bottom-0 start-0 end-0">
+                                        <div class="o_kanban_record_bottom mt-3">
+                                            <div class="oe_kanban_bottom_left"></div>
+                                            <div class="oe_kanban_bottom_right">
+                                                <div class="hr_avatar mb-1 ms-2 me-n1">
+                                                    <div name="user_id"
+                                                        class="o_field_widget o_readonly_modifier o_field_empty o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
+                                                        <div class="d-flex align-items-center gap-1"><span
+                                                                class="o_avatar o_m2o_avatar d-flex"></span></div>
                                                     </div>
                                                 </div>
-                                            </strong><span class="o_kanban_record_subtitle"><span>k</span></span></div>
-                                    </div>
-                                    <ul>
-                                        <li class="o_text_overflow"><i class="fa fa-fw me-2 fa-envelope text-primary"
-                                                title="Email"></i><span>info@yantradesign.co.in</span></li>
-                                        <div name="employee_properties" class="o_field_widget o_field_properties">
-                                            <div class="w-100 fw-normal text-muted"></div>
-                                        </div>
-                                        <li class="hr_tags">
-                                            <div name="category_ids" class="o_field_widget o_field_many2many_tags">
-                                                <div class="d-flex flex-wrap gap-1"></div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div
-                                    class="oe_kanban_content o_hr_employee_kanban_bottom position-absolute bottom-0 start-0 end-0">
-                                    <div class="o_kanban_record_bottom mt-3">
-                                        <div class="oe_kanban_bottom_left"></div>
-                                        <div class="oe_kanban_bottom_right">
-                                            <div class="hr_avatar mb-1 ms-2 me-n1">
-                                                <div name="user_id"
-                                                    class="o_field_widget o_readonly_modifier o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
-                                                    <div class="d-flex align-items-center gap-1"
-                                                        data-tooltip="info@yantradesign.co.in"><span
-                                                            class="o_avatar o_m2o_avatar d-flex"><img class="rounded"
-                                                                src="/web/image/res.users/2/avatar_128"></span></div>
+                                                <div class="hr_activity_container mb-1 ms-2 me-n1">
+                                                    <div name="activity_ids" class="o_field_widget o_field_kanban_activity"><a
+                                                            class="o-mail-ActivityButton" role="button"
+                                                            aria-label="Show activities" title="Show activities"><i
+                                                                class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"
+                                                                role="img"></i></a></div>
                                                 </div>
                                             </div>
-                                            <div class="hr_activity_container mb-1 ms-2 me-n1">
-                                                <div name="activity_ids" class="o_field_widget o_field_kanban_activity"><a
-                                                        class="o-mail-ActivityButton" role="button"
-                                                        aria-label="Show activities" title="Show activities"><i
-                                                            class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"
-                                                            role="img"></i></a></div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </article>
-                        <article
-                            class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record"
-                            data-id="datapoint_5" tabindex="0">
-                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
-                                <div name="image_1024"
-                                    class="o_field_widget o_readonly_modifier o_field_background_image o_kanban_image_fill_left d-block">
-                                    <img loading="lazy" alt="Binary file" data-tooltip-template="web.ImageZoomTooltip"
-                                        data-tooltip-info="{&quot;url&quot;:&quot;https://yantra-design2.odoo.com/web/image/hr.employee/2/image_1024?unique=1722580108000&quot;}"
-                                        data-tooltip-delay="1000"
-                                        src="https://yantra-design2.odoo.com/web/image/hr.employee/2/image_1024?unique=1722580108000">
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <div class="o_kanban_record_top">
-                                        <div class="o_kanban_record_headings"><strong
-                                                class="o_kanban_record_title"><span>karan vora</span>
-                                                <div class="float-end"></div>
-                                            </strong></div>
-                                    </div>
-                                    <ul>
-                                        <div name="employee_properties" class="o_field_widget o_field_properties">
-                                            <div class="w-100 fw-normal text-muted"></div>
-                                        </div>
-                                        <li class="hr_tags">
-                                            <div name="category_ids" class="o_field_widget o_field_many2many_tags">
-                                                <div class="d-flex flex-wrap gap-1"></div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div
-                                    class="oe_kanban_content o_hr_employee_kanban_bottom position-absolute bottom-0 start-0 end-0">
-                                    <div class="o_kanban_record_bottom mt-3">
-                                        <div class="oe_kanban_bottom_left"></div>
-                                        <div class="oe_kanban_bottom_right">
-                                            <div class="hr_avatar mb-1 ms-2 me-n1">
-                                                <div name="user_id"
-                                                    class="o_field_widget o_readonly_modifier o_field_empty o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
-                                                    <div class="d-flex align-items-center gap-1"><span
-                                                            class="o_avatar o_m2o_avatar d-flex"></span></div>
-                                                </div>
-                                            </div>
-                                            <div class="hr_activity_container mb-1 ms-2 me-n1">
-                                                <div name="activity_ids" class="o_field_widget o_field_kanban_activity"><a
-                                                        class="o-mail-ActivityButton" role="button"
-                                                        aria-label="Show activities" title="Show activities"><i
-                                                            class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"
-                                                            role="img"></i></a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                        <article
-                            class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record"
-                            data-id="datapoint_8" tabindex="0">
-                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_hr_kanban_record">
-                                <div name="image_1024"
-                                    class="o_field_widget o_readonly_modifier o_field_background_image o_kanban_image_fill_left d-block">
-                                    <img loading="lazy" alt="Binary file" data-tooltip-template="web.ImageZoomTooltip"
-                                        data-tooltip-info="{&quot;url&quot;:&quot;https://yantra-design2.odoo.com/web/image/hr.employee/3/image_1024?unique=1722918690000&quot;}"
-                                        data-tooltip-delay="1000"
-                                        src="https://yantra-design2.odoo.com/web/image/hr.employee/3/image_1024?unique=1722918690000">
-                                </div>
-                                <div class="oe_kanban_details">
-                                    <div class="o_kanban_record_top">
-                                        <div class="o_kanban_record_headings"><strong
-                                                class="o_kanban_record_title"><span>vora</span>
-                                                <div class="float-end"></div>
-                                            </strong></div>
-                                    </div>
-                                    <ul>
-                                        <div name="employee_properties" class="o_field_widget o_field_properties">
-                                            <div class="w-100 fw-normal text-muted"></div>
-                                        </div>
-                                        <li class="hr_tags">
-                                            <div name="category_ids" class="o_field_widget o_field_many2many_tags">
-                                                <div class="d-flex flex-wrap gap-1"></div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div
-                                    class="oe_kanban_content o_hr_employee_kanban_bottom position-absolute bottom-0 start-0 end-0">
-                                    <div class="o_kanban_record_bottom mt-3">
-                                        <div class="oe_kanban_bottom_left"></div>
-                                        <div class="oe_kanban_bottom_right">
-                                            <div class="hr_avatar mb-1 ms-2 me-n1">
-                                                <div name="user_id"
-                                                    class="o_field_widget o_readonly_modifier o_field_empty o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
-                                                    <div class="d-flex align-items-center gap-1"><span
-                                                            class="o_avatar o_m2o_avatar d-flex"></span></div>
-                                                </div>
-                                            </div>
-                                            <div class="hr_activity_container mb-1 ms-2 me-n1">
-                                                <div name="activity_ids" class="o_field_widget o_field_kanban_activity"><a
-                                                        class="o-mail-ActivityButton" role="button"
-                                                        aria-label="Show activities" title="Show activities"><i
-                                                            class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"
-                                                            role="img"></i></a></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
+                            </article>
+                        @endforeach
+
                         <div class="o_kanban_record o_kanban_ghost flex-grow-1 flex-md-shrink-1 flex-shrink-0 my-0"></div>
                         <div class="o_kanban_record o_kanban_ghost flex-grow-1 flex-md-shrink-1 flex-shrink-0 my-0"></div>
                         <div class="o_kanban_record o_kanban_ghost flex-grow-1 flex-md-shrink-1 flex-shrink-0 my-0"></div>
@@ -416,5 +321,17 @@
             <div class="o_notification_manager"></div>
         </div>
     </body>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.employee-list').on('click', function() {
+                var id = $(this).data('id');
+                window.location.href = '/employee/' + id;
+            });
+        });
+    </script>
+
 
 @endsection

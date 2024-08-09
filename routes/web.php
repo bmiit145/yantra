@@ -9,6 +9,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\TagController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
@@ -54,6 +55,13 @@ Route::middleware(['auth'])->group(function () {
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::post('/save-employee', [EmployeeController::class, 'store']);
+    Route::get('/employees/names', [EmployeeController::class, 'getEmployeeNames'])->name('getEmployeeNames');
+    Route::post('/save-close', [EmployeeController::class, 'saveAndClose'])->name('save.close');
+    Route::post('/save-new', [EmployeeController::class, 'saveAndNew'])->name('save.new');
+    Route::post('/discard', [EmployeeController::class, 'discard'])->name('discard');
+
+    //Tag
+    Route::get('/tags', [TagController::class, 'fetchTags']);
 
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
