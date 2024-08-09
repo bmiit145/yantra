@@ -347,8 +347,7 @@
                                                 <form action="" id="employee-form" method="POST">
                                                     @csrf
                                                     <input type="hidden" class="experience_id" name="experience_id" value="{{ $employee->id ?? '' }}">
-                                                    @dd($experience)
-                                                    <input type="hidden" class="edit_experience_id" name="edit_experience_id" data-edit_experience_id="{{ $experience->id }}">
+                                                    <input type="hidden" class="edit_experience_id" name="edit_experience_id">
 
                                                     <main class="modal-body p-0">
                                                         <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
@@ -3318,27 +3317,7 @@
             // Function to open the modal
             $editButton.on('click', function() {
 
-                // Assuming the data is stored in data attributes
-                var experienceId = $(this).data('edit_experience_id');
-                console.log(experienceId);
-                var experienceTitle = $(this).data('title');
-                var employeeName = $(this).data('employee');
-                var experienceType = $(this).data('type');
-                var startDate = $(this).data('start-date');
-                var endDate = $(this).data('end-date');
-                var experienceDescription = $(this).data('description');
-
-                // Set the values in the modal fields
-                $('#name_0').val(experienceTitle);
-                $('#employee_id_0').val(employeeName); // Adjust if you need to set the ID
-                $('#line_type_id_0').val(experienceType);
-                $('#date_start_0').val(startDate);
-                $('#date_end_0').val(endDate);
-                $('#description_0').val(experienceDescription);
-                $('#employee_id_0').data('id', $(this).data('employee-id')); // Store the ID
-
-                // Set the hidden input field value
-                $('.experience_id').val(experienceId);
+                
 
                 $modal.show();
             });
