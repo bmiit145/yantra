@@ -347,7 +347,7 @@
                                                 <form action="" id="employee-form" method="POST">
                                                     @csrf
                                                     <input type="hidden" class="experience_id" name="experience_id" value="{{ $employee->id ?? '' }}">
-                                                    <input type="hidden" class="edit_experience_id" name="edit_experience_id">
+                                                    <input type="hidden" class="edit_experience_id" name="edit_experience_id" value="{{ $experience->id ?? '' }}>
 
                                                     <main class="modal-body p-0">
                                                         <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
