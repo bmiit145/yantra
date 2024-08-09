@@ -878,7 +878,7 @@
                         stages : stages
                     },
                     success: function(response) {
-                        toastr.success("Stage Updated");
+                        // toastr.success("Stage Updated");
                         // location.reload();
                     },
                     error: function(err) {

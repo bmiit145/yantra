@@ -36,6 +36,7 @@ class CRMController extends Controller
         $data = New CrmStage();
         $data->title = $newStage;
         $data->user_id = auth()->user()->id;
+        $data->seq_no = CrmStage::where('user_id', auth()->user()->id)->max('seq_no') + 1;
         $data->save();
         return response()->json($data);
     }

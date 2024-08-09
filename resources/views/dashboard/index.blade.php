@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @vite('resources/css/dashboard.css')
     <title>Dashboard</title>
+
+    <link href="{{ asset('images/favicon.png') }}" rel="shortcut icon" type="image/x-icon">
+
     {{-- <link rel="stylesheet" href="{{ asset('css/home.css') }}"> --}}
 </head>
 
