@@ -14,8 +14,6 @@ class Sale extends Model
         'stage_id',
         'user_id',
         'opportunity',
-        'email',
-        'phone',
         'expected_revenue',
         'priority',
     ];

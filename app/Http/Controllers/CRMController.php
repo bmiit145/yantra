@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Contact;
 use App\Models\CrmStage;
 use App\Models\Opportunity;
 use App\Models\Pipeline;
@@ -30,6 +31,12 @@ class CRMController extends Controller
         return back();
     }
 
+    public function show($id)
+    {
+        $sale = Sale::find($id);
+        return view('CRM.show', compact('sale'));
+    }
+
     public function newStage(Request $request)
     {
         $newStage = $request->newStage;
@@ -54,6 +61,13 @@ class CRMController extends Controller
         $data->priority = $request->priority ?? null;
         $data->save();
 
+        if ($request->contact_id != null) {
+            $contact = Contact::find($request->contact_id);
+            $contact->email = $request->email;
+            $contact->phone = $request->phone;
+            $contact->save();
+        }
+
         if ($request->ajax()) {
             $res = [
                 'status' => 'success',
@@ -63,6 +77,7 @@ class CRMController extends Controller
             return response()->json($res , 200);
         }
         return back()->with('success', 'Sale created successfully');
+
     }
 
     // sale
