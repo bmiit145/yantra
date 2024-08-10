@@ -19,9 +19,18 @@ class ContactController extends Controller
     {
         $contact = Contact::find($id);
         if (!$contact) {
+
+            if (request()->wantsJson()) {
+                return response()->json(['message' => 'Contact not found'], 404);
+            }
             return view('errors.404', ['message' => 'Contact not found']);
 //        abort(404 , 'Contact not found');
         }
+
+        if (request()->json()) {
+            return response()->json([ 'contact' => $contact ]);
+        }
+
         return view('Contacts.create' , compact('contact'));
     }
 
@@ -48,9 +57,9 @@ class ContactController extends Controller
             'address_zip', 'address_state', 'country'
         ]);
 
-        // Find or create contact
-        $contact = Contact::find($data['contact_id']) ?? new Contact;
-        $address = ContactAddress::where('contact_id', $contact->id)->first() ?? new ContactAddress;
+        // Find or create contact and address
+        $contact = isset($data['contact_id']) ? Contact::find($data['contact_id']) : new Contact;
+        $address = isset($data['contact_id']) ? ContactAddress::where('contact_id', $contact->id)->first() : new ContactAddress;
 
         // Capture original data before update
         $originalContact = $contact->getOriginal();
@@ -61,14 +70,14 @@ class ContactController extends Controller
 //            $data
             [
             'name' => $data['contact_name'],
-            'GST_treatment' => $data['gst_treatment'],
-            'GSTIN' => $data['gstin'],
-            'PAN' => $data['pan_number'],
-            'phone' => $data['phone_number'],
-            'mobile' => $data['mobile_number'],
-            'email' => $data['contact_email'],
-            'website' => $data['contact_Website'],
-            'tages' => $data['contact_tages'],
+            'GST_treatment' => $data['gst_treatment'] ?? '',
+            'GSTIN' => $data['gstin'] ?? '',
+            'PAN' => $data['pan_number'] ?? '',
+            'phone' => $data['phone_number'] ?? '',
+            'mobile' => $data['mobile_number'] ?? '',
+            'email' => $data['contact_email'] ?? '',
+            'website' => $data['contact_Website'] ?? '',
+            'tages' => $data['contact_tages'] ?? '',
             'is_user' => $is_user,
             ]
         )->save();
@@ -79,12 +88,12 @@ class ContactController extends Controller
 //            $data
             [
                 'contact_id' => $contact->id,
-                'address_1' => $data['address_1'],
-                'address_2' => $data['address_2'],
-                'city' => $data['address_city'],
-                'zip' => $data['address_zip'],
-                'state' => $data['address_state'],
-                'country' => $data['country']
+                'address_1' => $data['address_1'] ?? '',
+                'address_2' => $data['address_2'] ?? '',
+                'city' => $data['address_city'] ?? '',
+                'zip' => $data['address_zip'] ?? '',
+                'state' => $data['address_state'] ?? '',
+                'country' => $data['country'] ?? ''
             ]
         );
 

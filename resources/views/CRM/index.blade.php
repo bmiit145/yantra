@@ -444,7 +444,8 @@
                                                             <div class="o_field_many2one_selection">
                                                                 <div class="o_input_dropdown">
                                                                     <div class="o-autocomplete dropdown">
-                                                                        <input type="text" name="partner_id" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
+                                                                        <input type="hidden" name="partner_id" class="o_input">
+                                                                        <input type="text" name="parter_name" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
 <!--                                                                        <ul class="o-autocomplete&#45;&#45;dropdown-menu dropdown-menu" style="display: none;"></ul>-->
                                                                     </div>
                                                                     <span class="o_dropdown_button"></span>
@@ -520,7 +521,50 @@
             $(containerId).append(htmlContent);
 
             isContentAppendedFlag = true;
-            autoInputComplate('#partner_id_0' , '{{ route('contact.suggestions') }}');
+            autoInputComplate('#partner_id_0' , '{{ route('contact.suggestions') }}' , function (selectedText , selected_id = 0) {
+                containerId.find('input[name="partner_id"]').val(selected_id);
+
+                // contact details and show if selected_id != 0
+                if(selected_id != 0) {
+                    let url = "{{ route('contact.show', ['contact' => ':id']) }}";
+                    url = url.replace(':id', selected_id);
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        data: {
+                            id: selected_id,
+                        },
+                        success: function (response) {
+                            // console.log(response);
+                            var _contact = response.contact;
+                            containerId.find('input[name="email"]').val(_contact.email);
+                            containerId.find('input[name="phone"]').val(_contact.phone);
+                            containerId.find('input[name="name"]').val(_contact.name + "'s Opportunity");
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+
+                if(selected_id == 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('contact.save') }}",
+                        data: {
+                            contact_name: selectedText,
+                        },
+                        success: function (response) {
+                            var _contact = response.contact;
+                            $('input[name="partner_id"]').val(_contact.id);
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+
+            });
         }
 
         $(containerId).show();

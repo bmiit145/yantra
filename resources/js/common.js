@@ -1,8 +1,8 @@
 
 // auto suggestion
-    window.autoInputComplate = function autoComplate(input_id, suggestions_route) {
-        console.log(input_id);
+    window.autoInputComplate = function autoComplate(input_id, suggestions_route , callback) {
         var input = $(document).find(input_id);
+        var query = $(this).val();
 
         // appencd <ul class="o-autocomplete--dropdown-menu dropdown-menu" style="display: none;"></ul> if not exist
         if (!input.parent().find('.o-autocomplete--dropdown-menu').length) {
@@ -14,7 +14,7 @@
         // Event listener for the input field
         $(document).on('input', input_id, function () {
             var input = $(this);
-            var query = $(this).val();
+            query = $(this).val();
 
             dropdownMenu.show();
 
@@ -66,22 +66,24 @@
 
             e.preventDefault();
             var selectedText = $(this).text();
-            console.log($(this));
+            input.val(selectedText);
 
             if ($(this).hasClass('create-option')) {
-                // Handle the "Create" option
-                alert('Create new: ' + selectedText);
-                // You can add your logic here for creating a new entry
+                input.val(query);
+                if (typeof callback === 'function') {
+                    callback(query);
+                }
             } else if ($(this).hasClass('create-edit-option')) {
-                // Handle the "Create and edit..." option
-                alert('Create and edit: ' + selectedText);
-                // You can add your logic here for creating and editing a new entry
+                input.val(query);
+                if (typeof callback === 'function') {
+                    callback(query);
+                }
             } else {
                 // Handle the selection of a suggested item
                 var selectedId = $(this).data('id');
-                input.val(selectedText);
-
-                // You might want to do something with the selected ID here
+                if (typeof callback === 'function') {
+                    callback(query, selectedId);
+                }
             }
 
             $('.o-autocomplete--dropdown-menu').hide();
@@ -108,3 +110,4 @@ $(document).ready(function() {
     });
 });
 });
+
