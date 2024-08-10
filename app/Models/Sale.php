@@ -16,6 +16,8 @@ class Sale extends Model
         'opportunity',
         'expected_revenue',
         'priority',
+        'probability',
+        'deadline'
     ];
 
     public function contact()

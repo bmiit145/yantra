@@ -34,7 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // crm
-    Route::resource('/crm', CRMController::class , [ 'except' => [] ]);
+    Route::resource('/crm', CRMController::class , [ 'except' => ['show'] ]);
+    Route::get('/crm/{crm}', [CRMController::class, 'show'])->name('crm.show');
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
     Route::post('/stage/setSequence', [CRMController::class, 'updateStageSequence'])->name('crm.updateStageSequence');
     Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');

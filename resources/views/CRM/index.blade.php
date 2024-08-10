@@ -79,7 +79,7 @@
             <div id="append-container-new" class="append-container-new"></div>
 
             @foreach($stage->sales as $sale)
-            <div role="article" class="o_kanban_record d-flex o_draggable oe_kanban_card_undefined o_legacy_kanban_record"
+            <div role="article" class="o_kanban_record sale-card d-flex o_draggable oe_kanban_card_undefined o_legacy_kanban_record"
                 data-id="{{ $sale->id }}" tabindex="0">
                 <div class="oe_kanban_color_0 oe_kanban_global_click oe_kanban_card d-flex flex-column">
                     <div class="oe_kanban_content flex-grow-1">
@@ -939,28 +939,6 @@
 
     });
 </script>
-
-                {{--var itemEl = evt.item; // dragged HTMLElement--}}
-                {{--var stage_id = itemEl.dataset.id;--}}
-                {{--var prev_stage_id = evt.from.dataset.id;--}}
-                {{--var next_stage_id = evt.to.dataset.id;--}}
-                {{--$.ajax({--}}
-                {{--    type: 'POST',--}}
-                {{--    url: "{{ route('crm.updateStage') }}",--}}
-                {{--    data: {--}}
-                {{--        stage_id: stage_id,--}}
-                {{--        prev_stage_id: prev_stage_id,--}}
-                {{--        next_stage_id: next_stage_id,--}}
-                {{--    },--}}
-                {{--    success: function(response) {--}}
-                {{--        toastr.success("Stage Updated");--}}
-                {{--        // location.reload();--}}
-                {{--    },--}}
-                {{--    error: function(err) {--}}
-                {{--        console.log(err);--}}
-                {{--    }--}}
-                {{--});--}}
-
 <!-- Auto Select -->
     <script>
         {{--$(document).ready(function() {--}}
@@ -1038,6 +1016,15 @@
         {{--    });--}}
         {{--});--}}
     </script>
+<script>
+    // contact-card click event by jquery
+    $(document).on('click', '.sale-card', function () {
+        let id = $(this).data('id');
+        let url = "{{ route('crm.show', ['crm' => ':id']) }}";
+        url = url.replace(':id', id);
+        window.location.href = url;
+    });
+</script>
 @endpush
 
 @push('head_scripts')
