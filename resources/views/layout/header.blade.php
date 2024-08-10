@@ -131,7 +131,7 @@
             <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
         </div>
         <div class="head_breadcrumb_info">
-            <p class="head_breadcrumb_title">Pipeline</p>
+            <p class="head_breadcrumb_title">@yield('head_breadcrumb_title')</p>
             <a href="#"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -140,15 +140,17 @@
                     </g>
                 </svg></a>
         </div>
-        <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+        <button type="button" class="o_form_button_save skill-save-btn btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
             <i class="fa fa-cloud-upload fa-fw"></i>
         </button>
+
+        @yield('header_left_side_extra')
     @endsection
     <div class="crmcenter_header">
         @include('layout.partials.navbar')
     </div>
     <div class="crm_head_centerside mob_search_info">
-        <form>
+        <form>;
             <input type="text" name="search" placeholder="Search..">
             <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
                     id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"

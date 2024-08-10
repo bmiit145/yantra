@@ -6,9 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Employee;
 use App\Models\Experience;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Skill;
+use App\Models\SkillLevel;
+use App\Models\SkillType;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
+    // EMPLOYEE SECTION START------------------------------------------------
+
     public function index()
     {
         $employee = Employee::all();
@@ -92,7 +98,10 @@ class EmployeeController extends Controller
         $employee->delete(); 
         return back();
     }
+    // EMPLOYEE SECTION END------------------------------------------------
 
+
+    // EXPERIENCE SECTION START------------------------------------------------
     public function getEmployeeNames()
     {
         $employees = Employee::select('id', 'name')->get();
@@ -105,7 +114,7 @@ class EmployeeController extends Controller
         $experience = Experience::find($request->input('experience_id')) ?? new Experience();
 
         $data = [
-            'employee_id' => $request->input('experience_id'), 
+            'employee_id' => $request->input('employee_id'), 
             'title' => $request->input('experience_title'),
             'start_date' => $request->input('experience_start_date'),
             'end_date' => $request->input('experience_end_date'),
@@ -124,7 +133,61 @@ class EmployeeController extends Controller
     {
         return response()->json(['success' => true]);
     }
+    // EXPERIENCE SECTION END------------------------------------------------
 
 
+    // SKILLS SECTION START--------------------------------------------------
+
+    public function skill_add($skillType)
+    {
+        if($skillType ==  'new' || $skillType ==null)
+        {
+            $skills = Skill::whereHas('skillType', function($query) use ($skillType) {
+                $query->where('user_id', Auth::id());
+            })
+            ->get();
+
+            return view('employees.configuration.skill_type.add', compact('skills'));
+        }
+
+        $skillType = SkillType::find($skillType);
+        $skills = Skill::where('skill_type_id', $skillType->id)->get();
+        $skillLevels = SkillLevel::where('skill_type_id', $skillType->id)->get();
+
+        return view('employees.configuration.skill_type.add', compact('skills', 'skillType', 'skillLevels'));
+
+    }
+
+    public function skill_view()
+    {
+        return view('employees.configuration.skill_type.index');
+    }
+
+    public function skill_store(Request $request)
+    {
+        $skillType = SkillType::find($request->skill_type_id) ?? new SkillType();
+        $skillType->name = $request->name;
+        $skillType->user_id = Auth::id();
+        $skillType->save();
+
+        foreach ($request->skills as $skill) {
+            $skillModel = Skill::find($skill['id']) ?? new Skill();
+            $skillModel->name = $skill['name'];
+            $skillModel->skill_type_id = $skillType->id;
+            $skillModel->sequence = $skill['sequence'] ?? 0;
+            $skillModel->save();
+        }
+
+        return response()->json(['success' => true, 'skill' => $skill , 'skillType' => $skillType]);
+    }    
+
+
+    public function skill_delete($id)
+    {
+        $skill = Skill::findOrFail($id);
+        $skill->delete();
+
+        return response()->json(['success' => true]);
+    }
 
 }
