@@ -1,5 +1,4 @@
 @extends('layout.header')
-@section('content')
 @section('navbar_menu')
     <li class="dropdown">
         <a href="#">Sales</a>
@@ -35,12 +34,15 @@
 @endsection
 
 
+
+@section('head')
 @vite([
     'resources/css/crm_2.css',
-    'resources/js/common.js',
 //    'resources/css/odoo/web.assets_web_print.min.css'
     ])
+@endsection
 
+@section('content')
 <div class="o_content" style="height: 100%">
     <div class="o_kanban_renderer o_renderer d-flex o_kanban_grouped align-content-stretch">
         @php($crmStages = Auth::user()->crmStages->sortBy('seq_no'))
@@ -405,32 +407,31 @@
 </div>
 
 @endsection
+
 @push('scripts')
 {{--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
+
 <script>
-    $(document).ready(function() {
-        var isContentAppendedNew = false;
+    function appendContent($this) {
+        var containerId = $this.closest('.o_kanban_group').find('#append-container-new');
+        var append_id = $this.closest('.o_kanban_group').data('id');
+        let isContentAppendedFlag = false
 
-        function appendContent($this) {
-            var containerId = $this.closest('.o_kanban_group').find('#append-container-new');
-            var append_id = $this.closest('.o_kanban_group').data('id');
-            let isContentAppendedFlag = false
+        // set the flag to true if the content is already appended
+        if (containerId.find('.o_kanban_quick_create').length) {
+            isContentAppendedFlag = true;
+        }
 
-            // set the flag to true if the content is already appended
-            if (containerId.find('.o_kanban_quick_create').length) {
-                isContentAppendedFlag = true;
-            }
+        $('.append-container-new').hide();
 
-            $('.append-container-new').hide();
-
-            $(document).on('click', '.o_form_button_cancel', function(event) {
-                event.preventDefault();
-                $(containerId).hide();
-            });
-            if (!isContentAppendedFlag) {
-                var htmlContent = `<div id="appended-content" class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable" data-id="${append_id}">
+        $(document).on('click', '.o_form_button_cancel', function(event) {
+            event.preventDefault();
+            $(containerId).hide();
+        });
+        if (!isContentAppendedFlag) {
+            var htmlContent = `<div id="appended-content" class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable" data-id="${append_id}">
                                     <div class="o_kanban_quick_create o_field_highlight shadow">
                                         <div class="o_form_renderer o_form_nosheet o_form_view o_xxs_form_view p-0 o_form_editable d-block">
                                             <div class="o_inner_group grid">
@@ -444,6 +445,7 @@
                                                                 <div class="o_input_dropdown">
                                                                     <div class="o-autocomplete dropdown">
                                                                         <input type="text" name="partner_id" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
+<!--                                                                        <ul class="o-autocomplete&#45;&#45;dropdown-menu dropdown-menu" style="display: none;"></ul>-->
                                                                     </div>
                                                                     <span class="o_dropdown_button"></span>
                                                                 </div>
@@ -515,14 +517,17 @@
                                     </div>
                                 </div>`;
 
-                $(containerId).append(htmlContent);
+            $(containerId).append(htmlContent);
 
-                isContentAppendedFlag = true;
-            }
-
-            $(containerId).show();
+            isContentAppendedFlag = true;
+            autoInputComplate('#partner_id_0' , '{{ route('contact.suggestions') }}');
         }
 
+        $(containerId).show();
+    }
+
+    $(document).ready(function() {
+        var isContentAppendedNew = false;
         $('.new-lead-btn').click(function(event) {
             event.preventDefault(); // Prevent default action
             appendContent($(this));
@@ -912,4 +917,85 @@
                 {{--    }--}}
                 {{--});--}}
 
+<!-- Auto Select -->
+    <script>
+        {{--$(document).ready(function() {--}}
+        {{--    // Event listener for the input field--}}
+        {{--    $(document).on('input', '#partner_id_0' ,  function() {--}}
+        {{--        var query = $(this).val();--}}
+
+        {{--        // Check if the query is not empty--}}
+        {{--        if (query.length > 0) {--}}
+        {{--            // Example AJAX request to get suggestions (replace with your actual endpoint)--}}
+        {{--            $.ajax({--}}
+        {{--                url: '{{ route('contact.suggestions') }}',  // Your API endpoint to get suggestions--}}
+        {{--                type: 'GET',--}}
+        {{--                data: { query: query },--}}
+        {{--                success: function(data) {--}}
+        {{--                    var dropdownMenu = $('.o-autocomplete--dropdown-menu');--}}
+        {{--                    dropdownMenu.empty();--}}
+
+        {{--                    if (data.length > 0) {--}}
+        {{--                        data.forEach(function(item) {--}}
+        {{--                            // Append each item to the dropdown menu--}}
+        {{--                            dropdownMenu.append('<li class="dropdown-item" data-id="' + item.id + '">' + item.name + '</li>');--}}
+        {{--                        });--}}
+        {{--                        dropdownMenu.show();--}}
+        {{--                    }--}}
+        {{--                    // else {--}}
+        {{--                    //     dropdownMenu.hide(); // Hide the dropdown menu if no results--}}
+        {{--                    // }--}}
+
+        {{--                    // Add the "Create" and "Create and edit..." options--}}
+        {{--                    dropdownMenu.append('<li class="o-autocomplete--dropdown-item create-option"><a role="option" href="#" class="dropdown-item">Create "' + query + '"</a></li>');--}}
+        {{--                    dropdownMenu.append('<li class="o-autocomplete--dropdown-item create-edit-option"><a role="option" href="#" class="dropdown-item">Create and edit...</a></li>');--}}
+
+        {{--                }--}}
+        {{--            });--}}
+        {{--        } else {--}}
+        {{--            $('.o-autocomplete--dropdown-menu').hide(); // Hide dropdown if input is empty--}}
+        {{--        }--}}
+        {{--    });--}}
+
+        {{--    // Event listener for selecting an item--}}
+        {{--    $(document).on('click', '.o-autocomplete--dropdown-menu .o-autocomplete--dropdown-item', function(e) {--}}
+        {{--        // var selectedText = $(this).text();--}}
+        {{--        // var selectedId = $(this).data('id');--}}
+        {{--        //--}}
+        {{--        // // Set the input field value to the selected item--}}
+        {{--        // $('#partner_id_0').val(selectedText);--}}
+        {{--        //--}}
+        {{--        // // You might want to do something with the selected ID here--}}
+        {{--        //--}}
+        {{--        // // Hide the dropdown menu after selection--}}
+        {{--        // $('.o-autocomplete--dropdown-menu').hide();--}}
+
+
+        {{--        e.preventDefault();--}}
+        {{--        var selectedText = $(this).text();--}}
+
+        {{--        if ($(this).hasClass('create-option')) {--}}
+        {{--            // Handle the "Create" option--}}
+        {{--            alert('Create new: ' + selectedText);--}}
+        {{--            // You can add your logic here for creating a new entry--}}
+        {{--        } else if ($(this).hasClass('create-edit-option')) {--}}
+        {{--            // Handle the "Create and edit..." option--}}
+        {{--            alert('Create and edit: ' + selectedText);--}}
+        {{--            // You can add your logic here for creating and editing a new entry--}}
+        {{--        } else {--}}
+        {{--            // Handle the selection of a suggested item--}}
+        {{--            var selectedId = $(this).data('id');--}}
+        {{--            $('#partner_id_0').val(selectedText);--}}
+
+        {{--            // You might want to do something with the selected ID here--}}
+        {{--        }--}}
+
+        {{--        $('.o-autocomplete--dropdown-menu').hide();--}}
+        {{--    });--}}
+        {{--});--}}
+    </script>
+@endpush
+
+@push('head_scripts')
+    @vite ('resources/js/common.js')
 @endpush

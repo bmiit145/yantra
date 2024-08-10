@@ -30,6 +30,12 @@ class CRMController extends Controller
         return back();
     }
 
+    public function show($id)
+    {
+        $sale = Sale::find($id);
+        return view('CRM.show', compact('sale'));
+    }
+
     public function newStage(Request $request)
     {
         $newStage = $request->newStage;

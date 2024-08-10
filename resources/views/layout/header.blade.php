@@ -29,6 +29,7 @@
 
     @yield('head')
     @yield('css')
+    @stack('head_scripts')
     <style>
         ul {
             list-style-type: none;

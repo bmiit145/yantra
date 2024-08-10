@@ -106,7 +106,6 @@ class ContactController extends Controller
 
     }
 
-
     protected function logChanges($originalContact, $currentContact, $originalAddress, $currentAddress, $contact)
     {
         // Detect changes in contact fields
@@ -146,4 +145,15 @@ class ContactController extends Controller
         }
     }
 
+    // suggestions
+    public function getSuggestions(Request $request)
+    {
+        $query = $request->query->get('query');
+        $contacts = Contact::where('name', 'like', '%' . $query . '%')
+            ->orWhere('email', 'like', '%' . $query . '%')
+            ->orWhere('phone', 'like', '%' . $query . '%')
+            ->get();
+
+        return response()->json($contacts);
+    }
 }

@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('/contact', ContactController::class , [ 'except' => [] ]);
 //    Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
     Route::post('/contact/save', [ContactController::class, 'save'])->name('contact.save');
+    Route::get('/suggestions/contacts', [ContactController::class, 'getSuggestions'])->name('contact.suggestions');
 
     // Employee
     Route::resource('employee', EmployeeController::class);
