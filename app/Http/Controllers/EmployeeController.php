@@ -142,12 +142,7 @@ class EmployeeController extends Controller
     {
         if($skillType ==  'new' || $skillType ==null)
         {
-            $skills = Skill::whereHas('skillType', function($query) use ($skillType) {
-                $query->where('user_id', Auth::id());
-            })
-            ->get();
-
-            return view('employees.configuration.skill_type.add', compact('skills'));
+            return view('employees.configuration.skill_type.add');
         }
 
         $skillType = SkillType::find($skillType);
@@ -155,7 +150,6 @@ class EmployeeController extends Controller
         $skillLevels = SkillLevel::where('skill_type_id', $skillType->id)->get();
 
         return view('employees.configuration.skill_type.add', compact('skills', 'skillType', 'skillLevels'));
-
     }
 
     public function skill_view()
