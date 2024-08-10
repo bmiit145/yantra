@@ -1,11 +1,33 @@
 @extends('layout.header')
 
-@section('title', 'Contacts')
+@php
+    $currentUrl = url()->current();
+    $queryParameters = request()->query(); 
+    $tab = request()->query('tab'); 
+   
+@endphp
+
+@if($tab == 'customers')
+@section('title','Customers')
+@else
+@section('title','Contacts')
+@endif
 @section('head_title_link' , route('contact.index'))
 @section('image_url', asset('images/contacts.png'))
 @section('head_new_btn_link', route('contact.create'))
 @section('navbar_menu')
-<li><a href="{{ route('contact.index') }}">Contacts</a></li>
+
+
+<li>
+    
+    <a href="{{ route('contact.index') }}">
+        @if($tab == 'customers')
+            Customers
+        @else
+            Contacts
+        @endif
+    </a>
+</li>
 <li><a href="#"></a>Configuration</li>
 @endsection
 @section('head_new_btn_link' , route('contact.create'))

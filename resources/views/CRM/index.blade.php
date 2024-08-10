@@ -7,7 +7,7 @@
             <a href="#">My Activities</a>
             <a href="#">My Quotations</a>
             <a href="#">Teams</a>
-            <a href="#">Customers</a>
+            <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
     <li class="dropdown">
