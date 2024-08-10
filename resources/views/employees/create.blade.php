@@ -12,7 +12,28 @@
 <li><a href="{{ route('employee.index') }}">Employees</a></li>
 <li><a href="#"></a>Departments</li>
 <li><a href="#"></a>Reporting</li>
-<li><a href="#"></a>Configuration</li>
+<li><a href="#" id="configLink">Configuration</a></li>
+
+<div id="dropdownMenu" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0" role="menu" style="display: none; position: absolute;">
+    <a class="o-dropdown-item dropdown-item o-navigable" role="menuitem" tabindex="0" style="padding-left: 20px;" href="/odoo/action-440" data-menu-xmlid="hr.hr_menu_configuration" data-section="310">Settings</a>
+    <a class="o-dropdown-item dropdown-item o-navigable" role="menuitem" tabindex="0" style="padding-left: 20px;" href="/odoo/action-425" data-menu-xmlid="hr.menu_config_plan_plan" data-section="299">Activity Plan</a>
+    <div class="dropdown-menu_group dropdown-header" style="padding-left: 20px;">Employee</div>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry focus" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-437" data-menu-xmlid="hr.menu_hr_department_tree" data-section="301">Departments</a>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-439" data-menu-xmlid="hr.menu_hr_work_location_tree" data-section="303">Work Locations</a>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-98" data-menu-xmlid="hr.menu_resource_calendar_view" data-section="304">Working Schedules</a>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-427" data-menu-xmlid="hr.menu_hr_departure_reason_tree" data-section="305">Departure Reasons</a>
+
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="{{ route('skill.view') }}" data-menu-xmlid="hr_skills.hr_skill_type_menu" data-section="341">Skill Types</a>
+
+    <div class="dropdown-menu_group dropdown-header" style="padding-left: 20px;">Recruitment</div>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-429" data-menu-xmlid="hr.menu_view_hr_job" data-section="308">Job Positions</a>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-428" data-menu-xmlid="hr.menu_view_hr_contract_type" data-section="309">Employment Types</a>
+    <div class="dropdown-menu_group dropdown-header" style="padding-left: 20px;">Challenges</div>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-417" data-menu-xmlid="hr_gamification.gamification_badge_menu_hr" data-section="335">Badges</a>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-465" data-menu-xmlid="hr_gamification.gamification_challenge_menu_hr" data-section="336">Challenges</a>
+    <a class="o-dropdown-item dropdown-item o-navigable o_dropdown_menu_group_entry" role="menuitem" tabindex="0" style="padding-left: 32px;" href="/odoo/action-464" data-menu-xmlid="hr_gamification.gamification_goal_menu_hr" data-section="337">Goals History</a>
+</div>
+
 @endsection
 
 @section('content')
@@ -361,25 +382,30 @@
                                                                         <div class="o_inner_group grid col-lg-6">
                                                                             <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                                                 <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                                    <label class="o_form_label" for="employee_id_0">Employee</label></div>
+                                                                                    <label class="o_form_label" for="employee_id_get">Employee</label></div>
                                                                                 <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
                                                                                     <div name="employee_id" class="o_field_widget o_required_modifier o_field_many2one">
                                                                                         <div class="o_field_many2one_selection">
                                                                                             <div class="o_input_dropdown">
+
                                                                                                 <div class="o-autocomplete dropdown">
                                                                                                     <input type="hidden" name="employee_id" class="employee_id" value="{{ $employee->id ?? '' }}">
-                                                                                                    <input name="employee_name" type="text" class="o-autocomplete--input o_input employee_name" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="employee_name" placeholder="" aria-expanded="false">
+
+                                                                                                    <input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="employee_id_get" placeholder="" aria-expanded="false">
+
                                                                                                     <ul role="menu" class="o-autocomplete--dropdown-menu ui-widget dropdown-menu ui-autocomplete" style="position: fixed; display: none;" id="employee_dropdown">
                                                                                                         <!-- Items will be dynamically generated here -->
                                                                                                     </ul>
-
-
-                                                                                                </div><span class="o_dropdown_button"></span>
-                                                                                            </div><button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
+                                                                                                </div>
+                                                                                                <span class="o_dropdown_button"></span>
+                                                                                            </div>
+                                                                                            <button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
                                                                                         </div>
+
                                                                                         <div class="o_field_many2one_extra"></div>
                                                                                     </div>
                                                                                 </div>
+
                                                                             </div>
                                                                             <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                                                 <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
@@ -479,7 +505,7 @@
                                                                         </tr>
 
                                                                         @forelse($experiences as $experience)
-                                                                        <tr class="o_data_row" data-id="{{ $experience->id }}  " data-title="{{ $experience->title }}" data-employee="{{ $experience->employee_id }}" data-type="{{ $experience->type }}" data-display_type="{{ $experience->display_type }}" data-start_date="{{ $experience->start_date }}" data-end_date="{{ $experience->end_date }}" data-description="{{ $experience->description }}" data-employee_id="{{ $experience->employee_id }}">
+                                                                        <tr class="o_data_row edit-experience-popup" data-id="{{ $experience->id }}  " data-title="{{ $experience->title }}" data-employee="{{ $experience->employee_id }}" data-type="{{ $experience->type }}" data-display_type="{{ $experience->display_type }}" data-start_date="{{ $experience->start_date }}" data-end_date="{{ $experience->end_date }}" data-description="{{ $experience->description }}" data-employee_id="{{ $experience->employee_id }}">
                                                                             <td class="o_resume_timeline_cell position-relative pe-lg-2">
                                                                                 <div class="rounded-circle bg-info position-relative">
                                                                                 </div>
@@ -510,7 +536,7 @@
                                                                         </tr>
                                                                         @empty
                                                                         <tr>
-                                                                            <td colspan="3">No records found.</td>
+                                                                            <td colspan="3">There are no resume lines on this employee. Why not add a new one ?</td>
                                                                         </tr>
                                                                         @endforelse
 
@@ -534,36 +560,139 @@
                                                     <div name="employee_skill_ids" class="o_field_widget o_field_skills_one2many mt-2">
                                                         <div class="o_list_view o_field_x2many o_field_x2many_list">
                                                             <div class="o_x2m_control_panel d-empty-none mb-4"></div>
-
                                                             <div class="o_list_renderer o_renderer table-responsive" tabindex="-1">
-                                                                <div name="skills_header" class="text-uppercase fw-bolder small ms-3" style="margin-top: 2rem; box-shadow: 0 1px 0 #e6e6e6">
-                                                                    Skills <a class="float-end me-3 cursor-pointer"><span class="fa fa-line-chart me-1"></span>
-                                                                        Timeline </a></div>
-                                                                <table class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped mb-1 d-none o_skill_table" style="table-layout: fixed;">
+                                                                <div name="skills_header" class="text-uppercase fw-bolder small ms-3" style="margin-top: 2rem; box-shadow: 0 1px 0 #e6e6e6"> Skills <a class="float-end me-3 cursor-pointer"><span class="fa fa-line-chart me-1"></span> Timeline </a></div>
+                                                                <table class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped mb-1 o_skill_table" style="table-layout: fixed;">
                                                                     <thead style="visibility: collapse;">
                                                                         <tr>
-                                                                            <th data-tooltip-delay="1000" tabindex="-1" data-name="skill_id" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" data-tooltip="Skill" style="width: 159px;">
-                                                                                <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Skill</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                                                </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                                            <th data-tooltip-delay="1000" tabindex="-1" data-name="skill_id" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.employee.skill&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;skill_id&quot;,&quot;label&quot;:&quot;Skill&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;domain&quot;:&quot;[('skill_type_id', '=', skill_type_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;hr.skill&quot;}}" style="width: 130px;">
+                                                                                <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Skill</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                                             </th>
-                                                                            <th data-tooltip-delay="1000" tabindex="-1" data-name="skill_level_id" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" data-tooltip="Skill Level" style="width: 148px;">
-                                                                                <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Skill
-                                                                                        Level</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                                                </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                                            <th data-tooltip-delay="1000" tabindex="-1" data-name="skill_level_id" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.employee.skill&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;skill_level_id&quot;,&quot;label&quot;:&quot;Skill Level&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;domain&quot;:&quot;[('skill_type_id', '=', skill_type_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;hr.skill.level&quot;}}" style="width: 124px;">
+                                                                                <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Skill Level</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                                             </th>
-                                                                            <th data-tooltip-delay="1000" tabindex="-1" data-name="level_progress" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_progressbar_cell opacity-trigger-hover w-print-auto" data-tooltip="Progress" style="width: 148px;">
-                                                                                <div class="d-flex flex-row-reverse">
-                                                                                    <span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Progress</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                                                </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                                            <th data-tooltip-delay="1000" tabindex="-1" data-name="level_progress" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_progressbar_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.employee.skill&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;level_progress&quot;,&quot;label&quot;:&quot;Progress&quot;,&quot;help&quot;:&quot;Progress from zero knowledge (0%) to fully mastered (100%).&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;widget&quot;:&quot;progressbar&quot;,&quot;widgetDescription&quot;:&quot;Progress Bar&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;True&quot;,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 257px;">
+                                                                                <div class="d-flex flex-row-reverse"><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Progress</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                                             </th>
                                                                             <th class="o_list_controller o_list_actions_header w-print-0 p-print-0 position-sticky end-0" style="width: 32px;">
-                                                                                <div class="o_optional_columns_dropdown d-print-none text-center border-top-0">
-                                                                                    <button class="btn p-0 o-dropdown dropdown-toggle dropdown" tabindex="-1" aria-expanded="false"><i class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i></button>
-                                                                                </div>
+                                                                                <div class="o_optional_columns_dropdown d-print-none text-center border-top-0"><button class="btn p-0 o-dropdown dropdown-toggle dropdown" tabindex="-1" aria-expanded="false"><i class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i></button></div>
                                                                             </th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody class="ui-sortable"></tbody>
+                                                                    <tbody class="ui-sortable">
+
+
+                                                                        {{-- Skill Modal Start --}}
+                                                                        <div role="dialog" id="skillModal" class="modal o_technical_modal" tabindex="-1">
+                                                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                                                <div class="modal-content o_form_view o_hr_skills_dialog_form" style="top: 0px; left: 0px;">
+                                                                                    <header class="modal-header">
+                                                                                        <h4 class="modal-title text-break">Select Skills</h4><button type="button" class="btn-close" id="skill-modal-close" aria-label="Close" tabindex="-1"></button>
+                                                                                    </header>
+                                                                                    <main class="modal-body p-0">
+                                                                                        <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
+                                                                                            <div class="o_form_sheet_bg">
+                                                                                                <div class="o_form_sheet position-relative">
+                                                                                                    <div class="o_group row align-items-start">
+                                                                                                        <div class="o_inner_group grid col-lg-6">
+                                                                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="skill_type_id_0">Skill Type</label></div>
+                                                                                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                                                                    <div name="skill_type_id" class="o_field_widget o_required_modifier o_field_radio">
+                                                                                                                        <div role="radiogroup" class="o_vertical" aria-label="Skill Type">
+                                                                                                                            <div class="form-check o_radio_item" aria-atomic="true"><input type="radio" class="form-check-input o_radio_input" name="radio_field_0" data-value="1" data-index="0" id="radio_field_0_1"><label class="form-check-label o_form_label" for="radio_field_0_1">Languages</label></div>
+                                                                                                                            <div class="form-check o_radio_item" aria-atomic="true"><input type="radio" class="form-check-input o_radio_input" name="radio_field_0" data-value="4" data-index="1" id="radio_field_0_4"><label class="form-check-label o_form_label" for="radio_field_0_4">designer 1</label></div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="o_inner_group grid col-lg-6">
+                                                                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="skill_id_0">Skill</label></div>
+                                                                                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                                                                    <div name="skill_id" class="o_field_widget o_required_modifier o_field_many2one">
+                                                                                                                        <div class="o_field_many2one_selection">
+                                                                                                                            <div class="o_input_dropdown">
+                                                                                                                                <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="skill_id_0" placeholder="" aria-expanded="false"></div><span class="o_dropdown_button"></span>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        <div class="o_field_many2one_extra"></div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                                                                <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="skill_level_id_0">Skill Level</label></div>
+                                                                                                                <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                                                                                                    <div class="o_row"><span class="ps-0" style="flex:1">
+                                                                                                                            <div name="skill_level_id" class="o_field_widget o_required_modifier o_field_many2one">
+                                                                                                                                <div class="o_field_many2one_selection">
+                                                                                                                                    <div class="o_input_dropdown">
+                                                                                                                                        <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="skill_level_id_0" placeholder="" aria-expanded="false"></div><span class="o_dropdown_button"></span>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                                <div class="o_field_many2one_extra"></div>
+                                                                                                                            </div>
+                                                                                                                        </span><span style="flex:1">
+                                                                                                                            <div name="level_progress" class="o_field_widget o_readonly_modifier o_field_progressbar o_hr_skills_progress">
+                                                                                                                                <div class="o_progressbar w-100 d-flex align-items-center">
+                                                                                                                                    <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="15">
+                                                                                                                                        <div class="bg-primary h-100" style="width: min(15%, 100%)"></div>
+                                                                                                                                    </div>
+                                                                                                                                    <div class="o_progressbar_value d-flex"><span class="mx-1">15</span><span>%</span></div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </span></div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </main>
+                                                                                    <footer class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100"><button class="btn btn-primary o_form_button_save" data-hotkey="c">Save &amp; Close</button><button class="btn btn-primary o_form_button_save_new" data-hotkey="n">Save &amp; New</button><button class="btn btn-secondary o_form_button_cancel" data-hotkey="j">Discard</button></footer>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+
+                                                                        <tr class="o_group_has_content o_group_header">
+                                                                            <th tabindex="-1" class="o_group_name" colspan="5">
+                                                                                <div class="d-flex justify-content-between align-items-center"><span>designer 1</span><button class="btn btn-secondary btn-sm add-skill-popup" role="button">ADD</button></div>
+                                                                            </th>
+                                                                        </tr>
+                                                                        <tr class="o_data_row" data-id="datapoint_6">
+                                                                            <td class="o_data_cell cursor-pointer o_field_cell o_list_many2one o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="skill_id" data-tooltip="skills 1">skills 1</td>
+                                                                            <td class="o_data_cell cursor-pointer o_field_cell o_list_many2one o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="skill_level_id" data-tooltip="levels 2">levels 2</td>
+                                                                            <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_progressbar_cell o_readonly_modifier" data-tooltip-delay="1000" tabindex="-1" name="level_progress">
+                                                                                <div name="level_progress" class="o_field_widget o_readonly_modifier o_field_progressbar">
+                                                                                    <div class="o_progressbar w-100 d-flex align-items-center">
+                                                                                        <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="67">
+                                                                                            <div class="bg-primary h-100" style="width: min(67%, 100%)"></div>
+                                                                                        </div>
+                                                                                        <div class="o_progressbar_value d-flex"><span class="mx-1">67</span><span>%</span></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1"><button class="fa d-print-none fa-trash-o" name="delete" aria-label="Delete row" tabindex="-1"></button></td>
+                                                                        </tr>
+                                                                        <tr class="o_data_row" data-id="datapoint_7">
+                                                                            <td class="o_data_cell cursor-pointer o_field_cell o_list_many2one o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="skill_id" data-tooltip="skills 2">skills 2</td>
+                                                                            <td class="o_data_cell cursor-pointer o_field_cell o_list_many2one o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="skill_level_id" data-tooltip="levels 1">levels 1</td>
+                                                                            <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_progressbar_cell o_readonly_modifier" data-tooltip-delay="1000" tabindex="-1" name="level_progress">
+                                                                                <div name="level_progress" class="o_field_widget o_readonly_modifier o_field_progressbar">
+                                                                                    <div class="o_progressbar w-100 d-flex align-items-center">
+                                                                                        <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="15">
+                                                                                            <div class="bg-primary h-100" style="width: min(15%, 100%)"></div>
+                                                                                        </div>
+                                                                                        <div class="o_progressbar_value d-flex"><span class="mx-1">15</span><span>%</span></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1"><button class="fa d-print-none fa-trash-o" name="delete" aria-label="Delete row" tabindex="-1"></button></td>
+                                                                        </tr>
+                                                                    </tbody>
                                                                     <tfoot class="o_list_footer cursor-default">
                                                                         <tr>
                                                                             <td></td>
@@ -573,12 +702,7 @@
                                                                         </tr>
                                                                     </tfoot>
                                                                 </table>
-                                                                <div name="no_skills" class="ms-3 mt-3">
-                                                                    <p> There are no skills defined in the library.<br>
-                                                                        Why not try adding some ? </p><button class="btn btn-secondary ms-4 mt-3 text-center" role="button"> Create new Skills </button>
-                                                                </div>
                                                             </div>
-
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3305,7 +3429,7 @@
             // Select the modal and the button
             var $modal = $('#newResumeModal');
             var $addButton = $('#add-experience-btn');
-            var $editButton = $('.o_data_row');
+            var $editButton = $('.edit-experience-popup');
 
             // Function to open the modal
             $addButton.on('click', function() {
@@ -3325,7 +3449,7 @@
                 var experienceDescription = $(this).data('description');
 
                 // Set the values in the modal fields
-                 $('.experience_id').val(experienceId);
+                $('.experience_id').val(experienceId);
                 $('#edit_name_0').val(experienceTitle);
                 $('#edit_employee_id_0').val(employeeName); // Adjust if you need to set the ID
                 $('#line_type_id_0').val(experienceType);
@@ -3345,7 +3469,7 @@
             });
 
             // Load employee names when the input is clicked
-            $('#employee_id_0').on('click', function() {
+            $('#employee_id_get').on('click', function() {
                 $.ajax({
                     url: '{{ route("getEmployeeNames") }}'
                     , method: 'GET'
@@ -3367,8 +3491,8 @@
                 var name = $(this).text();
                 var id = $(this).data('id');
 
-                $('#employee_id_0').val(name); // Set the input field to the selected name
-                $('#employee_id_0').data('id', id); // Store the employee ID in the input field's data attribute
+                $('#employee_id_get').val(name); // Set the input field to the selected name
+                $('#employee_id_get').data('id', id); // Store the employee ID in the input field's data attribute
                 $('#employee_dropdown').hide(); // Hide the dropdown after selection
 
                 console.log('Selected Employee ID: ' + id); // Log the ID for debugging
@@ -3376,7 +3500,7 @@
 
             // Hide dropdown when clicking outside
             $(document).click(function(event) {
-                if (!$(event.target).closest('#employee_id_0, #employee_dropdown').length) {
+                if (!$(event.target).closest('#employee_id_get, #employee_dropdown').length) {
                     $('#employee_dropdown').hide();
                 }
             });
@@ -3402,7 +3526,7 @@
 
             function resetModal() {
                 $('input[type="text"], textarea').val('');
-                $('#employee_id_0').val('');
+                $('#employee_id_get').val('');
                 $('#employee_dropdown').hide();
                 $('#date_start_0, #date_end_0').val('');
                 $('#tags-container').empty();
@@ -3412,20 +3536,20 @@
                 $('#category_ids_0').val('');
             }
 
-                $(document).on('click', '.o_form_button_save_data, .o_form_button_save_new', function() {
-                    saveData("{{ route('experience.save') }}", function(success) {
-                        if (success) {
-                            resetModal();
-                            if ($(this).hasClass('o_form_button_save_data')) {
-                                $('#newResumeModal').hide();
-                            } else {
-                                $('#newResumeModal').show();
-                            }
+            $(document).on('click', '.o_form_button_save_data, .o_form_button_save_new', function() {
+                saveData("{{ route('experience.save') }}", function(success) {
+                    if (success) {
+                        resetModal();
+                        if ($(this).hasClass('o_form_button_save_data')) {
+                            $('#newResumeModal').hide();
                         } else {
-                            alert('Failed to save data.');
+                            $('#newResumeModal').show();
                         }
-                    }.bind(this));
-                });
+                    } else {
+                        alert('Failed to save data.');
+                    }
+                }.bind(this));
+            });
 
             $(document).on('click', '.o_form_button_cancel', function() {
                 resetModal()
@@ -3436,9 +3560,9 @@
 
             function saveData(url, callback) {
                 var formData = {
-                     experience_id: $('.experience_id').val()
+                    experience_id: $('.experience_id').val()
                     , experience_title: $('.experience_title').val()
-                    , employee_name: $('.employee_name').val()
+                    , employee_id: $('.employee_id').val()
                     , experience_type: $('.experience_type').val()
                     , experience_start_date: $('.experience_start_date').val()
                     , experience_end_date: $('.experience_end_date').val()
@@ -3464,6 +3588,48 @@
             }
 
 
+        });
+
+    </script>
+
+
+    {{-- SKILL SECTION START --}}
+
+    <script>
+        $(document).ready(function() {
+            $('.add-skill-popup').on('click', function() {
+                $('#skillModal').show();
+            });
+        });
+
+        $(document).on('click', '#skill-modal-close', function() {
+            $('#skillModal').hide();
+        });
+
+    </script>
+
+    {{-- CONFIGURATION SECTION STRAT --}}
+    <script>
+        $(document).ready(function() {
+            $('#configLink').click(function(e) {
+                e.preventDefault(); // Prevent the default action
+
+                // Get the position of the li element
+                var position = $(this).parent().offset();
+
+                // Set the position of the dropdown relative to the li
+                $('#dropdownMenu').css({
+                    top: position.top + $(this).outerHeight(), // Below the li
+                    left: position.left
+                }).toggle(); // Toggle visibility
+            });
+
+            // Optional: Hide the dropdown if clicking outside of it
+            $(document).click(function(e) {
+                if (!$(e.target).closest('#configLink, #dropdownMenu').length) {
+                    $('#dropdownMenu').hide();
+                }
+            });
         });
 
     </script>

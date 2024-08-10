@@ -55,10 +55,25 @@ Route::middleware(['auth'])->group(function () {
     // Employee
     Route::resource('employee', EmployeeController::class);
     Route::post('/save-employee', [EmployeeController::class, 'store']);
+
+    // Experience
     Route::put('experience/{id}', [EmployeeController::class, 'update'])->name('experience.update');
     Route::get('/employees/names', [EmployeeController::class, 'getEmployeeNames'])->name('getEmployeeNames');
     Route::post('/save', [EmployeeController::class, 'save'])->name('experience.save');
     Route::post('/discard', [EmployeeController::class, 'discard'])->name('discard');
+
+    // Skill
+    Route::get('/skills/{skill?}', [EmployeeController::class, 'skill_add'])->name('skill.add');
+    Route::post('/skills/store', [EmployeeController::class, 'skill_store'])->name('skills.store');
+    Route::get('/skills/view', [EmployeeController::class, 'skill_view'])->name('skill.view');
+    Route::delete('/skills/delete/{id}', [EmployeeController::class, 'skill_delete'])->name('skills.delete');
+
+    // Skill Type
+    Route::post('/skill_types/store', [EmployeeController::class, 'skill_type_store'])->name('skill_types.store');
+
+    // Skill Level
+    Route::post('/skill-levels/store', [EmployeeController::class, 'skill_level_store'])->name('skill_levels.store');
+    Route::delete('/skill-levels/delete/{id}', [EmployeeController::class, 'skill_level_delete'])->name('skill_levels.delete');
 
     //Tag
     Route::get('/tags', [TagController::class, 'fetchTags']);
