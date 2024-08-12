@@ -81,9 +81,14 @@ class Contact extends Model
         return $this->belongsTo(ContactAddress::class);
     }
 
+//    public function logs()
+//    {
+//        return $this->hasMany(ContactLog::class , 'contact_id' , 'id');
+//    }
+
     public function logs()
     {
-        return $this->hasMany(ContactLog::class);
+        return $this->morphMany(ChangeLog::class, 'loggable');
     }
 
     public function ContactLog($action, $message, $user_id = null, $attachments = null, $is_system = true)

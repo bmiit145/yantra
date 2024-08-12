@@ -148,6 +148,26 @@ Make sure to add the following script to your `package.json`:
 }
 ```
 
+### Features Used
+1. **Components:**
+   - LogDisplay Component ```php artisan make:component LogDisplay``` that located at `app/components/LogDisplay.php` and `resources/views/components/log-display.blade.php`.
+   
+
+2. **Services:**
+   - EncryptionService - `app/Services/EncryptionService.php`
+   - logService - `app/Services/LogService.php` using Morph in `App/Model/ChangeLog` for polymorphic relationships.
+
+
+3. **Commands:**
+    - AssignPermissions - `app/Console/Commands/AssignPermissions.php`  
+    - Permission - `app/Console/Commands/Permission.php`
+    - MakePermissions - `app/Console/Commands/MakePermissions.php`
+
+
+4. **Traits:**
+    - HasChangeLogs - `app/HasChangeLogs.php` by ```php artisan make:trait HasChangeLogs```
+
+
 ---
 
 By following these steps and utilizing the provided commands, you can efficiently set up and manage the Yatra Dashboard project while maintaining a professional workflow.

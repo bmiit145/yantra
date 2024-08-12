@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\LogService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,6 +25,15 @@ class Sale extends Model
         'priority' => 'string',
     ];
 
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::created(function ($model) {
+           LogService::log($model , 'created', 'Sale created');
+        });
+    }
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);
@@ -39,4 +49,8 @@ class Sale extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function logs()
+    {
+        return $this->morphMany(ChangeLog::class, 'loggable');
+    }
 }
