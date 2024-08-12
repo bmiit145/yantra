@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/crm/{crm}', [CRMController::class, 'show'])->name('crm.show');
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
     Route::post('/stage/setSequence', [CRMController::class, 'updateStageSequence'])->name('crm.updateStageSequence');
-    Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');
+//    Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
     Route::post('/new/sale/{sale?}' , [CRMController::class, 'newSales'])->name('crm.newSales')->defaults('sale', 'new');
 
