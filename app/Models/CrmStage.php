@@ -20,4 +20,10 @@ class CrmStage extends Model
     {
         return $this->hasMany(Sale::class , 'stage_id' , 'id');
     }
+
+    public function totalExpectedRevenue()
+    {
+        return $this->sales->sum('expected_revenue');
+    }
+
 }

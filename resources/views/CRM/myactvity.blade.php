@@ -9,18 +9,18 @@
             <a href="#">My Activities</a>
             <a href="#">My Quotations</a>
             <a href="#">Teams</a>
-            <a href="#">Customers</a>
+            <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
     <li class="dropdown">
         <a href="{{ url('lead') }}">Leads</a>
-       
+
     </li>
     <li class="dropdown">
         <a href="#">Reporting</a>
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
-            <a href="#">Forecast</a>
+            <a href="{{route('crm.forecasting')}}">Forecast</a>
             <a href="#">Pipeline</a>
             <a href="#">Leads</a>
             <a href="#">Activities</a>

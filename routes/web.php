@@ -38,9 +38,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/crm/{crm}', [CRMController::class, 'show'])->name('crm.show');
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
     Route::post('/stage/setSequence', [CRMController::class, 'updateStageSequence'])->name('crm.updateStageSequence');
-    Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');
+//    Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
-    Route::post('/sale/new' , [CRMController::class, 'newSales'])->name('crm.newSales');
+    Route::get('/forecasting' , [CRMController::class, 'forecasting'])->name('crm.forecasting');
+    Route::post('/update-sale-deadline/{id}', [CRMController::class, 'updateDeadline']);
+    Route::get('/getdedline/{monthYear}', [CRMController::class, 'getdedline'])->name('crm.getdedline');
+    Route::post('/new/sale/{sale?}' , [CRMController::class, 'newSales'])->name('crm.newSales')->defaults('sale', 'new');
 
 
     // sale
@@ -73,6 +76,13 @@ Route::middleware(['auth'])->group(function () {
 
     // Route::post('/skills/update/{id}', [EmployeeController::class, 'updateSkill']);
     // Route::post('/skills/level/update/{id}', [EmployeeController::class, 'updateSkillLevel']);
+
+    // Skill Type
+    Route::post('/skill_types/store', [EmployeeController::class, 'skill_type_store'])->name('skill_types.store');
+
+    // Skill Level
+    Route::post('/skill-levels/store', [EmployeeController::class, 'skill_level_store'])->name('skill_levels.store');
+    Route::delete('/skill-levels/delete/{id}', [EmployeeController::class, 'skill_level_delete'])->name('skill_levels.delete');
 
     //Tag
     Route::get('/tags', [TagController::class, 'fetchTags']);

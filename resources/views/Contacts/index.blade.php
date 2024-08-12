@@ -12,7 +12,7 @@
 @section('title','Contacts')
 @endif
 @section('head_title_link' , route('contact.index'))
-@section('image_url', asset('images/contacts.png'))
+@section('image_url', asset('images/Contacts.png'))
 @section('head_new_btn_link', route('contact.create'))
 @section('navbar_menu')
 

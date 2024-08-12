@@ -18,7 +18,7 @@
         <a href="#">Reporting</a>
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
-            <a href="#">Forecast</a>
+            <a href="{{route('crm.forecasting')}}">Forecast</a>
             <a href="#">Pipeline</a>
             <a href="#">Leads</a>
             <a href="#">Activities</a>
@@ -72,7 +72,7 @@
                         @endif
                     </div>
                     <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false"
-                        title="Expected Revenue"><b>0</b></div>
+                        title="Expected Revenue" data-target="{{ $stage->totalExpectedRevenue() }}"><b>0</b></div>
                 </div>
             </div>
 
@@ -353,13 +353,13 @@
         <script>
             $(document).ready(function() {
                 var originalContent = `
-                        <div class="o_column_quick_create flex-shrink-0 flex-grow-1 flex-md-grow-0">
-                            <div class="o_quick_create_folded position-sticky z-index-1 my-3 text-nowrap">
-                                <button class="o_kanban_add_column btn btn-light w-100" aria-label="Add column" data-tooltip="Add column">
-                                    <i class="fa fa-plus me-2" role="img"></i>Stage
-                                </button>
-                            </div>
-                        </div>`;
+                    <div class="o_column_quick_create flex-shrink-0 flex-grow-1 flex-md-grow-0">
+                        <div class="o_quick_create_folded position-sticky z-index-1 my-3 text-nowrap">
+                            <button class="o_kanban_add_column btn btn-light w-100" aria-label="Add column" data-tooltip="Add column">
+                                <i class="fa fa-plus me-2" role="img"></i>Stage
+                            </button>
+                        </div>
+                    </div>`;
 
                 $(document).on('click', '.o_kanban_add_column', function() {
                     var newContent = `
@@ -446,7 +446,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <input type="hidden" name="partner_id" class="o_input">
                                                                         <input type="text" name="parter_name" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
-<!--                                                                        <ul class="o-autocomplete&#45;&#45;dropdown-menu dropdown-menu" style="display: none;"></ul>-->
+                                                                        <!--                                                                        <ul class="o-autocomplete&#45;&#45;dropdown-menu dropdown-menu" style="display: none;"></ul>-->
                                                                     </div>
                                                                     <span class="o_dropdown_button"></span>
                                                                 </div>

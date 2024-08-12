@@ -499,68 +499,11 @@
                                 </div>
                             </div>
                             <div class="o-mail-Chatter-content">
-                                <div class="o-mail-Thread position-relative flex-grow-1 d-flex flex-column overflow-auto pb-4"
-                                    tabindex="-1">
-                                    <div class="d-flex flex-column position-relative flex-grow-1"><span
-                                            class="position-absolute w-100 invisible top-0"
-                                            style="height: Min(2500px, 100%)"></span><span></span>
-                                        <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold pt-2">
-                                            <hr class="flex-grow-1"><span
-                                                class="px-3 opacity-75 small text-muted">Today</span>
-                                            <hr class="flex-grow-1">
-                                        </div>
-                                        <div class="o-mail-Message position-relative undefined o-selfAuthored py-1 mt-2"
-                                            role="group" aria-label="System notification">
-                                            <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                                                <div class="o-mail-Message-sidebar d-flex flex-shrink-0">
-                                                    <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer"
-                                                        aria-label="Open card"><img
-                                                            class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
-                                                            {{-- src="https://yantradesign.odoo.com/web/image/res.partner/3/avatar_128?unique=1721388544000"> --}}
-                                                            src="{{ asset('images/CRM.png')}}">
-                                                    </div>
-                                                </div>
-                                                <div class="w-100 o-min-width-0">
-                                                    <div
-                                                        class="o-mail-Message-header d-flex flex-wrap align-items-baseline mb-1 lh-1">
-                                                        <span class="o-mail-Message-author cursor-pointer"
-                                                            aria-label="Open card"><strong
-                                                                class="me-1 text-truncate">info@yantradesign.co.in</strong></span><small
-                                                            class="o-mail-Message-date text-muted opacity-75 me-2"
-                                                            title="30/7/2024, 3:07:46 pm">- 1 minute
-                                                            ago</small><span
-                                                            class="o-mail-MessageSeenIndicator position-relative d-flex opacity-50 o-all-seen text-primary ms-1"></span>
-                                                    </div>
-                                                    <div class="position-relative d-flex">
-                                                        <div class="o-mail-Message-content o-min-width-0">
-                                                            <div
-                                                                class="o-mail-Message-textContent position-relative d-flex">
-                                                                <div>
-                                                                    <div
-                                                                        class="o-mail-Message-body text-break mb-0 w-100">
-                                                                        Creating a new record...</div>
-                                                                </div>
-                                                                <div
-                                                                    class="o-mail-Message-actions ms-2 mt-1 invisible">
-                                                                    <div
-                                                                        class="d-flex rounded-1 bg-view shadow-sm overflow-hidden">
-                                                                        <button class="btn px-1 py-0 rounded-0"
-                                                                            tabindex="1" title="Add a Reaction"
-                                                                            aria-label="Add a Reaction"><i
-                                                                                class="oi fa-lg oi-smile-add"></i></button><button
-                                                                            class="btn px-1 py-0 rounded-0"
-                                                                            title="Mark as Todo" name="toggle-star"><i
-                                                                                class="fa fa-lg fa-star-o"></i></button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                @php
+                                    $logs = isset($sale) ? $sale->logs : collect(); // Ensure $logs is always a collection
+                                @endphp
+
+                                <x-log-display :logs="$logs" />
                             </div>
                         </div>
                     </div>
@@ -1794,11 +1737,14 @@
             var contact_id = $('#partner_id').val();
             var priority = $(document).find('.set-priority').find('.o_priority_star.fa-star').last().data('value');
             var formData = $('#opportunity-form').serialize();
-            formData += '&contact_id=' + contact_id + '&priority=' + priority;
-
+            formData += '&contact_id=' + contact_id;
+            if (priority != undefined) {
+                formData += '&priority=' + priority;
+            }
+            4
             $.ajax({
                 type: 'POST',
-                url: "{{ route('crm.newSales') }}",
+                url: "{{ route('crm.newSales' , [ 'sale' => $crm ]) }}",
                 data: formData,
                 success: function (response) {
                     console.log(response);
@@ -1814,4 +1760,28 @@
             });
         });
     </script>
+     <!-- Status Bar button click  -->
+    <script>
+    $(document).ready(function () {
+        @if($crm != 'new')
+        $(document).on('click', '.o_statusbar_status .o_arrow_button', function () {
+            var stage_id = $(this).data('value');
+            var sale_id = {{ $crm }};
+
+            $.post("{{ route('sale.setStage') }}", { id: sale_id, stage_id: stage_id })
+                .done(function (response) {
+                    $('.o_statusbar_status .o_arrow_button')
+                        .removeClass('o_arrow_button_current')
+                        .removeAttr('aria-current disabled');
+                    $('.o_statusbar_status .o_arrow_button[data-value="' + stage_id + '"]')
+                        .addClass('o_arrow_button_current')
+                        .attr({ 'aria-current': 'step', 'disabled': 'disabled' });
+                })
+                .fail(function (err) {
+                    console.log(err);
+                });
+        });
+        @endif
+    });
+</script>
 @endpush
