@@ -1760,4 +1760,28 @@
             });
         });
     </script>
+     <!-- Status Bar button click  -->
+    <script>
+    $(document).ready(function () {
+        @if($crm != 'new')
+        $(document).on('click', '.o_statusbar_status .o_arrow_button', function () {
+            var stage_id = $(this).data('value');
+            var sale_id = {{ $crm }};
+
+            $.post("{{ route('sale.setStage') }}", { id: sale_id, stage_id: stage_id })
+                .done(function (response) {
+                    $('.o_statusbar_status .o_arrow_button')
+                        .removeClass('o_arrow_button_current')
+                        .removeAttr('aria-current disabled');
+                    $('.o_statusbar_status .o_arrow_button[data-value="' + stage_id + '"]')
+                        .addClass('o_arrow_button_current')
+                        .attr({ 'aria-current': 'step', 'disabled': 'disabled' });
+                })
+                .fail(function (err) {
+                    console.log(err);
+                });
+        });
+        @endif
+    });
+</script>
 @endpush

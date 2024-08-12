@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 class LogDisplay extends Component
 {
     public $logs;
+
     /**
      * Create a new component instance.
      */

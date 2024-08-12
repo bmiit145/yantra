@@ -60,12 +60,7 @@ class CRMController extends Controller
 
     public function  newSales(Request $request , $sale)
     {
-        if ($sale  == 'new'){
-        $data = New Sale();
-        }else{
-            $data = Sale::findorfail($sale);
-        }
-
+        $data = $sale == 'new' ? new Sale() : Sale::findOrFail($sale);
         // original
         $originalSale = $data->getOriginal();
 
@@ -84,36 +79,26 @@ class CRMController extends Controller
 
         if ($request->contact_id != null) {
             $contact = Contact::find($request->contact_id);
-
             $originalContact = $contact->getOriginal();
-            $contact->email = $request->email;
-            $contact->phone = $request->phone;
-            $contact->save();
-
+            $contact->update(['email' => $request->email, 'phone' => $request->phone]);
             LogService::logChanges(['email', 'phone'], $originalContact, $contact->toArray(), $contact);
         }
 
         // Logs the changes
         $fields = ['opportunity', 'email', 'phone', 'expected_revenue', 'priority', 'probability', 'deadline'];
-
-        $currentSale = $data->toArray();
-
         if ($data->wasChanged() && !empty($originalSale)) {
-            LogService::logChanges($fields, $originalSale, $currentSale, $data);
+            LogService::logChanges($fields, $originalSale, $data->toArray(), $data);
         }
 
         if ($request->ajax()) {
-                $msg = 'Sale updated successfully';
-            if ($sale == 'new') {
-                $msg = 'Sale created successfully';
-            }
-            $res = [
+            $msg = $sale == 'new' ? 'Sale created successfully' : 'Sale updated successfully';
+            return response()->json([
                 'status' => 'success',
                 'message' => $msg,
                 'data' => $data
-            ];
-            return response()->json($res , 200);
+            ] , 200);
         }
+
         return back()->with('success', 'Sale created successfully');
     }
 
