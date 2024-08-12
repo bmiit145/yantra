@@ -2,7 +2,7 @@
 
 @section('title', 'Employee')
 @section('head_title_link', route('employee.index'))
-@section('image_url', asset('images/employees.png'))
+@section('image_url', asset('images/Employees.png'))
 @section('head_new_btn_link', route('employee.create'))
 @section('save_class', 'save_contacts')
 @section('head')
@@ -2988,7 +2988,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="System notification">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3032,7 +3032,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Note">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3065,7 +3065,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3102,7 +3102,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Note">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3143,7 +3143,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Note">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3176,7 +3176,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="System notification">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3208,7 +3208,7 @@
                                             <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="System notification">
                                                 <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                     <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="http://127.0.0.1:8000/images/employees.png">
+                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="{{ asset('images/Employees.png') }}">
                                                         </div>
                                                     </div>
                                                     <div class="w-100 o-min-width-0">
@@ -3300,7 +3300,7 @@
 
             // Handle clear button click
             $('#clear-image-button').click(function() {
-                $('#profile-image').attr('src', 'images/employees.png'); // reset to default image
+                $('#profile-image').attr('src', 'images/Employees.png'); // reset to default image
                 $('#profile-image-input').val(''); // clear the file input
             });
 
@@ -3357,7 +3357,7 @@
                         }
                         , success: function(response) {
                             if (response.success) {
-                                $('#profile-image').attr('src', 'images/employees.png');
+                                $('#profile-image').attr('src', 'images/Employees.png');
                                 $('#profile-image-input').val('');
                             } else {
                                 alert('An error occurred while deleting the image.');
@@ -3537,7 +3537,7 @@
                 $('#date_start_0, #date_end_0').val('');
                 $('#tags-container').empty();
                 $('#tags_array').val('');
-                $('#profile-image').attr('src', 'images/employees.png');
+                $('#profile-image').attr('src', 'images/Employees.png');
                 $('#profile-image-input').val('');
                 $('#category_ids_0').val('');
             }

@@ -139,7 +139,7 @@
                     </g>
                 </svg></a>
         </div>
-        <button type="button" class="o_form_button_save skill-save-btn btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+        <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
             <i class="fa fa-cloud-upload fa-fw"></i>
         </button>
 
