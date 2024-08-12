@@ -24,10 +24,10 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
-        $experiences = Experience::where('employee_id', $id)->get(); 
+        $experiences = Experience::where('employee_id', $id)->get();
         return view('employees.create', ['employee' => $employee, 'experiences' => $experiences]);
     }
-    
+
     public function create()
     {
         return view('employees.create');
@@ -36,7 +36,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         // Find the employee by ID, or create a new instance
-        $employee = Employee::find($request->input('employee_id')); 
+        $employee = Employee::find($request->input('employee_id'));
         if (!$employee) {
             $employee = new Employee();
         }
@@ -76,8 +76,6 @@ class EmployeeController extends Controller
         } else {
             return response()->json(['success' => false]);
         }
-
-        
     }
 
     public function edit(string $id)
@@ -87,13 +85,13 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id)
     {
-       //
-    }    
+        //
+    }
 
     public function destroy(string $id)
     {
-        $employee = Experience::findOrFail($id); 
-        $employee->delete(); 
+        $employee = Experience::findOrFail($id);
+        $employee->delete();
         return back();
     }
     // EMPLOYEE SECTION END------------------------------------------------
@@ -106,13 +104,13 @@ class EmployeeController extends Controller
         return response()->json($employees);
     }
 
-     // Handle Save & Close
+    // Handle Save & Close
     public function save(Request $request)
     {
         $experience = Experience::find($request->input('experience_id')) ?? new Experience();
 
         $data = [
-            'employee_id' => $request->input('employee_id'), 
+            'employee_id' => $request->input('employee_id'),
             'title' => $request->input('experience_title'),
             'start_date' => $request->input('experience_start_date'),
             'end_date' => $request->input('experience_end_date'),
@@ -138,15 +136,13 @@ class EmployeeController extends Controller
 
     public function skill_add($skillType)
     {
-        if($skillType == 'new' || $skillType == null)
-        {
+        if ($skillType == 'new' || $skillType == null) {
             return view('employees.configuration.skill_type.add');
         }
 
         $skillType = SkillType::find($skillType);
         $skills = Skill::where('skill_type_id', $skillType->id)->get();
         $skillLevels = SkillLevel::where('skill_type_id', $skillType->id)->get();
-        dd($skillLevels);
 
         return view('employees.configuration.skill_type.add', compact('skills', 'skillType', 'skillLevels'));
     }
@@ -155,6 +151,7 @@ class EmployeeController extends Controller
     {
         return view('employees.configuration.skill_type.index');
     }
+
 
     // public function skill_store(Request $request)
     // {
@@ -172,8 +169,107 @@ class EmployeeController extends Controller
     //         $skillModel->save();
     //     }
 
-    //     return response()->json(['success' => true, 'skill' => $skill , 'skillType' => $skillType]);
-    // }    
+    //     foreach ($request->skill_levels as $skillLevel) {
+    //         $skillLevelModel = SkillLevel::find($skillLevel['id']) ?? new SkillLevel();
+    //         $skillLevelModel->name = $skillLevel['name'];
+    //         $skillLevelModel->level = $skillLevel['level'];
+    //         $skillLevelModel->is_default = $skillLevel['is_default'];
+    //         $skillLevelModel->skill_type_id = $skillType->id;
+    //         $skillLevelModel->save();
+    //     }
+
+    //     return response()->json(['success' => true, 'skillType' => $skillType]);
+    // }
+
+
+    // public function skill_store(Request $request)
+    // {
+    //     // Find or create the SkillType
+    //     $skillType = SkillType::find($request->skill_type_id);
+    //     if (!$skillType) {
+    //         $skillType = new SkillType();
+    //     }
+    //     $skillType->name = $request->name;
+    //     $skillType->user_id = Auth::id();
+    //     $skillType->save();
+
+    //     // Handle Skills
+    //     $skills = $request->input('skills', []); // Default to empty array if not present
+    //     $skillIds = [];
+    //     foreach ($skills as $skill) {
+    //         // Create a new skill if no ID is provided, otherwise update the existing one
+    //         $skillModel = Skill::find($skill['id']) ?? new Skill();
+    //         $skillModel->skill_type_id = $skillType->id;
+    //         $skillModel->name = $skill['name'];
+    //         $skillModel->sequence = $skill['sequence'] ?? 0;
+    //         $skillModel->save();
+    //         $skillIds[] = $skillModel->id;
+    //     }
+
+    //     // Handle SkillLevels
+    //     $skillLevels = $request->input('skill_levels', []); // Default to empty array if not present
+    //     $skillLevelIds = [];
+    //     foreach ($skillLevels as $skillLevel) {
+    //         if ($skillLevel['id']) {
+    //             // Update an existing skill level if ID is provided
+    //             $skillLevelModel = SkillLevel::find($skillLevel['id']);
+    //             if ($skillLevelModel) {
+    //                 $skillLevelModel->name = $skillLevel['name'];
+    //                 $skillLevelModel->level = $skillLevel['level'];
+    //                 $skillLevelModel->is_default = $skillLevel['is_default'];
+    //                 $skillLevelModel->save();
+    //                 $skillLevelIds[] = $skillLevelModel->id;
+    //             }
+    //         } else {
+    //             // Create a new skill level if no ID is provided
+    //             $skillLevelModel = new SkillLevel();
+    //             $skillLevelModel->skill_type_id = $skillType->id;
+    //             $skillLevelModel->name = $skillLevel['name'];
+    //             $skillLevelModel->level = $skillLevel['level'];
+    //             $skillLevelModel->is_default = $skillLevel['is_default'];
+    //             $skillLevelModel->save();
+    //             $skillLevelIds[] = $skillLevelModel->id;
+    //         }
+    //     }
+
+    //     return response()->json(['success' => true, 'skillType' => $skillType]);
+    // }
+
+
+    // public function skill_store(Request $request)
+    // {
+    //     $skillType = SkillType::find($request->skill_type_id);
+    //     if (!$skillType) {
+    //         $skillType = new SkillType();
+    //     }
+    //     $skillType->name = $request->name;
+    //     $skillType->user_id = Auth::id();
+    //     $skillType->save();
+
+    //     // Handle Skills
+    //     $skills = $request->input('skills', []);
+    //     foreach ($skills as $skill) {
+    //         $skillModel = Skill::find($skill['id']) ?? new Skill();
+    //         $skillModel->skill_type_id = $skillType->id;
+    //         $skillModel->name = $skill['name'];
+    //         $skillModel->sequence = $skill['sequence'] ?? 0;
+    //         $skillModel->save();
+    //     }
+
+    //     // Handle SkillLevels
+    //     $skillLevels = $request->input('skill_levels', []);
+    //     foreach ($skillLevels as $skillLevel) {
+
+    //         $skillLevelModel = SkillLevel::find($skillLevel['id']) ?? new SkillLevel();
+    //         $skillLevelModel->skill_type_id = $skillType->id;
+    //         $skillLevelModel->name = $skillLevel['name'];
+    //         $skillLevelModel->level = $skillLevel['level'];
+    //         $skillLevelModel->is_default = $skillLevel['is_default'] ?? 0;
+    //         $skillLevelModel->save();
+    //     }
+
+    //     return response()->json(['success' => true, 'skillType' => $skillType]);
+    // }
 
     public function skill_store(Request $request)
     {
@@ -181,29 +277,43 @@ class EmployeeController extends Controller
         $skillType->name = $request->name;
         $skillType->user_id = Auth::id();
         $skillType->save();
-    
-        foreach ($request->skills as $skill) {
+
+        // Handle Skills
+        $skills = $request->input('skills', []);
+        foreach ($skills as $skill) {
             $skillModel = Skill::find($skill['id']) ?? new Skill();
-            $skillModel->name = $skill['name'];
             $skillModel->skill_type_id = $skillType->id;
+            $skillModel->name = $skill['name'];
             $skillModel->sequence = $skill['sequence'] ?? 0;
             $skillModel->save();
         }
-    
-        dd($request->skill_levels);
-        // Handle SkillLevel data
-        foreach ($request->skill_levels as $level) {
-            $skillLevelModel = SkillLevel::find($level['id']) ?? new SkillLevel();
-            $skillLevelModel->name = $level['name'];
-            $skillLevelModel->level = $level['level'];
-            $skillLevelModel->is_default = $level['is_default'] ?? false;
+
+        // Handle SkillLevels
+        $skillLevels = $request->input('skill_levels', []);
+        foreach ($skillLevels as $skillLevel) {
+            $skillLevelModel = SkillLevel::find($skillLevel['id']) ?? new SkillLevel();
             $skillLevelModel->skill_type_id = $skillType->id;
+            $skillLevelModel->name = $skillLevel['name'];
+            $skillLevelModel->level = $skillLevel['level'];
+            $skillLevelModel->is_default = $skillLevel['is_default'] ?? 0;
             $skillLevelModel->save();
         }
-    
-        return response()->json(['success' => true, 'skill' => $skill, 'skillType' => $skillType, 'skillLevels' => $request->skill_levels]);
-    }    
 
+        return response()->json(['success' => true, 'skillType' => $skillType]);
+    }
+
+
+    public function skillLevelDelete($id)
+    {
+        $skillLevel = SkillLevel::find($id);
+
+        if ($skillLevel) {
+            $skillLevel->delete();
+            return response()->json(['success' => true, 'message' => 'Skill level deleted successfully.']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Skill level not found.'], 404);
+        }
+    }
 
     public function skill_delete($id)
     {
@@ -212,5 +322,4 @@ class EmployeeController extends Controller
 
         return response()->json(['success' => true]);
     }
-
 }

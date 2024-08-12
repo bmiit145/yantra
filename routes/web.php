@@ -69,6 +69,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/skills/store', [EmployeeController::class, 'skill_store'])->name('skills.store');
     Route::get('/skills/view', [EmployeeController::class, 'skill_view'])->name('skill.view');
     Route::delete('/skills/delete/{id}', [EmployeeController::class, 'skill_delete'])->name('skills.delete');
+    Route::delete('/skills/level/delete/{id}', [EmployeeController::class, 'skillLevelDelete'])->name('skills.level.delete');
+
+    // Route::post('/skills/update/{id}', [EmployeeController::class, 'updateSkill']);
+    // Route::post('/skills/level/update/{id}', [EmployeeController::class, 'updateSkillLevel']);
 
     //Tag
     Route::get('/tags', [TagController::class, 'fetchTags']);
