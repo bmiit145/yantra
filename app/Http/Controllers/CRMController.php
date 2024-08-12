@@ -135,6 +135,33 @@ class CRMController extends Controller
         return view('CRM.addactivity');
     }
 
+    public function forecasting()
+    {
+        $crmStages = Auth::user()->crmStages->sortBy('seq_no');
+        return view('CRM.forecast', compact('crmStages'));
+    }
+
+    public function updateDeadline(Request $request, $id)
+    {
+        
+        
+
+        $sale = Sale::findOrFail($id);
+        $sale->deadline = \Carbon\Carbon::createFromFormat('Y-m', $request->deadline)->endOfMonth();
+        $sale->save();
+    
+        return response()->json($sale);
+    }
+
+
+    public function getdedline($monthYear)
+    {
+        list($year, $month) = explode('-', $monthYear);
+        $sales = Sale::whereYear('deadline', $year)->whereMonth('deadline' , $month)->get();
+        return response()->json(['sales' => $sales]);
+    }
+
+
 
 
 
