@@ -20,15 +20,15 @@ class ContactController extends Controller
         $contact = Contact::find($id);
         if (!$contact) {
 
-            if (request()->wantsJson()) {
+            if (request()->ajax()) {
                 return response()->json(['message' => 'Contact not found'], 404);
             }
             return view('errors.404', ['message' => 'Contact not found']);
 //        abort(404 , 'Contact not found');
         }
 
-        if (request()->json()) {
-            return response()->json([ 'contact' => $contact ]);
+        if (request()->ajax()) {
+            return response()->json(['contact' => $contact]);
         }
 
         return view('Contacts.create' , compact('contact'));

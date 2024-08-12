@@ -1,45 +1,58 @@
 @extends('layout.header')
-@section('content')
+
+@section('head')
     @vite('resources/css/CRM/addactivity.css')
-@section('navbar_menu')
-    <li class="dropdown">
-        <a href="#">Sales</a>
-        <div class="dropdown-content">
-            <a href="#">My Pipeline</a>
-            <a href="#">My Activities</a>
-            <a href="#">My Quotations</a>
-            <a href="#">Teams</a>
-            <a href="#">Customers</a>
-        </div>
-    </li>
-    <li class="dropdown">
-        <a href="{{ url('lead') }}">Leads</a>
-
-    </li>
-    <li class="dropdown">
-        <a href="#">Reporting</a>
-        <div class="dropdown-content">
-            <!-- Dropdown content for Reporting -->
-            <a href="#">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
-            <a href="#">Activities</a>
-        </div>
-    </li>
-    <li class="dropdown">
-        <a href="#">Configuration</a>
-        <div class="dropdown-content">
-            <a href="#">Settings</a>
-            <a href="#">Sales Teams</a>
-        </div>
-    </li>
+    <style>
+        .o-autocomplete{
+            width: 100% !important;
+        }
+    </style>
 @endsection
-@vite('resources/css/CRM/addactivity.css')
+@push('head_scripts')
+    @vite ('resources/js/common.js')
+@endpush
 
+    @section('navbar_menu')
+        <li class="dropdown">
+            <a href="#">Sales</a>
+            <div class="dropdown-content">
+                <a href="#">My Pipeline</a>
+                <a href="#">My Activities</a>
+                <a href="#">My Quotations</a>
+                <a href="#">Teams</a>
+                <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="{{ url('lead') }}">Leads</a>
+
+        </li>
+        <li class="dropdown">
+            <a href="#">Reporting</a>
+            <div class="dropdown-content">
+                <!-- Dropdown content for Reporting -->
+                <a href="#">Forecast</a>
+                <a href="#">Pipeline</a>
+                <a href="#">Leads</a>
+                <a href="#">Activities</a>
+            </div>
+        </li>
+        <li class="dropdown">
+            <a href="#">Configuration</a>
+            <div class="dropdown-content">
+                <a href="#">Settings</a>
+                <a href="#">Sales Teams</a>
+            </div>
+        </li>
+    @endsection
+
+@section('content')
 <div class="o_action_manager">
+    <form id="opportunity-form">
+        <input type="hidden" name="stage_id" value="{{ isset($sale) ?( $sale->stage_id ?? '' ): '' }}">
     <div class="o_xxl_form_view h-100 o_form_view o_crm_form_view o_lead_opportunity_form o_view_controller o_action">
         <div class="o_form_view_container">
-            <div class="o_content">
+            <div class="o_content" id="">
                 <div class="o_form_renderer o_form_editable d-flex flex-nowrap h-100">
                     <div class="o_form_sheet_bg">
                         <div
@@ -57,29 +70,64 @@
                                     data-tooltip="Mark as lost"><span>Lost</span></button>
                             </div>
                             <div name="stage_id" class="o_field_widget o_field_statusbar_duration">
-                                <div class="o_statusbar_status" role="radiogroup"><button type="button"
-                                        class="btn btn-secondary dropdown-toggle o_arrow_button o_first o-dropdown dropdown d-none"
-                                        aria-expanded="false"> ... </button><button type="button"
-                                        class="btn btn-secondary o_arrow_button o_first" role="radio"
-                                        aria-label="Not active state, click to change it" aria-checked="false"
-                                        data-value="7"><span>111</span></button><button type="button"
-                                        class="btn btn-secondary o_arrow_button" role="radio"
-                                        aria-label="Not active state, click to change it" aria-checked="false"
-                                        data-value="4"><span>Won</span></button><button type="button"
-                                        class="btn btn-secondary o_arrow_button" role="radio"
-                                        aria-label="Not active state, click to change it" aria-checked="false"
-                                        data-value="3"><span>Proposition</span></button><button type="button"
-                                        class="btn btn-secondary o_arrow_button" role="radio"
-                                        aria-label="Not active state, click to change it" aria-checked="false"
-                                        data-value="2"><span>Qualified</span></button><button type="button"
-                                        class="btn btn-secondary o_arrow_button o_arrow_button_current o_last"
-                                        role="radio" disabled="" aria-label="Current state" aria-checked="true"
-                                        aria-current="step" data-value="1"><span>New</span></button><button
+                                <div class="o_statusbar_status" role="radiogroup">
+                                    <button type="button"
+                                            class="btn btn-secondary dropdown-toggle o_arrow_button o_first o-dropdown dropdown d-none"
+                                            aria-expanded="false"> ... </button>
+                                @foreach($stages as $index => $stage)
+                                    @if(isset($sale))
+                                    <button type="button"
+                                            class="btn btn-secondary o_arrow_button {{ $stage->id == ($sale->stage_id ?? '') ? 'o_arrow_button_current' : '' }} {{ $index == 0 ? 'o_first' : '' }}{{ $index == count($stages) - 1 ? 'o_last': '' }}" role="radio"
+                                            aria-label="{{ $stage->id == ($sale->stage_id ?? '') ? 'Current state' : 'Not active state, click to change it' }} " aria-checked="{{  $stage->id == ($sale->stage_id ?? '') ? 'true' : 'false' }}"
+                                            {{ $stage->id == ($sale->stage_id ?? '') ? 'aria-current="step" disabled' : '' }}
+                                            data-value="{{ $stage->id }}"><span>{{$stage->title}}</span></button>
+                                        @else
+                                            <button type="button"
+                                                    class="btn btn-secondary o_arrow_button {{ $index == count($stages) -1 ? 'o_arrow_button_current' : '' }} {{ $index == 0 ? 'o_first' : '' }}{{ $index == count($stages) - 1 ? 'o_last': '' }}" role="radio"
+                                                    aria-label="{{ $index == count($stages) -1 ? 'Current state' : 'Not active state, click to change it' }} " aria-checked="{{  $index == count($stages) -1 ? 'true' : 'false' }}"
+                                                    {{ $index == count($stages) -1 ? 'aria-current="step" disabled' : '' }}
+                                                    data-value="{{ $stage->id }}"><span>{{$stage->title}}</span></button>
+                                        @endif
+                                @endforeach
+                                    <button
                                         type="button"
                                         class="btn btn-secondary dropdown-toggle o_arrow_button o_last o-dropdown dropdown d-none"
-                                        aria-expanded="false"> ... </button><button type="button"
-                                        class="btn btn-secondary dropdown-toggle o-dropdown dropdown d-none"
-                                        aria-expanded="false">New</button></div>
+                                        aria-expanded="false"> ... </button>
+
+                                    <button type="button"
+                                            class="btn btn-secondary dropdown-toggle o-dropdown dropdown d-none"
+                                            aria-expanded="false">New</button>
+                                </div>
+
+{{--                                <div class="o_statusbar_status" role="radiogroup">--}}
+{{--                                    <button type="button"--}}
+{{--                                        class="btn btn-secondary dropdown-toggle o_arrow_button o_first o-dropdown dropdown d-none"--}}
+{{--                                        aria-expanded="false"> ... </button>--}}
+
+{{--                                    <button type="button"--}}
+{{--                                        class="btn btn-secondary o_arrow_button o_first" role="radio"--}}
+{{--                                        aria-label="Not active state, click to change it" aria-checked="false"--}}
+{{--                                        data-value="7"><span>111</span></button>--}}
+
+{{--                                    <button type="button"--}}
+{{--                                        class="btn btn-secondary o_arrow_button" role="radio"--}}
+{{--                                        aria-label="Not active state, click to change it" aria-checked="false"--}}
+{{--                                        data-value="4"><span>Won</span></button>--}}
+
+{{--                                    <button type="button"--}}
+{{--                                        class="btn btn-secondary o_arrow_button" role="radio"--}}
+{{--                                        aria-label="Not active state, click to change it" aria-checked="false"--}}
+{{--                                        data-value="3"><span>Proposition</span></button>--}}
+{{--                                    <button type="button"--}}
+{{--                                        class="btn btn-secondary o_arrow_button" role="radio"--}}
+{{--                                        aria-label="Not active state, click to change it" aria-checked="false"--}}
+{{--                                        data-value="2"><span>Qualified</span></button>--}}
+{{--                                    <button type="button"--}}
+{{--                                        class="btn btn-secondary o_arrow_button o_arrow_button_current o_last"--}}
+{{--                                        role="radio" disabled="" aria-label="Current state" aria-checked="true"--}}
+{{--                                        aria-current="step" data-value="1"><span>New</span></button>--}}
+{{--                                </div>--}}
+
                             </div>
                         </div>
                         <div class="o_form_sheet position-relative">
@@ -88,8 +136,8 @@
                                     <div name="name"
                                         class="o_field_widget o_required_modifier o_field_text text-break">
                                         <div style="height: 45px;">
-                                            <textarea class="o_input" id="name_0" placeholder="e.g. Product Pricing" rows="1" spellcheck="false"
-                                                style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;"></textarea>
+                                            <textarea class="o_input"  name= "name" id="name_0" placeholder="e.g. Product Pricing" rows="1" spellcheck="false"
+                                                style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;">{{ $sale->opportunity ?? ''}}</textarea>
                                         </div>
                                     </div>
                                 </h1>
@@ -103,10 +151,13 @@
                                                     class="text-nowrap d-inline-flex w-100 align-items-baseline position-relative">
                                                     <span
                                                         class="o_input position-absolute pe-none d-flex w-100"><span>₹&nbsp;</span><span
-                                                            class="opacity-0 d-inline-block overflow-hidden mw-100 o_monetary_ghost_value">0.00</span></span><span
-                                                        class="opacity-0">₹&nbsp;</span><input
+                                                            class="opacity-0 d-inline-block overflow-hidden mw-100 o_monetary_ghost_value">0.00</span>
+                                                    </span>
+                                                    <span
+                                                        class="opacity-0">₹&nbsp;</span>
+                                                    <input
                                                         class="o_input flex-grow-1 flex-shrink-1" autocomplete="off"
-                                                        id="expected_revenue_0" type="text">
+                                                        id="expected_revenue_0" name="expected_revenue" type="text" value="{{ $sale->expected_revenue ?? ''}}">
                                                 </div>
                                             </div><span class="oe_grey p-2"> at </span>
                                         </div>
@@ -115,9 +166,12 @@
                                             for="probability_0">Probability</label>
                                         <div id="probability" class="d-flex align-items-baseline">
                                             <div name="probability"
-                                                class="o_field_widget o_field_float oe_inline o_input_6ch"><input
+                                                class="o_field_widget o_field_float oe_inline o_input_6ch">
+                                                <input
                                                     inputmode="decimal" class="o_input" autocomplete="off"
-                                                    id="probability_0" type="text"></div><span
+                                                    name="probability"
+                                                    id="probability_0" type="text" value="{{ $sale->probability ?? '' }}"
+                                                ></div><span
                                                 class="oe_grey p-2"> %</span>
                                         </div>
                                     </div>
@@ -139,12 +193,18 @@
                                                 class="o_field_widget o_field_res_partner_many2one">
                                                 <div class="o_field_many2one_selection">
                                                     <div class="o_input_dropdown">
-                                                        <div class="o-autocomplete dropdown"><input type="text"
+                                                        <div class="o-autocomplete dropdown">
+                                                            <input type="hidden" name="partner_id" id="partner_id"
+                                                                value="{{ isset($sale) ? ( $sale->contact_id != null ? $sale->contact_id :  '' ) : '' }}">
+                                                            <input type="text"
                                                                 class="o-autocomplete--input o_input"
                                                                 autocomplete="off" role="combobox"
                                                                 aria-autocomplete="list" aria-haspopup="listbox"
                                                                 id="partner_id_1" placeholder=""
-                                                                aria-expanded="false"></div><span
+                                                                aria-expanded="false"
+                                                                value="{{ isset($sale) ? ( $sale->contact_id != null ? $sale->contact->name :  '' ) : '' }}">
+                                                        </div>
+                                                        <span
                                                             class="o_dropdown_button"></span>
                                                     </div>
                                                 </div>
@@ -154,13 +214,16 @@
                                     </div>
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                            style=""><label class="o_form_label oe_inline"
-                                                for="email_from_0">Email</label></div>
+                                            style="">
+                                            <label class="o_form_label oe_inline"
+                                                for="email_from_0">Email</label>
+                                        </div>
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="email_from" class="o_field_widget o_field_email">
-                                                    <div class="d-inline-flex w-100"><input class="o_input"
-                                                            type="email" autocomplete="off" id="email_from_0">
+                                                    <div class="d-inline-flex w-100">
+                                                        <input class="o_input"
+                                                            type="email" autocomplete="off" id="email_from_0" name="email" value="{{ isset($sale) ? ( $sale->contact_id != null ? $sale->contact->email :  $sale->email ) : '' }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -173,9 +236,11 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="phone" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input
+                                                    <div class="o_phone_content d-inline-flex w-100">
+                                                        <input
                                                             class="o_input" type="tel" autocomplete="off"
-                                                            id="phone_0"></div>
+                                                            id="phone_0" name="phone" value="{{ isset($sale) ? ( $sale->contact_id != null ? $sale->contact->phone :  $sale->phone ) : '' }}">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -226,24 +291,27 @@
                                             <div class="o_lead_opportunity_form_inline_fields">
                                                 <div name="date_deadline"
                                                     class="o_field_widget o_field_date oe_inline">
-                                                    <div class="d-flex gap-2 align-items-center"><input type="text"
+                                                    <div class="d-flex gap-2 align-items-center">
+                                                        <input type="text"
                                                             class="o_input cursor-pointer" autocomplete="off"
-                                                            id="date_deadline_0" data-field="date_deadline"></div>
+                                                            id="date_deadline_0" data-field="date_deadline" name="deadline">
+                                                    </div>
                                                 </div>
+
                                                 <div name="priority"
                                                     class="o_field_widget o_field_priority oe_inline align-top">
-                                                    <div class="o_priority" role="radiogroup" name="priority"
-                                                        aria-label="Priority"><a href="#"
-                                                            class="o_priority_star fa fa-star-o" role="radio"
-                                                            tabindex="-1" data-tooltip="Priority: Medium"
-                                                            aria-label="Medium"></a><a href="#"
-                                                            class="o_priority_star fa fa-star-o" role="radio"
-                                                            tabindex="-1" data-tooltip="Priority: High"
-                                                            aria-label="High"></a><a href="#"
-                                                            class="o_priority_star fa fa-star-o" role="radio"
-                                                            tabindex="-1" data-tooltip="Priority: Very High"
-                                                            aria-label="Very High"></a></div>
+                                                    <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                        <a href="#" class="o_priority_star fa {{ isset($sale) && ($sale->priority == 'medium' || $sale->priority == 'high' || $sale->priority == 'very_high' ) ? 'fa-star' : 'fa-star-o' }}" role="radio"
+                                                           tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a><a
+                                                            href="#" class="o_priority_star fa {{ isset($sale) && ( $sale->priority == 'high' || $sale->priority == 'very_high' ) ? 'fa-star' : 'fa-star-o' }}" role="radio"
+                                                            tabindex="-1"  data-value="high"data-tooltip="Priority: High" aria-label="High"></a><a
+                                                            href="#" class="o_priority_star fa {{ isset($sale) && ( $sale->priority == 'very_high' ) ? 'fa-star' : 'fa-star-o' }}" role="radio"
+                                                            tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High"
+                                                            aria-label="Very High">
+                                                        </a>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -449,7 +517,7 @@
                                                         aria-label="Open card"><img
                                                             class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer"
                                                             {{-- src="https://yantradesign.odoo.com/web/image/res.partner/3/avatar_128?unique=1721388544000"> --}}
-                                                            src="images/CRM.png">
+                                                            src="{{ asset('images/CRM.png')}}">
                                                     </div>
                                                 </div>
                                                 <div class="w-100 o-min-width-0">
@@ -500,6 +568,7 @@
             </div>
         </div>
     </div>
+    </form>
 </div>
 <div class="o-main-components-container">
     <div class="o-discuss-CallInvitations position-absolute top-0 end-0 d-flex flex-column p-2"></div>
@@ -1667,5 +1736,82 @@
         <div id="fa-spin" title="Toggle icon spin" class="editor-ignore btn fa fa-play"></div>
     </div>
 </div>
-
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            var containerId = $('#opportunity-form');
+            autoInputComplate('#partner_id_1', '{{ route('contact.suggestions') }}', function (selectedText, selected_id = 0) {
+                containerId.find('input[name="partner_id"]').val(selected_id);
+
+                // contact details and show if selected_id != 0
+                if (selected_id != 0) {
+                    let url = "{{ route('contact.show', ['contact' => ':id']) }}";
+                    url = url.replace(':id', selected_id);
+                    $.ajax({
+                        type: 'GET',
+                        url: url,
+                        data: {
+                            id: selected_id,
+                        },
+                        success: function (response) {
+                            // console.log(response);
+                            var _contact = response.contact;
+                            containerId.find('input[name="email"]').val(_contact.email);
+                            containerId.find('input[name="phone"]').val(_contact.phone);
+                            // containerId.find('input[name="name"]').val(_contact.name + "'s Opportunity");
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+
+                if (selected_id == 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: "{{ route('contact.save') }}",
+                        data: {
+                            contact_name: selectedText,
+                        },
+                        success: function (response) {
+                            var _contact = response.contact;
+                            $('input[name="partner_id"]').val(_contact.id);
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+{{--     save conrtact --}}
+    <script>
+        $(document).on('click' , '#main_save_btn' , function (){
+            var contact_id = $('#partner_id').val();
+            var priority = $(document).find('.set-priority').find('.o_priority_star.fa-star').last().data('value');
+            var formData = $('#opportunity-form').serialize();
+            formData += '&contact_id=' + contact_id + '&priority=' + priority;
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('crm.newSales') }}",
+                data: formData,
+                success: function (response) {
+                    console.log(response);
+                    if (response.status == 'success') {
+                        toastr.success(response.message);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        });
+    </script>
+@endpush

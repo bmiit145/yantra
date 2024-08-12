@@ -33,8 +33,17 @@ class CRMController extends Controller
 
     public function show($id)
     {
+        $stages = CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no' , 'desc')->get();
+        if ($id == 'new'){
+            return view('CRM.view' , compact('stages'));
+        }
+
         $sale = Sale::find($id);
-        return view('CRM.show', compact('sale'));
+        if ($sale == null) {
+            return back()->with('error', 'Sale not found');
+        }
+
+        return view('CRM.view', compact('sale' , 'stages'));
     }
 
     public function newStage(Request $request)
@@ -59,6 +68,8 @@ class CRMController extends Controller
         $data->phone = $request->phone;
         $data->expected_revenue = $request->expected_revenue;
         $data->priority = $request->priority ?? null;
+        $data->probability = $request->probability ?? null;
+        $data->deadline = $request->deadline ?? null;
         $data->save();
 
         if ($request->contact_id != null) {

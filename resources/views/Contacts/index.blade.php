@@ -1,11 +1,32 @@
 @extends('layout.header')
 
-@section('title', 'Contacts')
+@php
+    $currentUrl = url()->current();
+    $queryParameters = request()->query();
+    $tab = request()->query('tab');
+@endphp
+
+@if($tab == 'customers')
+@section('title','Customers')
+@else
+@section('title','Contacts')
+@endif
 @section('head_title_link' , route('contact.index'))
 @section('image_url', asset('images/contacts.png'))
 @section('head_new_btn_link', route('contact.create'))
 @section('navbar_menu')
-<li><a href="{{ route('contact.index') }}">Contacts</a></li>
+
+
+<li>
+
+    <a href="{{ route('contact.index') }}">
+        @if($tab == 'customers')
+            Customers
+        @else
+            Contacts
+        @endif
+    </a>
+</li>
 <li><a href="#"></a>Configuration</li>
 @endsection
 @section('head_new_btn_link' , route('contact.create'))
@@ -19,12 +40,12 @@
              <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
                 <div class="o_kanban_image_fill_left d-none d-md-block">
                     <img loading="lazy"
-                         src="https://yantradesign.odoo.com/web/image/res.partner/16/avatar_128?unique=1721631365000"
+                         src="{{ asset('images/contact_person.png') }}"
                          alt="16">
                 </div>
                 <div class="o_kanban_image d-md-none d-block">
                     <img loading="lazy"
-                         src="https://yantradesign.odoo.com/web/image/res.partner/16/avatar_128?unique=1721631365000"
+                         src="{{ asset('images/placeholder.png') }}"
                          alt="16">
                 </div>
                 <div class="oe_kanban_details d-flex flex-column justify-content-between">
