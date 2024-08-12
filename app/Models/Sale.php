@@ -20,6 +20,10 @@ class Sale extends Model
         'deadline'
     ];
 
+    protected $casts = [
+        'priority' => 'string',
+    ];
+
     public function contact()
     {
         return $this->belongsTo(Contact::class);

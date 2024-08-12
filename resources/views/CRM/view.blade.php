@@ -1794,11 +1794,14 @@
             var contact_id = $('#partner_id').val();
             var priority = $(document).find('.set-priority').find('.o_priority_star.fa-star').last().data('value');
             var formData = $('#opportunity-form').serialize();
-            formData += '&contact_id=' + contact_id + '&priority=' + priority;
-
+            formData += '&contact_id=' + contact_id;
+            if (priority != undefined) {
+                formData += '&priority=' + priority;
+            }
+            4
             $.ajax({
                 type: 'POST',
-                url: "{{ route('crm.newSales') }}",
+                url: "{{ route('crm.newSales' , [ 'sale' => $crm ]) }}",
                 data: formData,
                 success: function (response) {
                     console.log(response);
