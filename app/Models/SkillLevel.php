@@ -12,6 +12,7 @@ class SkillLevel extends Model
     protected $table = 'skill_levels';
     
     protected $fillable = [
+        'id',
         'name',
         'level',
         'is_default',

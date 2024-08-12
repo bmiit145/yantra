@@ -2,7 +2,7 @@
 
 @section('title', 'Employee')
 @section('head_title_link', route('employee.index'))
-@section('image_url', asset('images/employees.png'))
+@section('image_url', asset('images/Employees.png'))
 @section('head_new_btn_link', route('skill.add' , ['skill' => 'new']))
 @section('save_class', 'save_contacts')
 @section('head_breadcrumb_title', 'Skill Types')
