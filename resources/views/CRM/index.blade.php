@@ -1,9 +1,11 @@
 @extends('layout.header')
+{{--@section('head_new_btn_link', route('crm.show' , ['crm' => 'new']))--}}
+
 @section('navbar_menu')
     <li class="dropdown">
         <a href="#">Sales</a>
         <div class="dropdown-content">
-            <a href="#">My Pipeline</a>
+            <a href="{{ route('crm.index') }}">My Pipeline</a>
             <a href="#">My Activities</a>
             <a href="#">My Quotations</a>
             <a href="#">Teams</a>
@@ -19,8 +21,8 @@
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
             <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
+            <a href="{{ route('crm.index') }}">Pipeline</a>
+            <a href="{{ route('lead.index') }}">Leads</a>
             <a href="#">Activities</a>
         </div>
     </li>
@@ -32,8 +34,6 @@
         </div>
     </li>
 @endsection
-
-
 
 @section('head')
 @vite([
@@ -856,23 +856,6 @@
 </script>
  <script>
         $(document).ready(function() {
-            $('.dropdown > a').click(function(e) {
-                e.preventDefault(); // Prevent the default link action
-                // Close other dropdowns
-                $('.dropdown').not($(this).parent()).removeClass('active');
-
-                // Toggle the active class on the current dropdown
-                $(this).parent().toggleClass('active');
-            });
-
-            // Optional: Close the dropdown if clicking outside of it
-            $(document).click(function(e) {
-                if (!$(e.target).closest('.dropdown').length) {
-                    $('.dropdown').removeClass('active');
-                }
-            });
-
-
             // stage add
             $(document).on('click', '.o_kanban_add', function() {
                 var newStage = $(this).closest('.o_quick_create_unfolded').find('.new_stage_input').val();

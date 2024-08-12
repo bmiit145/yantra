@@ -143,13 +143,13 @@ class CRMController extends Controller
 
     public function updateDeadline(Request $request, $id)
     {
-        
-        
+
+
 
         $sale = Sale::findOrFail($id);
         $sale->deadline = \Carbon\Carbon::createFromFormat('Y-m', $request->deadline)->endOfMonth();
         $sale->save();
-    
+
         return response()->json($sale);
     }
 
