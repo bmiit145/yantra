@@ -155,6 +155,7 @@ Make sure to add the following script to your `package.json`:
 
 2. **Services:**
    - EncryptionService - `app/Services/EncryptionService.php`
+   - configService - `app/Services/ConfigService.php` for handling configurations at settings.
    - logService - `app/Services/LogService.php` using nullable Morph in `App/Model/ChangeLog` for polymorphic relationships.
 
 

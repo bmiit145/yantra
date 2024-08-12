@@ -7,6 +7,7 @@ use App\Models\Opportunity;
 use App\Models\Pipeline;
 
 use App\Models\Sale;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -64,6 +65,11 @@ class CRMController extends Controller
         }else{
             $data = Sale::findorfail($sale);
         }
+
+        // original
+        $originalSale = $data->getOriginal();
+
+
         $data->contact_id = $request->contact_id;
         $data->stage_id = $request->stage_id ?? CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no')->first()->id;
         $data->user_id = auth()->user()->id;
@@ -78,9 +84,22 @@ class CRMController extends Controller
 
         if ($request->contact_id != null) {
             $contact = Contact::find($request->contact_id);
+
+            $originalContact = $contact->getOriginal();
             $contact->email = $request->email;
             $contact->phone = $request->phone;
             $contact->save();
+
+            LogService::logChanges(['email', 'phone'], $originalContact, $contact->toArray(), $contact);
+        }
+
+        // Logs the changes
+        $fields = ['opportunity', 'email', 'phone', 'expected_revenue', 'priority', 'probability', 'deadline'];
+
+        $currentSale = $data->toArray();
+
+        if ($data->wasChanged() && !empty($originalSale)) {
+            LogService::logChanges($fields, $originalSale, $currentSale, $data);
         }
 
         if ($request->ajax()) {
