@@ -24,10 +24,8 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::find($id);
-        $experiences = Experience::all(); 
-        $experience = Experience::where('employee_id', $id)->first(); 
-    
-        return view('employees.create', ['employee' => $employee, 'experience' => $experience, 'experiences' => $experiences]);
+        $experiences = Experience::where('employee_id', $id)->get(); 
+        return view('employees.create', ['employee' => $employee, 'experiences' => $experiences]);
     }
     
     public function create()
@@ -140,7 +138,7 @@ class EmployeeController extends Controller
 
     public function skill_add($skillType)
     {
-        if($skillType ==  'new' || $skillType ==null)
+        if($skillType == 'new' || $skillType == null)
         {
             return view('employees.configuration.skill_type.add');
         }
@@ -148,6 +146,7 @@ class EmployeeController extends Controller
         $skillType = SkillType::find($skillType);
         $skills = Skill::where('skill_type_id', $skillType->id)->get();
         $skillLevels = SkillLevel::where('skill_type_id', $skillType->id)->get();
+        dd($skillLevels);
 
         return view('employees.configuration.skill_type.add', compact('skills', 'skillType', 'skillLevels'));
     }
@@ -157,13 +156,32 @@ class EmployeeController extends Controller
         return view('employees.configuration.skill_type.index');
     }
 
+    // public function skill_store(Request $request)
+    // {
+    //     dd($request->all());
+    //     $skillType = SkillType::find($request->skill_type_id) ?? new SkillType();
+    //     $skillType->name = $request->name;
+    //     $skillType->user_id = Auth::id();
+    //     $skillType->save();
+
+    //     foreach ($request->skills as $skill) {
+    //         $skillModel = Skill::find($skill['id']) ?? new Skill();
+    //         $skillModel->name = $skill['name'];
+    //         $skillModel->skill_type_id = $skillType->id;
+    //         $skillModel->sequence = $skill['sequence'] ?? 0;
+    //         $skillModel->save();
+    //     }
+
+    //     return response()->json(['success' => true, 'skill' => $skill , 'skillType' => $skillType]);
+    // }    
+
     public function skill_store(Request $request)
     {
         $skillType = SkillType::find($request->skill_type_id) ?? new SkillType();
         $skillType->name = $request->name;
         $skillType->user_id = Auth::id();
         $skillType->save();
-
+    
         foreach ($request->skills as $skill) {
             $skillModel = Skill::find($skill['id']) ?? new Skill();
             $skillModel->name = $skill['name'];
@@ -171,8 +189,19 @@ class EmployeeController extends Controller
             $skillModel->sequence = $skill['sequence'] ?? 0;
             $skillModel->save();
         }
-
-        return response()->json(['success' => true, 'skill' => $skill , 'skillType' => $skillType]);
+    
+        dd($request->skill_levels);
+        // Handle SkillLevel data
+        foreach ($request->skill_levels as $level) {
+            $skillLevelModel = SkillLevel::find($level['id']) ?? new SkillLevel();
+            $skillLevelModel->name = $level['name'];
+            $skillLevelModel->level = $level['level'];
+            $skillLevelModel->is_default = $level['is_default'] ?? false;
+            $skillLevelModel->skill_type_id = $skillType->id;
+            $skillLevelModel->save();
+        }
+    
+        return response()->json(['success' => true, 'skill' => $skill, 'skillType' => $skillType, 'skillLevels' => $request->skill_levels]);
     }    
 
 

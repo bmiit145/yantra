@@ -225,7 +225,7 @@
                                                 </thead>
                                                 <tbody class="ui-sortable">
                                                     <tr>
-                                                        <td class="o_field_x2many_list_row_add add-skill-level" colspan="4"><a href="#" role="button" tabindex="0">Add a line</a></td>
+                                                        <td class="o_field_x2many_list_row_add add-skill-level-line" colspan="4"><a href="#" role="button" tabindex="0">Add a line</a></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="4">​</td>
@@ -386,6 +386,31 @@
                 }
             });
 
+
+
+
+            // Collect skill levels array
+            var skillLevels = [];
+            $('.new-level-row').each(function() {
+                var levelInput = $(this).find('input[name="skill_name[]"]');
+                var progressInput = $(this).find('input[name="progress[]"]');
+                var defaultInput = $(this).find('input[name="default_level[]"]');
+
+                var skillLevel = {
+                    id: levelInput.data('id'),
+                    name: levelInput.val().trim(),
+                    level: progressInput.val().trim(),
+                    is_default: defaultInput.is(':checked') ? 1 : 0
+                };
+
+                if (skillLevel.name !== '') {
+                    skillLevels.push(skillLevel);
+                }
+            });
+
+
+
+
             if (skillType !== '') {
                 $.ajax({
                     url: '{{ route("skills.store") }}'
@@ -394,11 +419,12 @@
                         name: skillType
                         , skill_type_id: skillTypeId
                         , skills: skills
+                        , skill_levels: skillLevels
                         , _token: '{{ csrf_token() }}'
                     }
                     , success: function(response) {
                         if (response.success) {
-                            // Redirect to the skill type list page
+                            window.location.href = '{{ route("skill.view") }}';
                         }
                     }
                     , error: function() {
@@ -442,9 +468,55 @@
 
 
 
+        $(document).on('click', '.add-skill-level-line', function(e) {
+            e.preventDefault();
+
+            // Define the new row to be appended
+            var newLevelRow = `
+            <tr class="o_data_row new-level-row o_selected_row" data-id="datapoint_new">
+                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name">
+                    <div name="name" class="o_field_widget o_required_modifier o_field_char">
+                        <input class="o_input_skill" type="text" autocomplete="off" name="skill_name[]" data-id="{{ $skill->id ?? '' }}">
+
+                    </div>
+                </td>
+                <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_progressbar_cell" data-tooltip-delay="1000" tabindex="-1" name="level_progress">
+                    <div name="level_progress" class="o_field_widget o_field_progressbar">
+                        <div class="o_progressbar w-100 d-flex align-items-center">
+                            <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="bg-primary h-100" style="width: min(0%, 100%)"></div>
+                            </div>
+                            <div class="o_progressbar_value d-flex">
+                                <input class="o_input h-100 text-center" type="text" inputmode="decimal" autocomplete="off" name="progress[]">
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="o_data_cell cursor-pointer o_field_cell o_boolean_toggle_load_cell" data-tooltip-delay="1000" tabindex="-1" name="default_level">
+                    <div name="default_level" class="o_field_widget o_field_boolean_toggle_load">
+                        <div>
+                            <div class="o-checkbox form-check o_field_boolean o_boolean_toggle form-switch">
+                                <input type="checkbox" class="form-check-input" name="default_level[]">
+                                <label class="form-check-label"> ​ </label>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1">
+                    <a class="fa d-print-none skill-delete-btn fa-trash-o" name="delete" aria-label="Delete row" tabindex="-1"></a>
+                </td>
+            </tr>
+            `;
+
+            // Append the new row before the 'Add a line' link row
+            $(newLevelRow).insertBefore($(this).closest('tr'));
+        });
+
+
+
     });
 
 </script>
-
 
 @endpush
