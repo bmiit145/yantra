@@ -503,7 +503,13 @@
                                                                             </th>
                                                                             <th></th>
                                                                         </tr>
+                                                                        @php
+                                                                            $experiences = collect(); 
 
+                                                                            if (isset($employee)) {
+                                                                                $experiences = \App\Models\Experience::where('employee_id', $employee->id)->get();
+                                                                            }
+                                                                        @endphp
                                                                         @forelse($experiences as $experience)
                                                                         <tr class="o_data_row edit-experience-popup" data-id="{{ $experience->id }}  " data-title="{{ $experience->title }}" data-employee="{{ $experience->employee_id }}" data-type="{{ $experience->type }}" data-display_type="{{ $experience->display_type }}" data-start_date="{{ $experience->start_date }}" data-end_date="{{ $experience->end_date }}" data-description="{{ $experience->description }}" data-employee_id="{{ $experience->employee_id }}">
                                                                             <td class="o_resume_timeline_cell position-relative pe-lg-2">
