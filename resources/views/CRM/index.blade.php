@@ -72,7 +72,7 @@
                         @endif
                     </div>
                     <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false"
-                        title="Expected Revenue"><b>0</b></div>
+                        title="Expected Revenue" data-target="{{ $stage->totalExpectedRevenue() }}"><b>0</b></div>
                 </div>
             </div>
 
