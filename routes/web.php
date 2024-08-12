@@ -41,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
     Route::post('/sale/new' , [CRMController::class, 'newSales'])->name('crm.newSales');
+    Route::get('/forecasting' , [CRMController::class, 'forecasting'])->name('crm.forecasting');
+    Route::post('/update-sale-deadline/{id}', [CRMController::class, 'updateDeadline']);
+    Route::get('/getdedline/{monthYear}', [CRMController::class, 'getdedline'])->name('crm.getdedline');
 
 
     // sale
