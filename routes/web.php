@@ -65,7 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/discard', [EmployeeController::class, 'discard'])->name('discard');
 
     // Skill
-    Route::get('/skills/{skill?}', [EmployeeController::class, 'skill_add'])->name('skill.add');
+    Route::get('/skill/{skill?}', [EmployeeController::class, 'skill_add'])->name('skill.add');
     Route::post('/skills/store', [EmployeeController::class, 'skill_store'])->name('skills.store');
     Route::get('/skills/view', [EmployeeController::class, 'skill_view'])->name('skill.view');
     Route::delete('/skills/delete/{id}', [EmployeeController::class, 'skill_delete'])->name('skills.delete');

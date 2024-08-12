@@ -3,7 +3,7 @@
 @section('title', 'Employee')
 @section('head_title_link', route('employee.index'))
 @section('image_url', asset('images/employees.png'))
-@section('head_new_btn_link', route('skill.add'))
+@section('head_new_btn_link', route('skill.add' , ['skill' => 'new']))
 @section('save_class', 'save_contacts')
 @section('head_breadcrumb_title', 'Skill Types')
 @section('head')
@@ -131,7 +131,7 @@
                                     <h1>
                                         <div name="name" class="o_field_widget o_required_modifier o_field_char">
                                             <input type="hidden" name="id" id="skill_type_id" value="">
-                                            <input class="o_input o_field_translate" id="skill_type_input" value="{{ $skillType->name }}" type="text" autocomplete="off" placeholder="e.g. Languages">
+                                            <input class="o_input o_field_translate" id="skill_type_input" value="{{ $skillType->name ?? '' }}" type="text" autocomplete="off" placeholder="e.g. Languages">
                                         </div>
                                     </h1>
 
@@ -163,19 +163,19 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="ui-sortable">
+                                                    @if(isset($skills))
                                                     @foreach($skills as $skill)
-                                                    <tr class="o_data_row
-
-                                                        o_row_draggable" data-id="{{ $skill->id }}">
+                                                    <tr class="o_data_row o_row_draggable" data-id="{{ $skill->id }}">
                                                         <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_handle_cell" data-tooltip-delay="1000" tabindex="-1" name="sequence">
                                                             <div name="sequence" class="o_field_widget o_field_handle"><span class="o_row_handle oi oi-draggable ui-sortable-handle"></span></div>
                                                         </td>
-                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="skill 555">{{ $skill->name }}</td>
+                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="{{ $skill->name }}">{{ $skill->name }}</td>
                                                         <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1">
                                                             <a class="fa d-print-none fa-trash-o delete-skill" name="delete" aria-label="Delete row" tabindex="-1"></a>
-
+                                                        </td>
                                                     </tr>
                                                     @endforeach
+                                                    @endif
 
                                                     <tr>
                                                         <td></td>
