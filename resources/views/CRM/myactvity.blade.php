@@ -12,8 +12,8 @@
             <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
-    <li class="dropdown">
-        <a href="{{ url('lead') }}">Leads</a>
+    <li>
+        <a href="{{ route('lead.index') }}">Leads</a>
 
     </li>
     <li class="dropdown">
