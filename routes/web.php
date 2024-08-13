@@ -9,6 +9,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TagController;
 
 Route::middleware(['web'])->group(function () {
@@ -32,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/head', [DashboardController::class, 'head'])->name('head');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // crm
     Route::resource('/crm', CRMController::class , [ 'except' => ['show'] ]);
@@ -49,6 +51,12 @@ Route::middleware(['auth'])->group(function () {
     // sale
     Route::post('sale/setPriority' , [CRMController::class, 'setPriority'])->name('sale.setPriority');
     Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
+    Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
+
+
+
+    Route::get('orders' , [SalesController::class, 'index'])->name('orders.index');
+    Route::get('orders/new' , [SalesController::class, 'creat'])->name('orders.creat');
 
 
     //contact

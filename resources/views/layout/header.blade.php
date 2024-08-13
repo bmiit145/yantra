@@ -73,7 +73,7 @@
             <a href="{{ route('dashboard') }}" class="o_menu_toggle">
                 {{-- <img src="images/CRM.png" alt="Avatar" class="crm_logo"> --}}
                 <img src="@yield('image_url', asset('images/CRM.png') )" alt="Avatar" class="crm_logo">
-                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title' , "Yantra")</a>
+                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title')</a>
             </a>
             <div class="top_left_navbar_menu">
                 <ul class="navbar_menu_wapper">
