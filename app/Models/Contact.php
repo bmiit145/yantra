@@ -32,7 +32,7 @@ class Contact extends Model
     {
         parent::boot();
         static::created(function ($contact) {
-            $contact->ContactLog('created', 'Contact created' , $contact->user_id);
+            $contact->ContactLog('created', 'Contact created' , $contact->is_user);
         });
 
 //        static::updated(function ($contact) {
