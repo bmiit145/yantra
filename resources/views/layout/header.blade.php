@@ -19,7 +19,6 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>--}}
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
@@ -74,7 +73,7 @@
             <a href="{{ route('dashboard') }}" class="o_menu_toggle">
                 {{-- <img src="images/CRM.png" alt="Avatar" class="crm_logo"> --}}
                 <img src="@yield('image_url', asset('images/CRM.png') )" alt="Avatar" class="crm_logo">
-                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title' , "Yantra")</a>
+                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title')</a>
             </a>
             <div class="top_left_navbar_menu">
                 <ul class="navbar_menu_wapper">
