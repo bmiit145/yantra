@@ -560,6 +560,7 @@
                         success: function (response) {
                             var _contact = response.contact;
                             $('input[name="partner_id"]').val(_contact.id);
+                            containerId.find('input[name="name"]').val(_contact.name + "'s Opportunity");
                         },
                         error: function (err) {
                             console.log(err);
