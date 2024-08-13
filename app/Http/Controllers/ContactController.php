@@ -28,6 +28,7 @@ class ContactController extends Controller
         }
 
         if (request()->ajax()) {
+            $contact->load('address');
             return response()->json(['contact' => $contact]);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Contact;
+use App\Models\CrmSaleExtra;
 use App\Models\CrmStage;
 use App\Models\Opportunity;
 use App\Models\Pipeline;
@@ -82,8 +83,34 @@ class CRMController extends Controller
             $contact = Contact::find($request->contact_id);
             $originalContact = $contact->getOriginal();
             $contact->update(['email' => $request->email, 'phone' => $request->phone]);
+
+            //log
             LogService::logChanges(['email', 'phone'], $originalContact, $contact->toArray(), $contact);
         }
+
+
+        // save the extra
+        $extraData = [
+            'sale_id' => $data->id,
+            'company_name' => $request->company_name ?? null,
+            'contact_name' => $request->contact_name ?? null,
+            'person_title' => $request->person_title ?? null,
+            'job_position' => $request->job_position ?? null,
+            'mobile' => $request->mobile ?? null,
+            'address_1' => $request->address_1 ?? null,
+            'address_2' => $request->address_2 ?? null,
+            'zip' => $request->zip ?? null,
+            'city' => $request->city ?? null,
+            'state' => $request->state_id ?? null,
+            'country' => $request->country_id ?? null,
+            'website' => $request->website ?? null,
+            'campaign_id' => $request->campaign_id ?? null,
+            'source_id' => $request->source_id ?? null,
+            'medium_id' => $request->medium_id ?? null,
+            'referred_by' => $request->referred_by ?? null,
+            'sale_team_id' => $request->sale_team_id ?? null,
+        ];
+        $this->saveOrUpdateExtra($extraData, $data->id);
 
         // Logs the changes
         $fields = ['opportunity', 'email', 'phone', 'expected_revenue', 'priority', 'probability', 'deadline'];
@@ -101,6 +128,12 @@ class CRMController extends Controller
         }
 
         return back()->with('success', 'Sale created successfully');
+    }
+
+    public function saveOrUpdateExtra($data, $sale_id)
+    {
+        $saleExtra = CrmSaleExtra::firstOrNew(['sale_id' => $sale_id]);
+        $saleExtra->fill($data)->save();
     }
 
     // sale
@@ -153,7 +186,6 @@ class CRMController extends Controller
 
         return response()->json($sale);
     }
-
 
     public function getdedline($monthYear)
     {

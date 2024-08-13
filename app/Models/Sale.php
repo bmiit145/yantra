@@ -50,6 +50,11 @@ class Sale extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function  extra()
+    {
+        return $this->hasOne(CrmSaleExtra::class);
+    }
+
     public function logs()
     {
         return $this->morphMany(ChangeLog::class, 'loggable');
