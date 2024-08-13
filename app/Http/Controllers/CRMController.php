@@ -75,6 +75,7 @@ class CRMController extends Controller
         $data->priority = $request->priority !== null ? $request->priority : null;
         $data->probability = $request->probability ?? null;
         $data->deadline = $request->deadline ?? null;
+        $data->internal_notes = $request->internal_notes ?? null;
         $data->save();
 
         if ($request->contact_id != null) {

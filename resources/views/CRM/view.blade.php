@@ -293,9 +293,10 @@
                                                 <div name="date_deadline"
                                                     class="o_field_widget o_field_date oe_inline">
                                                     <div class="d-flex gap-2 align-items-center">
-                                                        <input type="text"
+                                                        <input type="date"
                                                             class="o_input cursor-pointer" autocomplete="off"
-                                                            id="date_deadline_0" data-field="date_deadline" name="deadline">
+                                                            id="date_deadline_0" data-field="date_deadline" name="deadline" value="{{ isset($sale) ? $sale->deadline : '' }}">
+{{--                                                        {{ date_format( date_create($sale->deadline), 'd-m-Y')  }}--}}
                                                     </div>
                                                 </div>
 
@@ -368,98 +369,29 @@
                                     </ul>
                                 </div>
                                 <div class="o_notebook_content tab-content">
-                                    <div class="tab-pane active fade show">
-                                        <div name="description" class="o_field_widget o_field_html">
-                                            <div class="h-100">
-                                                <div style="display: contents;"></div>
-                                                <div style="display: contents;"></div>
-                                                <div class="oe-absolute-container">
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-selections-container">
-                                                    </div>
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-avatars-container"></div>
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-widget-hooks-container">
-                                                        <div class="oe-dropzone-hook"
-                                                            style="display: none; z-index: 0; left: -21px; top: 4px; width: 25px; height: 37px;">
-                                                        </div>
-                                                    </div>
-                                                    <div class="oe-absolute-container o_draggable"
-                                                        data-oe-absolute-container-id="oe-widgets-container"></div>
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-movenode-helper-container">
-                                                    </div>
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-dropzones-container">
-                                                    </div>
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-dropzone-hint-container">
-                                                    </div>
-                                                    <div class="oe-absolute-container"
-                                                        data-oe-absolute-container-id="oe-avatars-counters-container">
-                                                    </div>
+                                    <!-- tab for Internal Notes -->
+                                    <div id="internal_notes" class="tab-pane active fade show">
+                                        <div class="o_inner_group grid">
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div
+                                                    class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+{{--                                                    <label class="o_form_label" for="description_0">Notes</label>--}}
                                                 </div>
-                                                <div class="o_table_ui_container">
-                                                    <div class="o_table_ui o_row_ui" style="visibility: hidden;">
-                                                        <div>
-                                                            <span
-                                                                class="o_table_ui_menu_toggler fa fa-ellipsis-v"></span>
-                                                            <div class="o_table_ui_menu">
-                                                                <div class="o_move_up"><span
-                                                                        class="fa fa-chevron-left"
-                                                                        style="transform: rotate(90deg);"></span>Move
-                                                                    up</div>
-                                                                <div class="o_move_down"><span
-                                                                        class="fa fa-chevron-right"
-                                                                        style="transform: rotate(90deg);"></span>Move
-                                                                    down</div>
-                                                                <div class="o_insert_above"><span
-                                                                        class="fa fa-plus"></span>Insert above
-                                                                </div>
-                                                                <div class="o_insert_below"><span
-                                                                        class="fa fa-plus"></span>Insert below
-                                                                </div>
-                                                                <div class="o_delete_row"><span
-                                                                        class="fa fa-trash"></span>Delete</div>
-                                                                <div class="o_reset_table_size"><span
-                                                                        class="fa fa-table"></span>Reset Size</div>
-                                                            </div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                    style="width: 100%;">
+                                                    <div name="description"
+                                                        class="o_field_widget o_field_text o_field_widget_text">
+                                                        <div class="o_field_text">
+                                                            <textarea class="o_input" id="internal_notes_0" name="internal_notes"
+                                                                placeholder="Notes...">{{ isset($sale) ? $sale->internal_notes : '' }}</textarea>
                                                         </div>
                                                     </div>
-                                                    <div class="o_table_ui o_column_ui" style="visibility: hidden;">
-                                                        <div>
-                                                            <span
-                                                                class="o_table_ui_menu_toggler fa fa-ellipsis-h"></span>
-                                                            <div class="o_table_ui_menu">
-                                                                <div class="o_move_left"><span
-                                                                        class="fa fa-chevron-left"></span>Move left
-                                                                </div>
-                                                                <div class="o_move_right"><span
-                                                                        class="fa fa-chevron-right"></span>Move
-                                                                    right</div>
-                                                                <div class="o_insert_left"><span
-                                                                        class="fa fa-plus"></span>Insert left</div>
-                                                                <div class="o_insert_right"><span
-                                                                        class="fa fa-plus"></span>Insert right
-                                                                </div>
-                                                                <div class="o_delete_column"><span
-                                                                        class="fa fa-trash"></span>Delete</div>
-                                                                <div class="o_reset_table_size"><span
-                                                                        class="fa fa-table"></span>Reset Size</div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="note-editable odoo-editor-editable odoo-editor-qweb"
-                                                    id="description_0" contenteditable="true" dir="ltr">
-                                                    <p placeholder="Add a description..."
-                                                        class="oe-hint oe-command-temporary-hint"><br></p>
                                                 </div>
                                             </div>
-                                            <div class="d-none o_knowledge_behavior_handler"></div>
                                         </div>
                                     </div>
+                                    <!-- tab for Extra Info -->
+                                    <div id="lead" class="tab-pane  fade "><div class="o_group row align-items-start"><div class="o_inner_group grid col-lg-6"><div class="g-col-sm-2"><div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Contact Information</div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="partner_name_1">Company Name<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;The name of the future partner company that will be created while converting the lead into opportunity&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="partner_name" class="o_field_widget o_field_char"><input class="o_input" id="partner_name_1" type="text" autocomplete="off"></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="street_1">Address</label></div><div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;"><div class="o_address_format"><div name="street" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street_1" type="text" autocomplete="off" placeholder="Street..."></div><div name="street2" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street2_1" type="text" autocomplete="off" placeholder="Street 2..."></div><div name="city" class="o_field_widget o_field_char o_address_city"><input class="o_input" id="city_1" type="text" autocomplete="off" placeholder="City"></div><div name="zip" class="o_field_widget o_field_char o_address_zip"><input class="o_input" id="zip_1" type="text" autocomplete="off" placeholder="ZIP"></div><div name="state_id" class="o_field_widget o_field_many2one o_address_state"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="state_id_1" placeholder="State" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div><div name="country_id" class="o_field_widget o_field_many2one o_address_country"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="country_id_1" placeholder="Country" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="website_1">Website<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Website of the contact&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="website" class="o_field_widget o_field_url"><div class="d-inline-flex w-100"><input class="o_input" type="text" autocomplete="off" id="website_1" placeholder="e.g. https://www.odoo.com"></div></div></div></div></div><div class="o_inner_group grid mt48 col-lg-6"><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="contact_name_1">Contact Name</label></div><div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;"><div class="o_row"><div name="contact_name" class="o_field_widget o_field_char"><input class="o_input" id="contact_name_1" type="text" autocomplete="off"></div><div name="title" class="o_field_widget o_field_many2one"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="title_1" placeholder="Title" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="function_1">Job Position</label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="function" class="o_field_widget o_field_char"><input class="o_input" id="function_1" type="text" autocomplete="off"></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="mobile_1">Mobile</label></div><div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;"><div class="o_row o_row_readonly"><div name="mobile" class="o_field_widget o_field_phone"><div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" id="mobile_1"></div></div></div></div></div></div><div class="o_inner_group grid col-lg-6"><div class="g-col-sm-2"><div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Marketing</div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="campaign_id_1">Campaign<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is a name that helps you keep track of your different campaign efforts, e.g. Fall_Drive, Christmas_Special&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="campaign_id" class="o_field_widget o_field_many2one"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="campaign_id_1" placeholder="" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="medium_id_1">Medium<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is the method of delivery, e.g. Postcard, Email, or Banner Ad&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="medium_id" class="o_field_widget o_field_many2one"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="medium_id_1" placeholder="" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="source_id_1">Source<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is the source of the link, e.g. Search Engine, another domain, or name of email list&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="source_id" class="o_field_widget o_field_many2one"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="source_id_1" placeholder="" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="referred_1">Referred By</label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="referred" class="o_field_widget o_field_char"><input class="o_input" id="referred_1" type="text" autocomplete="off"></div></div></div></div><div class="o_inner_group grid col-lg-6"><div class="g-col-sm-2"><div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Tracking</div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="team_id_1">Sales Team</label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="team_id" class="o_field_widget o_field_many2one"><div class="o_field_many2one_selection"><div class="o_input_dropdown"><div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="team_id_1" placeholder="" aria-expanded="false"></div><span class="o_dropdown_button"></span></div></div><div class="o_field_many2one_extra"></div></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label o_form_label_readonly" for="day_open_0">Days to Assign</label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="day_open" class="o_field_widget o_readonly_modifier o_field_float"><span>0.00</span></div></div></div><div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0"><div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label o_form_label_readonly" for="day_close_0">Days to Close</label></div><div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;"><div name="day_close" class="o_field_widget o_readonly_modifier o_field_float"><span>0.00</span></div></div></div></div></div></div>
                                 </div>
                             </div>
                         </div>

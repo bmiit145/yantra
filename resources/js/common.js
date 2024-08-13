@@ -131,3 +131,21 @@ $(document).ready(function() {
         });
     });
 });
+
+
+// tab management
+    $(document).ready(function () {
+        // Handle tab click event
+        $('.nav-link').click(function (e) {
+            e.preventDefault();
+
+            // Remove active class from all tabs and hide all tab panes
+            $('.nav-link').removeClass('active');
+            $('.tab-pane').removeClass('active show');
+
+            // Add active class to the clicked tab and show the corresponding tab pane
+            $(this).addClass('active');
+            var tabName = $(this).attr('name');
+            $('#' + tabName).addClass('active show');
+        });
+    });
