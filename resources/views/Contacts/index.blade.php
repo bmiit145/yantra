@@ -15,14 +15,13 @@
 @section('image_url', asset('images/Contacts.png'))
 @section('head_new_btn_link', route('contact.create'))
 @section('navbar_menu')
-
-
 <li>
 
-    <a href="{{ route('contact.index') }}">
         @if($tab == 'customers')
+        <a href="{{ route('contact.index') }}?tab=customers">
             Customers
         @else
+                <a href="{{ route('contact.index') }}">
             Contacts
         @endif
     </a>
