@@ -94,7 +94,8 @@ class Contact extends Model
     public function ContactLog($action, $message, $user_id = null, $attachments = null, $is_system = true)
     {
         $this->logs()->create([
-            'contact_id' => $this->id,
+            'loggable_id' => $this->id,
+            'loggable_type' => get_class($this),
             'action' => $action,
             'message' => $message,
             'user_id' => $user_id ?? auth()->id(),
