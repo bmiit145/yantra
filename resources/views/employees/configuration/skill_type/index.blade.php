@@ -141,88 +141,56 @@
                             </tr>
                         </thead>
                         <tbody class="ui-sortable">
-                            <tr class="o_data_row" data-id="datapoint_2">
+                            @foreach ($skills as $skill)
+                            <tr class="o_data_row" data-id="datapoint_{{ $skill->id }}">
                                 <td class="o_list_record_selector user-select-none" tabindex="-1">
-                                    <div class="o-checkbox form-check"><input type="checkbox" class="form-check-input" id="checkbox-comp-2"><label class="form-check-label" for="checkbox-comp-2"></label></div>
+                                    <div class="o-checkbox form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkbox-comp-{{ $skill->id }}">
+                                        <label class="form-check-label" for="checkbox-comp-{{ $skill->id }}"></label>
+                                    </div>
                                 </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="Languages">Languages</td>
+                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="{{ $skill->name }}">
+                                    {{ $skill->name }}
+                                </td>
                                 <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_color_picker_cell" data-tooltip-delay="1000" tabindex="-1" name="color">
                                     <div name="color" class="o_field_widget o_field_color_picker">
-                                        <div class="o_colorlist d-flex flex-wrap align-items-center mw-100 gap-2" aria-atomic="true"><button role="menuitem" title="Teal" data-color="7" aria-label="Teal" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_7"></button></div>
+                                        <div class="o_colorlist d-flex flex-wrap align-items-center mw-100 gap-2" aria-atomic="true">
+                                            @foreach ($skill->levels as $level)
+                                            <button role="menuitem" title="{{ $level->name }}" data-color="{{ $level->level }}" aria-label="{{ $level->name }}" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_{{ $level->level }}"></button>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_ids">
                                     <div name="skill_ids" class="o_field_widget o_field_many2many_tags">
-                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"></div>
+                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100">
+                                            @foreach ($skill->levels as $level)
+                                            <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_{{ $level->level }}" tabindex="-1" data-color="{{ $level->level }}" title="{{ $level->name }}">
+                                                <div class="o_tag_badge_text text-truncate">{{ $level->name }}</div>
+                                            </span>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_skills_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_level_ids">
                                     <div name="skill_level_ids" class="o_field_widget o_field_many2many_tags_skills">
-                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"></div>
+                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100">
+                                            @foreach ($skill->levels as $level)
+                                            <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_{{ $level->level }}{{ $level->is_default ? ' border border-2' : '' }}" tabindex="-1" title="{{ $level->name }}" style="{{ $level->is_default ? 'border-color: rgb(140, 140, 140) !important;' : '' }}">
+                                                <div class="o_tag_badge_text text-truncate {{ $level->is_default ? 'fw-bold' : '' }}">{{ $level->name }}</div>
+                                            </span>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </td>
                                 <td tabindex="-1" class="w-print-0 p-print-0"></td>
                             </tr>
-                            <tr class="o_data_row" data-id="datapoint_5">
-                                <td class="o_list_record_selector user-select-none" tabindex="-1">
-                                    <div class="o-checkbox form-check"><input type="checkbox" class="form-check-input" id="checkbox-comp-3"><label class="form-check-label" for="checkbox-comp-3"></label></div>
-                                </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="designer 1">designer 1</td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_color_picker_cell" data-tooltip-delay="1000" tabindex="-1" name="color">
-                                    <div name="color" class="o_field_widget o_field_color_picker">
-                                        <div class="o_colorlist d-flex flex-wrap align-items-center mw-100 gap-2" aria-atomic="true"><button role="menuitem" title="Yellow" data-color="3" aria-label="Yellow" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_3"></button></div>
-                                    </div>
-                                </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_ids">
-                                    <div name="skill_ids" class="o_field_widget o_field_many2many_tags">
-                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_3" tabindex="-1" data-color="3" title="skills 1">
-                                                <div class="o_tag_badge_text text-truncate">skills 1</div>
-                                            </span><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_3" tabindex="-1" data-color="3" title="skills 2">
-                                                <div class="o_tag_badge_text text-truncate">skills 2</div>
-                                            </span></div>
-                                    </div>
-                                </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_skills_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_level_ids">
-                                    <div name="skill_level_ids" class="o_field_widget o_field_many2many_tags_skills">
-                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0" tabindex="-1" title="levels 2" style="">
-                                                <div class="o_tag_badge_text text-truncate">levels 2</div>
-                                            </span><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0 border border-2" tabindex="-1" title="levels 1" style="border-color: rgb(140, 140, 140) !important ;">
-                                                <div class="o_tag_badge_text text-truncate fw-bold">levels 1</div>
-                                            </span></div>
-                                    </div>
-                                </td>
-                                <td tabindex="-1" class="w-print-0 p-print-0"></td>
-                            </tr>
-                            <tr class="o_data_row" data-id="datapoint_12">
-                                <td class="o_list_record_selector user-select-none" tabindex="-1">
-                                    <div class="o-checkbox form-check"><input type="checkbox" class="form-check-input" id="checkbox-comp-4"><label class="form-check-label" for="checkbox-comp-4"></label></div>
-                                </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="xs">xs</td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_color_picker_cell" data-tooltip-delay="1000" tabindex="-1" name="color">
-                                    <div name="color" class="o_field_widget o_field_color_picker">
-                                        <div class="o_colorlist d-flex flex-wrap align-items-center mw-100 gap-2" aria-atomic="true"><button role="menuitem" title="Red" data-color="1" aria-label="Red" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_1"></button></div>
-                                    </div>
-                                </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_ids">
-                                    <div name="skill_ids" class="o_field_widget o_field_many2many_tags">
-                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_1" tabindex="-1" data-color="1" title="zs">
-                                                <div class="o_tag_badge_text text-truncate">zs</div>
-                                            </span><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_1" tabindex="-1" data-color="1" title="sx">
-                                                <div class="o_tag_badge_text text-truncate">sx</div>
-                                            </span><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_1" tabindex="-1" data-color="1" title="sx">
-                                                <div class="o_tag_badge_text text-truncate">sx</div>
-                                            </span></div>
-                                    </div>
-                                </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_skills_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_level_ids">
-                                    <div name="skill_level_ids" class="o_field_widget o_field_many2many_tags_skills">
-                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0" tabindex="-1" title="x" style="">
-                                                <div class="o_tag_badge_text text-truncate">x</div>
-                                            </span></div>
-                                    </div>
-                                </td>
-                                <td tabindex="-1" class="w-print-0 p-print-0"></td>
-                            </tr>
+                            @endforeach
+
+
+
+
+
                             <tr>
                                 <td colspan="6">​</td>
                             </tr>
@@ -282,29 +250,29 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 @push('scripts')
-     {{-- CONFIGURATION SECTION STRAT --}}
-    <script>
-        $(document).ready(function() {
-            $('#configLink').click(function(e) {
-                e.preventDefault(); // Prevent the default action
+{{-- CONFIGURATION SECTION STRAT --}}
+<script>
+    $(document).ready(function() {
+        $('#configLink').click(function(e) {
+            e.preventDefault(); // Prevent the default action
 
-                // Get the position of the li element
-                var position = $(this).parent().offset();
+            // Get the position of the li element
+            var position = $(this).parent().offset();
 
-                // Set the position of the dropdown relative to the li
-                $('#dropdownMenu').css({
-                    top: position.top + $(this).outerHeight(), // Below the li
-                    left: position.left
-                }).toggle(); // Toggle visibility
-            });
-
-            // Optional: Hide the dropdown if clicking outside of it
-            $(document).click(function(e) {
-                if (!$(e.target).closest('#configLink, #dropdownMenu').length) {
-                    $('#dropdownMenu').hide();
-                }
-            });
+            // Set the position of the dropdown relative to the li
+            $('#dropdownMenu').css({
+                top: position.top + $(this).outerHeight(), // Below the li
+                left: position.left
+            }).toggle(); // Toggle visibility
         });
 
-    </script>
+        // Optional: Hide the dropdown if clicking outside of it
+        $(document).click(function(e) {
+            if (!$(e.target).closest('#configLink, #dropdownMenu').length) {
+                $('#dropdownMenu').hide();
+            }
+        });
+    });
+
+</script>
 @endpush
