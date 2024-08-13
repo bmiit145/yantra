@@ -85,7 +85,11 @@
                     <div class="oe_kanban_content flex-grow-1">
                         <div class="oe_kanban_details"><strong
                                 class="o_kanban_record_title"><span>{{ $sale->opportunity }}</span></strong></div>
-                        <div class="o_kanban_record_subtitle"></div>
+                        <div class="o_kanban_record_subtitle">
+                            @if($sale->expected_revenue != null)
+                            <div name="expected_revenue" class="o_field_widget o_field_monetary"><span>₹&nbsp;{{ number_format($sale->expected_revenue, 2) }}</span></div>
+                            @endif
+                        </div>
                         @if($sale->contact)
                         <div>
                             <span class="o_text_overflow">{{ optional($sale->contact)->name }}</span>
