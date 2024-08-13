@@ -1,8 +1,8 @@
 @extends('layout.header')
 @section('content')
 @section('title', 'Sales')
-@section('head_breadcrumb_title', 'Quotations')
-@section('head_new_btn_link', route('orders.create'))
+@section('head_breadcrumb_title', 'Pricelists')
+@section('head_new_btn_link', route('pricelists.create'))
 @section('image_url', asset('images/Sales.png'))
 @section('navbar_menu')
     <li class="dropdown">
@@ -46,13 +46,9 @@
         <table id="example" class="display nowrap">
             <thead>
                 <tr>
-                    <th>Number</th>
-                    <th>Order Date</th>
-                    <th>Customer</th>
-                    <th>Salesperson</th>
-                    <th>Activities</th>
-                    <th>Invoice Status</th>
-                    <th>Amount to Invoice</th>
+                    <th>Pricelist Name</th>
+                    <th>Country Groups</th>
+                   
                 </tr>
             </thead>
             <tbody id="bill_list">
@@ -74,7 +70,5 @@
 
     
 </script>
-
-
 
 @endsection

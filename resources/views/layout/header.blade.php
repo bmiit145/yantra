@@ -130,7 +130,7 @@
             <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
         </div>
         <div class="head_breadcrumb_info">
-            <p class="head_breadcrumb_title">@yield('head_breadcrumb_title')</p>
+            <p class="head_breadcrumb_title">@yield('head_breadcrumb_title' , 'Quotations')</p>
             <a href="#"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -139,6 +139,7 @@
                     </g>
                 </svg></a>
         </div>
+        
         <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
             <i class="fa fa-cloud-upload fa-fw"></i>
         </button>

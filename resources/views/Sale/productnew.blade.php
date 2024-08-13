@@ -3,18 +3,19 @@
 @section('head')
     @vite(['resources/css/salesadd.css'])
 @endsection
-@section('head_new_btn_link', route('orders.create'))
+@section('head_new_btn_link', route('product.create'))
+@section('title', 'Sales')
 @section('navbar_menu')
     <li class="dropdown">
         <a href="#">Orders</a>
         <div class="dropdown-content">
-            <a href="{{route('orders.index')}}">Quotations</a>
+            <a href="{{ route('orders.index') }}">Quotations</a>
             <a href="#">Orders</a>
             <a href="#">Sales Teams</a>
             <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
-  
+
     <li class="dropdown">
         <a href="#">To Invoice</a>
         <div class="dropdown-content">
@@ -47,561 +48,184 @@
 
 
 <div class="o_action_manager">
-    <div class="o_xxl_form_view h-100 o_form_view o_sale_order o_view_controller o_action">
+    <div class="o_xxl_form_view h-100 o_form_view o_view_controller o_action">
         <div class="o_form_view_container">
             <div class="o_content">
-                <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100 o_form_dirty">
+                <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
                     <div class="o_form_sheet_bg">
                         <div
                             class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
                             <div
                                 class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
-                                <button data-hotkey="g" invisible="state != 'draft'" id="send_by_email_primary"
-                                    class="btn btn-primary" name="action_quotation_send" type="object"><span>Send by
-                                        Email</span></button><button data-hotkey="q" invisible="state != 'draft'"
-                                    class="btn btn-secondary" name="action_confirm"
-                                    type="object"><span>Confirm</span></button><button class="btn btn-secondary"
-                                    name="action_preview_sale_order" type="object"><span>Preview</span></button>
-                            </div>
-                            <div name="state" class="o_field_widget o_readonly_modifier o_field_statusbar">
-                                <div class="o_statusbar_status" role="radiogroup"><button type="button"
-                                        class="btn btn-secondary dropdown-toggle o_arrow_button o_first o-dropdown dropdown d-none"
-                                        disabled="" aria-expanded="false"> ... </button><button type="button"
-                                        class="btn btn-secondary o_arrow_button o_first" role="radio" disabled=""
-                                        aria-label="Not active state" aria-checked="false" data-value="sale">Sales
-                                        Order</button><button type="button" class="btn btn-secondary o_arrow_button"
-                                        role="radio" disabled="" aria-label="Not active state" aria-checked="false"
-                                        data-value="sent">Quotation Sent</button><button type="button"
-                                        class="btn btn-secondary o_arrow_button o_arrow_button_current o_last"
-                                        role="radio" disabled="" aria-label="Current state" aria-checked="true"
-                                        aria-current="step" data-value="draft">Quotation</button><button type="button"
-                                        class="btn btn-secondary dropdown-toggle o_arrow_button o_last o-dropdown dropdown d-none"
-                                        disabled="" aria-expanded="false"> ... </button><button type="button"
-                                        class="btn btn-secondary dropdown-toggle o-dropdown dropdown d-none"
-                                        disabled="" aria-expanded="false">Quotation</button></div>
+                                <button invisible="type != 'consu'" class="btn btn-secondary" name="682"
+                                    type="action"><span>Replenish</span></button><button invisible="type == 'service'"
+                                    class="btn btn-secondary" name="action_open_label_layout" type="object"><span>Print
+                                        Labels</span></button>
                             </div>
                         </div>
                         <div class="o_form_sheet position-relative">
-                            <div class="oe_title">
+                            <div name="image_1920" class="o_field_widget o_field_image oe_avatar">
+                                <div class="d-inline-block position-relative opacity-trigger-hover">
+                                    <div aria-atomic="true"
+                                        class="position-absolute d-flex justify-content-between w-100 bottom-0 opacity-0 opacity-100-hover"
+                                        style=""><span style="display:contents"><button
+                                                class="o_select_file_button btn btn-light border-0 rounded-circle m-1 p-1"
+                                                data-tooltip="Edit" aria-label="Edit"><i
+                                                    class="fa fa-pencil fa-fw"></i></button></span><input type="file"
+                                            class="o_input_file d-none" accept="image/*"></div>
+                                    <img loading="lazy" class="img img-fluid" alt="Binary file"
+                                        src="/web/static/img/placeholder.png" name="image_1920" style="">
+                                </div>
+                            </div>
+                            <div class="oe_title"><label class="o_form_label" for="name_0">Product</label>
                                 <h1>
-                                    <div name="name"
-                                        class="o_field_widget o_readonly_modifier o_required_modifier o_field_char">
-                                        <span>New</span>
+                                    <div class="product_flex d-flex align-items-center">
+                                        <div name="is_favorite"
+                                            class="o_field_widget o_readonly_modifier o_field_boolean_favorite me-3">
+                                            <div class="o_favorite"><a href="#" class="pe-none"><i role="img"
+                                                        class="fa fa-star-o me-1" title="Add to Favorites"
+                                                        aria-label="Add to Favorites"></i></a></div>
+                                        </div>
+                                        <div name="name" class="  o_required_modifier o_field_text text-break w-100">
+                                            <div style="height: 45px;">
+                                                <textarea class="o_input o_field_translate" id="name_0" placeholder="e.g. Cheese Burger" rows="1"
+                                                    style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 25px 1px 0px;" spellcheck="true"></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </h1>
                             </div>
-                            <div class="o_group row align-items-start">
-                                <div class="o_inner_group grid col-lg-6">
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div
-                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label"
-                                                for="partner_id_0">Customer</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                            style="width: 100%;">
-                                            <div name="partner_id"
-                                                class="o_field_widget o_required_modifier o_field_res_partner_many2one">
-                                                <div class="o_field_many2one_selection">
-                                                    <div class="o_input_dropdown">
-                                                        <div class="o-autocomplete dropdown"><input type="text"
-                                                                class="o-autocomplete--input o_input"
-                                                                autocomplete="off" role="combobox"
-                                                                aria-autocomplete="list" aria-haspopup="listbox"
-                                                                id="partner_id_0"
-                                                                placeholder="Type to find a customer..."
-                                                                aria-expanded="false"></div><span
-                                                            class="o_dropdown_button"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="o_field_many2one_extra"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div
-                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="l10n_in_gst_treatment_0">GST
-                                                Treatment</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                            style="width: 100%;">
-                                            <div name="l10n_in_gst_treatment"
-                                                class="o_field_widget o_required_modifier o_field_selection">
-                                                <select class="o_input pe-3" id="l10n_in_gst_treatment_0">
-                                                    <option value="false" style="display:none"></option>
-                                                    <option value="&quot;regular&quot;">Registered Business -
-                                                        Regular</option>
-                                                    <option value="&quot;composition&quot;">Registered Business -
-                                                        Composition</option>
-                                                    <option value="&quot;unregistered&quot;">Unregistered Business
-                                                    </option>
-                                                    <option value="&quot;consumer&quot;">Consumer</option>
-                                                    <option value="&quot;overseas&quot;">Overseas</option>
-                                                    <option value="&quot;special_economic_zone&quot;">Special
-                                                        Economic Zone</option>
-                                                    <option value="&quot;deemed_export&quot;">Deemed Export
-                                                    </option>
-                                                    <option value="&quot;uin_holders&quot;">UIN Holders</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_inner_group grid col-lg-6">
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div
-                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="validity_date_0">Expiration<sup
-                                                    class="text-info p-1" data-tooltip-template="web.FieldTooltip"
-                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Validity of the order, after that you will not able to sign &amp; pay the quotation.&quot;}}"
-                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                            style="width: 100%;">
-                                            <div name="validity_date" class="o_field_widget o_field_date">
-                                                <div class="d-flex gap-2 align-items-center"><input type="text"
-                                                        class="o_input cursor-pointer" autocomplete="off"
-                                                        id="validity_date_0" data-field="validity_date"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                            style=""><label class="o_form_label" for="plan_id_0">Recurring
-                                                Plan</label></div>
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                            <div name="plan_block" class="o_row">
-                                                <div name="plan_id" class="o_field_widget o_field_many2one">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input"
-                                                                    autocomplete="off" role="combobox"
-                                                                    aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="plan_id_0" placeholder=""
-                                                                    aria-expanded="false"></div>
-                                                            <span class="o_dropdown_button"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                            style=""><label class="o_form_label"
-                                                for="pricelist_id_0">Pricelist<sup class="text-info p-1"
-                                                    data-tooltip-template="web.FieldTooltip"
-                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;If you change the pricelist, only newly added lines will be affected.&quot;}}"
-                                                    data-tooltip-touch-tap-to-show="true">?</sup></label></div>
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                            <div class="o_row">
-                                                <div name="pricelist_id" class="o_field_widget o_field_many2one">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input"
-                                                                    autocomplete="off" role="combobox"
-                                                                    aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="pricelist_id_0" placeholder=""
-                                                                    aria-expanded="false"></div>
-                                                            <span class="o_dropdown_button"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div
-                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="payment_term_id_0">Payment
-                                                Terms</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                            style="width: 100%;">
-                                            <div name="payment_term_id" class="o_field_widget o_field_many2one">
-                                                <div class="o_field_many2one_selection">
-                                                    <div class="o_input_dropdown">
-                                                        <div class="o-autocomplete dropdown"><input type="text"
-                                                                class="o-autocomplete--input o_input"
-                                                                autocomplete="off" role="combobox"
-                                                                aria-autocomplete="list" aria-haspopup="listbox"
-                                                                id="payment_term_id_0" placeholder=""
-                                                                aria-expanded="false"></div><span
-                                                            class="o_dropdown_button"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="o_field_many2one_extra"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div name="options"><span class="d-inline-block">
+                                    <div name="sale_ok" class="o_field_widget o_field_boolean">
+                                        <div class="o-checkbox form-check d-inline-block"><input type="checkbox"
+                                                class="form-check-input" id="sale_ok_0"><label class="form-check-label"
+                                                for="sale_ok_0"></label></div>
+                                    </div><label class="o_form_label" for="sale_ok_0">Sales</label>
+                                </span><span class="d-inline-block">
+                                    <div name="purchase_ok" class="o_field_widget o_field_boolean">
+                                        <div class="o-checkbox form-check d-inline-block"><input type="checkbox"
+                                                class="form-check-input" id="purchase_ok_0"><label
+                                                class="form-check-label" for="purchase_ok_0"></label></div>
+                                    </div><label class="o_form_label" for="purchase_ok_0">Purchase</label>
+                                </span><span class="d-inline-block">
+                                    <div name="recurring_invoice" class="o_field_widget o_field_boolean">
+                                        <div class="o-checkbox form-check d-inline-block"><input type="checkbox"
+                                                class="form-check-input" id="recurring_invoice_0"><label
+                                                class="form-check-label" for="recurring_invoice_0"></label></div>
+                                    </div><label class="o_form_label" for="recurring_invoice_0">Subscriptions<sup
+                                            class="text-info p-1" data-tooltip-template="web.FieldTooltip"
+                                            data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;If set, confirming a sale order with this product will create a subscription&quot;}}"
+                                            data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                </span><span class="d-inline-block">
+                                    <div name="rent_ok" class="o_field_widget o_field_boolean">
+                                        <div class="o-checkbox form-check d-inline-block"><input type="checkbox"
+                                                class="form-check-input" id="rent_ok_1"><label
+                                                class="form-check-label" for="rent_ok_1"></label></div>
+                                    </div><label class="o_form_label" for="rent_ok_1">Rental<sup
+                                            class="text-info p-1" data-tooltip-template="web.FieldTooltip"
+                                            data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Allow renting of this product.&quot;}}"
+                                            data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                </span><span class="d-inline-block">
+                                    <div name="available_in_pos" class="o_field_widget o_field_boolean">
+                                        <div class="o-checkbox form-check d-inline-block"><input type="checkbox"
+                                                class="form-check-input" id="available_in_pos_0"><label
+                                                class="form-check-label" for="available_in_pos_0"></label></div>
+                                    </div><label class="o_form_label" for="available_in_pos_0">Point of Sale<sup
+                                            class="text-info p-1" data-tooltip-template="web.FieldTooltip"
+                                            data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Check if you want this product to appear in the Point of Sale.&quot;}}"
+                                            data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                </span></div>
                             <div class="o_notebook d-flex w-100 horizontal flex-column">
                                 <div class="o_notebook_headers">
                                     <ul class="nav nav-tabs flex-row flex-nowrap">
-                                        <li class="nav-item flex-nowrap cursor-pointer">
-                                            <a class="nav-link active" href="#order_lines" role="tab"
-                                                data-bs-toggle="tab" tabindex="0" name="order_lines">Order
-                                                Lines</a>
-                                        </li>
-                                        <li class="nav-item flex-nowrap cursor-pointer">
-                                            <a class="nav-link" href="#optional_products" role="tab"
-                                                data-bs-toggle="tab" tabindex="0" name="optional_products">Optional
-                                                Products</a>
-                                        </li>
-                                        <li class="nav-item flex-nowrap cursor-pointer">
-                                            <a class="nav-link" href="#other_information" role="tab"
-                                                data-bs-toggle="tab" tabindex="0" name="other_information">Other
-                                                Info</a>
-                                        </li>
-                                        <li class="nav-item flex-nowrap cursor-pointer">
-                                            <a class="nav-link" href="#notes" role="tab" data-bs-toggle="tab"
-                                                tabindex="0" name="notes">Notes</a>
-                                        </li>
+                                        <li class="nav-item flex-nowrap cursor-pointer"><a class="nav-link active"
+                                                href="#general_information" data-bs-toggle="tab" tabindex="0"
+                                                name="general_information">General Information</a></li>
+                                        <li class="nav-item flex-nowrap cursor-pointer"><a class="nav-link page_sales"
+                                                href="#sales" data-bs-toggle="tab" tabindex="0"
+                                                name="sales">Sales</a></li>
+                                        <li class="nav-item flex-nowrap cursor-pointer"><a class="nav-link"
+                                                href="#purchase" data-bs-toggle="tab" tabindex="0"
+                                                name="purchase">Purchase</a></li>
+                                        <li class="nav-item flex-nowrap cursor-pointer"><a class="nav-link"
+                                                href="#inventory" data-bs-toggle="tab" tabindex="0"
+                                                name="inventory">Inventory</a></li>
+                                        <li class="nav-item flex-nowrap cursor-pointer"><a class="nav-link"
+                                                href="#invoicing" data-bs-toggle="tab" tabindex="0"
+                                                name="invoicing">Accounting</a></li>
                                     </ul>
                                 </div>
                                 <div class="tab-content">
-                                    <div id="order_lines" class="tab-pane fade show active">
-                                        <div class="o_list_renderer o_renderer table-responsive" tabindex="-1">
-                                            <table
-                                                class="o_section_and_note_list_view o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped"
-                                                style="table-layout: fixed;">
-                                                <thead>
-                                                    <tr>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="sequence"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_handle_cell opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;sequence&quot;,&quot;label&quot;:&quot;Sequence&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;widget&quot;:&quot;handle&quot;,&quot;widgetDescription&quot;:&quot;Handle&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 29px;"></th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="product_template_id"
-                                                            class="align-middle cursor-default o_sol_product_many2one_cell opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_template_id&quot;,&quot;label&quot;:&quot;Product Template&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:&quot;sol_product_many2one&quot;,&quot;widgetDescription&quot;:&quot;Many2one&quot;,&quot;context&quot;:&quot;{                                         'partner_id': parent.partner_id,                                         'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom':product_uom,                                         'company_id': parent.company_id,                                         'default_list_price': price_unit,                                         'default_description_sale': name                                     }&quot;,&quot;domain&quot;:&quot;[('sale_ok', '=', True)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;not product_updatable&quot;,&quot;required&quot;:&quot;not display_type and not is_downpayment&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;product.template&quot;}}"
-                                                            style="width: 144px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">Product</span><i
-                                                                    class="d-none fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="name"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_section_and_note_text_cell opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;name&quot;,&quot;label&quot;:&quot;Description&quot;,&quot;type&quot;:&quot;text&quot;,&quot;widget&quot;:&quot;section_and_note_text&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 144px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">Description</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="product_uom_qty"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_uom_qty&quot;,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{                                         'partner_id': parent.partner_id,                                         'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom': product_uom,                                         'company_id': parent.company_id                                     }&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;is_downpayment&quot;,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 133px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Quantity</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th style="width: 29px;"></th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="product_uom"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_uom&quot;,&quot;label&quot;:&quot;Unit of Measure&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{'company_id': parent.company_id}&quot;,&quot;domain&quot;:&quot;[('category_id', '=', product_uom_category_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;product_uom_readonly&quot;,&quot;required&quot;:&quot;not display_type and not is_downpayment&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;uom.uom&quot;}}"
-                                                            style="width: 144px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">UoM</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="price_unit"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;price_unit&quot;,&quot;label&quot;:&quot;Unit Price&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;qty_invoiced > 0&quot;,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 133px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Unit
-                                                                    Price</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="tax_id"
-                                                            class="align-middle cursor-default o_many2many_tags_cell opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;tax_id&quot;,&quot;label&quot;:&quot;Taxes&quot;,&quot;type&quot;:&quot;many2many&quot;,&quot;widget&quot;:&quot;many2many_tags&quot;,&quot;widgetDescription&quot;:&quot;Tags&quot;,&quot;context&quot;:&quot;{'active_test': True}&quot;,&quot;domain&quot;:&quot;[('type_tax_use', '=', 'sale'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;qty_invoiced > 0 or is_downpayment&quot;,&quot;required&quot;:null,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;account.tax&quot;}}"
-                                                            style="width: 144px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">Taxes</span><i
-                                                                    class="d-none fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="discount"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;discount&quot;,&quot;label&quot;:&quot;Discount (%)&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 133px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Disc.%</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="price_subtotal"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;price_subtotal&quot;,&quot;label&quot;:&quot;Subtotal&quot;,&quot;type&quot;:&quot;monetary&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:&quot;is_downpayment&quot;,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;True&quot;,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 144px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Tax
-                                                                    excl.</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th class="o_list_controller o_list_actions_header w-print-0 p-print-0 position-sticky end-0"
-                                                            style="width: 32px;">
-                                                            <div
-                                                                class="o_optional_columns_dropdown d-print-none text-center border-top-0">
-                                                                <button
-                                                                    class="btn p-0 o-dropdown dropdown-toggle dropdown"
-                                                                    tabindex="-1" aria-expanded="false"><i
-                                                                        class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i></button>
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="ui-sortable">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td class="o_field_x2many_list_row_add" colspan="10"><a
-                                                                href="#" role="button" tabindex="0">Add a
-                                                                product</a><a href="#" role="button"
-                                                                class="ml16" tabindex="0">Add a section</a><a
-                                                                href="#" role="button" class="ml16"
-                                                                tabindex="0">Add a note</a><button
-                                                                class="btn px-4 btn-link ml16"
-                                                                name="action_add_from_catalog" type="object"
-                                                                tabindex="0"><span>Catalog</span></button></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="11">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="11">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="11">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot class="o_list_footer cursor-default">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td class="w-print-auto"></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td class="w-print-0 p-print-0"></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div id="optional_products" class="tab-pane fade">
-                                        <div class="o_list_renderer o_renderer table-responsive" tabindex="-1">
-                                            <table
-                                                class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped"
-                                                style="table-layout: fixed;">
-                                                <thead>
-                                                    <tr>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="sequence"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_handle_cell opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;sequence&quot;,&quot;label&quot;:&quot;Sequence&quot;,&quot;help&quot;:&quot;Gives the sequence order when displaying a list of optional products.&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;widget&quot;:&quot;handle&quot;,&quot;widgetDescription&quot;:&quot;Handle&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 29px;"></th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="product_id"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_id&quot;,&quot;label&quot;:&quot;Product&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;domain&quot;:&quot;\n                    ['|', ('sale_ok', '=', True),\n                          '&amp;', ('rent_ok', '=', True), ('rent_ok', '=', parent.is_rental_order),\n                     '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]\n                &quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;product.product&quot;}}"
-                                                            style="width: 182px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">Product</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="name"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;name&quot;,&quot;label&quot;:&quot;Description&quot;,&quot;type&quot;:&quot;text&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 182px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">Description</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="quantity"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;quantity&quot;,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 145px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Quantity</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="uom_id"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;uom_id&quot;,&quot;label&quot;:&quot;Unit of Measure&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;domain&quot;:&quot;[('category_id', '=', product_uom_category_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;uom.uom&quot;}}"
-                                                            style="width: 182px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">UoM</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="price_unit"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;price_unit&quot;,&quot;label&quot;:&quot;Unit Price&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 145px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Unit
-                                                                    Price</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="discount"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;discount&quot;,&quot;label&quot;:&quot;Discount (%)&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 145px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Disc.%</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th class="o_list_button w-print-0 p-print-0"
-                                                            style="width: 182px;"></th>
-                                                        <th class="o_list_controller o_list_actions_header w-print-0 p-print-0 position-sticky end-0"
-                                                            style="width: 32px;">
-                                                            <div
-                                                                class="o_optional_columns_dropdown d-print-none text-center border-top-0">
-                                                                <button
-                                                                    class="btn p-0 o-dropdown dropdown-toggle dropdown"
-                                                                    tabindex="-1" aria-expanded="false"><i
-                                                                        class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i></button>
-                                                            </div>
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody class="ui-sortable">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td class="o_field_x2many_list_row_add" colspan="8"><a
-                                                                href="#" role="button" tabindex="0">Add a
-                                                                product</a></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="9">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="9">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="9">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                </tbody>
-                                                <tfoot class="o_list_footer cursor-default">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td class="w-print-auto"></td>
-                                                        <td class="w-print-0 p-print-0"></td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div id="other_information" class="tab-pane fade">
+                                    <div id="general_information" class="tab-pane fade show active">
                                         <div class="o_notebook_content tab-content">
                                             <div class="tab-pane active fade show">
                                                 <div class="o_group row align-items-start">
                                                     <div class="o_inner_group grid col-lg-6">
-                                                        <div class="g-col-sm-2">
-                                                            <div
-                                                                class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
-                                                                Sales</div>
-                                                        </div>
                                                         <div
                                                             class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                             <div
                                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="user_id_0">Salesperson</label>
+                                                                <label class="o_form_label" for="type_0">Product
+                                                                    Type<sup class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;A storable product is a product for which you manage stock. The Inventory app has to be installed.\nA consumable product is a product for which stock is not managed.\nA service is a non-material product you provide.&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
                                                             </div>
                                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                                 style="width: 100%;">
-                                                                <div name="user_id"
-                                                                    class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
-                                                                    <div class="d-flex align-items-center gap-1"><span
-                                                                            class="o_avatar o_m2o_avatar"><span
-                                                                                class="o_avatar_empty o_m2o_avatar_empty"></span></span>
-                                                                        <div class="o_field_many2one_selection">
-                                                                            <div class="o_input_dropdown">
-                                                                                <div class="o-autocomplete dropdown">
-                                                                                    <input type="text"
-                                                                                        class="o-autocomplete--input o_input"
-                                                                                        autocomplete="off"
-                                                                                        role="combobox"
-                                                                                        aria-autocomplete="list"
-                                                                                        aria-haspopup="listbox"
-                                                                                        id="user_id_0" placeholder=""
-                                                                                        aria-expanded="false">
-                                                                                </div>
-                                                                                <span class="o_dropdown_button"></span>
-                                                                            </div>
+                                                                <div name="type"
+                                                                    class="o_field_widget o_required_modifier o_field_radio">
+                                                                    <div role="radiogroup" class="o_horizontal"
+                                                                        aria-label="Product Type">
+                                                                        <div class="form-check o_radio_item"
+                                                                            aria-atomic="true"><input type="radio"
+                                                                                class="form-check-input o_radio_input"
+                                                                                name="radio_field_0"
+                                                                                data-value="consu" data-index="0"
+                                                                                id="radio_field_0_consu"><label
+                                                                                class="form-check-label o_form_label"
+                                                                                for="radio_field_0_consu">Goods</label>
                                                                         </div>
-                                                                        <div class="o_field_many2one_extra"></div>
+                                                                        <div class="form-check o_radio_item"
+                                                                            aria-atomic="true"><input type="radio"
+                                                                                class="form-check-input o_radio_input"
+                                                                                name="radio_field_0"
+                                                                                data-value="service" data-index="1"
+                                                                                id="radio_field_0_service"><label
+                                                                                class="form-check-label o_form_label"
+                                                                                for="radio_field_0_service">Service</label>
+                                                                        </div>
+                                                                        <div class="form-check o_radio_item"
+                                                                            aria-atomic="true"><input type="radio"
+                                                                                class="form-check-input o_radio_input"
+                                                                                name="radio_field_0"
+                                                                                data-value="combo" data-index="2"
+                                                                                id="radio_field_0_combo"><label
+                                                                                class="form-check-label o_form_label"
+                                                                                for="radio_field_0_combo">Combo</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                                style=""><label class="o_form_label oe_inline"
+                                                                    for="is_storable_0">Track Inventory</label></div>
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                                style="width: 100%;">
+                                                                <div class="o_row w-100">
+                                                                    <div name="is_storable"
+                                                                        class="o_field_widget o_field_boolean">
+                                                                        <div
+                                                                            class="o-checkbox form-check d-inline-block">
+                                                                            <input type="checkbox"
+                                                                                class="form-check-input"
+                                                                                id="is_storable_0"><label
+                                                                                class="form-check-label"
+                                                                                for="is_storable_0"></label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -610,13 +234,249 @@
                                                             class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                             <div
                                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label" for="team_id_0">Sales
-                                                                    Team</label>
+                                                                <label class="o_form_label"
+                                                                    for="invoice_policy_0">Invoicing Policy<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Ordered Quantity: Invoice quantities ordered by the customer.\nDelivered Quantity: Invoice quantities delivered to the customer.&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
                                                             </div>
                                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                                 style="width: 100%;">
-                                                                <div name="team_id"
-                                                                    class="o_field_widget o_field_many2one">
+                                                                <div name="invoice_policy"
+                                                                    class="o_field_widget o_required_modifier o_field_selection">
+                                                                    <select class="o_input pe-3"
+                                                                        id="invoice_policy_0">
+                                                                        <option value="false" style="display:none">
+                                                                        </option>
+                                                                        <option value="&quot;order&quot;">Ordered
+                                                                            quantities</option>
+                                                                        <option value="&quot;delivery&quot;">Delivered
+                                                                            quantities</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div
+                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label o_form_label_readonly"
+                                                                    for="product_tooltip_0"></label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                                style="width: 100%;">
+                                                                <div name="product_tooltip"
+                                                                    class="o_field_widget o_readonly_modifier o_field_char fst-italic text-muted">
+                                                                    <span>You can invoice goods before they are
+                                                                        delivered.</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="o_inner_group grid col-lg-6">
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                                style=""><label class="o_form_label"
+                                                                    for="list_price_0">Sales Price<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Price at which the product is sold to customers.&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            </div>
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                                style="width: 100%;">
+                                                                <div name="list_price_uom">
+                                                                    <div name="list_price"
+                                                                        class="o_field_widget o_field_monetary oe_inline">
+                                                                        <div
+                                                                            class="text-nowrap d-inline-flex w-100 align-items-baseline position-relative">
+                                                                            <span
+                                                                                class="o_input position-absolute pe-none d-flex w-100"><span>₹&nbsp;</span><span
+                                                                                    class="opacity-0 d-inline-block overflow-hidden mw-100 o_monetary_ghost_value">1.00</span></span><span
+                                                                                class="opacity-0">₹&nbsp;</span><input
+                                                                                class="o_input flex-grow-1 flex-shrink-1"
+                                                                                autocomplete="off" id="list_price_0"
+                                                                                type="text">
+                                                                        </div>
+                                                                    </div><span name="uom_span">per <div
+                                                                            name="uom_id"
+                                                                            class="o_field_widget o_required_modifier o_field_many2one oe_inline"
+                                                                            style="max-width:136px">
+                                                                            <div class="o_field_many2one_selection">
+                                                                                <div class="o_input_dropdown">
+                                                                                    <div
+                                                                                        class="o-autocomplete dropdown">
+                                                                                        <input type="text"
+                                                                                            class="o-autocomplete--input o_input"
+                                                                                            autocomplete="off"
+                                                                                            role="combobox"
+                                                                                            aria-autocomplete="list"
+                                                                                            aria-haspopup="listbox"
+                                                                                            id="uom_id_0"
+                                                                                            placeholder=""
+                                                                                            aria-expanded="false">
+                                                                                    </div><span
+                                                                                        class="o_dropdown_button"></span>
+                                                                                </div><button type="button"
+                                                                                    class="btn btn-link text-action oi o_external_button oi-arrow-right"
+                                                                                    tabindex="-1" draggable="false"
+                                                                                    aria-label="Internal link"
+                                                                                    data-tooltip="Internal link"></button>
+                                                                            </div>
+                                                                            <div class="o_field_many2one_extra"></div>
+                                                                        </div></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                                style=""><label class="o_form_label"
+                                                                    for="taxes_id_0">Sales Taxes<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Default taxes used when selling the product&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            </div>
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                                style="width: 100%;">
+                                                                <div name="taxes_div" class="o_row">
+                                                                    <div name="taxes_id"
+                                                                        class="o_field_widget o_field_many2many_tags oe_inline">
+                                                                        <div
+                                                                            class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
+                                                                            <span
+                                                                                class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0"
+                                                                                tabindex="-1" title="5% GST">
+                                                                                <div
+                                                                                    class="o_tag_badge_text text-truncate">
+                                                                                    5% GST</div><a
+                                                                                    class="o_delete d-flex align-items-center opacity-100-hover ps-1 opacity-75"
+                                                                                    title="Delete" aria-label="Delete"
+                                                                                    tabindex="-1" href="#"><i
+                                                                                        class="oi oi-close align-text-top"></i></a>
+                                                                            </span>
+                                                                            <div
+                                                                                class="o_field_many2many_selection d-inline-flex w-100">
+                                                                                <div class="o_input_dropdown">
+                                                                                    <div
+                                                                                        class="o-autocomplete dropdown">
+                                                                                        <input type="text"
+                                                                                            class="o-autocomplete--input o_input"
+                                                                                            autocomplete="off"
+                                                                                            role="combobox"
+                                                                                            aria-autocomplete="list"
+                                                                                            aria-haspopup="listbox"
+                                                                                            id="taxes_id_0"
+                                                                                            placeholder=""
+                                                                                            aria-expanded="false">
+                                                                                    </div><span
+                                                                                        class="o_dropdown_button"></span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div name="tax_string"
+                                                                        class="o_field_widget o_readonly_modifier o_field_char oe_inline">
+                                                                        <span>(= ₹&nbsp;1.06 Incl. Taxes)</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                                style=""><label class="o_form_label"
+                                                                    for="standard_price_0">Cost<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Value of the product (automatically computed in AVCO).\n        Used to value the product when the purchase cost is not known (e.g. inventory adjustment).\n        Used to compute margins on sale orders.&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            </div>
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                                style="width: 100%;">
+                                                                <div name="standard_price_uom">
+                                                                    <div name="standard_price"
+                                                                        class="o_field_widget o_field_monetary oe_inline">
+                                                                        <div
+                                                                            class="text-nowrap d-inline-flex w-100 align-items-baseline position-relative">
+                                                                            <span
+                                                                                class="o_input position-absolute pe-none d-flex w-100"><span>₹&nbsp;</span><span
+                                                                                    class="opacity-0 d-inline-block overflow-hidden mw-100 o_monetary_ghost_value">0.00</span></span><span
+                                                                                class="opacity-0">₹&nbsp;</span><input
+                                                                                class="o_input flex-grow-1 flex-shrink-1"
+                                                                                autocomplete="off"
+                                                                                id="standard_price_0" type="text">
+                                                                        </div>
+                                                                    </div><span>per <div name="uom_name"
+                                                                            class="o_field_widget o_readonly_modifier o_field_char oe_inline">
+                                                                            <span>Units</span>
+                                                                        </div></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div
+                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label"
+                                                                    for="supplier_taxes_id_0">Purchase Taxes<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Default taxes used when buying the product&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                                style="width: 100%;">
+                                                                <div name="supplier_taxes_id"
+                                                                    class="o_field_widget o_field_many2many_tags">
+                                                                    <div
+                                                                        class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
+                                                                        <span
+                                                                            class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0"
+                                                                            tabindex="-1" title="5% GST">
+                                                                            <div
+                                                                                class="o_tag_badge_text text-truncate">
+                                                                                5% GST</div><a
+                                                                                class="o_delete d-flex align-items-center opacity-100-hover ps-1 opacity-75"
+                                                                                title="Delete" aria-label="Delete"
+                                                                                tabindex="-1" href="#"><i
+                                                                                    class="oi oi-close align-text-top"></i></a>
+                                                                        </span>
+                                                                        <div
+                                                                            class="o_field_many2many_selection d-inline-flex w-100">
+                                                                            <div class="o_input_dropdown">
+                                                                                <div class="o-autocomplete dropdown">
+                                                                                    <input type="text"
+                                                                                        class="o-autocomplete--input o_input"
+                                                                                        autocomplete="off"
+                                                                                        role="combobox"
+                                                                                        aria-autocomplete="list"
+                                                                                        aria-haspopup="listbox"
+                                                                                        id="supplier_taxes_id_0"
+                                                                                        placeholder=""
+                                                                                        aria-expanded="false">
+                                                                                </div>
+                                                                                <span class="o_dropdown_button"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div
+                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label"
+                                                                    for="categ_id_0">Category</label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                                style="width: 100%;">
+                                                                <div name="categ_id"
+                                                                    class="o_field_widget o_required_modifier o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
                                                                             <div class="o-autocomplete dropdown"><input
@@ -625,7 +485,7 @@
                                                                                     autocomplete="off" role="combobox"
                                                                                     aria-autocomplete="list"
                                                                                     aria-haspopup="listbox"
-                                                                                    id="team_id_0" placeholder=""
+                                                                                    id="categ_id_0" placeholder=""
                                                                                     aria-expanded="false"></div><span
                                                                                 class="o_dropdown_button"></span>
                                                                         </div><button type="button"
@@ -641,71 +501,15 @@
                                                         <div
                                                             class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                             <div
-                                                                class="o_wrap_field_boolean d-flex flex-wrap d-sm-contents flex-sm-nowrap">
-                                                                <div
-                                                                    class="o_cell o_wrap_label flex-sm-grow-0 text-break text-900">
-                                                                    <label class="o_form_label"
-                                                                        for="require_signature_0">Online signature<sup
-                                                                            class="text-info p-1"
-                                                                            data-tooltip-template="web.FieldTooltip"
-                                                                            data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Request a online signature from the customer to confirm the order.&quot;}}"
-                                                                            data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                                </div>
-                                                                <div class="o_cell o_wrap_input order-first flex-sm-grow-0 order-sm-0"
-                                                                    style="">
-                                                                    <div name="require_signature"
-                                                                        class="o_field_widget o_field_boolean">
-                                                                        <div
-                                                                            class="o-checkbox form-check d-inline-block">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="require_signature_0"><label
-                                                                                class="form-check-label"
-                                                                                for="require_signature_0"></label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                                style=""><label class="o_form_label"
-                                                                    for="require_payment_0">Online payment<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Request a online payment from the customer to confirm the order.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
-                                                                style="width: 100%;">
-                                                                <div id="require_payment">
-                                                                    <div name="require_payment"
-                                                                        class="o_field_widget o_field_boolean">
-                                                                        <div
-                                                                            class="o-checkbox form-check d-inline-block">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="require_payment_0"><label
-                                                                                class="form-check-label"
-                                                                                for="require_payment_0"></label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
                                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
                                                                 <label class="o_form_label"
-                                                                    for="client_order_ref_0">Customer Reference</label>
+                                                                    for="default_code_0">Reference</label>
                                                             </div>
                                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                                 style="width: 100%;">
-                                                                <div name="client_order_ref"
+                                                                <div name="default_code"
                                                                     class="o_field_widget o_field_char"><input
-                                                                        class="o_input" id="client_order_ref_0"
+                                                                        class="o_input" id="default_code_0"
                                                                         type="text" autocomplete="off"></div>
                                                             </div>
                                                         </div>
@@ -714,11 +518,90 @@
                                                             <div
                                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
                                                                 <label class="o_form_label"
-                                                                    for="tag_ids_0">Tags</label>
+                                                                    for="barcode_0">Barcode</label>
                                                             </div>
                                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                                 style="width: 100%;">
-                                                                <div name="tag_ids"
+                                                                <div name="barcode"
+                                                                    class="o_field_widget o_field_char"><input
+                                                                        class="o_input" id="barcode_0" type="text"
+                                                                        autocomplete="off"></div>
+                                                            </div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div
+                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label"
+                                                                    for="l10n_in_hsn_code_0">HSN/SAC Code<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Harmonized System Nomenclature/Services Accounting Code&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                                style="width: 100%;">
+                                                                <div name="l10n_in_hsn_code"
+                                                                    class="o_field_widget o_field_l10n_in_hsn_autocomplete">
+                                                                    <div class="o-autocomplete dropdown"><input
+                                                                            type="text"
+                                                                            class="o-autocomplete--input o_input"
+                                                                            autocomplete="off" role="combobox"
+                                                                            aria-autocomplete="list"
+                                                                            aria-haspopup="listbox" placeholder=""
+                                                                            aria-expanded="false"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div name="product_properties"
+                                                        class="o_field_widget o_field_properties col-lg-6">
+                                                        <div class="row d-none" columns="2">
+                                                            <div class="o_inner_group o_group col-lg-6 o_property_group"
+                                                                property-name=""></div>
+                                                            <div class="o_inner_group o_group col-lg-6 o_property_group"
+                                                                property-name=""></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="o_inner_group grid">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Internal Notes</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                      <textarea name="" id="" cols="30" rows="10" style="width: 770%"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="sales" class="tab-pane fade">
+                                        <div class="o_notebook_content tab-content">
+                                            <div class="tab-pane active fade show">
+                                                <div class="o_group row align-items-start">
+                                                    <div class="o_inner_group grid col-lg-6">
+                                                        <div class="g-col-sm-2">
+                                                            <div
+                                                                class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                                Upsell &amp; Cross-Sell</div>
+                                                        </div>
+                                                        <div
+                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div
+                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label"
+                                                                    for="optional_product_ids_0">Optional Products<sup
+                                                                        class="text-info p-1"
+                                                                        data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Optional Products are suggested whenever the customer hits *Add to Cart* (cross-sell strategy, e.g. for computers: warranty, software, etc.).&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                                style="width: 100%;">
+                                                                <div name="optional_product_ids"
                                                                     class="o_field_widget o_field_many2many_tags">
                                                                     <div
                                                                         class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
@@ -732,7 +615,8 @@
                                                                                         role="combobox"
                                                                                         aria-autocomplete="list"
                                                                                         aria-haspopup="listbox"
-                                                                                        id="tag_ids_0" placeholder=""
+                                                                                        id="optional_product_ids_0"
+                                                                                        placeholder="Recommend when 'Adding to Cart' or quotation"
                                                                                         aria-expanded="false">
                                                                                 </div>
                                                                                 <span class="o_dropdown_button"></span>
@@ -747,24 +631,23 @@
                                                         <div class="g-col-sm-2">
                                                             <div
                                                                 class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
-                                                                Invoicing</div>
+                                                                Extra Info</div>
                                                         </div>
                                                         <div
                                                             class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                                style=""><label class="o_form_label"
-                                                                    for="fiscal_position_id_0">Fiscal Position<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Fiscal positions are used to adapt taxes and accounts for particular customers or sales orders/invoices.The default value comes from the customer.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                            <div
+                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label"
+                                                                    for="product_tag_ids_0">Tags</label>
                                                             </div>
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                                 style="width: 100%;">
-                                                                <div class="o_row">
-                                                                    <div name="fiscal_position_id"
-                                                                        class="o_field_widget o_field_many2one">
-                                                                        <div class="o_field_many2one_selection">
+                                                                <div name="product_tag_ids"
+                                                                    class="o_field_widget o_field_many2many_tags">
+                                                                    <div
+                                                                        class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
+                                                                        <div
+                                                                            class="o_field_many2many_selection d-inline-flex w-100">
                                                                             <div class="o_input_dropdown">
                                                                                 <div class="o-autocomplete dropdown">
                                                                                     <input type="text"
@@ -773,168 +656,69 @@
                                                                                         role="combobox"
                                                                                         aria-autocomplete="list"
                                                                                         aria-haspopup="listbox"
-                                                                                        id="fiscal_position_id_0"
+                                                                                        id="product_tag_ids_0"
                                                                                         placeholder=""
                                                                                         aria-expanded="false">
                                                                                 </div>
                                                                                 <span class="o_dropdown_button"></span>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="o_field_many2one_extra"></div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div class="o_group row align-items-start">
                                                     <div class="o_inner_group grid col-lg-6">
                                                         <div class="g-col-sm-2">
                                                             <div
                                                                 class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
-                                                                Delivery</div>
+                                                                Sales Description</div>
                                                         </div>
                                                         <div
                                                             class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="incoterm_0">Incoterm<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;International Commercial Terms are a series of predefined commercial terms used in international transactions.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="incoterm"
-                                                                    class="o_field_widget o_field_many2one">
-                                                                    <div class="o_field_many2one_selection">
-                                                                        <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
-                                                                                    class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="incoterm_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="o_field_many2one_extra"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="incoterm_location_0">Incoterm Location</label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="incoterm_location"
-                                                                    class="o_field_widget o_field_char"><input
-                                                                        class="o_input" id="incoterm_location_0"
-                                                                        type="text" autocomplete="off"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="picking_policy_0">Shipping Policy<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;If you deliver all products at once, the delivery order will be scheduled based on the greatest product lead time. Otherwise, it will be based on the shortest.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="picking_policy"
-                                                                    class="o_field_widget o_required_modifier o_field_selection">
-                                                                    <select class="o_input pe-3"
-                                                                        id="picking_policy_0">
-                                                                        <option value="false" style="display:none">
-                                                                        </option>
-                                                                        <option value="&quot;direct&quot;">As soon as
-                                                                            possible</option>
-                                                                        <option value="&quot;one&quot;">When all
-                                                                            products are ready</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                                style=""><label class="o_form_label"
-                                                                    for="commitment_date_0">Delivery Date<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is the delivery date promised to the customer. If set, the delivery order will be scheduled based on this date rather than product lead times.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
                                                             <div class="o_cell flex-grow-1 flex-sm-grow-0"
-                                                                style="width: 100%;">
-                                                                <div class="o_row">
-                                                                    <div name="commitment_date"
-                                                                        class="o_field_widget o_field_datetime">
-                                                                        <div class="d-flex gap-2 align-items-center">
-                                                                            <input type="text"
-                                                                                class="o_input cursor-pointer"
-                                                                                autocomplete="off"
-                                                                                id="commitment_date_0"
-                                                                                data-field="commitment_date">
-                                                                        </div>
-                                                                    </div><span class="text-muted">Expected: <div
-                                                                            name="expected_date"
-                                                                            class="o_field_widget o_readonly_modifier o_field_datetime oe_inline">
-                                                                            <div
-                                                                                class="d-flex gap-2 align-items-center">
-                                                                                <span class="text-truncate"></span>
-                                                                            </div>
-                                                                        </div></span>
+                                                                style="grid-column: span 2;width: 100%;">
+                                                                <div name="description_sale"
+                                                                    class="o_field_widget o_field_text">
+                                                                    <div style="height: 50px;">
+                                                                        <textarea class="o_input o_field_translate" id="description_sale_0"
+                                                                            placeholder="This note is added to sales orders and invoices." rows="2"
+                                                                            style="height: 50px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 25px 1px 0px;"></textarea>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="purchase" class="tab-pane fade">
+                                        <div class="o_notebook_content tab-content">
+                                            <div class="tab-pane active fade show">
+                                                <div class="o_group row align-items-start">
                                                     <div class="o_inner_group grid col-lg-6">
                                                         <div class="g-col-sm-2">
                                                             <div
                                                                 class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
-                                                                Tracking</div>
+                                                                Vendor Bills</div>
                                                         </div>
                                                         <div
                                                             class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                                             <div
                                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label" for="origin_0">Source
-                                                                    Document<sup class="text-info p-1"
+                                                                <label class="o_form_label" for="uom_po_id_0">Purchase
+                                                                    Unit<sup class="text-info p-1"
                                                                         data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Reference of the document that generated this sales order request&quot;}}"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Default unit of measure used for purchase orders. It must be in the same category as the default unit of measure.&quot;}}"
                                                                         data-tooltip-touch-tap-to-show="true">?</sup></label>
                                                             </div>
                                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                                 style="width: 100%;">
-                                                                <div name="origin"
-                                                                    class="o_field_widget o_field_char"><input
-                                                                        class="o_input" id="origin_0" type="text"
-                                                                        autocomplete="off"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="opportunity_id_0">Opportunity</label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="opportunity_id"
-                                                                    class="o_field_widget o_field_many2one">
+                                                                <div name="uom_po_id"
+                                                                    class="o_field_widget o_required_modifier o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
                                                                             <div class="o-autocomplete dropdown"><input
@@ -943,105 +727,14 @@
                                                                                     autocomplete="off" role="combobox"
                                                                                     aria-autocomplete="list"
                                                                                     aria-haspopup="listbox"
-                                                                                    id="opportunity_id_0"
-                                                                                    placeholder=""
+                                                                                    id="uom_po_id_0" placeholder=""
                                                                                     aria-expanded="false"></div><span
                                                                                 class="o_dropdown_button"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="o_field_many2one_extra"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="campaign_id_0">Campaign<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is a name that helps you keep track of your different campaign efforts, e.g. Fall_Drive, Christmas_Special&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="campaign_id"
-                                                                    class="o_field_widget o_field_many2one">
-                                                                    <div class="o_field_many2one_selection">
-                                                                        <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
-                                                                                    class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="campaign_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="o_field_many2one_extra"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="medium_id_0">Medium<sup class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is the method of delivery, e.g. Postcard, Email, or Banner Ad&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="medium_id"
-                                                                    class="o_field_widget o_field_many2one">
-                                                                    <div class="o_field_many2one_selection">
-                                                                        <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
-                                                                                    class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="medium_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="o_field_many2one_extra"></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="source_id_0">Source<sup class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is the source of the link, e.g. Search Engine, another domain, or name of email list&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                                            </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="source_id"
-                                                                    class="o_field_widget o_field_many2one">
-                                                                    <div class="o_field_many2one_selection">
-                                                                        <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
-                                                                                    class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="source_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
-                                                                        </div>
+                                                                        </div><button type="button"
+                                                                            class="btn btn-link text-action oi o_external_button oi-arrow-right"
+                                                                            tabindex="-1" draggable="false"
+                                                                            aria-label="Internal link"
+                                                                            data-tooltip="Internal link"></button>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
                                                                 </div>
@@ -1052,9 +745,295 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="notes" class="tab-pane fade">
-                                        <textarea name="" id="" cols="30" rows="10"
-                                            placeholder="Type &quot;/&quot; for commands"></textarea>
+                                    <div id="inventory" class="tab-pane fade">
+                                        <div class="tab-pane active fade show">
+                                            <div class="o_group row align-items-start">
+                                                <div class="o_inner_group grid col-lg-6">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Operations</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                            style=""><label class="o_form_label"
+                                                                for="route_ids_0">Routes<sup class="text-info p-1"
+                                                                    data-tooltip-template="web.FieldTooltip"
+                                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Depending on the modules installed, this will allow you to define the route of the product: whether it will be bought, manufactured, replenished on order, etc.&quot;}}"
+                                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        </div>
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            style="width: 100%;">
+                                                            <div>
+                                                                <div name="route_ids"
+                                                                    class="o_field_widget o_field_many2many_checkboxes mb-0">
+                                                                    <div aria-atomic="true">
+                                                                        <div>
+                                                                            <div class="o-checkbox form-check"><input
+                                                                                    type="checkbox"
+                                                                                    class="form-check-input"
+                                                                                    id="checkbox-comp-8"><label
+                                                                                    class="form-check-label"
+                                                                                    for="checkbox-comp-8">Manufacture</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div><button invisible="type != 'consu'"
+                                                                    id="stock.view_diagram_button"
+                                                                    class="btn btn-link pt-0" name="728"
+                                                                    type="action"><i
+                                                                        class="o_button_icon oi oi-fw oi-arrow-right me-1"></i><span>View
+                                                                        Diagram</span></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="o_inner_group grid col-lg-6">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Logistics</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div
+                                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                            <label class="o_form_label"
+                                                                for="responsible_id_0">Responsible<sup
+                                                                    class="text-info p-1"
+                                                                    data-tooltip-template="web.FieldTooltip"
+                                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This user will be responsible of the next activities related to logistic operations for this product.&quot;}}"
+                                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        </div>
+                                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                            style="width: 100%;">
+                                                            <div name="responsible_id"
+                                                                class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
+                                                                <div class="d-flex align-items-center gap-1"
+                                                                    data-tooltip="info@yantradesign.co.in"><span
+                                                                        class="o_avatar o_m2o_avatar"><img
+                                                                            class="rounded"
+                                                                            src="/web/image/res.users/2/avatar_128"></span>
+                                                                    <div class="o_field_many2one_selection">
+                                                                        <div class="o_input_dropdown">
+                                                                            <div class="o-autocomplete dropdown"><input
+                                                                                    type="text"
+                                                                                    class="o-autocomplete--input o_input"
+                                                                                    autocomplete="off" role="combobox"
+                                                                                    aria-autocomplete="list"
+                                                                                    aria-haspopup="listbox"
+                                                                                    id="responsible_id_0"
+                                                                                    placeholder=""
+                                                                                    aria-expanded="false"></div><span
+                                                                                class="o_dropdown_button"></span>
+                                                                        </div><button type="button"
+                                                                            class="btn btn-link text-action oi o_external_button oi-arrow-right"
+                                                                            tabindex="-1" draggable="false"
+                                                                            aria-label="Internal link"
+                                                                            data-tooltip="Internal link"></button>
+                                                                    </div>
+                                                                    <div class="o_field_many2one_extra"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                            style=""><label class="o_form_label"
+                                                                for="weight_0">Weight</label></div>
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            style="width: 100%;">
+                                                            <div class="o_row" name="weight">
+                                                                <div name="weight"
+                                                                    class="o_field_widget o_field_float oe_inline">
+                                                                    <input inputmode="decimal" class="o_input"
+                                                                        autocomplete="off" id="weight_0"
+                                                                        type="text">
+                                                                </div>
+                                                                <div name="weight_uom_name"
+                                                                    class="o_field_widget o_readonly_modifier o_field_char">
+                                                                    <span>kg</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                            style=""><label class="o_form_label"
+                                                                for="volume_0">Volume</label></div>
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            style="width: 100%;">
+                                                            <div class="o_row" name="volume">
+                                                                <div name="volume"
+                                                                    class="o_field_widget o_field_float oe_inline">
+                                                                    <input inputmode="decimal" class="o_input"
+                                                                        autocomplete="off" id="volume_0"
+                                                                        type="text">
+                                                                </div>
+                                                                <div name="volume_uom_name"
+                                                                    class="o_field_widget o_readonly_modifier o_field_char">
+                                                                    <span>m³</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
+                                                            style=""><label class="o_form_label"
+                                                                for="sale_delay_0">Customer Lead Time<sup
+                                                                    class="text-info p-1"
+                                                                    data-tooltip-template="web.FieldTooltip"
+                                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Delivery lead time, in days. It's the number of days, promised to the customer, between the confirmation of the sales order and the delivery.&quot;}}"
+                                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        </div>
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            style="width: 100%;">
+                                                            <div>
+                                                                <div name="sale_delay"
+                                                                    class="o_field_widget o_field_integer oe_inline"
+                                                                    style="vertical-align:baseline"><input
+                                                                        inputmode="numeric" class="o_input"
+                                                                        autocomplete="off" id="sale_delay_0"
+                                                                        type="text"></div> days
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="o_group row align-items-start">
+                                                <div class="o_inner_group grid col-lg-6">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Description for Receipts</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            style="grid-column: span 2;width: 100%;">
+                                                            <div name="description_pickingin"
+                                                                class="o_field_widget o_field_text">
+                                                                <div style="height: 50px;">
+                                                                    <textarea class="o_input o_field_translate" id="description_pickingin_0"
+                                                                        placeholder="This note is added to receipt orders (e.g. where to store the product in the warehouse)."
+                                                                        rows="2" style="height: 50px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 25px 1px 0px;"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="o_inner_group grid col-lg-6">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Description for Delivery Orders</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                            style="grid-column: span 2;width: 100%;">
+                                                            <div name="description_pickingout"
+                                                                class="o_field_widget o_field_text">
+                                                                <div style="height: 50px;">
+                                                                    <textarea class="o_input o_field_translate" id="description_pickingout_0"
+                                                                        placeholder="This note is added to delivery orders." rows="2"
+                                                                        style="height: 50px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 25px 1px 0px;"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="invoicing" class="tab-pane fade">
+                                        <div class="tab-pane active fade show">
+                                            <div class="o_group row align-items-start">
+                                                <div class="o_inner_group grid col-lg-6">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Receivables</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div
+                                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                            <label class="o_form_label"
+                                                                for="property_account_income_id_0">Income Account<sup
+                                                                    class="text-info p-1"
+                                                                    data-tooltip-template="web.FieldTooltip"
+                                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Keep this field empty to use the default value from the product category.&quot;}}"
+                                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        </div>
+                                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                            style="width: 100%;">
+                                                            <div name="property_account_income_id"
+                                                                class="o_field_widget o_field_many2one">
+                                                                <div class="o_field_many2one_selection">
+                                                                    <div class="o_input_dropdown">
+                                                                        <div class="o-autocomplete dropdown"><input
+                                                                                type="text"
+                                                                                class="o-autocomplete--input o_input"
+                                                                                autocomplete="off" role="combobox"
+                                                                                aria-autocomplete="list"
+                                                                                aria-haspopup="listbox"
+                                                                                id="property_account_income_id_0"
+                                                                                placeholder="" aria-expanded="false">
+                                                                        </div><span class="o_dropdown_button"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="o_field_many2one_extra"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="o_inner_group grid col-lg-6">
+                                                    <div class="g-col-sm-2">
+                                                        <div
+                                                            class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
+                                                            Payables</div>
+                                                    </div>
+                                                    <div
+                                                        class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                        <div
+                                                            class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                            <label class="o_form_label"
+                                                                for="property_account_expense_id_0">Expense Account<sup
+                                                                    class="text-info p-1"
+                                                                    data-tooltip-template="web.FieldTooltip"
+                                                                    data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Keep this field empty to use the default value from the product category. If anglo-saxon accounting with automated valuation method is configured, the expense account on the product category will be used.&quot;}}"
+                                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        </div>
+                                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
+                                                            style="width: 100%;">
+                                                            <div name="property_account_expense_id"
+                                                                class="o_field_widget o_field_many2one">
+                                                                <div class="o_field_many2one_selection">
+                                                                    <div class="o_input_dropdown">
+                                                                        <div class="o-autocomplete dropdown"><input
+                                                                                type="text"
+                                                                                class="o-autocomplete--input o_input"
+                                                                                autocomplete="off" role="combobox"
+                                                                                aria-autocomplete="list"
+                                                                                aria-haspopup="listbox"
+                                                                                id="property_account_expense_id_0"
+                                                                                placeholder="" aria-expanded="false">
+                                                                        </div><span class="o_dropdown_button"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="o_field_many2one_extra"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="o_inner_group grid"></div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1100,7 +1079,7 @@
                                     tabindex="-1">
                                     <div class="d-flex flex-column position-relative flex-grow-1"><span
                                             class="position-absolute w-100 invisible top-0"
-                                            style="height: Min(1971px, 100%)"></span><span></span>
+                                            style="height: Min(1575px, 100%)"></span><span></span>
                                         <div
                                             class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                             <hr class="o-discuss-separator flex-grow-1"><span
@@ -1126,7 +1105,7 @@
                                                             aria-label="Open card"><strong
                                                                 class="me-1">info@yantradesign.co.in</strong></span><small
                                                             class="o-mail-Message-date text-muted smaller"
-                                                            title="12/8/2024, 6:10:04 pm">- 3 minutes ago</small>
+                                                            title="13/8/2024, 11:04:08 am">- now</small>
                                                     </div>
                                                     <div class="position-relative d-flex">
                                                         <div class="o-mail-Message-content o-min-width-0">
@@ -1176,7 +1155,23 @@
             <div class="d-flex flex-column align-content-start justify-content-end align-items-center gap-1"></div>
         </div>
     </div>
-
+    <div class="o-overlay-container">
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+        <div class="o-overlay-item"></div>
+    </div>
     <div></div>
     <div class="o_notification_manager o_upload_progress_toast"></div>
     <div class="o_notification_manager"></div>
@@ -1185,18 +1180,19 @@
     <div class="o_we_cropper_wrapper"><img class="o_we_cropper_img">
         <div class="o_we_crop_buttons text-center mt16 position-fixed o_we_no_overlay" contenteditable="false">
             <div class="btn-group btn-group-toggle" title="Aspect Ratio" data-bs-toggle="buttons"><label
-                    data-action="ratio" class="btn" data-value="0/0"><input type="radio">Flexible</label><label
-                    data-action="ratio" class="btn" data-value="16/9"><input type="radio">16:9</label><label
-                    data-action="ratio" class="btn" data-value="4/3"><input type="radio">4:3</label><label
-                    data-action="ratio" class="btn" data-value="1/1"><input type="radio">1:1</label><label
-                    data-action="ratio" class="btn" data-value="2/3"><input type="radio">2:3</label></div>
+                    data-action="ratio" class="btn" data-value="0/0"><input
+                        type="radio">Flexible</label><label data-action="ratio" class="btn"
+                    data-value="16/9"><input type="radio">16:9</label><label data-action="ratio"
+                    class="btn" data-value="4/3"><input type="radio">4:3</label><label data-action="ratio"
+                    class="btn" data-value="1/1"><input type="radio">1:1</label><label data-action="ratio"
+                    class="btn" data-value="2/3"><input type="radio">2:3</label></div>
             <div class="btn-group" role="group"><button type="button" title="Zoom In" data-action="zoom"
                     data-value="0.1"><i class="fa fa-fw fa-search-plus"></i></button><button type="button"
                     title="Zoom Out" data-action="zoom" data-value="-0.1"><i
                         class="fa fa-fw fa-search-minus"></i></button></div>
-            <div class="btn-group" role="group"><button type="button" title="Rotate Left" data-action="rotate"
-                    data-value="-90"><i class="fa fa-fw fa-rotate-left"></i></button><button type="button"
-                    title="Rotate Right" data-action="rotate" data-value="90"><i
+            <div class="btn-group" role="group"><button type="button" title="Rotate Left"
+                    data-action="rotate" data-value="-90"><i class="fa fa-fw fa-rotate-left"></i></button><button
+                    type="button" title="Rotate Right" data-action="rotate" data-value="90"><i
                         class="fa fa-fw fa-rotate-right"></i></button></div>
             <div class="btn-group" role="group"><button type="button" title="Flip Horizontal"
                     data-action="flip" data-scale-direction="scaleX"><i
@@ -1221,7 +1217,7 @@
     <div class="oe-powerbox-mainWrapper flex-skrink-1 overflow-auto py-2"></div>
 </div>
 <div id="toolbar" class="oe-toolbar oe-floating d-print-none"
-    style="--we-cp-primary: #714B67; --we-cp-secondary: #D8DADD; --we-cp-success: #28A745; --we-cp-info: #17A2B8; --we-cp-warning: #E99D00; --we-cp-danger: #D44C59; --we-cp-o-color-1: #714B67; --we-cp-o-cc1-bg: #FFFFFF; --we-cp-o-cc1-headings: #000; --we-cp-o-cc1-text: #000; --we-cp-o-cc1-btn-primary: #714B67; --we-cp-o-cc1-btn-primary-text: #FFF; --we-cp-o-cc1-btn-secondary: #D8DADD; --we-cp-o-cc1-btn-secondary-text: #000; --we-cp-o-cc1-btn-primary-border: #714B67; --we-cp-o-cc1-btn-secondary-border: #D8DADD; --we-cp-o-color-2: #8595A2; --we-cp-o-cc2-bg: #F3F2F2; --we-cp-o-cc2-headings: #111827; --we-cp-o-cc2-text: #000; --we-cp-o-cc2-btn-primary: #714B67; --we-cp-o-cc2-btn-primary-text: #FFF; --we-cp-o-cc2-btn-secondary: #D8DADD; --we-cp-o-cc2-btn-secondary-text: #000; --we-cp-o-cc2-btn-primary-border: #714B67; --we-cp-o-cc2-btn-secondary-border: #D8DADD; --we-cp-o-color-3: #F3F2F2; --we-cp-o-cc3-bg: #8595A2; --we-cp-o-cc3-headings: #FFF; --we-cp-o-cc3-text: #FFF; --we-cp-o-cc3-btn-primary: #714B67; --we-cp-o-cc3-btn-primary-text: #FFF; --we-cp-o-cc3-btn-secondary: #F3F2F2; --we-cp-o-cc3-btn-secondary-text: #000; --we-cp-o-cc3-btn-primary-border: #714B67; --we-cp-o-cc3-btn-secondary-border: #F3F2F2; --we-cp-o-color-4: #FFFFFF; --we-cp-o-cc4-bg: #714B67; --we-cp-o-cc4-headings: #FFF; --we-cp-o-cc4-text: #FFF; --we-cp-o-cc4-btn-primary: #111827; --we-cp-o-cc4-btn-primary-text: #FFF; --we-cp-o-cc4-btn-secondary: #F3F2F2; --we-cp-o-cc4-btn-secondary-text: #000; --we-cp-o-cc4-btn-primary-border: #111827; --we-cp-o-cc4-btn-secondary-border: #F3F2F2; --we-cp-o-color-5: #111827; --we-cp-o-cc5-bg: #111827; --we-cp-o-cc5-headings: #FFFFFF; --we-cp-o-cc5-text: #FFF; --we-cp-o-cc5-btn-primary: #714B67; --we-cp-o-cc5-btn-primary-text: #FFF; --we-cp-o-cc5-btn-secondary: #F3F2F2; --we-cp-o-cc5-btn-secondary-text: #000; --we-cp-o-cc5-btn-primary-border: #714B67; --we-cp-o-cc5-btn-secondary-border: #F3F2F2; --we-cp-100: #F9FAFB; --we-cp-200: #E7E9ED; --we-cp-300: #D8DADD; --we-cp-400: #9A9CA5; --we-cp-500: #7C7F89; --we-cp-600: #5F636F; --we-cp-700: #374151; --we-cp-800: #1F2937; --we-cp-900: #111827; visibility: hidden;">
+    style="visibility: hidden; --we-cp-primary: #714B67; --we-cp-secondary: #D8DADD; --we-cp-success: #28A745; --we-cp-info: #17A2B8; --we-cp-warning: #E99D00; --we-cp-danger: #D44C59; --we-cp-o-color-1: #714B67; --we-cp-o-cc1-bg: #FFFFFF; --we-cp-o-cc1-headings: #000; --we-cp-o-cc1-text: #000; --we-cp-o-cc1-btn-primary: #714B67; --we-cp-o-cc1-btn-primary-text: #FFF; --we-cp-o-cc1-btn-secondary: #D8DADD; --we-cp-o-cc1-btn-secondary-text: #000; --we-cp-o-cc1-btn-primary-border: #714B67; --we-cp-o-cc1-btn-secondary-border: #D8DADD; --we-cp-o-color-2: #8595A2; --we-cp-o-cc2-bg: #F3F2F2; --we-cp-o-cc2-headings: #111827; --we-cp-o-cc2-text: #000; --we-cp-o-cc2-btn-primary: #714B67; --we-cp-o-cc2-btn-primary-text: #FFF; --we-cp-o-cc2-btn-secondary: #D8DADD; --we-cp-o-cc2-btn-secondary-text: #000; --we-cp-o-cc2-btn-primary-border: #714B67; --we-cp-o-cc2-btn-secondary-border: #D8DADD; --we-cp-o-color-3: #F3F2F2; --we-cp-o-cc3-bg: #8595A2; --we-cp-o-cc3-headings: #FFF; --we-cp-o-cc3-text: #FFF; --we-cp-o-cc3-btn-primary: #714B67; --we-cp-o-cc3-btn-primary-text: #FFF; --we-cp-o-cc3-btn-secondary: #F3F2F2; --we-cp-o-cc3-btn-secondary-text: #000; --we-cp-o-cc3-btn-primary-border: #714B67; --we-cp-o-cc3-btn-secondary-border: #F3F2F2; --we-cp-o-color-4: #FFFFFF; --we-cp-o-cc4-bg: #714B67; --we-cp-o-cc4-headings: #FFF; --we-cp-o-cc4-text: #FFF; --we-cp-o-cc4-btn-primary: #111827; --we-cp-o-cc4-btn-primary-text: #FFF; --we-cp-o-cc4-btn-secondary: #F3F2F2; --we-cp-o-cc4-btn-secondary-text: #000; --we-cp-o-cc4-btn-primary-border: #111827; --we-cp-o-cc4-btn-secondary-border: #F3F2F2; --we-cp-o-color-5: #111827; --we-cp-o-cc5-bg: #111827; --we-cp-o-cc5-headings: #FFFFFF; --we-cp-o-cc5-text: #FFF; --we-cp-o-cc5-btn-primary: #714B67; --we-cp-o-cc5-btn-primary-text: #FFF; --we-cp-o-cc5-btn-secondary: #F3F2F2; --we-cp-o-cc5-btn-secondary-text: #000; --we-cp-o-cc5-btn-primary-border: #714B67; --we-cp-o-cc5-btn-secondary-border: #F3F2F2; --we-cp-100: #F9FAFB; --we-cp-200: #E7E9ED; --we-cp-300: #D8DADD; --we-cp-400: #9A9CA5; --we-cp-500: #7C7F89; --we-cp-600: #5F636F; --we-cp-700: #374151; --we-cp-800: #1F2937; --we-cp-900: #111827;">
     <div id="style" class="btn-group dropdown"><button type="button" class="btn dropdown-toggle"
             data-bs-toggle="dropdown" data-bs-original-title="Text style" tabindex="-1"
             aria-expanded="false"><span title="Text style">Normal</span></button>
@@ -1486,8 +1482,7 @@
                         <div class="o_colorpicker_sections py-3 px-2" data-color-tab="custom-colors">
                             <div class="o_colorpicker_section_container">
                                 <div class="o_colorpicker_section" data-name="custom">
-                                    <div></div><button class="o_we_color_btn o_custom_color selected"
-                                        style="background-color:#374151;"></button>
+                                    <div></div>
                                 </div>
                                 <div class="o_colorpicker_section d-none" data-name="transparent_grayscale">
                                     <div></div>
@@ -1527,15 +1522,15 @@
                             <div class="o_colorpicker_widget">
                                 <div class="d-flex justify-content-between align-items-stretch mb-2">
                                     <div class="o_color_pick_area position-relative w-75"
-                                        style="background-color: rgb(0, 98, 255);">
+                                        style="background-color: rgb(0, 81, 255);">
                                         <div class="o_picker_pointer rounded-circle p-1 position-absolute"
-                                            tabindex="-1" style="top: 86.6667px; left: -5px;"></div>
+                                            tabindex="-1" style="top: 106.275px; left: -5px;"></div>
                                     </div>
                                     <div class="o_color_slider position-relative">
                                         <div class="o_slider_pointer" tabindex="-1" style="top: -2px;"></div>
                                     </div>
                                     <div class="o_opacity_slider position-relative"
-                                        style="background: linear-gradient(rgb(55, 65, 81) 0%, transparent 100%);">
+                                        style="background: linear-gradient(rgb(17, 24, 39) 0%, transparent 100%);">
                                         <div class="o_opacity_pointer" tabindex="-1" style="top: -2px;">
                                         </div>
                                     </div>
@@ -2282,8 +2277,8 @@
         <div id="image-fullscreen" title="Full screen" class="fa fa-search-plus btn editor-ignore"></div>
     </div>
     <div id="link" class="btn-group">
-        <div id="unlink" data-call="unlink" title="Remove link"
-            class="fa fa-unlink fa-fw btn order-1 d-none"></div>
+        <div id="unlink" data-call="unlink" title="Remove link" class="fa fa-unlink fa-fw btn order-1">
+        </div>
         <div id="create-link" title="Insert or edit link" class="fa fa-link fa-fw btn editor-ignore"></div><a
             id="media-description" href="#" title="Edit media description"
             class="btn editor-ignore d-none">Description</a>
@@ -2343,6 +2338,7 @@
         <div id="fa-spin" title="Toggle icon spin" class="editor-ignore btn fa fa-play"></div>
     </div>
 </div>
+
 
 
 @endsection

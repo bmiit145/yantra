@@ -148,8 +148,8 @@
                         </a>
                     </div>
                     <div class="main_inner_block" id="box7">
-                        <a role="option" class="main_inner_wrapper" id="result_app_7" aria-selected="false"
-                            data-menu-xmlid="sale.sale_menu_root" href="#">
+                        <a role="option"  class="main_inner_wrapper" id="result_app_7" aria-selected="false"
+                            data-menu-xmlid="sale.sale_menu_root" href="{{route('orders.index')}}">
                             <img class="home_app_icon" src="{{ asset('images/Sales.png') }}">
                             <div class="home_caption">Sales</div>
                         </a>
