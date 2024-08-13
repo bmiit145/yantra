@@ -66,7 +66,7 @@
 
                                         </div>
 
-                                        @can('manage user')
+                                        @can('manage users')
                                         <div class="o_setting_right_pane" data-tooltip-delay="800" data-tooltip=""><div class="mt16"><span class="fa fa-lg fa-users" aria-label="Number of active users"></span><div name="active_user_count" class="o_field_widget o_readonly_modifier o_field_integer w-auto ps-3 fw-bold">
                                                     <span>{{ $totalUsers }}</span>
                                                 </div>
