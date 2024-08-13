@@ -21,13 +21,15 @@ class ContactController extends Controller
         if (!$contact) {
 
             if (request()->ajax()) {
-                return response()->json(['message' => 'Contact not found'], 404);
+                return response()->json(['message' => 'Contact not
+                found'], 404);
             }
             return view('errors.404', ['message' => 'Contact not found']);
 //        abort(404 , 'Contact not found');
         }
 
         if (request()->ajax()) {
+            $contact->load('address');
             return response()->json(['contact' => $contact]);
         }
 

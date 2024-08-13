@@ -18,7 +18,8 @@ class Sale extends Model
         'expected_revenue',
         'priority',
         'probability',
-        'deadline'
+        'deadline',
+        'internal_notes',
     ];
 
     protected $casts = [
@@ -47,6 +48,11 @@ class Sale extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function  extra()
+    {
+        return $this->hasOne(CrmSaleExtra::class);
     }
 
     public function logs()

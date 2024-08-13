@@ -1,26 +1,27 @@
 @extends('layout.header')
+{{--@section('head_new_btn_link', route('crm.show' , ['crm' => 'new']))--}}
+
 @section('navbar_menu')
     <li class="dropdown">
         <a href="#">Sales</a>
         <div class="dropdown-content">
-            <a href="#">My Pipeline</a>
+            <a href="{{ route('crm.index') }}">My Pipeline</a>
             <a href="#">My Activities</a>
             <a href="#">My Quotations</a>
             <a href="#">Teams</a>
             <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
-    <li class="dropdown">
-        <a href="{{ url('lead') }}">Leads</a>
-
+    <li>
+        <a href="{{ route('lead.index') }}">Leads</a>
     </li>
     <li class="dropdown">
         <a href="#">Reporting</a>
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
             <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
+            <a href="{{ route('crm.index') }}">Pipeline</a>
+            <a href="{{ route('lead.index') }}">Leads</a>
             <a href="#">Activities</a>
         </div>
     </li>
@@ -32,8 +33,6 @@
         </div>
     </li>
 @endsection
-
-
 
 @section('head')
 @vite([
@@ -85,7 +84,11 @@
                     <div class="oe_kanban_content flex-grow-1">
                         <div class="oe_kanban_details"><strong
                                 class="o_kanban_record_title"><span>{{ $sale->opportunity }}</span></strong></div>
-                        <div class="o_kanban_record_subtitle"></div>
+                        <div class="o_kanban_record_subtitle">
+                            @if($sale->expected_revenue != null)
+                            <div name="expected_revenue" class="o_field_widget o_field_monetary"><span>₹&nbsp;{{ number_format($sale->expected_revenue, 2) }}</span></div>
+                            @endif
+                        </div>
                         @if($sale->contact)
                         <div>
                             <span class="o_text_overflow">{{ optional($sale->contact)->name }}</span>
@@ -557,6 +560,7 @@
                         success: function (response) {
                             var _contact = response.contact;
                             $('input[name="partner_id"]').val(_contact.id);
+                            containerId.find('input[name="name"]').val(_contact.name + "'s Opportunity");
                         },
                         error: function (err) {
                             console.log(err);
@@ -856,23 +860,6 @@
 </script>
  <script>
         $(document).ready(function() {
-            $('.dropdown > a').click(function(e) {
-                e.preventDefault(); // Prevent the default link action
-                // Close other dropdowns
-                $('.dropdown').not($(this).parent()).removeClass('active');
-
-                // Toggle the active class on the current dropdown
-                $(this).parent().toggleClass('active');
-            });
-
-            // Optional: Close the dropdown if clicking outside of it
-            $(document).click(function(e) {
-                if (!$(e.target).closest('.dropdown').length) {
-                    $('.dropdown').removeClass('active');
-                }
-            });
-
-
             // stage add
             $(document).on('click', '.o_kanban_add', function() {
                 var newStage = $(this).closest('.o_quick_create_unfolded').find('.new_stage_input').val();

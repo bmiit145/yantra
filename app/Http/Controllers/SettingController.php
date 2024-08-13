@@ -17,9 +17,11 @@ use Spatie\Permission\Models\Permission;
 
 class SettingController extends Controller
 {
+
     public function index()
     {
-//        dd(auth()->user()->getAllPermissions()->pluck('name') ,Auth::user()->can('manage users'));
+        $user = auth()->user();
+//        dump($user->roles->pluck('name') , auth()->user()->getAllPermissions()->pluck('name') ,Auth::user()->can('manage users'));
         $panddingUsers = User::where('email_verified_at' , null)
             ->where('role' , '!=' , 2 )
             ->get();

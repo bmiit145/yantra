@@ -32,7 +32,7 @@ class Contact extends Model
     {
         parent::boot();
         static::created(function ($contact) {
-            $contact->ContactLog('created', 'Contact created' , $contact->user_id);
+            $contact->ContactLog('created', 'Contact created' , $contact->is_user);
         });
 
 //        static::updated(function ($contact) {
@@ -94,7 +94,8 @@ class Contact extends Model
     public function ContactLog($action, $message, $user_id = null, $attachments = null, $is_system = true)
     {
         $this->logs()->create([
-            'contact_id' => $this->id,
+            'loggable_id' => $this->id,
+            'loggable_type' => get_class($this),
             'action' => $action,
             'message' => $message,
             'user_id' => $user_id ?? auth()->id(),

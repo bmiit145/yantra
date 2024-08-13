@@ -9,6 +9,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TagController;
 
 Route::middleware(['web'])->group(function () {
@@ -32,13 +33,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/head', [DashboardController::class, 'head'])->name('head');
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // crm
     Route::resource('/crm', CRMController::class , [ 'except' => ['show'] ]);
-    Route::get('/crm/{crm}', [CRMController::class, 'show'])->name('crm.show');
+    Route::get('/crm/{crm}', [CRMController::class, 'show'])->name('crm.show')->defaults('crm', 'new');
     Route::post('/newStage', [CRMController::class, 'newStage'])->name('crm.newStage');
     Route::post('/stage/setSequence', [CRMController::class, 'updateStageSequence'])->name('crm.updateStageSequence');
-//    Route::post('/sale/setSequence', [CRMController::class, 'setStage'])->name('crm.updateSaleSequence');
     Route::get('/addActivity', [CRMController::class, 'addActivityView'])->name('crm.addActivityView');
     Route::get('/forecasting' , [CRMController::class, 'forecasting'])->name('crm.forecasting');
     Route::post('/update-sale-deadline/{id}', [CRMController::class, 'updateDeadline']);
@@ -49,6 +50,16 @@ Route::middleware(['auth'])->group(function () {
     // sale
     Route::post('sale/setPriority' , [CRMController::class, 'setPriority'])->name('sale.setPriority');
     Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
+    Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
+
+
+
+    Route::get('orders' , [SalesController::class, 'index'])->name('orders.index');
+    Route::get('orders/new' , [SalesController::class, 'create'])->name('orders.create');
+    Route::get('products' , [SalesController::class, 'product_index'])->name('product.index');
+    Route::get('products/new' , [SalesController::class, 'product_create'])->name('product.create');
+    Route::get('pricelists' , [SalesController::class, 'Pricelists_index'])->name('pricelists.index');
+    Route::get('pricelists/new' , [SalesController::class, 'Pricelists_create'])->name('pricelists.create');
 
 
     //contact

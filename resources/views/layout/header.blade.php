@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @vite([
 //    'resources/css/crm.css' ,
@@ -18,12 +19,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>--}}
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 
     <link href="{{ asset('images/favicon.png') }}" rel="shortcut icon" type="image/x-icon">
 
@@ -74,7 +73,7 @@
             <a href="{{ route('dashboard') }}" class="o_menu_toggle">
                 {{-- <img src="images/CRM.png" alt="Avatar" class="crm_logo"> --}}
                 <img src="@yield('image_url', asset('images/CRM.png') )" alt="Avatar" class="crm_logo">
-                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title' , "Yantra")</a>
+                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title','CRM')</a>
             </a>
             <div class="top_left_navbar_menu">
                 <ul class="navbar_menu_wapper">
@@ -131,7 +130,7 @@
             <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
         </div>
         <div class="head_breadcrumb_info">
-            <p class="head_breadcrumb_title">@yield('head_breadcrumb_title')</p>
+            <p class="head_breadcrumb_title">@yield('head_breadcrumb_title' , 'Quotations')</p>
             <a href="#"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 1920 1920" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -140,6 +139,7 @@
                     </g>
                 </svg></a>
         </div>
+        
         <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
             <i class="fa fa-cloud-upload fa-fw"></i>
         </button>
@@ -185,6 +185,28 @@
     </div>
 </div>
 @yield('content')
+<!-- header js -->
+<script>
+    $(document).ready(function() {
+
+        $('.dropdown > a').click(function (e) {
+            e.preventDefault(); // Prevent the default link action
+// Close other dropdowns
+            $('.dropdown').not($(this).parent()).removeClass('active');
+
+// Toggle the active class on the current dropdown
+            $(this).parent().toggleClass('active');
+        });
+
+// Optional: Close the dropdown if clicking outside of it
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown').removeClass('active');
+            }
+        });
+    });
+</script>
+
 <script>
     toastr.options = {
         "closeButton": true,
