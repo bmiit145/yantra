@@ -17,6 +17,7 @@ use Spatie\Permission\Models\Permission;
 
 class SettingController extends Controller
 {
+
     public function index()
     {
         $user = auth()->user();
