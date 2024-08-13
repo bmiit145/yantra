@@ -266,5 +266,4 @@ class AuthController extends Controller
 
         return json_decode($response);
     }
-
 }

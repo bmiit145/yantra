@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @vite([
 //    'resources/css/crm.css' ,
@@ -18,11 +19,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 
     <link href="{{ asset('images/favicon.png') }}" rel="shortcut icon" type="image/x-icon">
 
@@ -139,7 +139,7 @@
                     </g>
                 </svg></a>
         </div>
-        <button type="button" class="o_form_button_save skill-save-btn btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+        <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
             <i class="fa fa-cloud-upload fa-fw"></i>
         </button>
 
@@ -184,6 +184,28 @@
     </div>
 </div>
 @yield('content')
+<!-- header js -->
+<script>
+    $(document).ready(function() {
+
+        $('.dropdown > a').click(function (e) {
+            e.preventDefault(); // Prevent the default link action
+// Close other dropdowns
+            $('.dropdown').not($(this).parent()).removeClass('active');
+
+// Toggle the active class on the current dropdown
+            $(this).parent().toggleClass('active');
+        });
+
+// Optional: Close the dropdown if clicking outside of it
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown').removeClass('active');
+            }
+        });
+    });
+</script>
+
 <script>
     toastr.options = {
         "closeButton": true,

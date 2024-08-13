@@ -111,3 +111,23 @@ $(document).ready(function() {
 });
 });
 
+
+// animate number
+$(document).ready(function() {
+    $('.o_animated_number').each(function() {
+        var $this = $(this);
+        var target = $this.data('target');
+        var duration = 2000;
+
+        $({ countNum: $this.text() }).animate({ countNum: target }, {
+            duration: duration,
+            easing: 'swing',
+            step: function() {
+                $this.find('b').text(Math.floor(this.countNum));
+            },
+            complete: function() {
+                $this.find('b').text(this.countNum);
+            }
+        });
+    });
+});

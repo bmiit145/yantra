@@ -2,9 +2,9 @@
 
 @section('title', 'Employee')
 @section('head_title_link', route('employee.index'))
-@section('image_url', asset('images/employees.png'))
-@section('head_new_btn_link', route('skill.add'))
-@section('save_class', 'save_contacts')
+@section('image_url', asset('images/Employees.png'))
+@section('head_new_btn_link', route('skill.add' , ['skill' => 'new']))
+@section('save_class', 'skill-save-btn ')
 @section('head_breadcrumb_title', 'Skill Types')
 @section('head')
 @vite(['resources/css/odoo/web.assets_web.css', 'resources/css/contactcreate.css'])
@@ -130,8 +130,9 @@
 
                                     <h1>
                                         <div name="name" class="o_field_widget o_required_modifier o_field_char">
-                                            <input type="hidden" name="id" id="skill_type_id" value="">
-                                            <input class="o_input o_field_translate" id="skill_type_input" value="{{ $skillType->name }}" type="text" autocomplete="off" placeholder="e.g. Languages">
+
+                                            <input type="hidden" name="id" id="skill_type_id" value="{{ $skillType->id ?? ''}}">
+                                            <input class="o_input o_field_translate" id="skill_type_input" value="{{ $skillType->name ?? '' }}" type="text" autocomplete="off" placeholder="e.g. Languages">
                                         </div>
                                     </h1>
 
@@ -163,28 +164,34 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="ui-sortable">
+                                                    @if(isset($skills))
                                                     @foreach($skills as $skill)
-                                                    <tr class="o_data_row
-
-                                                        o_row_draggable" data-id="{{ $skill->id }}">
-                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_handle_cell" data-tooltip-delay="1000" tabindex="-1" name="sequence">
-                                                            <div name="sequence" class="o_field_widget o_field_handle"><span class="o_row_handle oi oi-draggable ui-sortable-handle"></span></div>
+                                                    <tr class="o_data_row update_skill o_row_draggable" data-id="{{ $skill->id }}">
+                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_handle_cell" tabindex="-1" name="sequence">
+                                                            <div name="sequence" class="o_field_widget o_field_handle">
+                                                                <span class="o_row_handle oi oi-draggable ui-sortable-handle"></span>
+                                                            </div>
                                                         </td>
-                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="skill 555">{{ $skill->name }}</td>
+                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier update-skill" tabindex="-1" name="name">
+                                                            {{ $skill->name }}
+                                                        </td>
                                                         <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1">
                                                             <a class="fa d-print-none fa-trash-o delete-skill" name="delete" aria-label="Delete row" tabindex="-1"></a>
-
+                                                        </td>
                                                     </tr>
                                                     @endforeach
-
+                                                    @endif
                                                     <tr>
                                                         <td></td>
-                                                        <td class="o_field_x2many_list_row_add" colspan="2"><a type="button" role="button" class="add-skill-line" tabindex="0">Add a line</a></td>
+                                                        <td class="o_field_x2many_list_row_add" colspan="2">
+                                                            <a type="button" role="button" class="add-skill-line" tabindex="0">Add a line</a>
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="3">​</td>
                                                     </tr>
                                                 </tbody>
+
                                                 <tfoot class="o_list_footer cursor-default">
                                                     <tr>
                                                         <td></td>
@@ -214,7 +221,7 @@
                                                         <th data-tooltip-delay="1000" tabindex="-1" data-name="name" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.skill.level&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;name&quot;,&quot;label&quot;:&quot;Name&quot;,&quot;type&quot;:&quot;char&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}" style="width: 480px;">
                                                             <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Name</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="level_progress" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_progressbar_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.skill.level&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;level_progress&quot;,&quot;label&quot;:&quot;Progress&quot;,&quot;help&quot;:&quot;Progress from zero knowledge (0%) to fully mastered (100%).&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;widget&quot;:&quot;progressbar&quot;,&quot;widgetDescription&quot;:&quot;Progress Bar&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 469px;">
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="level" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_progressbar_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.skill.level&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;level&quot;,&quot;label&quot;:&quot;Progress&quot;,&quot;help&quot;:&quot;Progress from zero knowledge (0%) to fully mastered (100%).&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;widget&quot;:&quot;progressbar&quot;,&quot;widgetDescription&quot;:&quot;Progress Bar&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 469px;">
                                                             <div class="d-flex flex-row-reverse"><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Progress</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
                                                         <th data-tooltip-delay="1000" tabindex="-1" data-name="default_level" class="align-middle o_column_sortable position-relative cursor-pointer o_boolean_toggle_load_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;hr.skill.level&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;default_level&quot;,&quot;label&quot;:&quot;Default Level&quot;,&quot;help&quot;:&quot;If checked, this level will be the default one selected when choosing this skill.&quot;,&quot;type&quot;:&quot;boolean&quot;,&quot;widget&quot;:&quot;boolean_toggle_load&quot;,&quot;widgetDescription&quot;:&quot;Toggle&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 469px;">
@@ -224,8 +231,44 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody class="ui-sortable">
+                                                    @if(isset($skillLevels))
+                                                    @foreach($skillLevels as $skillLevel)
+                                                    <tr class="o_data_row update_skill_level" data-id="{{ $skillLevel->id }}">
+                                                        <td class="o_data_cell update-skill-level cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name">
+                                                            {{ $skillLevel->name }} <!-- Display skill name dynamically -->
+                                                        </td>
+                                                        <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_progressbar_cell" data-tooltip-delay="1000" tabindex="-1" name="level">
+                                                            <div name="level" class="o_field_widget o_field_progressbar">
+                                                                <div class="o_progressbar w-100 d-flex align-items-center">
+                                                                    <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ $skillLevel->level }}">
+                                                                        <div class="bg-primary h-100" style="width: {{ $skillLevel->level }}%;"></div> <!-- Set width based on level -->
+                                                                    </div>
+                                                                    <div class="o_progressbar_value d-flex">
+                                                                        <span class="mx-1">{{ $skillLevel->level }}</span><span>%</span> <!-- Display level -->
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="o_data_cell cursor-pointer o_field_cell o_boolean_toggle_load_cell" data-tooltip-delay="1000" tabindex="-1" name="default_level">
+                                                            <div name="default_level" class="o_field_widget o_field_boolean_toggle_load">
+                                                                <div>
+                                                                    <div class="o-checkbox form-check o_field_boolean o_boolean_toggle form-switch">
+                                                                        <input type="checkbox" class="form-check-input" id="checkbox-{{ $skillLevel->id }}" {{ $skillLevel->is_default ? 'checked' : '' }}>
+                                                                        <label class="form-check-label" for="checkbox-{{ $skillLevel->id }}"> ​ </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1">
+                                                            <button class="fa d-print-none fa-trash-o skill-level-delete-btn" data-id="{{ $skillLevel->id }}" aria-label="Delete row" tabindex="-1"></button>
+                                                        </td>
+
+                                                    </tr>
+                                                    @endforeach
+                                                    @endif
+
                                                     <tr>
-                                                        <td class="o_field_x2many_list_row_add add-skill-level" colspan="4"><a href="#" role="button" tabindex="0">Add a line</a></td>
+                                                        <td class="o_field_x2many_list_row_add add-skill-level-line" colspan="4"><a href="#" role="button" tabindex="0">Add a line</a></td>
                                                     </tr>
                                                     <tr>
                                                         <td colspan="4">​</td>
@@ -329,8 +372,8 @@
 </script>
 {{-- CONFIGURATION SECTION END --}}
 
-{{-- SKILL SECTION START --}}
 
+{{-- SKILL SECTION START --}}
 <script>
     $(document).ready(function() {
         // Add a new row
@@ -339,7 +382,7 @@
 
             // Define the new row to be appended
             var newRow = `
-            <tr class="o_data_row o_selected_row o_row_draggable" data-id="datapoint_new">
+            <tr class="o_data_row update_skill o_selected_row o_row_draggable" data-id="datapoint_new">
                 <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_handle_cell" data-tooltip-delay="1000" tabindex="-1" name="sequence">
                     <div name="sequence" class="o_field_widget o_field_handle">
                         <span class="o_row_handle oi oi-draggable ui-sortable-handle"></span>
@@ -366,23 +409,46 @@
             $(this).closest('tr').remove();
         });
 
+
+
+
         // Attach click event to the Save button
         $('.skill-save-btn').on('click', function() {
             var skillTypeInput = $('#skill_type_input');
             var skillType = skillTypeInput.val().trim();
             var skillTypeId = $('#skill_type_id').val();
 
-            // skills array as filds id name
             var skills = [];
             $('.o_input_skill').each(function() {
                 var skillInput = $(this);
                 var skillValue = skillInput.val().trim();
-                // sequence remaining
                 if (skillValue !== '') {
                     skills.push({
                         id: skillInput.data('id')
                         , name: skillValue
-                    , });
+                        , sequence: $(this).closest('tr').find('[name="sequence"]').text().trim() // Capture the sequence if needed
+                    });
+                }
+            });
+
+            var skillLevels = [];
+            $(document).find('.o_input_skill_level').each(function() {
+                var levelInput = $(this);
+                var progressInput = $(this).closest('tr').find('input[name="progress[]"]');
+                var defaultInput = $(this).closest('tr').find('input[name="default_level[]"]');
+
+                // Check if progressInput exists
+                var progressValue = progressInput.length ? progressInput.val() : '';
+
+                var skillLevel = {
+                    id: levelInput.data('id') || '', 
+                    name: levelInput.val(),
+                    level: 12,
+                    is_default: defaultInput.is(':checked') ? 1 : 0
+                };
+
+                if (skillLevel.name !== '') {
+                    skillLevels.push(skillLevel);
                 }
             });
 
@@ -393,12 +459,13 @@
                     , data: {
                         name: skillType
                         , skill_type_id: skillTypeId
-                        , skills: skills
-                        , _token: '{{ csrf_token() }}'
+                        , skills: skills, // Send the skills array
+                        skill_levels: skillLevels, // Send the skill levels array
+                        _token: '{{ csrf_token() }}'
                     }
                     , success: function(response) {
                         if (response.success) {
-                            // Redirect to the skill type list page
+                            // Handle success, maybe redirect or show a success message
                         }
                     }
                     , error: function() {
@@ -409,6 +476,10 @@
                 alert('Skill type or Skill Type ID cannot be empty.');
             }
         });
+
+
+
+
 
 
         // delete skill
@@ -436,15 +507,155 @@
 
         $(document).on('click', '.skill-save-btn', function(e) {
             e.preventDefault();
-            console.log('Save button clicked');
             $(this).closest('tr').remove();
         });
 
+        // Add a new skill level row
+        $(document).on('click', '.add-skill-level-line', function(e) {
+            e.preventDefault();
+
+            // Define the new row to be appended
+            var newLevelRow = `
+            <tr class="o_data_row update_skill_level new-level-row o_selected_row" data-id="">
+                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1">
+                    <div name="name" class="o_field_widget o_required_modifier o_field_char">
+                        <input class="o_input_skill_level" type="text" autocomplete="off" name="skill_name[]" data-id="{{ $skill->id ?? '' }}">
+
+                    </div>
+                </td>
+                <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_progressbar_cell" data-tooltip-delay="1000" tabindex="-1">
+                    <div name="level" class="o_field_widget o_field_progressbar">
+                        <div class="o_progressbar w-100 d-flex align-items-center">
+                            <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                                <div class="bg-primary h-100" style="width: min(0%, 100%)"></div>
+                            </div>
+                            <div class="o_progressbar_value d-flex">
+                                <input class="o_input h-100 text-center" type="text" inputmode="decimal" autocomplete="off" name="progress[]">
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="o_data_cell cursor-pointer o_field_cell o_boolean_toggle_load_cell" data-tooltip-delay="1000" tabindex="-1" name="default_level">
+                    <div name="default_level" class="o_field_widget o_field_boolean_toggle_load">
+                        <div>
+                            <div class="o-checkbox form-check o_field_boolean o_boolean_toggle form-switch">
+                                <input type="checkbox" class="form-check-input" name="default_level[]">
+                                <label class="form-check-label"> ​ </label>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="o_list_record_remove w-print-0 p-print-0 text-center" tabindex="-1">
+                    <a class="fa d-print-none skill-delete-btn fa-trash-o" name="delete" aria-label="Delete row" tabindex="-1"></a>
+                </td>
+            </tr>
+            `;
+
+            // Append the new row before the 'Add a line' link row
+            $(newLevelRow).insertBefore($(this).closest('tr'));
+        });
+
+
+        // delete skill level
+        $(document).on('click', '.skill-level-delete-btn', function(e) {
+            e.preventDefault();
+            var skillId = $(this).closest('tr').data('id');
+            var tr = $(this).closest('tr');
+            $.ajax({
+                url: '/skills/level/delete/' + skillId
+                , method: 'DELETE'
+                , data: {
+                    _token: '{{ csrf_token() }}'
+                }
+                , success: function(response) {
+                    if (response.success) {
+                        tr.remove();
+                    }
+                }
+                , error: function() {
+                    alert('Error deleting skill.');
+                }
+            });
+        });
+
+
+        // Make skill name editable on click
+        $(document).on('click', '.update-skill', function() {
+            var cell = $(this);
+            var skillName = cell.text().trim();
+            var inputField = $('<input>', {
+                type: 'text'
+                , class: 'o_input_skill'
+                , value: skillName
+                , data: {
+                    id: cell.closest('tr').data('id')
+                }
+            });
+
+            // Replace cell content with the input field
+            cell.html(inputField);
+            inputField.focus();
+        });
+
+        // Make skill level editable on click
+        $(document).on('click', '.update-skill-level', function() {
+            var cell = $(this);
+            var skillLevel = cell.text().trim();
+            var inputField = $('<input>', {
+                type: 'text'
+                , class: 'o_input_skill_level'
+                , value: skillLevel
+                , data: {
+                    id: cell.closest('tr').data('id')
+                }
+            });
+
+            // Replace cell content with the input field
+            cell.html(inputField);
+            inputField.focus();
+        });
+
+        // Save skill name on blur or enter key press
+        $(document).on('blur keyup', '.o_input_skill', function(e) {
+            if (e.type === 'blur' || (e.type === 'keyup' && e.key === 'Enter')) {
+                var inputField = $(this);
+                var newName = inputField.val().trim();
+                var skillId = inputField.data('id');
+                var cell = inputField.closest('td');
+
+                if (newName !== '') {
+                    $('#main_save_btn').trigger('click');
+                } else {
+                    // If the new name is empty, keep the old name
+                    cell.html(inputField.data('originalValue'));
+                }
+            }
+        });
+
+        // Save skill level on blur or enter key press
+        $(document).on('blur keyup', '.o_input_skill_level', function(e) {
+
+            if (e.type === 'blur' || (e.type === 'keyup' && e.key === 'Enter')) {
+                var inputField = $(this);
+                var newLevel = inputField.val().trim();
+                var skillLevelId = inputField.data('id');
+                var cell = inputField.closest('td');
+
+                if (newLevel !== '') {
+                    $('#main_save_btn').trigger('click');
+                } else {
+                    cell.html(inputField.data('originalValue'));
+                }
+            }
+        });
 
 
     });
 
 </script>
+{{-- SKILL SECTION END --}}
+
 
 
 @endpush

@@ -7,6 +7,7 @@ use App\Models\Opportunity;
 use App\Models\Pipeline;
 
 use App\Models\Sale;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +36,7 @@ class CRMController extends Controller
     {
         $stages = CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no' , 'desc')->get();
         if ($id == 'new'){
-            return view('CRM.view' , compact('stages'));
+            return view('CRM.view' , compact('stages'))->with('crm' , $id);
         }
 
         $sale = Sale::find($id);
@@ -43,7 +44,7 @@ class CRMController extends Controller
             return back()->with('error', 'Sale not found');
         }
 
-        return view('CRM.view', compact('sale' , 'stages'));
+        return view('CRM.view', compact('sale' , 'stages'))->with('crm' , $id);
     }
 
     public function newStage(Request $request)
@@ -57,38 +58,48 @@ class CRMController extends Controller
         return response()->json($data);
     }
 
-    public function  newSales(Request $request)
+    public function  newSales(Request $request , $sale)
     {
-        $data = New Sale();
+        $data = $sale == 'new' ? new Sale() : Sale::findOrFail($sale);
+        // original
+        $originalSale = $data->getOriginal();
+
+
         $data->contact_id = $request->contact_id;
-        $data->stage_id = $request->stage_id;
+        $data->stage_id = $request->stage_id ?? CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no')->first()->id;
         $data->user_id = auth()->user()->id;
         $data->opportunity = $request->name;
         $data->email = $request->email;
         $data->phone = $request->phone;
         $data->expected_revenue = $request->expected_revenue;
-        $data->priority = $request->priority ?? null;
+        $data->priority = $request->priority !== null ? $request->priority : null;
         $data->probability = $request->probability ?? null;
         $data->deadline = $request->deadline ?? null;
         $data->save();
 
         if ($request->contact_id != null) {
             $contact = Contact::find($request->contact_id);
-            $contact->email = $request->email;
-            $contact->phone = $request->phone;
-            $contact->save();
+            $originalContact = $contact->getOriginal();
+            $contact->update(['email' => $request->email, 'phone' => $request->phone]);
+            LogService::logChanges(['email', 'phone'], $originalContact, $contact->toArray(), $contact);
+        }
+
+        // Logs the changes
+        $fields = ['opportunity', 'email', 'phone', 'expected_revenue', 'priority', 'probability', 'deadline'];
+        if ($data->wasChanged() && !empty($originalSale)) {
+            LogService::logChanges($fields, $originalSale, $data->toArray(), $data);
         }
 
         if ($request->ajax()) {
-            $res = [
+            $msg = $sale == 'new' ? 'Sale created successfully' : 'Sale updated successfully';
+            return response()->json([
                 'status' => 'success',
-                'message' => 'Sale created successfully',
+                'message' => $msg,
                 'data' => $data
-            ];
-            return response()->json($res , 200);
+            ] , 200);
         }
-        return back()->with('success', 'Sale created successfully');
 
+        return back()->with('success', 'Sale created successfully');
     }
 
     // sale
@@ -102,7 +113,7 @@ class CRMController extends Controller
 
     public function setStage(Request $request)
     {
-        $sale = Sale::find($request->id);
+        $sale = Sale::findorfail($request->id);
         $sale->stage_id = $request->stage_id;
         $sale->save();
         return response()->json($sale);
@@ -132,13 +143,13 @@ class CRMController extends Controller
 
     public function updateDeadline(Request $request, $id)
     {
-        
-        
+
+
 
         $sale = Sale::findOrFail($id);
         $sale->deadline = \Carbon\Carbon::createFromFormat('Y-m', $request->deadline)->endOfMonth();
         $sale->save();
-    
+
         return response()->json($sale);
     }
 

@@ -1,9 +1,11 @@
 @extends('layout.header')
+@section('head_new_btn_link', route('crm.show' , ['crm' => 'new']))
+
 @section('navbar_menu')
     <li class="dropdown">
         <a href="#">Sales</a>
         <div class="dropdown-content">
-            <a href="#">My Pipeline</a>
+            <a href="{{ route('crm.index') }}">My Pipeline</a>
             <a href="#">My Activities</a>
             <a href="#">My Quotations</a>
             <a href="#">Teams</a>
@@ -17,9 +19,10 @@
     <li class="dropdown">
         <a href="#">Reporting</a>
         <div class="dropdown-content">
+            <!-- Dropdown content for Reporting -->
             <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
+            <a href="{{ route('crm.index') }}">Pipeline</a>
+            <a href="{{ route('lead.index') }}">Leads</a>
             <a href="#">Activities</a>
         </div>
     </li>
@@ -30,13 +33,17 @@
             <a href="#">Sales Teams</a>
         </div>
     </li>
-@endsection
+    @endsection
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 
 @section('head')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     @vite(['resources/css/crm_2.css'])
 @endsection
+
+@push('head_scripts')
+    @vite ('resources/js/common.js')
+@endpush
 
 @section('content')
     <div class="o_content" style="height: 100%">
@@ -322,6 +329,16 @@
         </div>
         <div class="o_notification_manager"></div>
     </div>
+
+    <script>
+        // contact-card click event by jquery
+        $(document).on('click', '.sale-card', function () {
+            let id = $(this).data('id');
+            let url = "{{ route('crm.show', ['crm' => ':id']) }}";
+            url = url.replace(':id', id);
+            window.location.href = url;
+        });
+    </script>
 
     <script>
         // Handle the drag start event
