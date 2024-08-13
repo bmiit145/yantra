@@ -133,14 +133,14 @@ class EmployeeController extends Controller
 
 
     // SKILLS SECTION START--------------------------------------------------
-
+    
     public function skill_add($skillType)
     {
         if ($skillType == 'new' || $skillType == null) {
             return view('employees.configuration.skill_type.add');
         }
 
-        $skillType = SkillType::find($skillType);
+        $skillType = SkillType::findOrFail($skillType); 
         $skills = Skill::where('skill_type_id', $skillType->id)->get();
         $skillLevels = SkillLevel::where('skill_type_id', $skillType->id)->get();
 
@@ -150,9 +150,11 @@ class EmployeeController extends Controller
 
     public function skill_view()
     {
-        $skills = Skill::with('levels')->get();
-        return view('employees.configuration.skill_type.index', compact('skills'));
+        $skillTypes = SkillType::with(['skills', 'skillLevels'])->get();
+        
+        return view('employees.configuration.skill_type.index', compact('skillTypes'));
     }
+    
 
 
     public function skill_store(Request $request)

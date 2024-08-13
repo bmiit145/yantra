@@ -141,22 +141,52 @@
                             </tr>
                         </thead>
                         <tbody class="ui-sortable">
-                            @foreach ($skills as $skill)
-                            <tr class="o_data_row" data-id="datapoint_{{ $skill->id }}">
+
+
+                            <tr class="o_data_row" data-id="datapoint_59">
                                 <td class="o_list_record_selector user-select-none" tabindex="-1">
-                                    <div class="o-checkbox form-check">
-                                        <input type="checkbox" class="form-check-input" id="checkbox-comp-{{ $skill->id }}">
-                                        <label class="form-check-label" for="checkbox-comp-{{ $skill->id }}"></label>
+                                    <div class="o-checkbox form-check"><input type="checkbox" class="form-check-input" id="checkbox-comp-3"><label class="form-check-label" for="checkbox-comp-3"></label></div>
+                                </td>
+                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="ITs">ITs</td>
+                                <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_color_picker_cell" data-tooltip-delay="1000" tabindex="-1" name="color">
+                                    <div name="color" class="o_field_widget o_field_color_picker">
+                                        <div class="o_colorlist d-flex flex-wrap align-items-center mw-100 gap-2" aria-atomic="true"><button role="menuitem" title="Purple" data-color="5" aria-label="Purple" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_5"></button></div>
                                     </div>
                                 </td>
-                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="{{ $skill->name }}">
-                                    {{ $skill->name }}
+                                <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_ids">
+                                    <div name="skill_ids" class="o_field_widget o_field_many2many_tags">
+                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_5" tabindex="-1" data-color="5" title="Laravel Developer">
+                                                <div class="o_tag_badge_text text-truncate">Laravel Developer</div>
+                                            </span></div>
+                                    </div>
+                                </td>
+                                <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_skills_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_level_ids">
+                                    <div name="skill_level_ids" class="o_field_widget o_field_many2many_tags_skills">
+                                        <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100"><span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0 border border-2" tabindex="-1" title="Expert" style="border-color: rgb(140, 140, 140) !important ;">
+                                                <div class="o_tag_badge_text text-truncate fw-bold">Expert</div>
+                                            </span></div>
+                                    </div>
+                                </td>
+                                <td tabindex="-1" class="w-print-0 p-print-0"></td>
+                            </tr>
+
+
+                            @foreach($skillTypes as $skillType)
+                            <tr class="o_data_row skill-view-btn" data-id="{{ $skillType->id }}">
+                                <td class="o_list_record_selector user-select-none" tabindex="-1">
+                                    <div class="o-checkbox form-check">
+                                        <input type="checkbox" class="form-check-input" id="checkbox-{{ $skillType->id }}">
+                                        <label class="form-check-label" for="checkbox-{{ $skillType->id }}"></label>
+                                    </div>
+                                </td>
+                                <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" data-tooltip="{{ $skillType->name }}">
+                                    {{ $skillType->name }}
                                 </td>
                                 <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_color_picker_cell" data-tooltip-delay="1000" tabindex="-1" name="color">
                                     <div name="color" class="o_field_widget o_field_color_picker">
                                         <div class="o_colorlist d-flex flex-wrap align-items-center mw-100 gap-2" aria-atomic="true">
-                                            @foreach ($skill->levels as $level)
-                                            <button role="menuitem" title="{{ $level->name }}" data-color="{{ $level->level }}" aria-label="{{ $level->name }}" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_{{ $level->level }}"></button>
+                                            @foreach($skillType->skills as $skill)
+                                            <button role="menuitem" title="{{ $skill->name }}" data-color="{{ $skill->id }}" aria-label="{{ $skill->name }}" class="btn p-0 rounded-0 o_colorlist_toggler o_colorlist_item_color_{{ $skill->id }}"></button>
                                             @endforeach
                                         </div>
                                     </div>
@@ -164,9 +194,9 @@
                                 <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_ids">
                                     <div name="skill_ids" class="o_field_widget o_field_many2many_tags">
                                         <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100">
-                                            @foreach ($skill->levels as $level)
-                                            <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_{{ $level->level }}" tabindex="-1" data-color="{{ $level->level }}" title="{{ $level->name }}">
-                                                <div class="o_tag_badge_text text-truncate">{{ $level->name }}</div>
+                                            @foreach($skillType->skills as $skill)
+                                            <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_{{ $skill->id }}" tabindex="-1" data-color="{{ $skill->id }}" title="{{ $skill->name }}">
+                                                <div class="o_tag_badge_text text-truncate">{{ $skill->name }}</div>
                                             </span>
                                             @endforeach
                                         </div>
@@ -175,9 +205,9 @@
                                 <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_skills_cell" data-tooltip-delay="1000" tabindex="-1" name="skill_level_ids">
                                     <div name="skill_level_ids" class="o_field_widget o_field_many2many_tags_skills">
                                         <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100">
-                                            @foreach ($skill->levels as $level)
-                                            <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_{{ $level->level }}{{ $level->is_default ? ' border border-2' : '' }}" tabindex="-1" title="{{ $level->name }}" style="{{ $level->is_default ? 'border-color: rgb(140, 140, 140) !important;' : '' }}">
-                                                <div class="o_tag_badge_text text-truncate {{ $level->is_default ? 'fw-bold' : '' }}">{{ $level->name }}</div>
+                                            @foreach($skillType->skillLevels as $skillLevel)
+                                            <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0 border border-2" tabindex="-1" title="{{ $skillLevel->name }}" style="border-color: rgb(140, 140, 140) !important ;">
+                                                <div class="o_tag_badge_text text-truncate fw-bold">{{ $skillLevel->name }}</div>
                                             </span>
                                             @endforeach
                                         </div>
@@ -186,8 +216,6 @@
                                 <td tabindex="-1" class="w-print-0 p-print-0"></td>
                             </tr>
                             @endforeach
-
-
 
 
 
@@ -275,4 +303,20 @@
     });
 
 </script>
+{{-- CONFIGURATION SECTION END --}}
+
+
+{{-- SKILL VIEW BTN --}}
+<script>
+    $(document).ready(function() {
+        $('.skill-view-btn').on('click', function() {
+            var skillTypeId = $(this).data('id');
+            window.location.href = '/skill/' + skillTypeId;
+        });
+    });
+
+</script>
+{{-- SKILL VIEW BTN END --}}
+
+
 @endpush

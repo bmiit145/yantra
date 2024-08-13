@@ -18,6 +18,11 @@ class SkillType extends Model
         return $this->hasMany(Skill::class , 'skill_type_id' , 'id');
     }
 
+    public function skillLevels()
+    {
+        return $this->hasMany(SkillLevel::class, 'skill_type_id', 'id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
