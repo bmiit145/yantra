@@ -119,5 +119,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Manufacturing
     Route::resource('manufacturing', ManufacturingController::class);
+    Route::get('/unbuild/order', [ManufacturingController::class, 'unbuild_order'])->name('manufacture.unbuild.order');
+    Route::get('/scrap/order', [ManufacturingController::class, 'scrap_order'])->name('manufacture.scrap.order');
+    
 
 });

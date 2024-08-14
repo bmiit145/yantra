@@ -41,4 +41,14 @@ class ManufacturingController extends Controller
     {
         //
     }
+
+    public function unbuild_order()
+    {
+        return view('manufacturing.unbuild_order');
+    }
+
+    public function scrap_order()
+    {
+        return view('manufacturing.scrap_order');
+    }
 }
