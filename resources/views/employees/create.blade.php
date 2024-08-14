@@ -473,6 +473,129 @@
                                         </div>
                                     </div>
 
+
+
+                                    {{-- Skill Select Modal --}}
+                                    {{-- Skill Select Modal --}}
+<div class="o-overlay-item">
+    <div class="o_dialog" id="dialog_0">
+        <div role="dialog" class="modal o_technical_modal" tabindex="-1" id="skillSelectModal" style="display: none">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content o_form_view o_hr_skills_dialog_form" style="top: 0px; left: 0px;">
+                    <header class="modal-header">
+                        <h4 class="modal-title text-break">Select Skills</h4>
+                        <button type="button" class="btn-close" aria-label="Close" tabindex="-1" id="skillModalCloseBtn"></button>
+                    </header>
+                    <main class="modal-body p-0">
+                        <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
+                            <div class="o_form_sheet_bg">
+                                <div class="o_form_sheet position-relative">
+                                    <div class="o_group row align-items-start">
+                                        <!-- Skill Type Selection -->
+                                        <div class="o_inner_group grid col-lg-6">
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="skill_type_id_0">Skill Type</label>
+                                                </div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                    <div name="skill_type_id" class="o_field_widget o_required_modifier o_field_radio">
+                                                        <div role="radiogroup" class="o_vertical" aria-label="Skill Type" id="skillTypeGroup">
+                                                            @foreach($skillTypes as $skillType)
+                                                            <div class="form-check o_radio_item" aria-atomic="true">
+                                                                <input type="radio" class="form-check-input o_radio_input skill-type-radio" name="skill_type_radio" data-id="{{ $skillType->id }}" data-index="0">
+                                                                <label class="form-check-label o_form_label" for="skillTypeRadio_{{ $skillType->id }}">{{ $skillType->name }}</label>
+                                                            </div>
+                                                            @endforeach
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Skill Selection -->
+                                        <div class="o_inner_group grid col-lg-6">
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                    <label class="o_form_label" for="skill_id_0">Skill</label>
+                                                </div>
+                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                    <div name="skill_id" class="o_field_widget o_required_modifier o_field_many2one">
+                                                        <div class="o_field_many2one_selection">
+                                                            <div class="o_input_dropdown">
+                                                                <div class="o-autocomplete dropdown">
+                                                                    <select type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="skillInputField" placeholder="Select a skill" aria-expanded="false">
+
+                                                                    </select>
+                                                                </div>
+                                                                <span class="o_dropdown_button"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="o_field_many2one_extra"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Skill Level Selection -->
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900">
+                                                    <label class="o_form_label" for="skill_level_id_0">Skill Level</label>
+                                                </div>
+                                                <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                                    <div class="o_row">
+                                                        <span class="ps-0" style="flex:1">
+                                                            <div name="skill_level_id" class="o_field_widget o_required_modifier o_field_many2one">
+                                                                <div class="o_field_many2one_selection">
+                                                                    <div class="o_input_dropdown">
+                                                                        <div class="o-autocomplete dropdown">
+                                                                            <select style="width:200%" type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="skillLevelDropdownMenu" placeholder="Select skill level" aria-expanded="true">
+                                                   
+                                                                            </select>
+                                                                        </div>
+                                                                        <span class="o_dropdown_button"></span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="o_field_many2one_extra"></div>
+                                                            </div>
+                                                        </span>
+                                                        <span style="flex:1">
+                                                            <div name="level_progress" class="o_field_widget o_readonly_modifier o_field_progressbar o_hr_skills_progress">
+                                                                <div class="o_progressbar w-100 d-flex align-items-center" id="skillProgressBar">
+                                                                    <div class="o_progress align-middle overflow-hidden" aria-valuemin="0" aria-valuemax="100" aria-valuenow="67">
+                                                                        <div class="bg-primary h-100" style="width: min(67%, 100%)"></div>
+                                                                    </div>
+                                                                    <div class="o_progressbar_value d-flex">
+                                                                        <span class="mx-1">67</span><span>%</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <footer class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100">
+                        <button class="btn btn-primary o_form_button_save" data-hotkey="c" id="saveSkillModalBtn">Save & Close</button>
+                        <button class="btn btn-primary o_form_button_save_new" data-hotkey="n" id="saveNewSkillModalBtn">Save & New</button>
+                        <button class="btn btn-secondary o_form_button_cancel" data-hotkey="j" id="discardSkillModalBtn">Discard</button>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
                                     <div class="o_notebook_content tab-content" style="display: contents;">
 
                                         <div class="tab-pane active fade show" id="resume">
@@ -504,11 +627,11 @@
                                                                             <th></th>
                                                                         </tr>
                                                                         @php
-                                                                            $experiences = collect(); 
+                                                                        $experiences = collect();
 
-                                                                            if (isset($employee)) {
-                                                                                $experiences = \App\Models\Experience::where('employee_id', $employee->id)->get();
-                                                                            }
+                                                                        if (isset($employee)) {
+                                                                        $experiences = \App\Models\Experience::where('employee_id', $employee->id)->get();
+                                                                        }
                                                                         @endphp
                                                                         @forelse($experiences as $experience)
                                                                         <tr class="o_data_row edit-experience-popup" data-id="{{ $experience->id }}  " data-title="{{ $experience->title }}" data-employee="{{ $experience->employee_id }}" data-type="{{ $experience->type }}" data-display_type="{{ $experience->display_type }}" data-start_date="{{ $experience->start_date }}" data-end_date="{{ $experience->end_date }}" data-description="{{ $experience->description }}" data-employee_id="{{ $experience->employee_id }}">
@@ -3257,6 +3380,34 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 
+    {{-- CONFIGURATION SECTION STRAT --}}
+    <script>
+        $(document).ready(function() {
+            $('#configLink').click(function(e) {
+                e.preventDefault(); // Prevent the default action
+
+                // Get the position of the li element
+                var position = $(this).parent().offset();
+
+                // Set the position of the dropdown relative to the li
+                $('#dropdownMenu').css({
+                    top: position.top + $(this).outerHeight(), // Below the li
+                    left: position.left
+                }).toggle(); // Toggle visibility
+            });
+
+            // Optional: Hide the dropdown if clicking outside of it
+            $(document).click(function(e) {
+                if (!$(e.target).closest('#configLink, #dropdownMenu').length) {
+                    $('#dropdownMenu').hide();
+                }
+            });
+        });
+
+    </script>
+    {{-- CONFIGURATION SECTION END --}}
+
+
     <script>
         $(document).ready(function() {
             $('.nav-link').on('click', function(e) {
@@ -3326,8 +3477,8 @@
                         } else {
                             alert('An error occurred while saving employee data.');
                         }
-                    }
-                    , error: function(xhr, status, error) {
+                    },
+                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
                 });
@@ -3599,45 +3750,139 @@
     </script>
 
 
+
+
+
     {{-- SKILL SECTION START --}}
 
     <script>
         $(document).ready(function() {
-            $('.add-skill-popup').on('click', function() {
-                $('#skillModal').show();
-            });
-        });
 
-        $(document).on('click', '#skill-modal-close', function() {
-            $('#skillModal').hide();
-        });
+            
+    // Open the modal when the add skill button is clicked
+    $(document).on('click', '.add-skill-popup', function() {
+        $('#skillSelectModal').modal('show');
+    });
 
-    </script>
+    // Close the modal when the close button or discard button is clicked
+    $('#skillModalCloseBtn, #discardSkillModalBtn').on('click', function() {
+        $('#skillSelectModal').modal('hide');
+    });
 
-    {{-- CONFIGURATION SECTION STRAT --}}
-    <script>
-        $(document).ready(function() {
-            $('#configLink').click(function(e) {
-                e.preventDefault(); // Prevent the default action
+    // Handle the 'Save & Close' action
+    $('#saveSkillModalBtn').on('click', function() {
+        let skillType = $('input[name="skill_type_radio"]:checked').val();
+        let skillName = $('#skillInputField').val();
+        let skillLevel = $('#skillLevelInputField').val();
 
-                // Get the position of the li element
-                var position = $(this).parent().offset();
-
-                // Set the position of the dropdown relative to the li
-                $('#dropdownMenu').css({
-                    top: position.top + $(this).outerHeight(), // Below the li
-                    left: position.left
-                }).toggle(); // Toggle visibility
-            });
-
-            // Optional: Hide the dropdown if clicking outside of it
-            $(document).click(function(e) {
-                if (!$(e.target).closest('#configLink, #dropdownMenu').length) {
-                    $('#dropdownMenu').hide();
+        if (skillType && skillName && skillLevel) {
+            $.ajax({
+                url: '{{ route("saveSelectedSkill") }}',
+                method: 'POST',
+                data: {
+                    skill_type: skillType,
+                    skill_name: skillName,
+                    skill_level: skillLevel,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    $('#skillSelectModal').modal('hide');
+                    alert('Skill saved successfully');
+                },
+                error: function(error) {
+                    alert('An error occurred while saving the skill.');
                 }
             });
+        } else {
+            alert('Please fill in all the required fields.');
+        }
+    });
+
+    // Handle the 'Save & New' action
+    $('#saveNewSkillModalBtn').on('click', function() {
+        let skillType = $('input[name="skill_type_radio"]:checked').val();
+        let skillName = $('#skillInputField').val();
+        let skillLevel = $('#skillLevelInputField').val();
+
+        if (skillType && skillName && skillLevel) {
+            $.ajax({
+                url: '{{ route("saveSelectedSkill") }}',
+                method: 'POST',
+                data: {
+                    skill_type: skillType,
+                    skill_name: skillName,
+                    skill_level: skillLevel,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    $('#skillInputField').val('');
+                    $('#skillLevelInputField').val('');
+                    alert('Skill saved successfully. You can now add a new one.');
+                },
+                error: function(error) {
+                    alert('An error occurred while saving the skill.');
+                }
+            });
+        } else {
+            alert('Please fill in all the required fields.');
+        }
+    });
+            // Discard changes, reset the form, and hide the modal
+            $('#discardSkillModal').on('click', function() {
+                $('#skillInputField').val('');
+                $('#skillLevelInput').val('');
+                $('input[name="radio_field_0"]').prop('checked', false);
+                $('#skillDropdownMenu').addClass('d-none');
+                $('#skillSelectModal').modal('hide');
+            });
         });
 
     </script>
 
-    @endpush
+
+    <script>
+        $(document).ready(function() {
+
+            $(document).on('change', '.skill-type-radio', function() {
+                var skillTypeId = $(this).data('id');
+
+                $.ajax({
+                    url: '{{ route("getSkillsByType") }}', 
+                    method: 'GET',
+                    data: {
+                        skill_type_id: skillTypeId
+                    },
+                    success: function(response) {
+                        console.log(response.skill_levels);
+                        var skillDropdown = $('#skillInputField');
+                        skillDropdown.empty(); 
+                        if (response.skills.length > 0) {
+                                $.each(response.skills, function(index, skill) {
+                                skillDropdown.append('<option value="' + skill.id + '">' + skill.name + '</option>');
+                            });
+                        } else {
+                            skillDropdown.append('<option value="">No records found</option>');
+                        }
+                        if (response.skill_levels.length > 0) {
+                             var skillLevelDropdown = $('#skillLevelDropdownMenu');
+                             skillLevelDropdown.empty(); 
+                             $.each(response.skill_levels, function(index, level) {
+                                skillLevelDropdown.append('<option value="' + level.id + '">' + level.name + '</option>');
+                            });
+                        }else{
+                                skillLevelDropdown.append('<option value="">No records found</option>');
+                        }
+                     },
+                    error: function(error) {
+                        alert('An error occurred while fetching the skill data.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
+
+@endpush

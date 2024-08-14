@@ -85,8 +85,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/skills/delete/{id}', [EmployeeController::class, 'skill_delete'])->name('skills.delete');
     Route::delete('/skills/level/delete/{id}', [EmployeeController::class, 'skillLevelDelete'])->name('skills.level.delete');
 
-    // Route::post('/skills/update/{id}', [EmployeeController::class, 'updateSkill']);
-    // Route::post('/skills/level/update/{id}', [EmployeeController::class, 'updateSkillLevel']);
+    Route::post('/save-selected-skill', [EmployeeController::class, 'saveSelectedSkill'])->name('saveSelectedSkill');
+    Route::get('/get-skills-by-type', [EmployeeController::class, 'getSkillsByType'])->name('getSkillsByType');
+
 
     // Skill Type
     Route::post('/skill_types/store', [EmployeeController::class, 'skill_type_store'])->name('skill_types.store');
