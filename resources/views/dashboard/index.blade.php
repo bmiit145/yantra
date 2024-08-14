@@ -246,7 +246,7 @@
                         </a>
                     </div>
                     <div class="main_inner_block">
-                        <a role="option" class="main_inner_wrapper" id="result_app_21" aria-selected="false"
+                        <a href="{{ route('manufacturing.index') }}" role="option" class="main_inner_wrapper" id="result_app_21" aria-selected="false"
                             data-menu-xmlid="mrp.menu_mrp_root" href="#">
                             <img class="home_app_icon" src="{{ asset('images/Manufacturing.png') }}">
                             <div class="home_caption">Manufacturing</div>

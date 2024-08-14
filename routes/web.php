@@ -11,6 +11,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\ManufacturingController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
@@ -100,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
 
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
-    Route::get('/lea-add', [LeadController::class, 'creat'])->name('lead.creat');
+    Route::get('/lea-add', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
 
     // setting
@@ -115,5 +116,8 @@ Route::middleware(['auth'])->group(function () {
 
     // user update
     Route::post('/user-update', [userController::class, 'userNewOrUpdate'])->name('user.update');
+
+    // Manufacturing
+    Route::resource('manufacturing', ManufacturingController::class);
 
 });

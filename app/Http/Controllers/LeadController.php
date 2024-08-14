@@ -14,7 +14,7 @@ class LeadController extends Controller
         return view('lead.index', compact('data'));
     }
 
-    public function creat()
+    public function create()
     {
         return view('lead.creat');
     }
