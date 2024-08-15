@@ -23,15 +23,20 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
+        $skillTypes = SkillType::all();
+        $skills = Skill::where('skill_type_id', $id)->get();
+        $skillLevels = SkillLevel::where('skill_type_id', $id)->get();
+
         $employee = Employee::find($id);
         $experiences = Experience::where('employee_id', $id)->get();
-        return view('employees.create', ['employee' => $employee, 'experiences' => $experiences]);
+        return view('employees.create', ['employee' => $employee, 'experiences' => $experiences] , compact('skillTypes', 'skills', 'skillLevels'));
     }
 
     public function create()
     {
         return view('employees.create');
     }
+    
 
     public function store(Request $request)
     {

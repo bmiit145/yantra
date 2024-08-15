@@ -121,6 +121,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('manufacturing', ManufacturingController::class);
     Route::get('/unbuild/order', [ManufacturingController::class, 'unbuild_order'])->name('manufacture.unbuild.order');
     Route::get('/scrap/order', [ManufacturingController::class, 'scrap_order'])->name('manufacture.scrap.order');
+    Route::get('/bills/of/material', [ManufacturingController::class, 'bills_of_material'])->name('manufacture.bills_of_material');
+    Route::get('/production/analysis', [ManufacturingController::class, 'production_analysis'])->name('manufacture.production_analysis');
     
 
 });

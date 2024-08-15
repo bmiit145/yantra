@@ -24,13 +24,13 @@
         <a href="#">Products</a>
         <div class="dropdown-content">
             <a href="#">Products</a>
-            <a href="#">Bills of Materials</a>
+            <a href="{{ route('manufacture.bills_of_material') }}">Bills of Materials</a>
         </div>
     </li>
     <li class="dropdown">
         <a href="#">Reporting</a>
         <div class="dropdown-content">
-            <a href="#">Production Analysis</a>
+            <a href="{{ route('manufacture.production_analysis') }}">Production Analysis</a>
         </div>
     </li>
     <li class="dropdown">

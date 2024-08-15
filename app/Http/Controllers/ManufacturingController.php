@@ -51,4 +51,14 @@ class ManufacturingController extends Controller
     {
         return view('manufacturing.scrap_order');
     }
+
+    public function bills_of_material()
+    {
+        return view('manufacturing.bills_of_material');
+    }
+
+    public function production_analysis()
+    {
+        return view('manufacturing.production_analysis');
+    }
 }
