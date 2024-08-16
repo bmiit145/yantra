@@ -703,32 +703,6 @@
         <div class="o_notification_manager"></div>
     </div>
 
-    <script>
-        document.getElementById('editableDiv').addEventListener('paste', function(event) {
-            // This allows the paste to occur without restriction
-            let items = (event.clipboardData || event.originalEvent.clipboardData).items;
-            let isImagePasted = false;
-
-            for (let index in items) {
-                let item = items[index];
-                if (item.kind === 'file') {
-                    let blob = item.getAsFile();
-                    let reader = new FileReader();
-                    reader.onload = function(event) {
-                        let img = document.createElement('img');
-                        img.src = event.target.result;
-                        document.getElementById('editableDiv').appendChild(img);
-                    };
-                    reader.readAsDataURL(blob);
-                    isImagePasted = true;
-                }
-            }
-
-            if (isImagePasted) {
-                event.preventDefault();
-            }
-        });
-    </script>
 
       @push('scripts')
         <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
@@ -738,6 +712,69 @@
                 .catch(error => {
                     console.error(error);
                 });
+        </script>
+        <script>
+             $('#main_save_btn').click(function() {
+                var name_0 = $('#name_0').val();
+                console.log(name_0);
+                var probability_0 = $('#probability_0').val();
+                var street_0 = $('#street_0').val();
+                var street2_0 = $('#street2_0').val();
+                var city_0 = $('#city_0').val();
+                var zip_0 = $('#zip_0').val();
+                var state_id_0 = $('#state_id_0').val();
+                var country_id_0 = $('#country_id_0').val();
+                var website_0 = $('#website_0').val();
+                var user_id_1 = $('#user_id_1').val();
+                var team_id_0 = $('#team_id_0').val();
+                var contact_name_0 = $('#contact_name_0').val();
+                var title_0 = $('#title_0').val();
+                var email_from_1 = $('#email_from_1').val();
+                var function_0 = $('#function_0').val();
+                var phone_1 = $('#phone_1').val();
+                var mobile_0 = $('#mobile_0').val();
+                var tag_ids_1 = $('#tag_ids_1').val();
+
+
+                    if(!name_0)
+                    {
+                        toastr.error('fields is required');
+                          $('#name_0').css({
+                                'border-color': 'red',
+                                'background-color': '#ff99993d'
+                            });
+                      }
+
+                $.ajax({
+                    url: '{{ route('lead.store') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        name_0: name_0,
+                        probability_0: probability_0,
+                        street_0 :street_0,
+                        street2_0 : street2_0,
+                        city_0 : city_0,
+                        zip_0 : zip_0,
+                        state_id_0 : state_id_0,
+                        country_id_0 : country_id_0,
+                        website_0 : website_0,
+                        user_id_1 : user_id_1,
+                        team_id_0 : team_id_0,
+                        contact_name_0 : contact_name_0,
+                        title_0 : title_0,
+                        email_from_1 : email_from_1,
+                        function_0 : function_0,
+                        phone_1 : phone_1,
+                        mobile_0 : mobile_0,
+                        tag_ids_1 : tag_ids_1,
+                    },
+                    success: function(response) {
+                        toastr.success(response.message);
+                      
+                    }
+                });
+             });
         </script>
     @endpush
 

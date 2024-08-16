@@ -19,7 +19,21 @@ return new class extends Migration
             $table->string('company_name')->nullable();
             $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
-            $table->string('');
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('zip')->nullable();
+            $table->string('country')->nullable();
+            $table->string('website_link')->nullable();
+            $table->string('sales_person')->nullable();
+            $table->string('sales_team')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->string('title')->nullable();
+            $table->string('email')->nullable();
+            $table->string('job_postion')->nullable();      
+            $table->string('phone')->nullable();
+            $table->string('mobile')->nullable();
+            $table->string('tag_id')->nullable();
+            $table->string('priority')->nullable();
             $table->timestamps();
         });
     }

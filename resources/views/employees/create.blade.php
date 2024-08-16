@@ -3863,13 +3863,15 @@
                         } else {
                             skillDropdown.append('<option value="">No records found</option>');
                         }
-                        if (response.skill_levels.length > 0) {
-                             var skillLevelDropdown = $('#skillLevelDropdownMenu');
+                        var skillLevelDropdown = $('#skillLevelDropdownMenu');
                              skillLevelDropdown.empty(); 
+                        if (response.skill_levels.length > 0) {
+                             
                              $.each(response.skill_levels, function(index, level) {
                                 skillLevelDropdown.append('<option value="' + level.id + '">' + level.name + '</option>');
                             });
                         }else{
+                            
                                 skillLevelDropdown.append('<option value="">No records found</option>');
                         }
                      },

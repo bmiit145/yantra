@@ -12,11 +12,13 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
-    {
+    { 
+        
         // User::factory(10)->create();
         $this->call(PermissionSeeder::class);
         $this->call(DefaultUser::class);
         $this->call(AssignPermissionSeeder::class);
         $this->call(ConfigSeeder::class);
+        $this->call(PersontitleSeeder::class);
     }
 }

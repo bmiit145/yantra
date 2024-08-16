@@ -35,7 +35,8 @@ class EmployeeController extends Controller
 
     public function create()
     {
-        return view('employees.create');
+        $skillTypes = SkillType::with(['skills', 'skillLevels'])->get();
+        return view('employees.create', compact('skillTypes'));
     }
 
     public function store(Request $request)

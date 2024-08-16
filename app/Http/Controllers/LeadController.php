@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Lead;
+use App\Models\generate_lead;
 
 class LeadController extends Controller
 {
     public function index()
     {
        
-        $data = Lead::all();
+        $data = generate_lead::all();
         return view('lead.index', compact('data'));
     }
 
@@ -21,31 +21,28 @@ class LeadController extends Controller
 
     public function store(Request $request)
     {
-        
-        $data = New Lead;
-        $data->product_pricing = $request->product_pricing;
-        $data->probability = $request->probability;
-        $data->company_name = $request->company_name;
-        $data->address = $request->address;
-        $data->website = $request->website;
-        $data->salesperson = $request->salesperson;
-        $data->sales_team = $request->sales_team;
-        $data->contact_name = $request->contact_name;
-        $data->email = $request->email;
-        $data->job_postition = $request->job_postition;
-        $data->phone = $request->phone;
-        $data->mobile = $request->mobile;
-        $data->tages = $request->tages;
-        $data->internal_notes = $request->internal_notes;
-        $data->marketing_company = $request->marketing_company;
-        $data->marketing_campaign = $request->marketing_campaign;
-        $data->marketing_medium = $request->marketing_medium;
-        $data->marketing_source = $request->marketing_source;
-        $data->marketing_referred_by = $request->marketing_referred_by;
-        $data->marketing_assigment_date =$request->marketing_assigment_date;
+        $data = New generate_lead;
+        $data->product_name = $request->name_0;
+        $data->probability = $request->probability_0;
+        $data->company_name = $request->partner_name_0;
+        $data->address_1 = $request->street_0;
+        $data->address_2 = $request->street2_0;
+        $data->city = $request->city_0;
+        $data->zip = $request->zip_0;
+        $data->country = $request->country_id_0;
+        $data->website_link = $request->website_0;    
+        $data->sales_person = $request->user_id_1;
+        $data->sales_team = $request->team_id_0;
+        $data->contact_name = $request->contact_name_0;
+        $data->title = $request->title_0;
+        $data->email = $request->email_from_1;
+        $data->job_postion = $request->function_0;
+        $data->phone = $request->phone_1;
+        $data->mobile = $request->mobile_0;
+        $data->tag_id = $request->tag_ids_1;
         $data->save();
-        return redirect('/lead');
-        
+        return response()->json(['success' => 'Data Added Successfully']);
     }
 }
+
     
