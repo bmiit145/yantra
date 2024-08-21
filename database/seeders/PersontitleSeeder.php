@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\PersonTitle;
 
 class PersontitleSeeder extends Seeder
 {
@@ -13,6 +14,7 @@ class PersontitleSeeder extends Seeder
      */
     public function run(): void
     {
+        // PersonTitle::truncate();
         $titles = [
                 [  'id' => '1', 'title' => 'Doctor' ],
                 [  'id' => '2', 'title' => 'Madam' ],

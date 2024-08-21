@@ -41,14 +41,30 @@
                 <tr>
                     <th>Lead</th>
                     <th>Email</th>
-                    <th>City</th>
+                    <th>City</th>                    
+                    <th>state</th>                    
                     <th>Country</th>
+                    <th>Title</th>
+                    <th>Tag</th>
                     <th>Salesperson</th>
                     <th>Sales Team</th>
                    
                 </tr>
             </thead>
             <tbody>
+                @foreach($data as $lead)   
+                 <tr>
+                    <td>{{$lead->product_name}}</td>
+                    <td>{{$lead->email}}</td>
+                    <td>{{$lead->city}}</td>
+                    <td>{{$lead->getState->name ?? ''}}</td>
+                    <td>{{$lead->getCountry->name ?? ''}}</td>
+                    <td>{{$lead->getTilte->title ?? ''}}</td>
+                    <td>{{$lead->getTag->name ?? ''}}</td>
+                    <td>{{$lead->country}}</td>
+                    <td>{{$lead->country}}</td>
+                 </tr>
+                 @endforeach
             </tbody>
         </table>
     </div>

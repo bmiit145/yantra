@@ -105,6 +105,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lea-add', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
 
+    //fetch-states
+    Route::post('/fetch-states', [LeadController::class, 'fetchState'])->name('fetch-states');
+
+    // Add Title
+    Route::post('/add-title', [LeadController::class, 'addTitle'])->name('add-title');
+    Route::post('/add-tag', [LeadController::class, 'addTag'])->name('add-tag');
+
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
     Route::get('/settings/res.users/{id?}', [SettingController::class, 'UserEdit'])->name('setting.user');
