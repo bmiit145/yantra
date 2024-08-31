@@ -4,27 +4,33 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
+use App\Models\Opportunity;
 use App\Models\PersonTitle;
 use App\Models\Country;
 use App\Models\state;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Http;
 
 class LeadController extends Controller
 {
-    public function index()
+    public function index($id = null)
     {
        
+      
         $data = generate_lead::all();
+        
         return view('lead.index', compact('data'));
     }
 
-    public function create()
+    public function create($id = null)
     {
         $title = PersonTitle::all();
         $countrys = Country::all();
-        $tags = Tag::all();
-        return view('lead.creat', compact('title','countrys','tags'));
+        $tags = Tag::where('tage_type' ,2)->get();
+        $data = generate_lead::find($id);
+        return view('lead.creat', compact('title','countrys','tags', 'data'));
     }
+    
     
     public function store(Request $request)
     {
@@ -49,8 +55,15 @@ class LeadController extends Controller
         $data->phone = $request->phone_1;
         $data->mobile = $request->mobile_0;
         $data->tag_id = $request->tag_ids_1;
+        $data->lead_type = '1';
         $data->save();
         return response()->json(['success' => 'Data Added Successfully']);
+    }
+
+
+    public function update()
+    {
+
     }
 
     public function fetchState(Request $request)
@@ -81,12 +94,41 @@ class LeadController extends Controller
             'tag' => 'required|string|max:255',
         ]);
 
-        $tag = Tag::create(['name' => $request->tag]);
+        $tag = Tag::create(['name' => $request->tag,
+                            'tage_type' => 2]); // 2 for lead
 
         return response()->json([
             'id' => $tag->id,
             'tag' => $tag->name,
         ]);
+    }
+
+    public function storeLead()
+    {
+        $response = Http::get('https://mapi.indiamart.com/wservce/crm/crmListing/v2/?glusr_crm_key=mRyxFrho4X7DQfer5nWJ7lGGpVPDmDU=');
+        
+        if ($response->successful()) {
+            $leads = $response->json()['RESPONSE'];
+            
+            foreach ($leads as $leadData) {
+                generate_lead::create([
+                    'product_name' => $leadData['QUERY_PRODUCT_NAME'],
+                    'probability' => $leadData['QUERY_TYPE'],
+                    'company_name' => $leadData['SENDER_COMPANY'] ?? '',
+                    'address_1' => $leadData['SENDER_ADDRESS'],
+                    'city' => $leadData['SENDER_CITY'],
+                    'state' => $leadData['SENDER_STATE'],
+                    'country' => $leadData['SENDER_COUNTRY_ISO'],
+                    'contact_name' => $leadData['SENDER_NAME'],
+                    'email' => $leadData['SENDER_EMAIL'],
+                    'mobile' => $leadData['SENDER_MOBILE'],
+                    'lead_type' => '2',
+                    
+                ]);
+
+              
+            }
+        } 
     }
 
 }

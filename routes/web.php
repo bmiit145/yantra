@@ -102,8 +102,9 @@ Route::middleware(['auth'])->group(function () {
 
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
-    Route::get('/lea-add', [LeadController::class, 'create'])->name('lead.create');
+    Route::get('/lead-add/{id?}', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
+    Route::POST('/storeLead', [LeadController::class, 'storeLead'])->name('lead.storeLead');
 
     //fetch-states
     Route::post('/fetch-states', [LeadController::class, 'fetchState'])->name('fetch-states');

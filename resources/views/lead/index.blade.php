@@ -53,18 +53,18 @@
             </thead>
             <tbody>
                 @foreach($data as $lead)   
-                 <tr>
-                    <td>{{$lead->product_name}}</td>
-                    <td>{{$lead->email}}</td>
-                    <td>{{$lead->city}}</td>
-                    <td>{{$lead->getState->name ?? ''}}</td>
-                    <td>{{$lead->getCountry->name ?? ''}}</td>
-                    <td>{{$lead->getTilte->title ?? ''}}</td>
-                    <td>{{$lead->getTag->name ?? ''}}</td>
-                    <td>{{$lead->country}}</td>
-                    <td>{{$lead->country}}</td>
-                 </tr>
-                 @endforeach
+                    <tr data-id="{{ $lead->id }}" class="lead-row">
+                        <td>{{$lead->product_name}}</td>
+                        <td>{{$lead->email}}</td>
+                        <td>{{$lead->city}}</td>
+                        <td>{{$lead->getState->name ?? ''}}</td>
+                        <td>{{$lead->getCountry->name ?? ''}}</td>
+                        <td>{{$lead->getTilte->title ?? ''}}</td>
+                        <td>{{$lead->getTag->name ?? ''}}</td>
+                        <td>{{$lead->country}}</td>
+                        <td>{{$lead->country}}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>
@@ -79,8 +79,36 @@
     $(document).ready(function() {
         $('#example').DataTable();
     });
+  
+</script>
+<script>
+    $(document).on('click', '.lead-row', function() {
+        var leadId = $(this).data('id');
+        window.location.href = "{{ route('lead.create') }}/" + leadId;
+    });
 
-    
+    function storeLead() {
+        $.ajax({
+            url: "{{ route('lead.storeLead') }}",
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+            },
+            success: function(response) {
+                console.log('Lead stored successfully.', response);
+            },
+            error: function(error) {
+                console.error('Error storing lead:', error);
+            }
+        });
+    }
+
+    // Auto-refresh every 2 minutes
+    setInterval(function() {
+        console.log('Attempting to store lead...');
+        storeLead();
+    }, 2 * 60 * 1000);
+    storeLead();
 </script>
 
 

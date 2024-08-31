@@ -44,6 +44,9 @@
 <style>
     .select2-container--default .select2-selection--single {
         border: none;
+    },
+    .select2-selection__clear{
+            display: none;
     }
 
 </style>
@@ -81,14 +84,15 @@
                                 <h1>
                                     <div name="name" class="o_field_widget">
                                         <div style="height: 45px;">
-                                            <textarea class="o_input" id="name_0" placeholder="e.g. Product Pricing" rows="1" spellcheck="false" style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;"></textarea>
+                                            <textarea class="o_input" id="name_0" style="width: 1000px" value="{{ isset($data) ? $data->product_name : '' }}" placeholder="e.g. Product Pricing" rows="1" spellcheck="false" style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;">{{ isset($data) ? $data->product_name : '' }}</textarea>
                                         </div>
                                     </div>
                                 </h1>
                                 <h2 class="row g-0 pb-3 pb-sm-4">
                                     <div class="col-auto"><label class="o_form_label d-inline-block" for="probability_0">Probability</label>
                                         <div id="probability" class="d-flex align-items-baseline">
-                                            <div name="probability" class="o_field_widget o_field_float oe_inline o_input_6ch"><input inputmode="decimal" class="o_input" autocomplete="off" id="probability_0" type="text"></div><span class="oe_grey p-2">
+                                            <div name="probability" class="o_field_widget o_field_float oe_inline o_input_6ch">
+                                                <input inputmode="decimal" class="o_input" value="{{isset($data) ? $data->probability : ''}}" autocomplete="off" id="probability_0" type="text"></div><span class="oe_grey p-2">
                                                 %</span>
                                         </div>
                                     </div>
@@ -107,13 +111,23 @@
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="street_0">Address</label>
                                         </div>
+                                          @php
+                                                        $address = isset($data) ? $data->address_1 : '';
+                                                        $zip = '';
+                                                        
+                                                        if (preg_match('/\b\d{5,6}\b$/', $address, $matches)) {
+                                                            $zip = $matches[0];
+                                                            $address = str_replace($zip, '', $address);
+                                                        }
+                                                    @endphp
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_address_format">
-                                                <div name="street" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street_0" type="text" autocomplete="off" placeholder="Street..."></div>
-                                                <div name="street2" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street2_0" type="text" autocomplete="off" placeholder="Street 2..."></div>
-                                                <div name="city" class="o_field_widget o_field_char o_address_city"><input class="o_input" id="city_0" type="text" autocomplete="off" placeholder="City"></div>
+                                                <div name="street" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street_0" type="text" autocomplete="off" value="{{$address}}" placeholder="Street..."></div>
+                                                <div name="street2" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street2_0" value="{{ isset($data) ? $data->address_2 : ''}}" type="text" autocomplete="off" placeholder="Street 2..."></div>
+                                                <div name="city" class="o_field_widget o_field_char o_address_city"><input class="o_input" id="city_0" type="text" value="{{isset($data) ? $data->city : ''}}" autocomplete="off" placeholder="City"></div>
                                                 <div name="zip" class="o_field_widget o_field_char o_address_zip">
-                                                    <input class="o_input" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
+                                              
+                                                    <input class="o_input" value="{{$zip}}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
                                                 </div>
                                                 <div name="state_id" class="o_field_widget o_field_many2one o_address_state">
                                                     <div class="o_field_many2one_selection">
@@ -122,7 +136,7 @@
                                                             {{-- <input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox"     aria-autocomplete="list" aria-haspopup="listbox" id="state_id_0" placeholder="State" aria-expanded="false"> --}}
                                                             <select class="o-autocomplete--input o_input" id="state_id_0" style="width: 150px;">
                                                             </select>
-                                                            </div><span class="o_dropdown_button"></span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="o_field_many2one_extra"></div>
@@ -134,23 +148,18 @@
                                                                 <select class="o-autocomplete--input o_input" id="country_id_0" style="width: 150px;">
                                                                 <option value="">Country</option>
                                                                     @foreach($countrys as $country)
-                                                                        <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                                                        <option value="{{ $country->id }}" 
+                                                                            {{ isset($data) && $data->country == $country->id ? 'selected' : '' }}>
+                                                                            {{ $country->name }}
+                                                                        </option>
                                                                     @endforeach
+
                                                                 </select>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="o_field_many2one_extra"></div>
                                                 </div>
-                                                {{-- <div name="country_id" class="o_field_widget o_field_many2one o_address_country">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="country_id_0" placeholder="Country" aria-expanded="false">
-                                                            </div><span class="o_dropdown_button"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
-                                                </div> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -160,7 +169,7 @@
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
                                             <div name="website" class="o_field_widget o_field_url">
-                                                <div class="d-inline-flex w-100"><input class="o_input" type="text" autocomplete="off" id="website_0" placeholder="e.g. https://www.odoo.com"></div>
+                                                <div class="d-inline-flex w-100"><input class="o_input" value="{{isset($data) ? $data->website_link : ''}}" type="text" autocomplete="off" id="website_0" placeholder="e.g. https://www.odoo.com"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -172,7 +181,7 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row">
                                                 <div name="contact_name" class="o_field_widget o_field_char">
-                                                    <input class="o_input" id="contact_name_0" type="text" autocomplete="off">
+                                                    <input class="o_input" id="contact_name_0" value="{{isset($data) ? $data->contact_name : ''}}" type="text" autocomplete="off">
                                                 </div>
                                                 <div name="title" class="o_field_widget o_field_many2one">
                                                     <div class="o_field_many2one_selection">
@@ -180,13 +189,14 @@
                                                             <div class="o-autocomplete dropdown">
                                                                 <div class="title_select_hide">
                                                                     <select class="o-autocomplete--input o_input" id="title_0" style="width: 150px;">
+                                                                        <option>Selecte Title </option>
                                                                         @foreach($title as $titles)
                                                                             <option value="{{ $titles->id }}">{{ $titles->title }}</option>
                                                                         @endforeach                                                                
                                                                         <option value="add_new">Start typing...</option>
                                                                     </select>
                                                                 </div>
-                                                                <input type="text" id="new_title_input" class="o_input mt-2" style="display: none;" placeholder="Enter new title">
+                                                                <input type="text" id="new_title_input" class="o_input mt-2" style="display: none; " placeholder="Enter new title">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -200,7 +210,7 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="email_from" class="o_field_widget o_field_email">
-                                                    <div class="d-inline-flex w-100"><input class="o_input" type="email" autocomplete="off" id="email_from_1">
+                                                    <div class="d-inline-flex w-100"><input class="o_input" type="email" value="{{isset($data) ? $data->email : ''}}" autocomplete="off" id="email_from_1">
                                                     </div>
                                                 </div>
                                             </div>
@@ -211,7 +221,7 @@
                                             <label class="o_form_label" for="function_0">Job Position</label>
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="function" class="o_field_widget o_field_char"><input class="o_input" id="function_0" type="text" autocomplete="off"></div>
+                                            <div name="function" class="o_field_widget o_field_char"><input class="o_input" id="function_0" type="text" value="{{isset($data) ? $data->job_postion : ''}}" autocomplete="off"></div>
                                         </div>
                                     </div>
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
@@ -219,7 +229,7 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="phone" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" id="phone_1"></div>
+                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" value="{{isset($data) ? $data->phone : ''}}" autocomplete="off" id="phone_1"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -229,7 +239,7 @@
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row o_row_readonly">
                                                 <div name="mobile" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" id="mobile_0"></div>
+                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" value="{{isset($data) ? $data->mobile : ''}}" id="mobile_0"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -291,10 +301,10 @@
                                                 <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
                                                     <div class="o_field_many2many_selection d-inline-flex w-100">
                                                         <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown">
-                                                                {{-- <input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="tag_ids_1" placeholder="" aria-expanded="false"> --}}
+                                                           
+                                                             
                                                                 <div class="tag_input_hide">
-                                                                    <select class="o-autocomplete--input o_input" id="tag_ids_1" style="width: 150px;">
+                                                                    <select class="o-autocomplete--input o_input" id="tag_ids_1" style="width: 150px;" multiple>
                                                                         @foreach($tags as $tag)
                                                                             <option value="{{ $tag->id }}">{{ $tag->name }}</option>
                                                                         @endforeach
@@ -303,8 +313,8 @@
                                                                 </div>
                                                                 <input type="text" id="new_tag_input" class="o_input mt-2" style="display: none;" placeholder="Enter new tag">
                                                             </div>
-                                                            <span class="o_dropdown_button"></span>
-                                                        </div>
+                                                         
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
@@ -633,6 +643,7 @@
             newTagInput.hide();            
         }
     });
+    
     
     newTagInput.on('keypress', function(e) {
         if (e.which === 13) {
