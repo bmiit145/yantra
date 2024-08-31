@@ -15,8 +15,8 @@
         <a href="#">Operations</a>
         <div class="dropdown-content">
             <a href="#">Manufacturing Orders</a>
-            <a href="#">Unbuild Orders</a>
-            <a href="#">Scrap</a>
+            <a href="{{ route('manufacture.unbuild.order') }}">Unbuild Orders</a>
+            <a href="{{ route('manufacture.scrap.order') }}">Scrap</a>
         </div>
     </li>
 
@@ -24,13 +24,13 @@
         <a href="#">Products</a>
         <div class="dropdown-content">
             <a href="#">Products</a>
-            <a href="#">Bills of Materials</a>
+            <a href="{{ route('manufacture.bills_of_material') }}">Bills of Materials</a>
         </div>
     </li>
     <li class="dropdown">
         <a href="#">Reporting</a>
         <div class="dropdown-content">
-            <a href="#">Production Analysis</a>
+            <a href="{{ route('manufacture.production_analysis') }}">Production Analysis</a>
         </div>
     </li>
     <li class="dropdown">

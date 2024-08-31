@@ -23,13 +23,20 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
+        $skillTypes = SkillType::all();
+        $skills = Skill::where('skill_type_id', $id)->get();
+        $skillLevels = SkillLevel::where('skill_type_id', $id)->get();
+
         $employee = Employee::find($id);
         $experiences = Experience::where('employee_id', $id)->get();
+<<<<<<< HEAD
 
         $skillTypes = SkillType::all(); 
         $skills = Skill::all(); 
         $skillLevels = SkillLevel::all(); 
 
+=======
+>>>>>>> d1415120bf6556097ea9c8cf15b63dce9c167815
         return view('employees.create', ['employee' => $employee, 'experiences' => $experiences] , compact('skillTypes', 'skills', 'skillLevels'));
     }
 
@@ -38,6 +45,7 @@ class EmployeeController extends Controller
         $skillTypes = SkillType::with(['skills', 'skillLevels'])->get();
         return view('employees.create', compact('skillTypes'));
     }
+    
 
     public function store(Request $request)
     {
