@@ -23,29 +23,15 @@ class EmployeeController extends Controller
 
     public function show($id)
     {
-        $skillTypes = SkillType::all();
-        $skills = Skill::where('skill_type_id', $id)->get();
-        $skillLevels = SkillLevel::where('skill_type_id', $id)->get();
-
         $employee = Employee::find($id);
         $experiences = Experience::where('employee_id', $id)->get();
-<<<<<<< HEAD
-
-        $skillTypes = SkillType::all(); 
-        $skills = Skill::all(); 
-        $skillLevels = SkillLevel::all(); 
-
-=======
->>>>>>> d1415120bf6556097ea9c8cf15b63dce9c167815
-        return view('employees.create', ['employee' => $employee, 'experiences' => $experiences] , compact('skillTypes', 'skills', 'skillLevels'));
+        return view('employees.create', ['employee' => $employee, 'experiences' => $experiences]);
     }
 
     public function create()
     {
-        $skillTypes = SkillType::with(['skills', 'skillLevels'])->get();
-        return view('employees.create', compact('skillTypes'));
+        return view('employees.create');
     }
-    
 
     public function store(Request $request)
     {
@@ -147,14 +133,14 @@ class EmployeeController extends Controller
 
 
     // SKILLS SECTION START--------------------------------------------------
-    
+
     public function skill_add($skillType)
     {
         if ($skillType == 'new' || $skillType == null) {
             return view('employees.configuration.skill_type.add');
         }
 
-        $skillType = SkillType::findOrFail($skillType); 
+        $skillType = SkillType::find($skillType);
         $skills = Skill::where('skill_type_id', $skillType->id)->get();
         $skillLevels = SkillLevel::where('skill_type_id', $skillType->id)->get();
 
@@ -164,11 +150,9 @@ class EmployeeController extends Controller
 
     public function skill_view()
     {
-        $skillTypes = SkillType::with(['skills', 'skillLevels'])->get();
-        
-        return view('employees.configuration.skill_type.index', compact('skillTypes'));
+        $skills = Skill::with('levels')->get();
+        return view('employees.configuration.skill_type.index', compact('skills'));
     }
-    
 
 
     public function skill_store(Request $request)
@@ -222,45 +206,4 @@ class EmployeeController extends Controller
 
         return response()->json(['success' => true]);
     }
-
-    public function saveSelectedSkill(Request $request)
-    {
-        dd('saveSelectedSkill');
-        // Validate the incoming data
-        $request->validate([
-            'skill_type' => 'required',
-            'skill_name' => 'required|string|max:255',
-            'skill_level' => 'required|string|max:255',
-        ]);
-
-        // Create or update the skill in the database
-        Skill::create([
-            'skill_type' => $request->skill_type,
-            'skill_name' => $request->skill_name,
-            'skill_level' => $request->skill_level,
-        ]);
-
-        // Return a success response
-        return response()->json(['message' => 'Skill saved successfully'], 200);
-    }
-
-    public function getSkillsByType(Request $request)
-    {
-        $skillTypeId = $request->get('skill_type_id');
-
-        $skills = Skill::where('skill_type_id', $skillTypeId)->get();
-
-        $assign_skilllevel = SkillLevel::where('skill_type_id', $skillTypeId)->get();
-        $skillLevels = SkillLevel::where('skill_type_id', $skillTypeId)->get();
-        
-        
-
-        return response()->json([
-            'skills' => $skills,
-            'skill_levels' => $skillLevels,
-            'assign_skilllevel' => $assign_skilllevel
-        ]);
-    }
-
-
 }
