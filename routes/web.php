@@ -25,7 +25,6 @@ Route::middleware(['web'])->group(function () {
     Route::get('/404' , [SettingController::class, 'error_404'])->name('error_404');
     Route::get('/500' , [SettingController::class, 'error_500'])->name('error_500');
 });
-
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/dataTable/users', [UserController::class, 'getUsers'])->name('api.users');
