@@ -7,16 +7,17 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @vite([
-    // 'resources/css/crm.css' ,
+//    'resources/css/crm.css' ,
     'resources/css/common/header.css',
     'resources/css/all.css' ,
     ])
-    {{-- font awesome by npm  --}}
+{{--     font awesome by npm  --}}
 
 
     <title>Yantra Design - Manufacturer and Supplier of Industrial Machinery & Tools</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
@@ -64,66 +65,75 @@
         }
 
         .toast-success {
-            background-color: #28a745 !important;
-            /* Green */
+            background-color: #28a745 !important; /* Green */
         }
 
         .toast-error {
-            background-color: #dc3545 !important;
-            /* Red */
+            background-color: #dc3545 !important; /* Red */
         }
-
     </style>
 </head>
 <body>
 
-    <div class="main_header_wrapper">
-        <div class="crmtop_header">
-            <div class="top_left_navbar">
-                <a href="{{ route('dashboard') }}" class="o_menu_toggle">
-                    {{-- <img src="images/CRM.png" alt="Avatar" class="crm_logo"> --}}
-                    <img src="@yield('image_url', asset('images/CRM.png') )" alt="Avatar" class="crm_logo">
-                    <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title','CRM')</a>
-                </a>
-                <div class="top_left_navbar_menu">
-                    <ul class="navbar_menu_wapper">
-                        @yield('navbar_menu')
-                    </ul>
-                </div>
-            </div>
-
-
-
-            <div class="top_main_navbar">
-                <ul class="top_right_navbar">
-                    <li>
-                        <div class="dropdown">
-                            <button onclick="myFunction()" class="dropbtn">
-                                <svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M988.8 512a348.8 348.8 0 0 1-144.96 278.72v208.32l-187.84-131.52a387.2 387.2 0 0 1-56 4.8A408.64 408.64 0 0 1 384 811.84l-36.8-23.04a493.76 493.76 0 0 0 52.8 3.2 493.44 493.44 0 0 0 51.2-2.88c221.44-23.04 394.24-192 394.24-400a365.12 365.12 0 0 0-4.16-51.84 373.44 373.44 0 0 0-48.96-138.56l18.88 11.2A353.6 353.6 0 0 1 988.8 512z m-198.72-128c0-192-169.6-349.76-378.24-349.76h-24C192 47.04 33.92 198.72 33.92 384a334.08 334.08 0 0 0 118.4 253.12v187.52l86.08-60.48 66.24-46.4a396.16 396.16 0 0 0 107.52 16C620.48 734.08 790.08 576 790.08 384z" />
-                                </svg>
-                            </button>
-                            <div id="myDropdown" class="dropdown-content">
-                                <a href="#home">Home</a>
-                                <a href="#about">About</a>
-                                <a href="#contact">Contact</a>
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="#"><svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M678.4 691.2l-60.8 60.8-179.2-176V243.2h86.4v294.4l153.6 153.6z m288-169.6c0 249.6-201.6 454.4-454.4 454.4S57.6 774.4 57.6 521.6C57.6 272 262.4 70.4 512 67.2c249.6 3.2 454.4 204.8 454.4 454.4z m-86.4 0C880 320 713.6 156.8 512 156.8S144 320 144 521.6c0 201.6 163.2 368 368 368 201.6 0 368-163.2 368-368z" />
-                            </svg></a></li>
-                    <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class="">
-                                <g>
-                                    <path d="M349.899 313.5v-.3c-7.5-7.8-15.599-15.601-25.199-23.101 65.4-20.7 101.999-70.499 101.999-140.4 0-62.999-33.3-116.1-84.6-135.901C317.501 4.499 280.299 0 228.099 0H35.5v512h124.2V309.899c36.711 0 34.854 5.895 47.999 20.101 15.312 16.735 67.089 98.459 120.901 182h147.9c-60.864-101.473-104.654-174.391-126.601-198.5zM159.7 111.299c26.206-.084 92.305-.437 104.099 1.201 23.701 4.2 35.7 18.6 35.7 43.2 0 21.599-9 36.299-26.1 42.299-19.349 6.912-86.441 4.801-113.699 4.801z" fill="#00a5a8" opacity="1" data-original="#000000" class=""></path>
-                                </g>
-                            </svg></a></li>
+<div class="main_header_wrapper">
+    <div class="crmtop_header">
+        <div class="top_left_navbar">
+            <a href="{{ route('dashboard') }}" class="o_menu_toggle">
+                {{-- <img src="images/CRM.png" alt="Avatar" class="crm_logo"> --}}
+                <img src="@yield('image_url', asset('images/CRM.png') )" alt="Avatar" class="crm_logo">
+                <a href="@yield('head_title_link' , route('dashboard'))" class="o_menu_brand">@yield('title','CRM')</a>
+            </a>
+            <div class="top_left_navbar_menu">
+                <ul class="navbar_menu_wapper">
+                    @yield('navbar_menu')
                 </ul>
             </div>
-
         </div>
 
-        @section('header_left_side')
+
+
+        <div class="top_main_navbar">
+            <ul class="top_right_navbar">
+                <li>
+                    <div class="dropdown">
+                        <button onclick="myFunction()" class="dropbtn">
+                            <svg class="svg-icon"
+                                style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+                                viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M988.8 512a348.8 348.8 0 0 1-144.96 278.72v208.32l-187.84-131.52a387.2 387.2 0 0 1-56 4.8A408.64 408.64 0 0 1 384 811.84l-36.8-23.04a493.76 493.76 0 0 0 52.8 3.2 493.44 493.44 0 0 0 51.2-2.88c221.44-23.04 394.24-192 394.24-400a365.12 365.12 0 0 0-4.16-51.84 373.44 373.44 0 0 0-48.96-138.56l18.88 11.2A353.6 353.6 0 0 1 988.8 512z m-198.72-128c0-192-169.6-349.76-378.24-349.76h-24C192 47.04 33.92 198.72 33.92 384a334.08 334.08 0 0 0 118.4 253.12v187.52l86.08-60.48 66.24-46.4a396.16 396.16 0 0 0 107.52 16C620.48 734.08 790.08 576 790.08 384z" />
+                            </svg>
+                        </button>
+                        <div id="myDropdown" class="dropdown-content">
+                            <a href="#home">Home</a>
+                            <a href="#about">About</a>
+                            <a href="#contact">Contact</a>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="#"><svg class="svg-icon"
+                            style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+                            viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M678.4 691.2l-60.8 60.8-179.2-176V243.2h86.4v294.4l153.6 153.6z m288-169.6c0 249.6-201.6 454.4-454.4 454.4S57.6 774.4 57.6 521.6C57.6 272 262.4 70.4 512 67.2c249.6 3.2 454.4 204.8 454.4 454.4z m-86.4 0C880 320 713.6 156.8 512 156.8S144 320 144 521.6c0 201.6 163.2 368 368 368 201.6 0 368-163.2 368-368z" />
+                        </svg></a></li>
+                <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg"
+                            style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" version="1.1"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0" y="0"
+                            viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve"
+                            class="">
+                            <g>
+                                <path
+                                    d="M349.899 313.5v-.3c-7.5-7.8-15.599-15.601-25.199-23.101 65.4-20.7 101.999-70.499 101.999-140.4 0-62.999-33.3-116.1-84.6-135.901C317.501 4.499 280.299 0 228.099 0H35.5v512h124.2V309.899c36.711 0 34.854 5.895 47.999 20.101 15.312 16.735 67.089 98.459 120.901 182h147.9c-60.864-101.473-104.654-174.391-126.601-198.5zM159.7 111.299c26.206-.084 92.305-.437 104.099 1.201 23.701 4.2 35.7 18.6 35.7 43.2 0 21.599-9 36.299-26.1 42.299-19.349 6.912-86.441 4.801-113.699 4.801z"
+                                    fill="#00a5a8" opacity="1" data-original="#000000" class=""></path>
+                            </g>
+                        </svg></a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    @section('header_left_side')
         <div class="new_btn_info">
             <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
         </div>
@@ -137,291 +147,115 @@
                     </g>
                 </svg></a>
         </div>
-
-        <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , " #")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+        
+        <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class' , "#")" id="@yield('header_save_btn_id' , 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
             <i class="fa fa-cloud-upload fa-fw"></i>
         </button>
 
         @yield('header_left_side_extra')
-        @endsection
-        <div class="crmcenter_header">
-            @include('layout.partials.navbar')
-        </div>
-        <div class="crm_head_centerside mob_search_info">
-            <form>
-                <input type="text" name="search" placeholder="Search..">
-                <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3" role="menu" style="position: fixed; top: 87px; left: 642px;">
-                    <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-                        <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
-                            <h5 class="o_dropdown_title d-inline">Filters</h5>
-                        </div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">My Activities</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Unassigned</span>
-                        <div class="dropdown-divider" role="separator"></div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Lost</span>
-                        <div class="dropdown-divider" role="separator"></div>
-                        <div class="o_accordion position-relative">
-                            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button>
-                        </div>
-                        <div class="o_accordion position-relative">
-                            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button>
-                        </div>
-                        <div class="dropdown-divider" role="separator"></div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
-                        <div class="dropdown-divider" role="separator"></div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
-                        <div role="separator" class="dropdown-divider"></div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0">Add Custom Filter</span>
-                    </div>
-                    <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-                        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
-                            <h5 class="o_dropdown_title d-inline">Group By</h5>
-                        </div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Salesperson</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Sales Team</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">City</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Country</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Campaign</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Medium</span>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Source</span>
-                        <div class="dropdown-divider" role="separator"></div>
-                        <div class="o_accordion position-relative">
-                            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button>
-                        </div>
-                        <div class="o_accordion position-relative">
-                            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button>
-                        </div>
-                        <div class="dropdown-divider" role="separator"></div>
-                        <div class="o_accordion position-relative">
-                            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_custom_group_menu text-truncate" tabindex="0" aria-expanded="false">Properties</button>
-                        </div>
-                        <div role="separator" class="dropdown-divider"></div>
-                        <select class="o_add_custom_group_menu o_menu_item dropdown-item">
-                            <option value="" disabled selected hidden>Add Custom Group</option>
-                            <option value="active">Active</option>
-                            <option value="activity_state">Activity State</option>
-                            <option value="date_open">Assignment Date</option>
-                            <option value="message_bounce">Bounce</option>
-                            <option value="campaign_id">Campaign</option>
-                            <option value="city">City</option>
-                            <option value="date_closed">Closed Date</option>
-                            <option value="color">Color Index</option>
-                            <option value="company_id">Company</option>
-                            <option value="partner_name">Company Name</option>
-                            <option value="contact_name">Contact Name</option>
-                            <option value="date_conversion">Conversion Date</option>
-                            <option value="country_id">Country</option>
-                            <option value="create_uid">Created by</option>
-                            <option value="create_date">Created on</option>
-                            <option value="partner_id">Customer</option>
-                            <option value="email_from">Email</option>
-                            <option value="email_domain_criterion">Email Domain Criterion</option>
-                            <option value="email_state">Email Quality</option>
-                            <option value="email_cc">Email cc</option>
-                            <option value="iap_enrich_done">Enrichment done</option>
-                            <option value="date_deadline">Expected Closing</option>
-                            <option value="won_status">Is Won</option>
-                            <option value="function">Job Position</option>
-                            <option value="lang_id">Language</option>
-                            <option value="date_automation_last">Last Action</option>
-                            <option value="date_last_stage_update">Last Stage Update</option>
-                            <option value="write_uid">Last Updated by</option>
-                            <option value="write_date">Last Updated on</option>
-                            <option value="lead_mining_request_id">Lead Mining Request</option>
-                            <option value="lang_code">Locale Code</option>
-                            <option value="lost_reason_id">Lost Reason</option>
-                            <option value="medium_id">Medium</option>
-                            <option value="mobile">Mobile</option>
-                            <option value="email_normalized">Normalized Email</option>
-                            <option value="name">Opportunity</option>
-                            <option value="phone">Phone</option>
-                            <option value="phone_state">Phone Quality</option>
-                            <option value="priority">Priority</option>
-                            <option value="recurring_plan">Recurring Plan</option>
-                            <option value="referred">Referred By</option>
-                            <option value="reveal_id">Reveal ID</option>
-                            <option value="team_id">Sales Team</option>
-                            <option value="user_id">Salesperson</option>
-                            <option value="phone_sanitized">Sanitized Number</option>
-                            <option value="source_id">Source</option>
-                            <option value="stage_id">Stage</option>
-                            <option value="state_id">State</option>
-                            <option value="street">Street</option>
-                            <option value="street2">Street2</option>
-                            <option value="tag_ids">Tags</option>
-                            <option value="title">Title</option>
-                            <option value="type">Type</option>
-                            <option value="website">Website</option>
-                            <option value="zip">Zip</option>
-                        </select>
-                    </div>
-                    <div class="o_dropdown_container o_favorites_menu w-100 w-lg-auto h-100 px-3">
-                        <div class="px-3 fs-5 mb-2"><i class="me-2 text-warning fa fa-star"></i>
-                            <h5 class="o_dropdown_title d-inline">Favorites</h5>
-                        </div>
-                        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">My Pipeline</span>
-                    <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3" role="menu" style="position: fixed; top: 87px; left: 642px;">
-                        <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-                            <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
-                                <h5 class="o_dropdown_title d-inline">Filters</h5>
-                            </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">My Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Unassigned</span>
-                            <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Lost</span>
-                            <div class="dropdown-divider" role="separator"></div>
-                            <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button></div>
-                            <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div>
-                            <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
-                            <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
-                            <div role="separator" class="dropdown-divider"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0">Add Custom Filter</span>
-                        </div>
-                        <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-                            <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
-                                <h5 class="o_dropdown_title d-inline">Group By</h5>
-                            </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Salesperson</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Sales Team</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">City</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Country</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Campaign</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Medium</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Source</span>
-                            <div class="dropdown-divider" role="separator"></div>
-                            <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button></div>
-                            <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div>
-                            <div class="dropdown-divider" role="separator"></div>
-                            <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_custom_group_menu text-truncate" tabindex="0" aria-expanded="false">Properties</button></div>
-                            <div role="separator" class="dropdown-divider"></div><select class="o_add_custom_group_menu o_menu_item dropdown-item">
-                                <option value="" disabled="true" selected="true" hidden="true">Add Custom Group</option>
-                                <option value="active">Active</option>
-                                <option value="activity_state">Activity State</option>
-                                <option value="date_open">Assignment Date</option>
-                                <option value="message_bounce">Bounce</option>
-                                <option value="campaign_id">Campaign</option>
-                                <option value="city">City</option>
-                                <option value="date_closed">Closed Date</option>
-                                <option value="color">Color Index</option>
-                                <option value="company_id">Company</option>
-                                <option value="partner_name">Company Name</option>
-                                <option value="contact_name">Contact Name</option>
-                                <option value="date_conversion">Conversion Date</option>
-                                <option value="country_id">Country</option>
-                                <option value="create_uid">Created by</option>
-                                <option value="create_date">Created on</option>
-                                <option value="partner_id">Customer</option>
-                                <option value="email_from">Email</option>
-                                <option value="email_domain_criterion">Email Domain Criterion</option>
-                                <option value="email_state">Email Quality</option>
-                                <option value="email_cc">Email cc</option>
-                                <option value="iap_enrich_done">Enrichment done</option>
-                                <option value="date_deadline">Expected Closing</option>
-                                <option value="won_status">Is Won</option>
-                                <option value="function">Job Position</option>
-                                <option value="lang_id">Language</option>
-                                <option value="date_automation_last">Last Action</option>
-                                <option value="date_last_stage_update">Last Stage Update</option>
-                                <option value="write_uid">Last Updated by</option>
-                                <option value="write_date">Last Updated on</option>
-                                <option value="lead_mining_request_id">Lead Mining Request</option>
-                                <option value="lang_code">Locale Code</option>
-                                <option value="lost_reason_id">Lost Reason</option>
-                                <option value="medium_id">Medium</option>
-                                <option value="mobile">Mobile</option>
-                                <option value="email_normalized">Normalized Email</option>
-                                <option value="name">Opportunity</option>
-                                <option value="phone">Phone</option>
-                                <option value="phone_state">Phone Quality</option>
-                                <option value="priority">Priority</option>
-                                <option value="recurring_plan">Recurring Plan</option>
-                                <option value="referred">Referred By</option>
-                                <option value="reveal_id">Reveal ID</option>
-                                <option value="team_id">Sales Team</option>
-                                <option value="user_id">Salesperson</option>
-                                <option value="phone_sanitized">Sanitized Number</option>
-                                <option value="source_id">Source</option>
-                                <option value="stage_id">Stage</option>
-                                <option value="state_id">State</option>
-                                <option value="street">Street</option>
-                                <option value="street2">Street2</option>
-                                <option value="tag_ids">Tags</option>
-                                <option value="title">Title</option>
-                                <option value="type">Type</option>
-                                <option value="website">Website</option>
-                                <option value="zip">Zip</option>
-                            </select>
-                        </div>
-                        <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
-                            <div class="px-3 fs-5 mb-2"><i class="me-2 text-favourite fa fa-star"></i>
-                                <h5 class="o_dropdown_title d-inline">Favorites</h5>
-                            </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected" role="menuitemcheckbox" tabindex="0" aria-checked="true"><span class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1" title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
-                            <div role="separator" class="dropdown-divider"></div>
-                            <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">Save current search</button></div>
-                        </div>
-                    </div>
-            </form>
-
-        </div>
+    @endsection
+    <div class="crmcenter_header">
+        @include('layout.partials.navbar')
     </div>
-    @yield('content')
-    <!-- header js -->
-    <script>
-        $(document).ready(function() {
+    <div class="crm_head_centerside mob_search_info">
+        <form>;
+            <input type="text" name="search" placeholder="Search..">
+            <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
+                    id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 512 512" xml:space="preserve">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <g>
+                            <g>
+                                <path
+                                    d="M387.478,340.255c-13.413,17.894-29.328,33.81-47.222,47.222L464.778,512L512,464.778L387.478,340.255z">
+                                </path>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path
+                                    d="M200.348,0C89.876,0,0,89.876,0,200.348s89.876,200.348,200.348,200.348s200.348-89.876,200.348-200.348 S310.82,0,200.348,0z M200.348,350.609c-82.854,0-150.261-67.407-150.261-150.261S117.494,50.087,200.348,50.087 s150.261,67.407,150.261,150.261S283.202,350.609,200.348,350.609z">
+                                </path>
+                            </g>
+                        </g>
+                        <g>
+                            <g>
+                                <path
+                                    d="M200.348,83.478c-64.442,0-116.87,52.428-116.87,116.87s52.428,116.87,116.87,116.87s116.87-52.428,116.87-116.87 S264.79,83.478,200.348,83.478z">
+                                </path>
+                            </g>
+                        </g>
+                    </g>
+                </svg></span>
+        </form>
+    </div>
+</div>
+@yield('content')
+<!-- header js -->
+<script>
+    $(document).ready(function() {
 
-            $('.dropdown > a').click(function(e) {
-                e.preventDefault(); // Prevent the default link action
-                // Close other dropdowns
-                $('.dropdown').not($(this).parent()).removeClass('active');
+        $('.dropdown > a').click(function (e) {
+            e.preventDefault(); // Prevent the default link action
+// Close other dropdowns
+            $('.dropdown').not($(this).parent()).removeClass('active');
 
-                // Toggle the active class on the current dropdown
-                $(this).parent().toggleClass('active');
-            });
-
-            // Optional: Close the dropdown if clicking outside of it
-            $(document).click(function(e) {
-                if (!$(e.target).closest('.dropdown').length) {
-                    $('.dropdown').removeClass('active');
-                }
-            });
+// Toggle the active class on the current dropdown
+            $(this).parent().toggleClass('active');
         });
 
-    </script>
-
-    <script>
-        toastr.options = {
-            "closeButton": true
-            , "debug": false
-            , "newestOnTop": false
-            , "progressBar": true
-            , "positionClass": "toast-top-right"
-            , "preventDuplicates": false
-            , "onclick": null
-            , "showDuration": "300"
-            , "hideDuration": "1000"
-            , "timeOut": "5000"
-            , "extendedTimeOut": "1000"
-            , "showEasing": "swing"
-            , "hideEasing": "linear"
-            , "showMethod": "fadeIn"
-            , "hideMethod": "fadeOut"
-        }
-
-        @if(Session::has('success'))
-        toastr.success("{{ Session::get('success') }}");
-        @endif
-
-        @if(Session::has('error'))
-        toastr.error("{{ Session::get('error') }}");
-        @endif
-
-        @if($errors - > any())
-        @foreach($errors - > all() as $error)
-        toastr.error("{{ $error }}");
-        @endforeach
-        @endif
-
-    </script>
-    <script>
-        // ajax csrf token setup
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+// Optional: Close the dropdown if clicking outside of it
+        $(document).click(function (e) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown').removeClass('active');
             }
         });
+    });
+</script>
 
-    </script>
-    @stack('scripts')
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    @if(Session::has('success'))
+    toastr.success("{{ Session::get('success') }}");
+    @endif
+
+    @if(Session::has('error'))
+    toastr.error("{{ Session::get('error') }}");
+    @endif
+
+    @if ($errors->any())
+    @foreach ($errors->all() as $error)
+    toastr.error("{{ $error }}");
+    @endforeach
+    @endif
+</script>
+<script>
+    // ajax csrf token setup
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+</script>
+@stack('scripts')
 </body>
 </html>
