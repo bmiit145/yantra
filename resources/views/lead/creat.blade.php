@@ -406,17 +406,14 @@
                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                 style="width: 100%;">
                                                 <div name="priority" class="o_field_widget o_field_priority">
-                                                    <div class="o_priority" role="radiogroup" name="priority"
-                                                        aria-label="Priority"><a href="#"
-                                                            class="o_priority_star fa fa-star-o" role="radio"
-                                                            tabindex="-1" data-tooltip="Priority: Medium"
-                                                            aria-label="Medium"></a><a href="#"
-                                                            class="o_priority_star fa fa-star-o" role="radio"
-                                                            tabindex="-1" data-tooltip="Priority: High"
-                                                            aria-label="High"></a><a href="#"
-                                                            class="o_priority_star fa fa-star-o" role="radio"
-                                                            tabindex="-1" data-tooltip="Priority: Very High"
-                                                            aria-label="Very High"></a></div>
+                                                    <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                        <a href="#" class="o_priority_star fa {{ isset($data->priority) && ($data->priority == 'medium' || $data->priority == 'high' || $data->priority == 'very_high') ? 'fa-star' : 'fa-star-o' }}"
+                                                        role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
+                                                        <a href="#" class="o_priority_star fa {{ isset($data->priority) && ($data->priority == 'high' || $data->priority == 'very_high') ? 'fa-star' : 'fa-star-o' }}"
+                                                        role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
+                                                        <a href="#" class="o_priority_star fa {{ isset($data->priority) && $data->priority == 'very_high' ? 'fa-star' : 'fa-star-o' }}"
+                                                        role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1148,6 +1145,7 @@
                 var phone_1 = $('#phone_1').val();
                 var mobile_0 = $('#mobile_0').val();
                 var tag_ids_1 = $('#tag_ids_1').val();
+                var priority = $('.o_priority .o_priority_star.fa-star').last().data('value');
 
 
                 if (!name_0) {
@@ -1182,6 +1180,7 @@
                         phone_1: phone_1,
                         mobile_0: mobile_0,
                         tag_ids_1: tag_ids_1,
+                        priority: priority, 
                     },
                     success: function(response) {
                         toastr.success(response.message);
@@ -1196,6 +1195,7 @@
                     }
                 });
             });
+
         </script>
     @endpush
 

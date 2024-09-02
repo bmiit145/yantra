@@ -44,7 +44,7 @@
         @yield('header_rightside')
         <div class="crmright_head_inner">
             <ul class="crmright_head_main crmright_head_main__1">
-                <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
+                <li><a href="{{route('lead.index')}}"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
@@ -60,7 +60,7 @@
                                     fill="#000000"></path>
                             </g>
                         </svg></a></li>
-                <li><a href="#"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
+                <li><a href="@yield('kanban' , route('lead.kanban'))"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
                                      version="1.1" preserveAspectRatio="xMidYMid meet"
                                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -87,7 +87,7 @@
                                 <rect x="0" y="0" width="36" height="36" fill-opacity="0"></rect>
                             </g>
                         </svg></a></li>
-                <li><a href="#"><svg fill="#000000" height="64px" width="64px" version="1.1"
+                <li><a href="@yield('calendar' , route('lead.calendar'))"><svg fill="#000000" height="64px" width="64px" version="1.1"
                                      id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 289.48 289.48"
                                      xml:space="preserve">

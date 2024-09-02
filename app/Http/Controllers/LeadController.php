@@ -39,7 +39,7 @@ class LeadController extends Controller
         //     ->leftJoin('tags', 'generate_lead.tag_id', '=', 'tags.id')
         //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'person_titles.id')
         //     ->first();
-        
+
         return view('lead.creat', compact('titles', 'countrys', 'tags', 'data'));
     }
 
@@ -137,13 +137,13 @@ class LeadController extends Controller
     //             'lead_type' => '1',
     //         ]
     //     );
-    
+
     //     // Log changes
     //     $action = $request->lead_id ? 'updated' : 'created';
     //     $message = $action === 'updated' ? 'Lead updated successfully' : 'Lead created successfully';
-        
+
     //     Log::info($message, ['lead_id' => $data->id, 'data' => $data->toArray()]);
-    
+
     //     return response()->json(['message' => $message]);
     // }
 
@@ -172,6 +172,8 @@ class LeadController extends Controller
                 'mobile' => $request->mobile_0,
                 'tag_id' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
                 'lead_type' => '1',
+                'priority' => $request->priority,
+
             ]
         );
 
@@ -292,6 +294,27 @@ class LeadController extends Controller
         }
 
         return response()->json(['message' => 'Failed to fetch leads'], 500);
+    }
+
+    public function show()
+    {
+        $leads = generate_lead::orderBy('id', 'desc')->get();
+        return view('lead.kanban', compact('leads'));
+    }
+
+    public function updatePriority(Request $request)
+    {
+        // Find the lead and update its priority
+        $lead = generate_lead::find($request->input('lead_id'));
+        $lead->priority = $request->input('priority');
+        $lead->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function calendar()
+    {
+        return view('lead.calendar');
     }
 
 }

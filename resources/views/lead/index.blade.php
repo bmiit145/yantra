@@ -2,36 +2,38 @@
 @section('content')
 @section('head_breadcrumb_title', 'Leads')
 @section('head_new_btn_link', route('lead.create'))
+@section('kanban', route('lead.kanban', ['lead' => 'kanban']))
+@section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('navbar_menu')
-    <li class="dropdown">
-        <a href="#">Sales</a>
-        <div class="dropdown-content">
-            <a href="#">My Pipeline</a>
-            <a href="#">My Activities</a>
-            <a href="#">My Quotations</a>
-            <a href="#">Teams</a>
-            <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
-        </div>
-    </li>
-    <li>
-        <a href="{{ route('lead.index') }}">Leads</a>
-    </li>
-    <li class="dropdown">
-        <a href="#">Reporting</a>
-        <div class="dropdown-content">
-            <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
-            <a href="#">Activities</a>
-        </div>
-    </li>
-    <li class="dropdown">
-        <a href="#">Configuration</a>
-        <div class="dropdown-content">
-            <a href="#">Settings</a>
-            <a href="#">Sales Teams</a>
-        </div>
-    </li>
+<li class="dropdown">
+    <a href="#">Sales</a>
+    <div class="dropdown-content">
+        <a href="#">My Pipeline</a>
+        <a href="#">My Activities</a>
+        <a href="#">My Quotations</a>
+        <a href="#">Teams</a>
+        <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
+    </div>
+</li>
+<li>
+    <a href="{{ route('lead.index') }}">Leads</a>
+</li>
+<li class="dropdown">
+    <a href="#">Reporting</a>
+    <div class="dropdown-content">
+        <a href="{{route('crm.forecasting')}}">Forecast</a>
+        <a href="#">Pipeline</a>
+        <a href="#">Leads</a>
+        <a href="#">Activities</a>
+    </div>
+</li>
+<li class="dropdown">
+    <a href="#">Configuration</a>
+    <div class="dropdown-content">
+        <a href="#">Settings</a>
+        <a href="#">Sales Teams</a>
+    </div>
+</li>
 @endsection
 
 <style>
@@ -48,7 +50,7 @@
         position: absolute;
         background-color: #f9f9f9;
         min-width: 160px;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
         padding: 10px;
     }
@@ -86,7 +88,7 @@
 
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
-    <button class="dropdown-btn">Show/Hide Columns</button>
+        <button class="dropdown-btn">Show/Hide Columns</button>
         <div class="dropdown-menu">
             <div class="dropdown-checkbox">
                 <label><input type="checkbox" data-column="0" checked> Lead</label>
@@ -121,14 +123,14 @@
                 <tr>
                     <th>Lead</th>
                     <th>Email</th>
-                    <th>City</th>                    
-                    <th>state</th>                    
+                    <th>City</th>
+                    <th>state</th>
                     <th>Country</th>
                     <th>Title</th>
                     <th>Tag</th>
                     <th>Salesperson</th>
                     <th>Sales Team</th>
-                   
+
                 </tr>
             </thead>
             <tbody>
@@ -145,8 +147,8 @@
                                 {{$tag->name ?? ''}}
                             @endforeach
                         </td>
-                        <td>{{$lead->country ?? ''}}</td>
-                        <td>{{$lead->country ?? ''}}</td>
+                        <td>{{$lead->sales_person ?? ''}}</td>
+                        <td>{{$lead->sales_team ?? ''}}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -160,31 +162,65 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#example').DataTable();
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            columnDefs: [
+                { visible: false, targets: [2, 3, 4, 5, 6, 7, 8] } // Initial visibility settings
+            ]
+        });
 
-         // Handle column visibility based on checkbox status
-         $('.dropdown-menu input[type="checkbox"]').on('change', function() {
+        // Restore column visibility from local storage
+        function restoreColumnVisibility() {
+            var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
+            if (visibility) {
+                table.columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var isVisible = visibility[index] !== undefined ? visibility[index] : true;
+                    column.visible(isVisible);
+                    $('.dropdown-menu input[data-column="' + index + '"]').prop('checked', isVisible);
+                });
+            }
+        }
+
+        // Save column visibility to local storage
+        function saveColumnVisibility() {
+            var visibility = {};
+            table.columns().every(function () {
+                var column = this;
+                var index = column.index();
+                visibility[index] = column.visible();
+            });
+            localStorage.setItem('columnVisibility', JSON.stringify(visibility));
+        }
+
+        // Handle column visibility based on checkbox status
+        $('.dropdown-menu input[type="checkbox"]').on('change', function () {
             var column = table.column($(this).data('column'));
             column.visible(this.checked);
+            saveColumnVisibility(); // Save visibility to local storage
         });
-      
-        // Set default visibility for columns
-        $('#example').DataTable().columns().every(function() {
-            var column = this;
-            var index = column.index();
-            var checkbox = $('.dropdown-menu input[data-column="' + index + '"]');
-            if (checkbox.length && checkbox.is(':checked')) {
-                column.visible(true);
-            } else {
-                column.visible(false);
+
+        // Set default visibility for columns based on initial checkbox state
+        restoreColumnVisibility();
+
+        // Handle dropdown menu display
+        $(document).on('click', '.dropdown-btn', function (event) {
+            event.stopPropagation(); // Prevent click event from propagating to the document
+            $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
+            $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
+        });
+
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.dropdown-menu').length) {
+                $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
             }
         });
     });
-  
+
 </script>
 <script>
-    $(document).on('click', '.lead-row', function() {
+    $(document).on('click', '.lead-row', function () {
         var leadId = $(this).data('id');
         window.location.href = "{{ route('lead.create') }}/" + leadId;
     });
@@ -196,35 +232,22 @@
             data: {
                 _token: "{{ csrf_token() }}",
             },
-            success: function(response) {
+            success: function (response) {
                 console.log('Lead stored successfully.', response);
             },
-            error: function(error) {
+            error: function (error) {
                 console.error('Error storing lead:', error);
             }
         });
     }
 
     // Auto-refresh every 2 minutes
-    setInterval(function() {
+    setInterval(function () {
         console.log('Attempting to store lead...');
         storeLead();
     }, 2 * 60 * 1000);
     storeLead();
 </script>
 
-<script>
-    $(document).on('click', '.dropdown-btn', function(event) {
-        event.stopPropagation();
-        $(this).parent().toggleClass('dropdown-active');
-    });
 
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('.dropdown-btn').length) {
-            $('.dropdown-menu').parent().removeClass('dropdown-active');
-        }
-    });
-</script>
-
-
-@endsection 
+@endsection
