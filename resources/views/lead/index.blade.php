@@ -34,8 +34,88 @@
     </li>
 @endsection
 
+<style>
+    .dropdown-btn {
+        background-color: #f1f1f1;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        padding: 10px;
+    }
+
+    .dropdown-menu a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .dropdown-menu a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown-active .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-checkbox {
+        margin-bottom: 10px;
+    }
+
+    .dropdown-checkbox label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dropdown-checkbox input[type="checkbox"] {
+        margin-right: 5px;
+    }
+</style>
+
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
+    <button class="dropdown-btn">Show/Hide Columns</button>
+        <div class="dropdown-menu">
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="0" checked> Lead</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="1" checked> Email</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="2"> City</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="3"> State</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="4"> Country</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="5"> Title</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="6"> Tag</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="7"> Salesperson</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="8"> Sales Team</label>
+            </div>
+        </div>
         <table id="example" class="display nowrap">
             <thead>
                 <tr>
@@ -52,17 +132,21 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($data as $lead)   
-                    <tr data-id="{{ $lead->id }}" class="lead-row">
-                        <td>{{$lead->product_name}}</td>
-                        <td>{{$lead->email}}</td>
-                        <td>{{$lead->city}}</td>
+                @foreach($data as $lead)
+                    <tr data-id="{{ $lead->id ?? ''}}" class="lead-row">
+                        <td>{{$lead->product_name ?? ''}}</td>
+                        <td>{{$lead->email ?? ''}}</td>
+                        <td>{{$lead->city ?? ''}}</td>
                         <td>{{$lead->getState->name ?? ''}}</td>
                         <td>{{$lead->getCountry->name ?? ''}}</td>
                         <td>{{$lead->getTilte->title ?? ''}}</td>
-                        <td>{{$lead->getTag->name ?? ''}}</td>
-                        <td>{{$lead->country}}</td>
-                        <td>{{$lead->country}}</td>
+                        <td>
+                            @foreach ($lead->getTag as $tag)
+                                {{$tag->name ?? ''}}
+                            @endforeach
+                        </td>
+                        <td>{{$lead->country ?? ''}}</td>
+                        <td>{{$lead->country ?? ''}}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -78,6 +162,24 @@
 <script>
     $(document).ready(function() {
         $('#example').DataTable();
+
+         // Handle column visibility based on checkbox status
+         $('.dropdown-menu input[type="checkbox"]').on('change', function() {
+            var column = table.column($(this).data('column'));
+            column.visible(this.checked);
+        });
+      
+        // Set default visibility for columns
+        $('#example').DataTable().columns().every(function() {
+            var column = this;
+            var index = column.index();
+            var checkbox = $('.dropdown-menu input[data-column="' + index + '"]');
+            if (checkbox.length && checkbox.is(':checked')) {
+                column.visible(true);
+            } else {
+                column.visible(false);
+            }
+        });
     });
   
 </script>
@@ -109,6 +211,19 @@
         storeLead();
     }, 2 * 60 * 1000);
     storeLead();
+</script>
+
+<script>
+    $(document).on('click', '.dropdown-btn', function(event) {
+        event.stopPropagation();
+        $(this).parent().toggleClass('dropdown-active');
+    });
+
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('.dropdown-btn').length) {
+            $('.dropdown-menu').parent().removeClass('dropdown-active');
+        }
+    });
 </script>
 
 

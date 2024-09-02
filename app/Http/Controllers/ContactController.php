@@ -42,7 +42,7 @@ class ContactController extends Controller
     }
 
     public function save(Request $request , $is_user = null)
-    {
+    {        
             // Validate the request
         $request->validate([
             'contact_id' => 'sometimes',
@@ -62,9 +62,11 @@ class ContactController extends Controller
         // Find or create contact and address
         $contact = isset($data['contact_id']) ? Contact::find($data['contact_id']) : new Contact;
         $address = isset($data['contact_id']) ? ContactAddress::where('contact_id', $contact->id)->first() : new ContactAddress;
+        // dd($address);
 
         // Capture original data before update
-        $originalContact = $contact->getOriginal();
+        $originalContact = $contact->getOriginal();        
+        // dd($originalContact);
         $originalAddress = $address->getOriginal();
 
         // Update contact details

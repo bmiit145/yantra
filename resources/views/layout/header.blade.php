@@ -63,6 +63,14 @@
         .dropdown.active .dropdown-content {
             display: block;
         }
+
+        .toast-success {
+            background-color: #28a745 !important; /* Green */
+        }
+
+        .toast-error {
+            background-color: #dc3545 !important; /* Red */
+        }
     </style>
 </head>
 <body>

@@ -49,6 +49,22 @@
             display: none;
     }
 
+    .select2-container--default.select2-container--focus .select2-selection--multiple{
+        border: none !important;
+    }
+
+    .select2-container--default .select2-selection--multiple{
+        border: none !important;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        background-color: transparent;
+        border: none !important;
+    }
+    .select2-container .select2-selection--multiple .select2-selection__rendered{
+        overflow: inherit !important;
+    }
+
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -79,6 +95,7 @@
                                         Opportunity</span></button><button data-hotkey="l" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary" name="510" type="action" data-tooltip="Mark as lost"><span>Lost</span></button>
                             </div>
                         </div>
+                        <input type="hidden" name="lead_id" id="lead_id" value="{{ isset($data) ? $data->id : ''}}">
                         <div class="o_form_sheet position-relative">
                             <div class="oe_title">
                                 <h1>
@@ -189,9 +206,9 @@
                                                             <div class="o-autocomplete dropdown">
                                                                 <div class="title_select_hide">
                                                                     <select class="o-autocomplete--input o_input" id="title_0" style="width: 150px;">
-                                                                        <option>Selecte Title </option>
-                                                                        @foreach($title as $titles)
-                                                                            <option value="{{ $titles->id }}">{{ $titles->title }}</option>
+                                                                        <option value="">Selecte Title </option>
+                                                                        @foreach($titles as $title)
+                                                                            <option value="{{ $title->id }}" @if(isset($data->title) && $title->id == $data->title) selected @endif>{{ $title->title }}</option>
                                                                         @endforeach                                                                
                                                                         <option value="add_new">Start typing...</option>
                                                                     </select>
@@ -300,13 +317,14 @@
                                             <div name="tag_ids" class="o_field_widget o_field_many2many_tags">
                                                 <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
                                                     <div class="o_field_many2many_selection d-inline-flex w-100">
-                                                        <div class="o_input_dropdown">
-                                                           
-                                                             
+                                                        <div class="o_input_dropdown">                                                               
                                                                 <div class="tag_input_hide">
+                                                                    @php                                                                        
+                                                                        $selectedTagIds = isset($data->tag_id) ? (is_array($data->tag_id) ? $data->tag_id : explode(',', $data->tag_id)): [];
+                                                                    @endphp
                                                                     <select class="o-autocomplete--input o_input" id="tag_ids_1" style="width: 150px;" multiple>
                                                                         @foreach($tags as $tag)
-                                                                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                                                                            <option value="{{ $tag->id }}" data-color="{{ $tag->color }}" {{ in_array($tag->id, $selectedTagIds) ? 'selected' : '' }}>{{ $tag->name }}</option>
                                                                         @endforeach
                                                                             <option value="add_new_tag">Start typing...</option>
                                                                     </select>
@@ -462,7 +480,12 @@
                                 </div>
                             </div>
                             <div class="o-mail-Chatter-content">
-                                <div class="o-mail-Thread position-relative flex-grow-1 d-flex flex-column overflow-auto pb-4" tabindex="-1">
+                            @php
+                                $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
+                            @endphp
+
+                                <x-log-display :logs="$logs" />
+                                <!-- <div class="o-mail-Thread position-relative flex-grow-1 d-flex flex-column overflow-auto pb-4" tabindex="-1">
                                     <div class="d-flex flex-column position-relative flex-grow-1"><span class="position-absolute w-100 invisible top-0" style="height: Min(1581px, 100%)"></span><span></span>
                                         <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                             <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
@@ -499,7 +522,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -560,6 +583,35 @@
         , allowClear: true
     });
 
+    $(document).ready(function() {
+        function formatTag(tag) {
+            if (!tag.id) {
+                return tag.text; // Return text for non-tag elements
+            }
+            
+            var color = $(tag.element).data('color');
+            var $tag = $('<span>').text(tag.text);
+            
+            // Apply background color if specified
+            if (color) {
+                $tag.css('background-color', color);
+                $tag.css('color', '#fff'); // Ensure text color is readable
+                $tag.css('padding', '2px 12px');
+                $tag.css('border-radius', '23px');
+            }
+
+            return $tag;
+        }
+        
+        $('#tag_ids_1').select2({
+            templateResult: formatTag,
+            templateSelection: formatTag,
+            width: 'resolve' // Adjust width if necessary
+        });
+    });
+
+
+    
 </script>
 
 <script>
@@ -632,17 +684,35 @@
     
     {{-- Add new tag --}}
     
+    // const selectTag = $('#tag_ids_1');
+    // const newTagInput = $('#new_tag_input');
+    
+    // selectTag.on('change', function() {
+    //     if ($(this).val() === 'add_new_tag') {
+    //         $('.tag_input_hide').hide();
+    //         newTagInput.show().focus();
+    //     } else {
+    //         newTagInput.hide();            
+    //     }
+    // });
+
     const selectTag = $('#tag_ids_1');
     const newTagInput = $('#new_tag_input');
     
+    newTagInput.hide();
+
     selectTag.on('change', function() {
-        if ($(this).val() === 'add_new_tag') {
+        const selectedValue = $(this).val();
+
+        if (selectedValue.includes('add_new_tag')) {
             $('.tag_input_hide').hide();
             newTagInput.show().focus();
         } else {
-            newTagInput.hide();            
+            newTagInput.hide();
+            $('.tag_input_hide').show();
         }
     });
+
     
     
     newTagInput.on('keypress', function(e) {
@@ -691,6 +761,7 @@
 </script>
 <script>
     $('#main_save_btn').click(function() {
+        var lead_id = $('#lead_id').val();
         var name_0 = $('#name_0').val();
         var probability_0 = $('#probability_0').val();
         var street_0 = $('#street_0').val();
@@ -724,6 +795,7 @@
             , type: 'POST'
             , data: {
                 _token: '{{ csrf_token() }}'
+                ,lead_id : lead_id
                 , name_0: name_0
                 , probability_0: probability_0
                 , street_0: street_0
