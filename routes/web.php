@@ -104,6 +104,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-add/{id?}', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
     Route::POST('/storeLead', [LeadController::class, 'storeLead'])->name('lead.storeLead');
+    Route::get('/lead-kanban', [LeadController::class, 'show'])->name('lead.kanban')->defaults('lead', 'kanban');
+    Route::post('/lead/updatePriority', [LeadController::class, 'updatePriority'])->name('lead.updatePriority');
+    Route::get('/lead-calendar', [LeadController::class, 'calendar'])->name('lead.calendar')->defaults('lead', 'calendar');
 
     //fetch-states
     Route::post('/fetch-states', [LeadController::class, 'fetchState'])->name('fetch-states');
