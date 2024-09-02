@@ -71,6 +71,27 @@
         .toast-error {
             background-color: #dc3545 !important; /* Red */
         }
+       
+        .search-container {
+            position: relative;
+        }
+
+        .search_menu_wapper {
+            display: none;
+            position: absolute;
+            top: 40PX; /* Position the menu below the input */
+            left: 0; /* Align with the left edge of the input */
+            background-color: white;
+            padding: 10px;
+            list-style: none;
+            margin: 0;
+            width: 200px; /* Adjust the width as needed */
+            z-index: 1000; /* Ensure it's above other content */
+        }
+
+        .search-container .show-dropdown .search_menu_wapper {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -159,39 +180,21 @@
     </div>
     <div class="crm_head_centerside mob_search_info">
         <form>;
-            <input type="text" name="search" placeholder="Search..">
-            <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
-                    id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    viewBox="0 0 512 512" xml:space="preserve">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <g>
-                            <g>
-                                <path
-                                    d="M387.478,340.255c-13.413,17.894-29.328,33.81-47.222,47.222L464.778,512L512,464.778L387.478,340.255z">
-                                </path>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <path
-                                    d="M200.348,0C89.876,0,0,89.876,0,200.348s89.876,200.348,200.348,200.348s200.348-89.876,200.348-200.348 S310.82,0,200.348,0z M200.348,350.609c-82.854,0-150.261-67.407-150.261-150.261S117.494,50.087,200.348,50.087 s150.261,67.407,150.261,150.261S283.202,350.609,200.348,350.609z">
-                                </path>
-                            </g>
-                        </g>
-                        <g>
-                            <g>
-                                <path
-                                    d="M200.348,83.478c-64.442,0-116.87,52.428-116.87,116.87s52.428,116.87,116.87,116.87s116.87-52.428,116.87-116.87 S264.79,83.478,200.348,83.478z">
-                                </path>
-                            </g>
-                        </g>
-                    </g>
-                </svg></span>
+            <input type="text" name="search" placeholder="Search..">                        
         </form>
     </div>
 </div>
+<script>
+    document.getElementById('search-input').addEventListener('click', function() {
+        var searchDiv = document.getElementById('search-dropdown');
+        // Toggle the display of the div
+        if (searchDiv.style.display === 'none' || searchDiv.style.display === '') {
+            searchDiv.style.display = 'block';
+        } else {
+            searchDiv.style.display = 'none';
+        }
+    });
+</script>
 @yield('content')
 <!-- header js -->
 <script>

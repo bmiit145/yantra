@@ -7,8 +7,11 @@
     <div class="crm_head_centerside">
         @yield('header_centerside')
         <form>
-            <input type="text" name="search" placeholder="Search..">
-            <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
+        <input type="text" id="search-input" name="search" placeholder="Search..">
+        <ul class="search_menu_wapper" style="display: none;" id="search-dropdown">
+            @yield('search_div')
+        </ul>
+            <!-- <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
                                                  id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                                  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -36,7 +39,7 @@
                                     </g>
                                 </g>
                             </g>
-                        </svg></span>
+                        </svg></span> -->
         </form>
     </div>
 
