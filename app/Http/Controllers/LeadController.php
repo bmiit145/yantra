@@ -40,7 +40,8 @@ class LeadController extends Controller
         //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'person_titles.id')
         //     ->first();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data'));
+        return view('lead.cre
+        at', compact('titles', 'countrys', 'tags', 'data'));
     }
 
 
