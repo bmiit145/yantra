@@ -185,15 +185,29 @@
     </div>
 </div>
 <script>
-    document.getElementById('search-input').addEventListener('click', function() {
-        var searchDiv = document.getElementById('search-dropdown');
-        // Toggle the display of the div
-        if (searchDiv.style.display === 'none' || searchDiv.style.display === '') {
-            searchDiv.style.display = 'block';
-        } else {
-            searchDiv.style.display = 'none';
-        }
-    });
+    document.getElementById('search-input').addEventListener('click', function(event) {
+    // Prevent the event from propagating to the document click handler
+    event.stopPropagation();
+
+    var searchDiv = document.getElementById('search-dropdown');
+    // Toggle the display of the div
+    if (searchDiv.style.display === 'none' || searchDiv.style.display === '') {
+        searchDiv.style.display = 'block';
+    } else {
+        searchDiv.style.display = 'none';
+    }
+});
+
+// Hide the dropdown when clicking outside of it
+document.addEventListener('click', function(event) {
+    var searchDiv = document.getElementById('search-dropdown');
+    var searchInput = document.getElementById('search-input');
+    
+    // Check if the click was outside of the search input and the dropdown
+    if (!searchDiv.contains(event.target) && event.target !== searchInput) {
+        searchDiv.style.display = 'none';
+    }
+});
 </script>
 @yield('content')
 <!-- header js -->

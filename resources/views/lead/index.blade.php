@@ -181,6 +181,16 @@
         border-radius: 5px;
     }
 
+    .hide-show-dropdown-menu{
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: auto !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        padding: 10px;
+    }
+
     .dropdown-menu {
         display: none;
         position: absolute;
@@ -225,7 +235,7 @@
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
         <button class="dropdown-btn">Show/Hide Columns</button>
-        <div class="dropdown-menu">
+        <div class="hide-show-dropdown-menu dropdown-menu">
             <div class="dropdown-checkbox">
                 <label><input type="checkbox" data-column="0" checked> Lead</label>
             </div>

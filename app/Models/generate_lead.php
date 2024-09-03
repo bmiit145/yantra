@@ -93,5 +93,10 @@ class generate_lead extends Model
         return $this->belongsToMany(Tag::class, 'lead_tag', 'lead_id', 'tag_id');
     }
 
+    public function getUser()
+    {
+        return $this->belongsTo(User::class, 'sales_person', 'id');
+    }
+
 
 }
