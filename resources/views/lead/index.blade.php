@@ -36,69 +36,54 @@
 </li>
 @endsection
 @section('search_div')
-<div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
-    role="menu" style="position: absolute; top: 0; left: 0;">
+<div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3" role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
             <h5 class="o_dropdown_title d-inline">Filters</h5>
-        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">My Activities</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Unassigned</span>
-        <div class="dropdown-divider" role="separator"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Lost</span>
+        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">My Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Unassigned</span>
+        <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Lost</span>
         <div class="dropdown-divider" role="separator"></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
-                aria-expanded="false">Creation Date</button></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
-                aria-expanded="false">Closed Date</button></div>
-        <div class="dropdown-divider" role="separator"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Late Activities</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox"
-            tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
-        <div class="dropdown-divider" role="separator"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Archived</span>
-        <div role="separator" class="dropdown-divider"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
-            tabindex="0">Add Custom Filter</span>
+        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button></div>
+        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div>
+        <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
+        <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
+        <div role="separator" class="dropdown-divider"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
-        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Salesperson</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Sales Team</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">City</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Country</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Campaign</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Medium</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Source</span>
+        </div>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Salesperson</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Sales Team</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">City</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Country</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Campaign</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Medium</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Source</span>
         <div class="dropdown-divider" role="separator"></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
-                aria-expanded="false">Creation Date</button></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
-                aria-expanded="false">Closed Date</button></div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="creationDateBtn">
+                Creation Date
+            </button>
+            <div class="o_dropdown_content" id="creationDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="dropdown-item">Year</span>
+                <span class="dropdown-item">Quarter</span>
+                <span class="dropdown-item">Month</span>
+                <span class="dropdown-item">Week</span>
+                <span class="dropdown-item">Day</span>
+            </div>
+        </div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn">
+                Closed Date
+            </button>
+            <div class="o_dropdown_content" id="closeDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="dropdown-item">Year</span>
+                <span class="dropdown-item">Quarter</span>
+                <span class="dropdown-item">Month</span>
+                <span class="dropdown-item">Week</span>
+                <span class="dropdown-item">Day</span>
+            </div>
+        </div>
+        {{-- <div class="o_accordion position-relative">
+                <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div> --}}
         <div class="dropdown-divider" role="separator"></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_custom_group_menu text-truncate"
-                tabindex="0" aria-expanded="false">Properties</button></div>
-        <div role="separator" class="dropdown-divider"></div><select
-            class="o_add_custom_group_menu o_menu_item dropdown-item">
+        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_custom_group_menu text-truncate" tabindex="0" aria-expanded="false">Properties</button></div>
+        <div role="separator" class="dropdown-divider"></div><select class="o_add_custom_group_menu o_menu_item dropdown-item">
             <option value="" disabled="true" selected="true" hidden="true">Add Custom Group</option>
             <option value="active">Active</option>
             <option value="activity_state">Activity State</option>
@@ -160,14 +145,9 @@
     <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-favourite fa fa-star"></i>
             <h5 class="o_dropdown_title d-inline">Favorites</h5>
-        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected"
-            role="menuitemcheckbox" tabindex="0" aria-checked="true"><span
-                class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1"
-                    title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
+        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected" role="menuitemcheckbox" tabindex="0" aria-checked="true"><span class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1" title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
         <div role="separator" class="dropdown-divider"></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate"
-                tabindex="0" aria-expanded="false">Save current search</button></div>
+        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">Save current search</button></div>
     </div>
 </div>
 @endsection
@@ -230,6 +210,7 @@
     .dropdown-checkbox input[type="checkbox"] {
         margin-right: 5px;
     }
+
 </style>
 
 <div class="card" style="padding: 1%">
@@ -281,21 +262,21 @@
             </thead>
             <tbody>
                 @foreach($data as $lead)
-                    <tr data-id="{{ $lead->id ?? ''}}" class="lead-row">
-                        <td>{{$lead->product_name ?? ''}}</td>
-                        <td>{{$lead->email ?? ''}}</td>
-                        <td>{{$lead->city ?? ''}}</td>
-                        <td>{{$lead->getState->name ?? ''}}</td>
-                        <td>{{$lead->getCountry->name ?? ''}}</td>
-                        <td>{{$lead->getTilte->title ?? ''}}</td>
-                        <td>
-                            @foreach ($lead->getTag as $tag)
-                                {{$tag->name ?? ''}}
-                            @endforeach
-                        </td>
-                        <td>{{$lead->sales_person ?? ''}}</td>
-                        <td>{{$lead->sales_team ?? ''}}</td>
-                    </tr>
+                <tr data-id="{{ $lead->id ?? ''}}" class="lead-row">
+                    <td>{{$lead->product_name ?? ''}}</td>
+                    <td>{{$lead->email ?? ''}}</td>
+                    <td>{{$lead->city ?? ''}}</td>
+                    <td>{{$lead->getState->name ?? ''}}</td>
+                    <td>{{$lead->getCountry->name ?? ''}}</td>
+                    <td>{{$lead->getTilte->title ?? ''}}</td>
+                    <td>
+                        @foreach ($lead->getTag as $tag)
+                        {{$tag->name ?? ''}}
+                        @endforeach
+                    </td>
+                    <td>{{$lead->sales_person ?? ''}}</td>
+                    <td>{{$lead->sales_team ?? ''}}</td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -308,10 +289,12 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         var table = $('#example').DataTable({
-            columnDefs: [
-                { visible: false, targets: [2, 3, 4, 5, 6, 7, 8] } // Initial visibility settings
+            columnDefs: [{
+                    visible: false
+                    , targets: [2, 3, 4, 5, 6, 7, 8]
+                } // Initial visibility settings
             ]
         });
 
@@ -319,7 +302,7 @@
         function restoreColumnVisibility() {
             var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
             if (visibility) {
-                table.columns().every(function () {
+                table.columns().every(function() {
                     var column = this;
                     var index = column.index();
                     var isVisible = visibility[index] !== undefined ? visibility[index] : true;
@@ -332,7 +315,7 @@
         // Save column visibility to local storage
         function saveColumnVisibility() {
             var visibility = {};
-            table.columns().every(function () {
+            table.columns().every(function() {
                 var column = this;
                 var index = column.index();
                 visibility[index] = column.visible();
@@ -341,7 +324,7 @@
         }
 
         // Handle column visibility based on checkbox status
-        $('.dropdown-menu input[type="checkbox"]').on('change', function () {
+        $('.dropdown-menu input[type="checkbox"]').on('change', function() {
             var column = table.column($(this).data('column'));
             column.visible(this.checked);
             saveColumnVisibility(); // Save visibility to local storage
@@ -351,13 +334,13 @@
         restoreColumnVisibility();
 
         // Handle dropdown menu display
-        $(document).on('click', '.dropdown-btn', function (event) {
+        $(document).on('click', '.dropdown-btn', function(event) {
             event.stopPropagation(); // Prevent click event from propagating to the document
             $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
             $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
         });
 
-        $(document).on('click', function (event) {
+        $(document).on('click', function(event) {
             if (!$(event.target).closest('.dropdown-menu').length) {
                 $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
             }
@@ -366,34 +349,86 @@
 
 </script>
 <script>
-    $(document).on('click', '.lead-row', function () {
+    $(document).on('click', '.lead-row', function() {
         var leadId = $(this).data('id');
         window.location.href = "{{ route('lead.create') }}/" + leadId;
     });
 
     function storeLead() {
         $.ajax({
-            url: "{{ route('lead.storeLead') }}",
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-            },
-            success: function (response) {
+            url: "{{ route('lead.storeLead') }}"
+            , type: "POST"
+            , data: {
+                _token: "{{ csrf_token() }}"
+            , }
+            , success: function(response) {
                 console.log('Lead stored successfully.', response);
-            },
-            error: function (error) {
+            }
+            , error: function(error) {
                 console.error('Error storing lead:', error);
             }
         });
     }
 
     // Auto-refresh every 2 minutes
-    setInterval(function () {
+    setInterval(function() {
         console.log('Attempting to store lead...');
         storeLead();
     }, 2 * 60 * 1000);
     storeLead();
+
 </script>
+<script>
+    $(document).ready(function() {
+        // Show the dropdown when the input field is clicked
+        $('#search-input').on('click', function() {
+            $('#search-dropdown').show();
+        });
+
+        // Add selected value to the input field and hide the dropdown
+        $(document).on('click', '#search-dropdown .o-dropdown-item', function() {
+            var selectedValue = $(this).text().trim();
+            $('#search-input').val(selectedValue);
+            $('#search-dropdown').hide();
+        });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+                $('#search-dropdown').hide();
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function() {
+        $('#creationDateBtn').on('click', function(e) {
+            e.preventDefault();
+            $('#creationDateDropdown').toggle(); // Toggle the dropdown visibility
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#creationDateBtn, #creationDateDropdown').length) {
+                $('#creationDateDropdown').hide(); // Hide the dropdown
+            }
+        });
+        $('#closeDateBtn').on('click', function(e) {
+            e.preventDefault();
+            $('#closeDateDropdown').toggle(); // Toggle the dropdown visibility
+        });
+
+        // Close the dropdown if the user clicks outside of it
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#closeDateBtn, #closeDateDropdown').length) {
+                $('#closeDateDropdown').hide(); // Hide the dropdown
+            }
+        });
+    });
+
+</script>
+
 
 
 @endsection

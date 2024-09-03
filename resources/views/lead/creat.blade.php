@@ -42,6 +42,89 @@
 <!-- Select2 CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <style>
+    .buyerlead h3 {
+        font-size: 30px;
+        margin: 0 0 30px;
+    }
+
+    .lead-box {
+        box-shadow: 0 0 4px #0b9a9d;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 0 0 20px;
+    }
+
+    .lead-details-img>img:first-child {
+        width: 250px
+    }
+
+    .lead-details-img>img:last-child {
+        width: 180px
+    }
+
+    .main-lead-details {
+        background: #daeef2;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .buyer-contact h5,
+    .buyerlead h5 {
+        font-size: 20px;
+        margin: 0 0 10px;
+        background: #eaeaea;
+        padding: 8px;
+    }
+
+    .buyer-contact ul {
+        padding: 0;
+        margin: 0;
+    }
+
+    .buyer-contact ul li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .buyer-contact ul li:not(:last-child) {
+        margin: 0 0 10px;
+    }
+
+    .lead-user-info p,
+    .lead-user-info span,
+    .buyerlead p {
+        margin: 0 0 5px;
+        font-size: 17px;
+    }
+
+    .lead-user-info span {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+    .lead-user-info {
+        margin: 10px 0 20px;
+        width: 80%;
+        flex: 0 0 80%;
+        padding-right: 20px;
+    }
+
+    .lead-user-img {
+        width: 20%;
+        flex: 0 0 20%;
+    }
+
+    .lead-user-info p a {
+        color: #0d6efd;
+        text-decoration: underline !important;
+    }
+
+</style>
+<style>
     .select2-container--default .select2-selection--single {
         border: none;
     }
@@ -126,7 +209,7 @@
                                             <label class="o_form_label" for="partner_name_0">Company Name<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;The name of the future partner company that will be created while converting the lead into opportunity&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label>
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="partner_name" class="o_field_widget o_field_char"><input class="o_input" id="partner_name_0" type="text" autocomplete="off"></div>
+                                            <div name="partner_name" class="o_field_widget o_field_char"><input class="o_input" id="partner_name_0" type="text" value="{{isset($data) ? $data->company_name : ''}}" autocomplete="off"></div>
                                         </div>
                                     </div>
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
@@ -175,8 +258,7 @@
                                                                     </option>
                                                                     @endforeach
 
-                                                                    </select>
-                                                                </div>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="o_field_many2one_extra"></div>
@@ -386,45 +468,156 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="tag_ids_1">Tags<sup
-                                                        class="text-info p-1" data-tooltip-template="web.FieldTooltip"
-                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Classify and analyze your lead/opportunity categories like: Training, Service&quot;}}"
-                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                            </div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="tag_ids" class="o_field_widget o_field_many2many_tags">
-                                                    <div
-                                                        class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
-                                                        <div class="o_field_many2many_selection d-inline-flex w-100">
-                                                            <div class="o_input_dropdown">
-                                                                <div class="tag_input_hide">
-                                                                    @php
-                                                                        $selectedTagIds = isset($data->tag_id)
-                                                                            ? (is_array($data->tag_id)
-                                                                                ? $data->tag_id
-                                                                                : explode(',', $data->tag_id))
-                                                                            : [];
-                                                                    @endphp
-                                                                    <select class="o-autocomplete--input o_input"
-                                                                        id="tag_ids_1" style="width: 150px;" multiple>
-                                                                        @foreach ($tags as $tag)
-                                                                            <option value="{{ $tag->id }}"
-                                                                                data-color="{{ $tag->color }}"
-                                                                                {{ in_array($tag->id, $selectedTagIds) ? 'selected' : '' }}>
-                                                                                {{ $tag->name }}</option>
+                                    </div>
+                                </div>
+                                <div class="o_inner_group grid col-lg-6">
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="contact_name_0">Contact
+                                                Name</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row">
+                                                <div name="contact_name" class="o_field_widget o_field_char">
+                                                    <input class="o_input" id="contact_name_0" value="{{ isset($data) ? $data->contact_name : '' }}" type="text" autocomplete="off">
+                                                </div>
+                                                <div name="title" class="o_field_widget o_field_many2one">
+                                                    <div class="o_field_many2one_selection">
+                                                        <div class="o_input_dropdown">
+                                                            <div class="o-autocomplete dropdown">
+                                                                <div class="title_select_hide">
+                                                                    <select class="o-autocomplete--input o_input" id="title_0" style="width: 150px;">
+                                                                        <option value="">Selecte Title </option>
+                                                                        @foreach ($titles as $title)
+                                                                        <option value="{{ $title->id }}" @if (isset($data->title) && $title->id == $data->title) selected @endif>
+                                                                            {{ $title->title }}</option>
                                                                         @endforeach
-                                                                        <option value="add_new_tag">Start typing...
+                                                                        <option value="add_new">Start typing...
                                                                         </option>
                                                                     </select>
                                                                 </div>
-                                                                <input type="text" id="new_tag_input"
-                                                                    class="o_input mt-2" style="display: none;"
-                                                                    placeholder="Enter new tag">
+                                                                <input type="text" id="new_title_input" class="o_input mt-2" style="display: none; " placeholder="Enter new title">
                                                             </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="o_field_many2one_extra"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="email_from_1">Email</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row o_row_readonly">
+                                                <div name="email_from" class="o_field_widget o_field_email">
+                                                    <div class="d-inline-flex w-100"><input class="o_input" type="email" value="{{ isset($data) ? $data->email : '' }}" autocomplete="off" id="email_from_1">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                            <label class="o_form_label" for="function_0">Job Position</label>
+                                        </div>
+                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                            <div name="function" class="o_field_widget o_field_char"><input class="o_input" id="function_0" type="text" value="{{ isset($data) ? $data->job_postion : '' }}" autocomplete="off"></div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="phone_1">Phone</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row o_row_readonly">
+                                                <div name="phone" class="o_field_widget o_field_phone">
+                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" value="{{ isset($data) ? $data->phone : '' }}" autocomplete="off" id="phone_1"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="mobile_0">Mobile</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row o_row_readonly">
+                                                <div name="mobile" class="o_field_widget o_field_phone">
+                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" value="{{ isset($data) ? $data->mobile : '' }}" id="mobile_0"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_inner_group grid col-lg-6">
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                            <label class="o_form_label" for="user_id_1">Salesperson</label>
+                                        </div>
+                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                            <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
+                                                <div class="d-flex align-items-center gap-1" data-tooltip="info@yantradesign.co.in"><span class="o_avatar o_m2o_avatar"><img class="rounded" src="/web/image/res.users/2/avatar_128"></span>
+                                                    <div class="o_field_many2one_selection">
+                                                        <div class="o_input_dropdown">
+                                                            <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="user_id_1" placeholder="" aria-expanded="false"></div>
+                                                            <span class="o_dropdown_button"></span>
+                                                        </div><button type="button" class="btn btn-link text-action oi o_external_button oi-arrow-right" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
+                                                    </div>
+                                                    <div class="o_field_many2one_extra"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                            <label class="o_form_label" for="team_id_0">Sales Team</label>
+                                        </div>
+                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                            <div name="team_id" class="o_field_widget o_field_many2one">
+                                                <div class="o_field_many2one_selection">
+                                                    <div class="o_input_dropdown">
+                                                        <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="team_id_0" placeholder="" aria-expanded="false">
+                                                        </div><span class="o_dropdown_button"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="o_field_many2one_extra"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_inner_group grid col-lg-6">
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                            <label class="o_form_label" for="priority_1">Priority</label>
+                                        </div>
+                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                            <div name="priority" class="o_field_widget o_field_priority">
+                                                <div class="o_priority" role="radiogroup" name="priority" aria-label="Priority"><a href="#" class="o_priority_star fa fa-star-o" role="radio" tabindex="-1" data-tooltip="Priority: Medium" aria-label="Medium"></a><a href="#" class="o_priority_star fa fa-star-o" role="radio" tabindex="-1" data-tooltip="Priority: High" aria-label="High"></a><a href="#" class="o_priority_star fa fa-star-o" role="radio" tabindex="-1" data-tooltip="Priority: Very High" aria-label="Very High"></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                            <label class="o_form_label" for="tag_ids_1">Tags<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Classify and analyze your lead/opportunity categories like: Training, Service&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                        </div>
+                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                            <div name="tag_ids" class="o_field_widget o_field_many2many_tags">
+                                                <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100 o_tags_input o_input">
+                                                    <div class="o_field_many2many_selection d-inline-flex w-100">
+                                                        <div class="o_input_dropdown">
+                                                            <div class="tag_input_hide">
+                                                                @php
+                                                                $selectedTagIds = isset($data->tag_id)
+                                                                ? (is_array($data->tag_id)
+                                                                ? $data->tag_id
+                                                                : explode(',', $data->tag_id))
+                                                                : [];
+                                                                @endphp
+                                                                <select class="o-autocomplete--input o_input" id="tag_ids_1" style="width: 150px;" multiple>
+                                                                    @foreach ($tags as $tag)
+                                                                    <option value="{{ $tag->id }}" data-color="{{ $tag->color }}" {{ in_array($tag->id, $selectedTagIds) ? 'selected' : '' }}>
+                                                                        {{ $tag->name }}</option>
+                                                                    @endforeach
+                                                                    <option value="add_new_tag">Start typing...
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <input type="text" id="new_tag_input" class="o_input mt-2" style="display: none;" placeholder="Enter new tag">
+                                                        </div>
 
 
                                                     </div>
@@ -574,50 +767,16 @@
                                 </div>
                             </div>
                             <div class="o-mail-Chatter-content">
+                                @if(isset($data) && $data->lead_type == 1)
                                 @php
                                 $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
                                 @endphp
 
                                 <x-log-display :logs="$logs" />
-                                <!-- <div class="o-mail-Thread position-relative flex-grow-1 d-flex flex-column overflow-auto pb-4" tabindex="-1">
-                                                        <div class="d-flex flex-column position-relative flex-grow-1"><span class="position-absolute w-100 invisible top-0" style="height: Min(1581px, 100%)"></span><span></span>
-                                                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
-                                                                <hr class="o-discuss-separator flex-grow-1">
-                                                            </div>
-                                                            <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="System notification">
-                                                                <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                                                                    <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                                        <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card"><img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design2.odoo.com/web/image/res.partner/3/avatar_128?unique=1722504084000">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="w-100 o-min-width-0">
-                                                                        <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
-                                                                            <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card"><strong class="me-1">info@yantradesign.co.in</strong></span><small class="o-mail-Message-date text-muted smaller" title="13/8/2024, 2:12:31 pm">- now</small>
-                                                                        </div>
-                                                                        <div class="position-relative d-flex">
-                                                                            <div class="o-mail-Message-content o-min-width-0">
-                                                                                <div class="o-mail-Message-textContent position-relative d-flex">
-                                                                                    <div>
-                                                                                        <div>
-                                                                                            <div class="o-mail-Message-body text-break mb-0 w-100">
-                                                                                                Creating a new record...</div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
-                                                                                        <div class="d-flex rounded-1 overflow-hidden">
-                                                                                            <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button><button class="btn px-1 py-0 rounded-0 rounded-end-1" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div> -->
+                                @endif
 
+                                @if($data->lead_type == 2)
+                              
                                 <div class="main-lead-details">
                                     <div class="lead-details">
                                         <div class="lead-box">
@@ -654,16 +813,14 @@
                                         </div>
                                         <div class="main-lead-user-info row">
                                             <div class="lead-user-info">
-                                                <p>Shubham Rajput</p>
-                                                <p>
-                                                    Jbmi Agri Private Limited, SIETZ TECHNOLOGIES INDIA PVT LTD
-                                                    FARIDABAD HARYANASECTOR-6 FARIDABAD HARYANA, Pithampur - 454755, MP
+                                                <p>{{ isset($data) ? $data->contact_name : '' }}</p>
+                                                <p>{{isset($data) ? $data->address_1 : ''}}
                                                 </p>
                                                 <p>
-                                                    Click to Call : <a href="tel:+918171656128">+91-8171656128</a>
+                                                    Click to Call : <a href="tel:{{ isset($data) ? $data->mobile : ''}}">{{isset($data) ? $data->mobile : ''}}</a>
                                                 </p>
                                                 <p>
-                                                    E-mail : <a href="mailto:shubham.rajput@sietz-india.com">shubham.rajput@sietz-india.com</a>
+                                                    E-mail : <a href="mailto:{{isset($data) ? $data->email : ''}}">{{isset($data) ? $data->email : ''}}</a>
                                                 </p>
                                                 <span>
                                                     <p>Member Since: </p> 7+ years
@@ -676,94 +833,13 @@
                                         </div>
                                         <div class="buyerlead">
                                             <h5>Buylead Details:</h5>
-                                            <h3>CNC Machining Centre</h3>
+                                            <h3>{{isset($data) ? $data->product_name : ''}}</h3>
                                             <p><b>Probable Requirement Type: </b> Business Use</p>
                                         </div>
                                     </div>
                                 </div>
-                                <style>
-                                    .buyerlead h3 {
-                                        font-size: 30px;
-                                        margin: 0 0 30px;
-                                    }
+                                @endif
 
-                                    .lead-box {
-                                        box-shadow: 0 0 4px #0b9a9d;
-                                        padding: 20px;
-                                        border-radius: 8px;
-                                        margin: 0 0 20px;
-                                    }
-
-                                    .lead-details-img>img:first-child {
-                                        width: 250px
-                                    }
-
-                                    .lead-details-img>img:last-child {
-                                        width: 180px
-                                    }
-
-                                    .main-lead-details {
-                                        background: #daeef2;
-                                        padding: 20px;
-                                        border-radius: 10px;
-                                    }
-
-                                    .buyer-contact h5,
-                                    .buyerlead h5 {
-                                        font-size: 20px;
-                                        margin: 0 0 10px;
-                                        background: #eaeaea;
-                                        padding: 8px;
-                                    }
-
-                                    .buyer-contact ul {
-                                        padding: 0;
-                                        margin: 0;
-                                    }
-
-                                    .buyer-contact ul li {
-                                        display: flex;
-                                        align-items: center;
-                                        gap: 10px;
-                                        font-size: 16px;
-                                        font-weight: 600;
-                                    }
-
-                                    .buyer-contact ul li:not(:last-child) {
-                                        margin: 0 0 10px;
-                                    }
-
-                                    .lead-user-info p,
-                                    .lead-user-info span,
-                                    .buyerlead p {
-                                        margin: 0 0 5px;
-                                        font-size: 17px;
-                                    }
-
-                                    .lead-user-info span {
-                                        display: flex;
-                                        gap: 8px;
-                                        margin-top: 18px;
-                                    }
-
-                                    .lead-user-info {
-                                        margin: 10px 0 20px;
-                                        width: 80%;
-                                        flex: 0 0 80%;
-                                        padding-right: 20px;
-                                    }
-
-                                    .lead-user-img {
-                                        width: 20%;
-                                        flex: 0 0 20%;
-                                    }
-
-                                    .lead-user-info p a {
-                                        color: #0d6efd;
-                                        text-decoration: underline !important;
-                                    }
-
-                                </style>
                             </div>
                         </div>
                     </div>
@@ -787,6 +863,7 @@
         <div class="o-overlay-item"></div>
         <div class="o-overlay-item"></div>
         <div class="o-overlay-item"></div>
+
         <div class="o-overlay-item"></div>
         <div class="o-overlay-item"></div>
         <div class="o-overlay-item"></div>
@@ -925,11 +1002,7 @@
             });
         });
 
-        {
-            {
-                --Add new tag--
-            }
-        }
+
 
         // const selectTag = $('#tag_ids_1');
         // const newTagInput = $('#new_tag_input');
@@ -1073,13 +1146,14 @@
                     window.location.href = "{{ route('lead.index') }}";
                 }, 2000);
 
-                    },
-                    error: function(xhr, status, error) {
-                        toastr.error('Something went wrong!');
-                    }
-                });
-            });
-        </script>
-    @endpush
+            }
+            , error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+    });
+
+</script>
+@endpush
 
 @endsection
