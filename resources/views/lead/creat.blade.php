@@ -179,7 +179,15 @@
                             <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
                                 <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary" name="511" type="action"><span>Convert to
                                         Opportunity</span></button><button data-hotkey="l" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary" name="510" type="action" data-tooltip="Mark as lost"><span>Lost</span></button>
-                            </div>
+                                        @if($count > 1)
+                                            <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
+                                                <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
+                                                    <span>Similar Leads</span><br>
+                                                    <span>{{ $count ?? '' }}</span>
+                                                </button>
+                                            </a>
+                                        @endif
+                            </div>                            
                         </div>
                         <input type="hidden" name="lead_id" id="lead_id" value="{{ isset($data) ? $data->id : '' }}">
                         <div class="o_form_sheet position-relative">
@@ -285,107 +293,86 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="o_inner_group grid col-lg-6">
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                style=""><label class="o_form_label" for="contact_name_0">Contact
-                                                    Name</label></div>
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                <div class="o_row">
-                                                    <div name="contact_name" class="o_field_widget o_field_char">
-                                                        <input class="o_input" id="contact_name_0"
-                                                            value="{{ isset($data) ? $data->contact_name : '' }}"
-                                                            type="text" autocomplete="off">
-                                                    </div>
-                                                    <div name="title" class="o_field_widget o_field_many2one">
-                                                        <div class="o_field_many2one_selection">
-                                                            <div class="o_input_dropdown">
-                                                                <div class="o-autocomplete dropdown">
-                                                                    <div class="title_select_hide">
-                                                                        <select class="o-autocomplete--input o_input"
-                                                                            id="title_0" style="width: 150px;">
-                                                                            <option value="">Selecte Title </option>
-                                                                            @foreach ($titles as $title)
-                                                                                <option value="{{ $title->id }}"
-                                                                                    @if (isset($data->title) && $title->id == $data->title) selected @endif>
-                                                                                    {{ $title->title }}</option>
-                                                                            @endforeach
-                                                                            <option value="add_new">Start typing...
-                                                                            </option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <input type="text" id="new_title_input"
-                                                                        class="o_input mt-2" style="display: none; "
-                                                                        placeholder="Enter new title">
+                                </div>
+                                <div class="o_inner_group grid col-lg-6">
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="contact_name_0">Contact
+                                                Name</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row">
+                                                <div name="contact_name" class="o_field_widget o_field_char">
+                                                    <input class="o_input" id="contact_name_0" value="{{ isset($data) ? $data->contact_name : '' }}" type="text" autocomplete="off">
+                                                </div>
+                                                <div name="title" class="o_field_widget o_field_many2one">
+                                                    <div class="o_field_many2one_selection">
+                                                        <div class="o_input_dropdown">
+                                                            <div class="o-autocomplete dropdown">
+                                                                <div class="title_select_hide">
+                                                                    <select class="o-autocomplete--input o_input" id="title_0" style="width: 150px;">
+                                                                        <option value="">Selecte Title </option>
+                                                                        @foreach ($titles as $title)
+                                                                        <option value="{{ $title->id }}" @if (isset($data->title) && $title->id == $data->title) selected @endif>
+                                                                            {{ $title->title }}</option>
+                                                                        @endforeach
+                                                                        <option value="add_new">Start typing...
+                                                                        </option>
+                                                                    </select>
                                                                 </div>
+                                                                <input type="text" id="new_title_input" class="o_input mt-2" style="display: none; " placeholder="Enter new title">
                                                             </div>
                                                         </div>
-                                                        <div class="o_field_many2one_extra"></div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                style=""><label class="o_form_label oe_inline"
-                                                    for="email_from_1">Email</label></div>
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                <div class="o_row o_row_readonly">
-                                                    <div name="email_from" class="o_field_widget o_field_email">
-                                                        <div class="d-inline-flex w-100"><input class="o_input"
-                                                                type="email"
-                                                                value="{{ isset($data) ? $data->email : '' }}"
-                                                                autocomplete="off" id="email_from_1">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div
-                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                <label class="o_form_label" for="function_0">Job Position</label>
-                                            </div>
-                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                style="width: 100%;">
-                                                <div name="function" class="o_field_widget o_field_char"><input
-                                                        class="o_input" id="function_0" type="text"
-                                                        value="{{ isset($data) ? $data->job_postion : '' }}"
-                                                        autocomplete="off"></div>
-                                            </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                style=""><label class="o_form_label oe_inline"
-                                                    for="phone_1">Phone</label></div>
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                <div class="o_row o_row_readonly">
-                                                    <div name="phone" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel"
-                                                                value="{{ isset($data) ? $data->phone : '' }}"
-                                                                autocomplete="off" id="phone_1"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                style=""><label class="o_form_label oe_inline"
-                                                    for="mobile_0">Mobile</label></div>
-                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                                <div class="o_row o_row_readonly">
-                                                    <div name="mobile" class="o_field_widget o_field_phone">
-                                                        <div class="o_phone_content d-inline-flex w-100"><input
-                                                                class="o_input" type="tel" autocomplete="off"
-                                                                value="{{ isset($data) ? $data->mobile : '' }}"
-                                                                id="mobile_0"></div>
-                                                    </div>
+                                                    <div class="o_field_many2one_extra"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="o_inner_group grid col-lg-6">
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style="">
+                                            <label class="o_form_label oe_inline" for="email_from_1">Email</label>
+                                        </div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row o_row_readonly">
+                                                <div name="email_from" class="o_field_widget o_field_email">
+                                                    <div class="d-inline-flex w-100">
+                                                        <input class="o_input" type="email" value="{{ isset($data) ? $data->email : '' }}" autocomplete="off" id="email_from_1">
+                                                    </div>
+                                                    <span id="email_error_message" style="color: red; display: none;">This email already exists</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                            <label class="o_form_label" for="function_0">Job Position</label>
+                                        </div>
+                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                            <div name="function" class="o_field_widget o_field_char"><input class="o_input" id="function_0" type="text" value="{{ isset($data) ? $data->job_postion : '' }}" autocomplete="off"></div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="phone_1">Phone</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row o_row_readonly">
+                                                <div name="phone" class="o_field_widget o_field_phone">
+                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" value="{{ isset($data) ? $data->phone : '' }}" autocomplete="off" id="phone_1"></div>
+                                                    <span id="phone_error_message" style="color: red; display: none;">This phone already exists</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="mobile_0">Mobile</label></div>
+                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                            <div class="o_row o_row_readonly">
+                                                <div name="mobile" class="o_field_widget o_field_phone">
+                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" value="{{ isset($data) ? $data->mobile : '' }}" id="mobile_0"></div>
+                                                </div>                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_inner_group grid col-lg-6">
                                         <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                             <div
                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
@@ -448,8 +435,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="o_inner_group grid col-lg-6">
-                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                <div class="o_inner_group grid col-lg-6">
+                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                             <div
                                                 class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
                                                 <label class="o_form_label" for="priority_1">Priority</label>
@@ -468,128 +455,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="o_inner_group grid col-lg-6">
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label" for="contact_name_0">Contact
-                                                Name</label></div>
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                            <div class="o_row">
-                                                <div name="contact_name" class="o_field_widget o_field_char">
-                                                    <input class="o_input" id="contact_name_0" value="{{ isset($data) ? $data->contact_name : '' }}" type="text" autocomplete="off">
-                                                </div>
-                                                <div name="title" class="o_field_widget o_field_many2one">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown">
-                                                                <div class="title_select_hide">
-                                                                    <select class="o-autocomplete--input o_input" id="title_0" style="width: 150px;">
-                                                                        <option value="">Selecte Title </option>
-                                                                        @foreach ($titles as $title)
-                                                                        <option value="{{ $title->id }}" @if (isset($data->title) && $title->id == $data->title) selected @endif>
-                                                                            {{ $title->title }}</option>
-                                                                        @endforeach
-                                                                        <option value="add_new">Start typing...
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                                <input type="text" id="new_title_input" class="o_input mt-2" style="display: none; " placeholder="Enter new title">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="email_from_1">Email</label></div>
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                            <div class="o_row o_row_readonly">
-                                                <div name="email_from" class="o_field_widget o_field_email">
-                                                    <div class="d-inline-flex w-100"><input class="o_input" type="email" value="{{ isset($data) ? $data->email : '' }}" autocomplete="off" id="email_from_1">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="function_0">Job Position</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="function" class="o_field_widget o_field_char"><input class="o_input" id="function_0" type="text" value="{{ isset($data) ? $data->job_postion : '' }}" autocomplete="off"></div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="phone_1">Phone</label></div>
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                            <div class="o_row o_row_readonly">
-                                                <div name="phone" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" value="{{ isset($data) ? $data->phone : '' }}" autocomplete="off" id="phone_1"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900" style=""><label class="o_form_label oe_inline" for="mobile_0">Mobile</label></div>
-                                        <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                            <div class="o_row o_row_readonly">
-                                                <div name="mobile" class="o_field_widget o_field_phone">
-                                                    <div class="o_phone_content d-inline-flex w-100"><input class="o_input" type="tel" autocomplete="off" value="{{ isset($data) ? $data->mobile : '' }}" id="mobile_0"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_inner_group grid col-lg-6">
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="user_id_1">Salesperson</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
-                                                <div class="d-flex align-items-center gap-1" data-tooltip="info@yantradesign.co.in"><span class="o_avatar o_m2o_avatar"><img class="rounded" src="/web/image/res.users/2/avatar_128"></span>
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="user_id_1" placeholder="" aria-expanded="false"></div>
-                                                            <span class="o_dropdown_button"></span>
-                                                        </div><button type="button" class="btn btn-link text-action oi o_external_button oi-arrow-right" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
-                                                    </div>
-                                                    <div class="o_field_many2one_extra"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="team_id_0">Sales Team</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="team_id" class="o_field_widget o_field_many2one">
-                                                <div class="o_field_many2one_selection">
-                                                    <div class="o_input_dropdown">
-                                                        <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="team_id_0" placeholder="" aria-expanded="false">
-                                                        </div><span class="o_dropdown_button"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="o_field_many2one_extra"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="o_inner_group grid col-lg-6">
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                        <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="priority_1">Priority</label>
-                                        </div>
-                                        <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="priority" class="o_field_widget o_field_priority">
-                                                <div class="o_priority" role="radiogroup" name="priority" aria-label="Priority"><a href="#" class="o_priority_star fa fa-star-o" role="radio" tabindex="-1" data-tooltip="Priority: Medium" aria-label="Medium"></a><a href="#" class="o_priority_star fa fa-star-o" role="radio" tabindex="-1" data-tooltip="Priority: High" aria-label="High"></a><a href="#" class="o_priority_star fa fa-star-o" role="radio" tabindex="-1" data-tooltip="Priority: Very High" aria-label="Very High"></a></div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
                                             <label class="o_form_label" for="tag_ids_1">Tags<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Classify and analyze your lead/opportunity categories like: Training, Service&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label>
@@ -775,7 +640,7 @@
                                 <x-log-display :logs="$logs" />
                                 @endif
 
-                                @if($data->lead_type == 2)
+                                @if(isset($data->lead_type) && $data->lead_type == 2)
                               
                                 <div class="main-lead-details">
                                     <div class="lead-details">
@@ -959,39 +824,78 @@
 
         const select = $('#title_0');
         const newTitleInput = $('#new_title_input');
+        const startTitleTypingOptionValue = 'add_new'; // Value for "Add New" option
+        const titleSelectHide = $('.title_select_hide');
 
+        // Function to add "Add New" option to the dropdown
+        function addStartTypingOption() {
+            if (!select.find(`option[value="${startTitleTypingOptionValue}"]`).length) {
+                const startTypingOption = new Option('Add New', startTitleTypingOptionValue, false, false);
+                select.append(startTypingOption);
+            }
+        }
+
+        // Function to remove "Add New" option from the dropdown
+        function removeStartTypingOption() {
+            select.find(`option[value="${startTitleTypingOptionValue}"]`).remove();
+        }
+
+        select.on('focus', function() {
+            addStartTypingOption();
+        });
+
+        // Handle dropdown blur to hide "Add New" if not focused
+        select.on('blur', function() {
+            setTimeout(() => {
+                if (!select.is(':focus') && !newTitleInput.is(':focus')) {
+                    removeStartTypingOption();
+                }
+            }, 100);
+        });
+
+        // Handle selection change
         select.on('change', function() {
-            if ($(this).val() === 'add_new') {
-                $('.title_select_hide').hide();
+            if ($(this).val() === startTitleTypingOptionValue) {
+                titleSelectHide.hide();
                 newTitleInput.show().focus();
             } else {
                 newTitleInput.hide();
+                titleSelectHide.show();
             }
         });
 
+        // Handle new title input
         newTitleInput.on('keypress', function(e) {
             if (e.which === 13) {
                 const newTitle = $(this).val();
                 if (newTitle) {
                     $.ajax({
-                        url: '{{ route('add-title') }}'
-                        , type: 'POST'
-                        , data: {
-                            _token: '{{ csrf_token() }}'
-                            , title: newTitle
-                        }
-                        , success: function(response) {
-                            select.append(new Option(response.title, response.id));
+                        url: '{{ route('add-title') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            title: newTitle
+                        },
+                        success: function(response) {
+                            // Add the new title to the dropdown
+                            const newOption = new Option(response.title, response.id, false, false);
+                            select.append(newOption);
                             select.val(response.id);
                             newTitleInput.hide().val('');
-                            window.location.reload();
-                        }
-                        , error: function() {
+                            titleSelectHide.show();
+                            addStartTypingOption();
+                        },
+                        error: function() {
                             alert('Error adding title.');
                         }
                     });
                 }
             }
+        });
+
+        // Ensure "Add New" is hidden when typing in new title input
+        newTitleInput.on('focus', function() {
+            removeStartTypingOption();
         });
 
         $('#contact_name_0').on('input', function() {
@@ -1002,62 +906,86 @@
             });
         });
 
-
-
-        // const selectTag = $('#tag_ids_1');
-        // const newTagInput = $('#new_tag_input');
-
-        // selectTag.on('change', function() {
-        //     if ($(this).val() === 'add_new_tag') {
-        //         $('.tag_input_hide').hide();
-        //         newTagInput.show().focus();
-        //     } else {
-        //         newTagInput.hide();            
-        //     }
-        // });
-
         const selectTag = $('#tag_ids_1');
         const newTagInput = $('#new_tag_input');
+        const startTypingOptionValue = 'add_new_tag';
+        const tagInputHide = $('.tag_input_hide');
 
+        // Hide new tag input initially
         newTagInput.hide();
 
-        selectTag.on('change', function() {
-            const selectedValue = $(this).val();
+        let previousValues = selectTag.val() || [];
 
-            if (selectedValue.includes('add_new_tag')) {
-                $('.tag_input_hide').hide();
+        // Function to add "Start typing" option to the dropdown
+        function addStartTypingOption() {
+            if (!selectTag.find(`option[value="${startTypingOptionValue}"]`).length) {
+                const startTypingOption = new Option('Start typing', startTypingOptionValue, false, false);
+                selectTag.append(startTypingOption);
+            }
+        }
+
+        function removeStartTypingOption() {
+            selectTag.find(`option[value="${startTypingOptionValue}"]`).remove();
+        }
+        selectTag.on('focus', function() {
+            addStartTypingOption();
+        });
+
+        selectTag.on('blur', function() {
+            setTimeout(() => {
+                if (!selectTag.is(':focus') && !newTagInput.is(':focus')) {
+                    removeStartTypingOption();
+                }
+            }, 100);
+        });
+
+        // Handle selection change
+        selectTag.on('change', function() {
+            const selectedValues = $(this).val();
+            if (selectedValues && selectedValues.includes(startTypingOptionValue)) {
+                tagInputHide.hide();
                 newTagInput.show().focus();
+                previousValues = selectTag.val() || [];
             } else {
                 newTagInput.hide();
-                $('.tag_input_hide').show();
+                tagInputHide.show();
             }
         });
 
-
-
+        // Handle new tag input
         newTagInput.on('keypress', function(e) {
             if (e.which === 13) {
                 const newTag = $(this).val();
                 if (newTag) {
                     $.ajax({
-                        url: '{{ route('add-tag') }}'
-                        , type: 'POST'
-                        , data: {
-                            _token: '{{ csrf_token() }}'
-                            , tag: newTag
-                        }
-                        , success: function(response) {
-                            selectTag.append(new Option(response.tag, response.id));
-                            selectTag.val(response.id);
+                        url: '{{ route('add-tag') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            tag: newTag
+                        },
+                        success: function(response) {
+                            // Add the new tag with color to the dropdown
+                            const newOption = new Option(response.tag, response.id, false, false);
+                            selectTag.append(newOption);
+                            selectTag.find(`option[value="${response.id}"]`).attr('data-color', response.color);
+                            const updatedValues = [...new Set([...previousValues, response.id.toString()])];
+                            selectTag.val(updatedValues).trigger('change');
                             newTagInput.hide().val('');
-                            window.location.reload();
-                        }
-                        , error: function() {
+                            tagInputHide.show();
+                            addStartTypingOption();
+                        },
+                        error: function() {
                             alert('Error adding title.');
                         }
                     });
                 }
             }
+        });
+
+        // Ensure "Start typing" is hidden when typing in new tag input
+        newTagInput.on('focus', function() {
+            removeStartTypingOption();
         });
 
         $('#contact_name_0').on('input', function() {
@@ -1068,11 +996,198 @@
             });
         });
 
+
+        const emailInput = $('#email_from_1');
+        const phoneInput = $('#phone_1');
+        const errorMessage = $('#email_error_message');
+        const phoneErrorMessage = $('#phone_error_message'); // Assuming you have an element to show phone errors
+        const currentEmail = '{{ isset($data) ? $data->email : '' }}'; // Current email from the server
+        const currentPhone = '{{ isset($data) ? $data->phone : '' }}'; // Current phone from the server
+
+        // Function to check if the email exists
+        function checkEmailExists(email) {
+            return $.ajax({
+                url: '{{ route('checkEmail') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    email: email
+                }
+            });
+        }
+
+        // Function to check if the phone number exists
+        function checkPhoneExists(phone) {
+            return $.ajax({
+                url: '{{ route('checkPhone') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    phone: phone
+                }
+            });
+        }
+
+        // Event handler for email input change
+        emailInput.on('change', function() {
+            const email = $(this).val();
+
+            if (email !== currentEmail) {
+                // Check if the new email exists
+                checkEmailExists(email).done(function(response) {
+                    console.log('Email check response:', response); // Debugging
+                    if (response && response.exists) {
+                        errorMessage.show();
+                    } else {
+                        errorMessage.hide();
+                    }
+                }).fail(function() {
+                    console.error('An error occurred while checking the email.');
+                });
+            } else {
+                // Email is unchanged, hide error message
+                errorMessage.hide();
+            }
+        });
+
+        // Event handler for phone input change
+        phoneInput.on('change', function() {
+            const phone = $(this).val();
+
+            if (phone !== currentPhone) {
+                // Check if the new phone number exists
+                checkPhoneExists(phone).done(function(response) {
+                    console.log('Phone check response:', response); // Debugging
+                    if (response && response.exists) {
+                        phoneErrorMessage.show(); // Show phone error message
+                    } else {
+                        phoneErrorMessage.hide();
+                    }
+                }).fail(function() {
+                    console.error('An error occurred while checking the phone number.');
+                });
+            } else {
+                // Phone number is unchanged, hide error message
+                phoneErrorMessage.hide();
+            }
+        });
+
+        // Event handler for save button click
+        $('#main_save_btn').click(function(event) {
+            var lead_id = $('#lead_id').val();
+            var name_0 = $('#name_0').val();
+            var probability_0 = $('#probability_0').val();
+            var street_0 = $('#street_0').val();
+            var street2_0 = $('#street2_0').val();
+            var city_0 = $('#city_0').val();
+            var zip_0 = $('#zip_0').val();
+            var state_id_0 = $('#state_id_0').val();
+            var country_id_0 = $('#country_id_0').val();
+            var website_0 = $('#website_0').val();
+            var user_id_1 = $('#user_id_1').val();
+            var team_id_0 = $('#team_id_0').val();
+            var contact_name_0 = $('#contact_name_0').val();
+            var title_0 = $('#title_0').val();
+            var email_from_1 = $('#email_from_1').val();
+            var phone_1 = $('#phone_1').val();
+            var function_0 = $('#function_0').val();
+            var mobile_0 = $('#mobile_0').val();
+            var tag_ids_1 = $('#tag_ids_1').val();                
+            var priority = $('.o_priority .o_priority_star.fa-star').last().data('value');
+            var sales_person = $('#sales_person').val();
+
+            // Validate fields
+            if (!name_0) {
+                toastr.error('fields is required');
+                $('#name_0').css({
+                    'border-color': 'red',
+                    'background-color': '#ff99993d'
+                });
+                return; // Stop form submission
+            }
+
+            // Validate email and phone number before submitting
+            const emailCheck = email_from_1 !== currentEmail ? checkEmailExists(email_from_1) : $.Deferred().resolve({ exists: false });
+            const phoneCheck = phone_1 !== currentPhone ? checkPhoneExists(phone_1) : $.Deferred().resolve({ exists: false });
+
+            $.when(emailCheck, phoneCheck).done(function(emailResponse, phoneResponse) {
+                // Ensure that responses are properly accessed
+                const emailData = emailResponse[0];
+                const phoneData = phoneResponse[0];
+
+                if (emailData && emailData.exists) {
+                    errorMessage.show(); // Show email error message
+                    return; // Stop form submission
+                }
+                
+                if (phoneData && phoneData.exists) {
+                    phoneErrorMessage.show(); // Show phone error message
+                    return; // Stop form submission
+                }
+                
+                // If both email and phone are valid, submit the form
+                submitForm();
+            }).fail(function() {
+                console.error('An error occurred while checking email or phone.');
+            });
+
+            // Prevent default form submission until checks are complete
+            event.preventDefault();
+
+            // Function to submit the form
+            function submitForm() {
+                $.ajax({
+                    url: '{{ route('lead.store') }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        lead_id: lead_id,
+                        name_0: name_0,
+                        probability_0: probability_0,
+                        street_0: street_0,
+                        street2_0: street2_0,
+                        city_0: city_0,
+                        zip_0: zip_0,
+                        state_id_0: state_id_0,
+                        country_id_0: country_id_0,
+                        website_0: website_0,
+                        user_id_1: user_id_1,
+                        team_id_0: team_id_0,
+                        contact_name_0: contact_name_0,
+                        title_0: title_0,
+                        email_from_1: email_from_1,
+                        phone_1: phone_1,
+                        function_0: function_0,
+                        mobile_0: mobile_0,
+                        tag_ids_1: tag_ids_1,
+                        priority: priority,
+                        sales_person: sales_person,
+                    },
+                    success: function(response) {
+                        toastr.success(response.message);
+                        setTimeout(function() {
+                            window.location.href = "{{ route('lead.index') }}";
+                        }, 2000);
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error('Something went wrong!');
+                    }
+                });
+            }
+        });
     });
 
 </script>
 
-        <script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'))
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
+        <!-- <script>
             ClassicEditor
                 .create(document.querySelector('#description'))
                 .catch(error => {
@@ -1153,7 +1268,7 @@
         });
     });
 
-</script>
+</script> -->
 @endpush
 
 @endsection

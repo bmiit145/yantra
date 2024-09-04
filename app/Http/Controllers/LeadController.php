@@ -16,10 +16,19 @@ use Illuminate\Support\Facades\Log;
 class LeadController extends Controller
 {
     public function index($id = null)
-    {
+    {        
+        // $data = generate_lead::with('tags')->get();
+        $datas = generate_lead::with('tags')->get();
 
+        // Filter out leads with unique product_name while preserving the first occurrence
+        $data = $datas->groupBy('product_name')->map(function ($group) {
+            return $group->first();
+        });
 
-        $data = generate_lead::all();
+        // Filter out leads with unique product_name while preserving the first occurrence
+        $data = $datas->groupBy('product_name')->map(function ($group) {
+            return $group->first();
+        });
 
         return view('lead.index', compact('data'));
     }
@@ -31,6 +40,11 @@ class LeadController extends Controller
         $tags = Tag::where('tage_type', 2)->get();
         $data = generate_lead::find($id);
         $users = User::orderBy('id','DESC')->get();
+        if ($data && isset($data->product_name)) {
+            $count = generate_lead::where('product_name', $data->product_name)->count();
+        } else {
+            $count = 0; 
+        }
         // $data = generate_lead::select('generate_lead.*', 
         //                              'countries.name as country_name', 
         //                              'states.name as state_name', 
@@ -42,7 +56,7 @@ class LeadController extends Controller
         //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'person_titles.id')
         //     ->first();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count'));
     }
 
 
@@ -262,6 +276,7 @@ class LeadController extends Controller
         return response()->json([
             'id' => $tag->id,
             'tag' => $tag->name,
+            'color' =>$tag->color,
         ]);
     }
 
@@ -318,6 +333,31 @@ class LeadController extends Controller
     public function calendar()
     {
         return view('lead.calendar');
+    }
+
+    public function checkEmail(Request $request)
+    {
+        $email = $request->input('email');
+        $exists = generate_lead::where('email', $email)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
+    public function checkPhone(Request $request)
+    {
+        $phone = $request->input('phone');
+        $exists = generate_lead::where('phone', $phone)->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+    
+    public function showSimilarLeads($productName)
+    {
+        // Fetch all leads with the same product_name
+        $similarLeads = generate_lead::where('product_name', $productName)->get();
+
+        // Return a view with the similar leads
+        return view('lead.similar_lead', compact('similarLeads', 'productName'));
     }
 
 }

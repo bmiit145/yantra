@@ -83,14 +83,9 @@ class generate_lead extends Model
         return $this->hasOne(PersonTitle::class,'id','title');
     }
 
-    public function getTag()
-    {
-        return $this->hasMany(Tag::class,'id','tag_id');
-    }
-
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'lead_tag', 'lead_id', 'tag_id');
+        return $this->hasMany(Tag::class, 'id','tag_id');
     }
 
     public function getUser()
