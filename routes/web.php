@@ -107,6 +107,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-kanban', [LeadController::class, 'show'])->name('lead.kanban')->defaults('lead', 'kanban');
     Route::post('/lead/updatePriority', [LeadController::class, 'updatePriority'])->name('lead.updatePriority');
     Route::get('/lead-calendar', [LeadController::class, 'calendar'])->name('lead.calendar')->defaults('lead', 'calendar');
+    Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');
+
+    // Check Email Or Phone Exists Route
+    Route::post('/check-email', [LeadController::class, 'checkEmail'])->name('checkEmail');
+    Route::post('/check-phone', [LeadController::class, 'checkPhone'])->name('checkPhone');
 
     //fetch-states
     Route::post('/fetch-states', [LeadController::class, 'fetchState'])->name('fetch-states');

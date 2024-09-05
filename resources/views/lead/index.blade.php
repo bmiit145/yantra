@@ -165,6 +165,16 @@
         border-radius: 5px;
     }
 
+    .hide-show-dropdown-menu{
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: auto !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        padding: 10px;
+    }
+
     .dropdown-menu {
         display: none;
         position: absolute;
@@ -217,7 +227,7 @@
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
         <button class="dropdown-btn">Show/Hide Columns</button>
-        <div class="dropdown-menu">
+        <div class="hide-show-dropdown-menu dropdown-menu">
             <div class="dropdown-checkbox">
                 <label><input type="checkbox" data-column="0" checked> Lead</label>
             </div>
@@ -234,16 +244,49 @@
                 <label><input type="checkbox" data-column="4"> Country</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="5"> Title</label>
+                <label><input type="checkbox" data-column="5"> Zip</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="6"> Tag</label>
+                <label><input type="checkbox" data-column="6"> Probability</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="7"> Salesperson</label>
+                <label><input type="checkbox" data-column="7"> Company Name</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="8"> Sales Team</label>
+                <label><input type="checkbox" data-column="8"> Address 1</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="9"> Address 2</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="10"> Website Link</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="11"> Contact Name</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="12"> Job Postion</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="13"> Phone</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="14"> Mobile</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="15"> Priority</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="16"> Title</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="17"> Tag</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="18"> Sales Person</label>
+            </div>
+            <div class="dropdown-checkbox">
+                <label><input type="checkbox" data-column="19"> Sales Team</label>
             </div>
         </div>
         <table id="example" class="display nowrap">
@@ -254,28 +297,59 @@
                     <th>City</th>
                     <th>state</th>
                     <th>Country</th>
+                    <th>Zip</th>
+                    <th>Probability</th>
+                    <th>Company Name</th>
+                    <th>Address 1</th>
+                    <th>Address 2</th>
+                    <th>Website Link</th>
+                    <th>Contact Name</th>
+                    <th>Job Postion</th>
+                    <th>Phone</th>
+                    <th>Mobile</th>
+                    <th>Priority</th>                    
                     <th>Title</th>
                     <th>Tag</th>
-                    <th>Salesperson</th>
+                    <th>Sales Person</th>
                     <th>Sales Team</th>
 
                 </tr>
             </thead>
             <tbody>
                 @foreach($data as $lead)
+                
                 <tr data-id="{{ $lead->id ?? ''}}" class="lead-row">
                     <td>{{$lead->product_name ?? ''}}</td>
                     <td>{{$lead->email ?? ''}}</td>
                     <td>{{$lead->city ?? ''}}</td>
                     <td>{{$lead->getState->name ?? ''}}</td>
-                    <td>{{$lead->getCountry->name ?? ''}}</td>
+                    <td>{{$lead->getCountry->name ?? ''}}</td>                    
+                    <td>{{$lead->zip ?? ''}}</td>
+                    <td>{{$lead->probability ?? ''}}</td>
+                    <td>{{$lead->company_name ?? ''}}</td>
+                    <td>{{$lead->address_1 ?? ''}}</td>
+                    <td>{{$lead->address_2 ?? ''}}</td>
+                    <td>{{$lead->website_link ?? ''}}</td>
+                    <td>{{$lead->contact_name ?? ''}}</td>
+                    <td>{{$lead->job_postion ?? ''}}</td>
+                    <td>{{$lead->phone ?? ''}}</td>
+                    <td>{{$lead->mobile ?? ''}}</td>
+                    <td>{{$lead->priority ?? ''}}</td>
                     <td>{{$lead->getTilte->title ?? ''}}</td>
-                    <td>
-                        @foreach ($lead->getTag as $tag)
-                        {{$tag->name ?? ''}}
-                        @endforeach
+                    <td>                
+                         @php
+                        // Collect tag names for this lead
+                        $tags = $data->where('product_name', $lead->product_name)->pluck('tag_name')->unique();
+                    @endphp
+
+                    @foreach ($tags as $tag)
+                        {{ $tag }}
+                        @if (!$loop->last)
+                            ,
+                        @endif
+                    @endforeach
                     </td>
-                    <td>{{$lead->sales_person ?? ''}}</td>
+                    <td>{{$lead->getUser->email ?? ''}}</td>
                     <td>{{$lead->sales_team ?? ''}}</td>
                 </tr>
                 @endforeach
@@ -294,7 +368,7 @@
         var table = $('#example').DataTable({
             columnDefs: [{
                     visible: false
-                    , targets: [2, 3, 4, 5, 6, 7, 8]
+                    , targets: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
                 } // Initial visibility settings
             ]
         });

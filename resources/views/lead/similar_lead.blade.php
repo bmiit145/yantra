@@ -144,7 +144,7 @@
 <div class="o_content">
     <div
         class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start">
-        @foreach ($leads as $lead)
+        @foreach ($similarLeads as $lead)
             <a href="{{route('lead.create', $lead->id)}}">
                 <div role="article" class="o_kanban_record d-flex flex-grow-1 flex-md-shrink-1 flex-shrink-0 contact-card"
                     data-id="{{ $lead->id }}" tabindex="0">
