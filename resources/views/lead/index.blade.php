@@ -58,6 +58,7 @@
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="creationDateBtn">
                 Creation Date
+                <span class="arrow-icon" style="margin-left: 6px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="dropdown-item">Year</span>
@@ -68,8 +69,9 @@
             </div>
         </div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn">
-                Closed Date
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
+                  Closed Date
+                <span class="arrow-icon" >▼</span>
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="dropdown-item">Year</span>
@@ -79,11 +81,13 @@
                 <span class="dropdown-item">Day</span>
             </div>
         </div>
+        
         {{-- <div class="o_accordion position-relative">
                 <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div> --}}
         <div class="dropdown-divider" role="separator"></div>
         <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_custom_group_menu text-truncate" tabindex="0" aria-expanded="false">Properties</button></div>
-        <div role="separator" class="dropdown-divider"></div><select class="o_add_custom_group_menu o_menu_item dropdown-item">
+        <div role="separator" class="dropdown-divider"></div>
+        <select class="o_add_custom_group_menu o_menu_item dropdown-item">
             <option value="" disabled="true" selected="true" hidden="true">Add Custom Group</option>
             <option value="active">Active</option>
             <option value="activity_state">Activity State</option>
@@ -200,7 +204,14 @@
     .dropdown-checkbox input[type="checkbox"] {
         margin-right: 5px;
     }
+    .arrow-icon {
+        display: inline-block;
+        transition: transform 0.3s ease; /* Smooth transition */
+    }
 
+    .rotate {
+        transform: rotate(180deg); /* Rotate the arrow */
+    }
 </style>
 
 <div class="card" style="padding: 1%">
@@ -393,26 +404,46 @@
 </script>
 <script>
     $(document).ready(function() {
-        $('#creationDateBtn').on('click', function(e) {
-            e.preventDefault();
-            $('#creationDateDropdown').toggle(); // Toggle the dropdown visibility
+        $('#creationDateBtn').on('click', function(event) {
+            event.preventDefault();
+
+            // Toggle the dropdown visibility
+            $('#creationDateDropdown').slideToggle();
+
+            // Toggle the arrow rotation
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
+            $('.o_dropdown_content').not('#creationDateDropdown').slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
         });
 
-        // Close the dropdown if the user clicks outside of it
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#creationDateBtn, #creationDateDropdown').length) {
-                $('#creationDateDropdown').hide(); // Hide the dropdown
+        // Optional: Close the dropdown if clicking outside of it
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.o_accordion').length) {
+                $('#creationDateDropdown').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
             }
         });
-        $('#closeDateBtn').on('click', function(e) {
-            e.preventDefault();
-            $('#closeDateDropdown').toggle(); // Toggle the dropdown visibility
+        $('#closeDateBtn').on('click', function(event) {
+            event.preventDefault();
+
+            // Toggle the dropdown visibility
+            $('#closeDateDropdown').slideToggle();
+
+            // Toggle the arrow rotation
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
+            $('.o_dropdown_content').not('#closeDateDropdown').slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
         });
 
-        // Close the dropdown if the user clicks outside of it
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#closeDateBtn, #closeDateDropdown').length) {
-                $('#closeDateDropdown').hide(); // Hide the dropdown
+        // Optional: Close the dropdown if clicking outside of it
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.o_accordion').length) {
+                $('#closeDateDropdown').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
             }
         });
     });
