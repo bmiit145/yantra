@@ -56,9 +56,9 @@
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Salesperson</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Sales Team</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">City</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Country</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Campaign</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Medium</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Source</span>
         <div class="dropdown-divider" role="separator"></div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="creationDateBtn">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false" id="creationDateBtn">
                 Creation Date
-                <span class="arrow-icon" style="margin-left: 6px;">▼</span>
+                <span class="arrow-icon">▼</span>
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="dropdown-item">Year</span>
@@ -70,8 +70,8 @@
         </div>
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
-                  Closed Date
-                <span class="arrow-icon" >▼</span>
+                Closed Date
+                <span class="arrow-icon">▼</span>
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="dropdown-item">Year</span>
@@ -81,7 +81,7 @@
                 <span class="dropdown-item">Day</span>
             </div>
         </div>
-        
+
         {{-- <div class="o_accordion position-relative">
                 <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div> --}}
         <div class="dropdown-divider" role="separator"></div>
@@ -165,7 +165,7 @@
         border-radius: 5px;
     }
 
-    .hide-show-dropdown-menu{
+    .hide-show-dropdown-menu {
         display: none;
         position: absolute;
         background-color: #f9f9f9;
@@ -214,14 +214,18 @@
     .dropdown-checkbox input[type="checkbox"] {
         margin-right: 5px;
     }
+
     .arrow-icon {
         display: inline-block;
-        transition: transform 0.3s ease; /* Smooth transition */
+        transition: transform 0.3s ease;
+        /* Smooth transition */
     }
 
     .rotate {
-        transform: rotate(180deg); /* Rotate the arrow */
+        transform: rotate(180deg);
+        /* Rotate the arrow */
     }
+
 </style>
 
 <div class="card" style="padding: 1%">
@@ -307,7 +311,7 @@
                     <th>Job Postion</th>
                     <th>Phone</th>
                     <th>Mobile</th>
-                    <th>Priority</th>                    
+                    <th>Priority</th>
                     <th>Title</th>
                     <th>Tag</th>
                     <th>Sales Person</th>
@@ -317,13 +321,13 @@
             </thead>
             <tbody>
                 @foreach($data as $lead)
-                
+
                 <tr data-id="{{ $lead->id ?? ''}}" class="lead-row">
                     <td>{{$lead->product_name ?? ''}}</td>
                     <td>{{$lead->email ?? ''}}</td>
                     <td>{{$lead->city ?? ''}}</td>
                     <td>{{$lead->getState->name ?? ''}}</td>
-                    <td>{{$lead->getCountry->name ?? ''}}</td>                    
+                    <td>{{$lead->getCountry->name ?? ''}}</td>
                     <td>{{$lead->zip ?? ''}}</td>
                     <td>{{$lead->probability ?? ''}}</td>
                     <td>{{$lead->company_name ?? ''}}</td>
@@ -336,18 +340,18 @@
                     <td>{{$lead->mobile ?? ''}}</td>
                     <td>{{$lead->priority ?? ''}}</td>
                     <td>{{$lead->getTilte->title ?? ''}}</td>
-                    <td>                
-                         @php
+                    <td>
+                        @php
                         // Collect tag names for this lead
                         $tags = $data->where('product_name', $lead->product_name)->pluck('tag_name')->unique();
-                    @endphp
+                        @endphp
 
-                    @foreach ($tags as $tag)
+                        @foreach ($tags as $tag)
                         {{ $tag }}
                         @if (!$loop->last)
-                            ,
+                        ,
                         @endif
-                    @endforeach
+                        @endforeach
                     </td>
                     <td>{{$lead->getUser->email ?? ''}}</td>
                     <td>{{$lead->sales_team ?? ''}}</td>
@@ -357,6 +361,8 @@
         </table>
     </div>
 </div>
+
+
 
 
 

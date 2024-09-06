@@ -108,6 +108,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/updatePriority', [LeadController::class, 'updatePriority'])->name('lead.updatePriority');
     Route::get('/lead-calendar', [LeadController::class, 'calendar'])->name('lead.calendar')->defaults('lead', 'calendar');
     Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');
+    Route::post('/leads/storeLost', [LeadController::class, 'storeLost'])->name('leads.storeLost');
+    Route::post('/leads/manageLostReasons', [LeadController::class, 'manageLostReasons'])->name('leads.markAsLost');
 
     // Check Email Or Phone Exists Route
     Route::post('/check-email', [LeadController::class, 'checkEmail'])->name('checkEmail');
