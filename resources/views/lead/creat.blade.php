@@ -270,6 +270,16 @@
         background-color: #E99D00;/* Adjust background color for today */
         color: #E99D00;
     }
+    
+    .popover-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .popover-body textarea {
+        width: 100%;
+        height: 100px;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -759,11 +769,12 @@
                                     </div>
                                     <hr class="flex-grow-1 fs-3">
                                 </div>
-                                @endif
+                            @endif
                             @php
                                 use Carbon\Carbon;
                             @endphp
                             @if($activities->count() > 0)
+                            <div id="activitiesContainer">
                                 @foreach ($activities as $activity) 
                                     @php
                                     $dueDate = Carbon::parse($activity->due_date);
@@ -823,7 +834,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="lh-lg">
-                                                    <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3">
+                                                    <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3" data-bs-toggle="modal" data-bs-target="#markDoneModal">
                                                         <i class="fa fa-check"></i> Mark Done
                                                     </button>
                                                     <button type="button" class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
@@ -831,9 +842,26 @@
                                                     </button>
                                                     <button type="button" class="btn btn-link btn-danger p-0 o-mail-Activity-delete" data-activity-id="{{ $activity->id }}">
                                                         <i class="fa fa-times"></i> Cancel
-                                                    </button>
-                                                    
-            
+                                                    </button>                                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="markDoneModal" tabindex="-1" aria-labelledby="markDoneModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="markDoneModalLabel">Mark Done</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <textarea class="form-control" rows="4" placeholder="Write Feedback"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" id="saveChangesButton" class="btn btn-primary">Done</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">discard</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -867,7 +895,7 @@
                                                             <div class="col-md-6">
                                                                 <div class="mb-3">
                                                                     <label for="edit_due_date" class="form-label">Due Date</label>
-                                                                    <input type="date" class="form-control" id="edit_due_date" name="due_date">
+                                                                    <input type="date" class="form-control datepicker " id="edit_due_date" name="due_date">
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-6">
@@ -903,6 +931,7 @@
                                         </div>
                                     </div>
                                 @endforeach
+                            </div>
                             @endif
                             <div class="o-mail-Chatter-content">
                                 @if(isset($data) && $data->lead_type == 1)
@@ -1623,6 +1652,25 @@ $(document).ready(function() {
 
 <script>
     $(document).ready(function() {
+    
+        // Click event for toggle header
+        $('#toggleHeader').click(function() {
+            var icon = $('#toggleIcon');
+            var container = $('#activitiesContainer');
+            var badge = $('#badgeCount');
+
+            if (icon.hasClass('fa-caret-down')) {
+                // Switch icon and show activities
+                icon.removeClass('fa-caret-down').addClass('fa-caret-right');
+                container.hide();
+                badge.show();
+            } else {
+                // Switch icon and hide activities
+                icon.removeClass('fa-caret-right').addClass('fa-caret-down');
+                container.show();
+                badge.hide();
+            }
+        });
 
         $.ajaxSetup({
             headers: {
@@ -1645,7 +1693,6 @@ $(document).ready(function() {
         }
 
         // Initialize CKEditors
-        initializeEditor('#description');
         initializeEditor('#log_note');
 
         // Initialize CKEditor for the log note with existing content
@@ -1774,6 +1821,53 @@ $(document).ready(function() {
         $('#editModal').on('hidden.bs.modal', function() {
             $('#editForm')[0].reset();
             // Additional logic to reset other elements or states if necessary
+        });
+
+        // Handle the click event for the "Save changes" button in the modal
+        $('#saveChangesButton').click(function() {
+            // Get the activity ID from a data attribute or other storage method
+            var activityId = $('#markDoneModal').data('activity-id');
+            
+            // Get the feedback from the textarea
+            var feedback = $('#markDoneModal textarea').val();
+            
+            // Make the AJAX request
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}', // Replace with your actual route
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token for security
+                    id: activityId,
+                    status: 1, // The status to update
+                    feedback: feedback // Add feedback to the request
+                },
+                success: function(response) {
+                    // Handle the response from the server
+                    if (response.success) {
+                        // Optionally update the UI to reflect the change
+                        $('div[data-activity-id="' + activityId + '"]').remove();
+                        
+                        // Close the modal
+                        $('#markDoneModal').modal('hide');
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        // Attach click event to the "Mark Done" button to open the modal and store the activity ID
+        $('.o-mail-Activity-markDone').click(function() {
+            var activityId = $(this).closest('.o-mail-Activity').data('activity-id');
+            
+            // Store the activity ID in the modal
+            $('#markDoneModal').data('activity-id', activityId);
+            
+            // Show the modal
+            $('#markDoneModal').modal('show');
         });
     });
 </script>

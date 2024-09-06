@@ -72,110 +72,6 @@ class LeadController extends Controller
         return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities'));
     }
 
-
-    // public function store(Request $request)
-    // {
-    //     if (isset($request->lead_id)) {
-    //         $data = generate_lead::find($request->lead_id);
-
-    //         $data->product_name = $request->name_0;
-    //         $data->probability = $request->probability_0;
-    //         $data->company_name = $request->partner_name_0;
-    //         $data->address_1 = $request->street_0;
-    //         $data->address_2 = $request->street2_0;
-    //         $data->city = $request->city_0;
-    //         $data->zip = $request->zip_0;
-    //         $data->state = $request->state_id_0;
-    //         $data->country = $request->country_id_0;
-    //         $data->website_link = $request->website_0;
-    //         $data->sales_person = $request->user_id_1;
-    //         $data->sales_team = $request->team_id_0;
-    //         $data->contact_name = $request->contact_name_0;
-    //         $data->title = $request->title_0;
-    //         $data->email = $request->email_from_1;
-    //         $data->job_postion = $request->function_0;
-    //         $data->phone = $request->phone_1;
-    //         $data->mobile = $request->mobile_0;
-    //         // $data->tag_id = $request->tag_ids_1;            
-    //         // $data->tag_id = implode(',',$request->tag_ids_1);
-    //         if ($request->has('tag_ids_1') && $request->tag_ids_1 !== null) {
-    //             $data->tag_id = implode(',', $request->tag_ids_1);
-    //         } else {
-    //             $data->tag_id = null;
-    //         }
-    //         $data->lead_type = '1';
-    //         $data->update();
-    //         return response()->json(['message' => 'Data Updated Successfully']);
-    //     }
-    //     $data = new generate_lead;
-
-    //     $data->product_name = $request->name_0;
-    //     $data->probability = $request->probability_0;
-    //     $data->company_name = $request->partner_name_0;
-    //     $data->address_1 = $request->street_0;
-    //     $data->address_2 = $request->street2_0;
-    //     $data->city = $request->city_0;
-    //     $data->zip = $request->zip_0;
-    //     $data->state = $request->state_id_0;
-    //     $data->country = $request->country_id_0;
-    //     $data->website_link = $request->website_0;
-    //     $data->sales_person = $request->user_id_1;
-    //     $data->sales_team = $request->team_id_0;
-    //     $data->contact_name = $request->contact_name_0;
-    //     $data->title = $request->title_0;
-    //     $data->email = $request->email_from_1;
-    //     $data->job_postion = $request->function_0;
-    //     $data->phone = $request->phone_1;
-    //     $data->mobile = $request->mobile_0;
-    //     // $data->tag_id = $request->tag_ids_1;
-    //     // $data->tag_id = implode(',', $request->tag_ids_1);
-    //     if ($request->has('tag_ids_1') && $request->tag_ids_1 !== null) {
-    //         $data->tag_id = implode(',', $request->tag_ids_1);
-    //     } else {
-    //         $data->tag_id = null;
-    //     }
-    //     $data->lead_type = '1';
-    //     $data->save();
-    //     return response()->json(['message' => 'Data Added Successfully']);
-    // }
-
-    // public function store(Request $request)
-    // {
-    //     $data = generate_lead::updateOrCreate(
-    //         ['id' => $request->lead_id],
-    //         [
-    //             'product_name' => $request->name_0,
-    //             'probability' => $request->probability_0,
-    //             'company_name' => $request->partner_name_0,
-    //             'address_1' => $request->street_0,
-    //             'address_2' => $request->street2_0,
-    //             'city' => $request->city_0,
-    //             'zip' => $request->zip_0,
-    //             'state' => $request->state_id_0,
-    //             'country' => $request->country_id_0,
-    //             'website_link' => $request->website_0,
-    //             'sales_person' => $request->user_id_1,
-    //             'sales_team' => $request->team_id_0,
-    //             'contact_name' => $request->contact_name_0,
-    //             'title' => $request->title_0,
-    //             'email' => $request->email_from_1,
-    //             'job_postion' => $request->function_0,
-    //             'phone' => $request->phone_1,
-    //             'mobile' => $request->mobile_0,
-    //             'tag_id' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
-    //             'lead_type' => '1',
-    //         ]
-    //     );
-
-    //     // Log changes
-    //     $action = $request->lead_id ? 'updated' : 'created';
-    //     $message = $action === 'updated' ? 'Lead updated successfully' : 'Lead created successfully';
-
-    //     Log::info($message, ['lead_id' => $data->id, 'data' => $data->toArray()]);
-
-    //     return response()->json(['message' => $message]);
-    // }
-
     public function store(Request $request)
     {
         $lead = generate_lead::updateOrCreate(
@@ -450,6 +346,16 @@ class LeadController extends Controller
         }
 
         return response()->json(['message' => 'Activity not found'], 404);
+    }
+
+    public function activitiesUpdateStatus(Request $request)
+    {
+        $activity = Activity::find($request['id']);
+        $activity->status = '1';
+        $activity->feedback = $request->feedback;
+        $activity->save();
+
+        return response()->json(['success' => true]);
     }
 
     public function fetchActivities()

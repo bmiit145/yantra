@@ -119,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activities-edit/{id?}', [LeadController::class, 'activitiesEdit'])->name('lead.activitiesEdit');
     Route::post('/activities/update', [LeadController::class, 'activitiesUpdate'])->name('lead.activitiesUpdate');
     Route::delete('/activities/{id?}', [LeadController::class, 'activitiesDelete'])->name('lead.activitiesDelete');
+    Route::post('/update-activity-status', [LeadController::class, 'activitiesUpdateStatus'])->name('lead.activitiesUpdateStatus');
 
 
     // Check Email Or Phone Exists Route
