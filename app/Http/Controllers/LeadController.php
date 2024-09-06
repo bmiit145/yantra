@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
@@ -12,6 +13,7 @@ use App\Models\state;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class LeadController extends Controller
 {
@@ -19,11 +21,6 @@ class LeadController extends Controller
     {        
         // $data = generate_lead::with('tags')->get();
         $datas = generate_lead::with('tags')->get();
-
-        // Filter out leads with unique product_name while preserving the first occurrence
-        $data = $datas->groupBy('product_name')->map(function ($group) {
-            return $group->first();
-        });
 
         // Filter out leads with unique product_name while preserving the first occurrence
         $data = $datas->groupBy('product_name')->map(function ($group) {
@@ -45,6 +42,16 @@ class LeadController extends Controller
         } else {
             $count = 0; 
         }
+        if($data){
+            $activitiesCount = Activity::where('lead_id',$data->id)->count();
+        }else{
+            $activitiesCount = 0;
+        }
+        if($data){
+            $activities = Activity::orderBy('id','DESC')->where('lead_id',$data->id)->get();
+        }else{
+            $activities = 0;
+        }
         // $data = generate_lead::select('generate_lead.*', 
         //                              'countries.name as country_name', 
         //                              'states.name as state_name', 
@@ -56,7 +63,7 @@ class LeadController extends Controller
         //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'person_titles.id')
         //     ->first();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities'));
     }
 
 
@@ -358,6 +365,89 @@ class LeadController extends Controller
 
         // Return a view with the similar leads
         return view('lead.similar_lead', compact('similarLeads', 'productName'));
+    }
+
+    public function scheduleActivityStore(Request $request)
+    {        
+        try{
+            // Create a new activity record
+            $activity = new Activity();
+            $activity->lead_id = $request->lead_id;
+            $activity->activity_type = $request->activity_type;
+            $activity->due_date = $request->due_date;
+            $activity->summary = $request->summary;
+            $activity->assigned_to = $request->assigned_to;
+            $activity->note = $request->log_note;
+            $activity->status = '0';
+            $activity->save();
+
+            // Redirect or return a response
+            // return redirect()->back()->with('message', 'Activity scheduled successfully.');
+            return response()->json(['message' => 'Activity scheduled successfully']);
+        }catch(\Exception $e){
+            return redirect()->back();
+        }
+    }
+
+    public function activitiesEdit($id)
+    {
+        $activity = Activity::findOrFail($id);
+        return response()->json(['activity' => $activity]);
+    }
+
+    public function activitiesUpdate(Request $request)
+    {
+        $data = $request->all();
+
+        // Find the activity by ID and update it
+        $activity = Activity::findOrFail($data['id']);
+        $activity->activity_type = $data['activity_type'];
+        $activity->due_date = $data['due_date'];
+        $activity->summary = $data['summary'];
+        $activity->assigned_to = $data['assigned_to'];
+        $activity->note = $data['log_note'];
+        $activity->save();
+
+        return response()->json(['message' => 'Activity updated successfully']);
+    }
+    
+    public function activitiesDelete($id)
+    {
+        $activity = Activity::find($id);
+        
+        if ($activity) {
+            $activity->delete();
+            return response()->json(['message' => 'Activity deleted successfully']);
+        }
+
+        return response()->json(['message' => 'Activity not found'], 404);
+    }
+
+    public function fetchActivities()
+    {
+        // Fetch activities with the lead title relationship
+        $activities = Activity::with('getLeadTitle')->get();
+        
+        // Format activities for FullCalendar
+        $events = $activities->map(function ($activity) {
+            // Ensure due_date is a Carbon instance
+            $dueDate = Carbon::parse($activity->due_date);
+            
+            // Get lead title
+            $leadTitle = $activity->getLeadTitle ? $activity->getLeadTitle->product_name : 'No Title';
+
+            return [
+                'id' => $activity->id,
+                'lead_id' => $activity->lead_id,
+                'title' => "{$leadTitle}", // Include lead title in the title
+                'start' => $dueDate->toDateString(),
+                'color' => 'blue', // This can be replaced with dynamic values if needed
+                'description' => $activity->note,
+            ];
+        });
+
+        // Return JSON response
+        return response()->json($events);
     }
 
 }

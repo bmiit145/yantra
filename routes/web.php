@@ -107,7 +107,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-kanban', [LeadController::class, 'show'])->name('lead.kanban')->defaults('lead', 'kanban');
     Route::post('/lead/updatePriority', [LeadController::class, 'updatePriority'])->name('lead.updatePriority');
     Route::get('/lead-calendar', [LeadController::class, 'calendar'])->name('lead.calendar')->defaults('lead', 'calendar');
+    Route::get('/activities', [LeadController::class, 'fetchActivities'])->name('activities.fetch');
+
+
     Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');
+
+    // Activities Store Route
+    Route::post('/schedule-activity', [LeadController::class, 'scheduleActivityStore'])->name('lead.scheduleActivityStore');
+    Route::get('/activities-edit/{id?}', [LeadController::class, 'activitiesEdit'])->name('lead.activitiesEdit');
+    Route::post('/activities/update', [LeadController::class, 'activitiesUpdate'])->name('lead.activitiesUpdate');
+    Route::delete('/activities/{id?}', [LeadController::class, 'activitiesDelete'])->name('lead.activitiesDelete');
+
 
     // Check Email Or Phone Exists Route
     Route::post('/check-email', [LeadController::class, 'checkEmail'])->name('checkEmail');

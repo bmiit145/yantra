@@ -54,12 +54,98 @@
     #calendar {
         margin: 40px auto;
     }
+
+    /* Style the current date to look inactive */
+    .fc-day-today {
+        background: #f0f0f0 !important; /* Change the background color */
+        border: 1px solid #ccc !important; /* Optional border styling */
+        color: #888 !important; /* Change the text color */
+    }
+
+   /* Modal styles */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .modal-content {
+        background: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+    }
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 10px;
+        background-color: #f9e9e3;
+        color: #000;
+        font-size: 1.05em;
+    }
+    .modal-close {
+        font-size: 24px;
+        cursor: pointer;
+        color: #888;
+    }
+    .modal-close:hover {
+        color: #333;
+    }
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid #ddd;
+        /* padding-top: 10px; */
+    }
+    .btn {
+        padding: 10px 20px;
+        margin: 5px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn.red {
+        background: #e74c3c;
+        color: #fff;
+    }
 </style>
 
 <div class="o_content">
     <div id='calendar'></div>
 </div>
 
+<!-- Modal Structure -->
+<div id="eventModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p id="eventTitle"></p>
+            <span id="closeModal" class="modal-close">&times;</span>
+        </div>
+        <div class="modal-body">  
+        <ul class="list-group list-group-flush">
+            <li class=""><i class="fa fa-fw fa-calendar text-400"></i>
+                <b><span class="ms-2" id="eventDate"></span></b>
+            </li>
+            <li class="mt-3"><b>Expected Revenue</b>
+                <span class="ms-2">0.00</span>
+            </li>            
+        </ul>          
+            <!-- <p id="eventDate"></p> -->
+        </div>
+        <div class="modal-footer">
+            <button id="editEvent" class="btn btn-primary">Edit</button>
+            <button id="deleteEvent" class="btn btn-secondary">Delete</button>
+        </div>
+    </div>
+</div>
 
 <script src="https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js"></script>
 <script src="https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/jquery.min.js"></script>
@@ -67,51 +153,59 @@
 <script src="https://fullcalendar.io/releases/fullcalendar-scheduler/1.9.4/scheduler.min.js"></script>
 <script>
     $(function () {
-
-        $('#calendar').fullCalendar({
-            eventSources: [
-                {
-                    events: [
-                        {
-                            title: 'Event1',
-                            start: '2018-07-13',
-                            end: '2018-07-16',
-                            allDay: false,
-                            color: 'green',
-                            backgroundColor: 'green'
-                        },
-                        {
-                            title: 'Event2',
-                            start: '2018-07-10',
-                            color: '#ff7538',
-                            backgroundColor: '#ff7538'
-                        }
-                    ],
-                }
-            ],
-            header: {
-                right: 'month,agendaWeek,timelineCustom,agendaDay,prev,today,next',
-                left: 'title',
-            },
-            fixedWeekCount: false,
-            contentHeight: 650,
-            views: {
-                timelineCustom: {
-                    type: 'timeline',
-                    buttonText: 'Year',
-                    dateIncrement: { years: 1 },
-                    slotDuration: { months: 1 },
-                    visibleRange: function (currentDate) {
-                        return {
-                            start: currentDate.clone().startOf('year'),
-                            end: currentDate.clone().endOf("year")
-                        };
-                    }
+    $('#calendar').fullCalendar({
+        eventSources: [
+            {
+                url: '{{ route('activities.fetch') }}',
+                method: 'GET',
+                failure: function () {
+                    alert('There was an error while fetching events!');
                 }
             }
-        });
+        ],
+        header: {
+            right: 'month,agendaWeek,timelineCustom,agendaDay,prev,today,next',
+            left: 'title',
+        },
+        fixedWeekCount: false,
+        contentHeight: 650,
+        views: {
+            timelineCustom: {
+                type: 'timeline',
+                buttonText: 'Year',
+                dateIncrement: { years: 1 },
+                slotDuration: { months: 1 },
+                visibleRange: function (currentDate) {
+                    return {
+                        start: currentDate.clone().startOf('year'),
+                    };
+                }
+            }
+        },
+        eventRender: function (event, element) {
+            element.find('.fc-title').html(event.title);
+        },
+        eventClick: function (calEvent, jsEvent, view) {
+            // Set the modal content
+            $('#eventTitle').text(calEvent.title);
+            $('#eventDate').text(calEvent.start.format('DD MMMM YYYY'));
 
+            // Show the modal
+            $('#eventModal').show();
+
+            $('#editEvent').data('event-lead_id', calEvent.lead_id);
+
+            // Handle Close button
+            $('#closeModal').off('click').on('click', function () {
+                $('#eventModal').hide();
+            });
+
+            $('#editEvent').off('click').on('click', function () {
+                    var eventId = $(this).data('event-lead_id');
+                    window.location.href = '{{ route("lead.create") }}/' + eventId;
+                });
+        }
     });
+});
 </script>
-
 @endsection

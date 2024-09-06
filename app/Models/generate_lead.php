@@ -93,5 +93,9 @@ class generate_lead extends Model
         return $this->belongsTo(User::class, 'sales_person', 'id');
     }
 
+    public function title()
+    {
+        return $this->product_name; // or whatever method/attribute provides the title
+    }
 
 }

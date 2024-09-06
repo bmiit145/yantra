@@ -41,6 +41,7 @@
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> --}}
 <!-- Select2 CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <style>
     .buyerlead h3 {
         font-size: 30px;
@@ -122,6 +123,104 @@
         color: #0d6efd;
         text-decoration: underline !important;
     }
+    input {
+        font-family: 'Roboto', sans-serif;
+        display:block;
+        border: none;
+        border-radius: 0.25rem;
+        border: 1px solid transparent;
+        line-height: 1.5rem;
+        padding: 0;
+        font-size: 1rem;
+        color: #607D8B;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    input:focus {outline: none;}
+    #ui-datepicker-div {
+        display: none;
+        background-color: #fff;
+        box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.1);
+        margin-top: 0.25rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+    }
+    .ui-datepicker-calendar thead th {
+        padding: 0.25rem 0;
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: #78909C;
+    }
+    .ui-datepicker-calendar tbody td {
+        width: 2.5rem;
+        text-align: center;
+        padding: 0;
+    }
+    .ui-datepicker-calendar tbody td a {
+        display: block;
+        border-radius: 0.25rem;
+        line-height: 2rem;
+        transition: 0.3s all;
+        color: #546E7A;
+        font-size: 0.875rem;
+        text-decoration: none;
+    }
+    .ui-datepicker-calendar tbody td a:hover {	
+        background-color: #E0F2F1;
+    }
+    .ui-datepicker-calendar tbody td a.ui-state-active {
+        background-color: #009688;
+        color: white;
+    }
+    .ui-datepicker-header a.ui-corner-all {
+        cursor: pointer;
+        position: absolute;
+        top: 0;
+        width: 2rem;
+        height: 2rem;
+        margin: 0.5rem;
+        border-radius: 0.25rem;
+        transition: 0.3s all;
+    }
+    .ui-datepicker-header a.ui-corner-all:hover {
+        background-color: #ECEFF1;
+    }
+    .ui-datepicker-header a.ui-datepicker-prev {	
+        left: 0;	
+        background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==");
+        background-repeat: no-repeat;
+        background-size: 0.5rem;
+        background-position: 50%;
+        transform: rotate(180deg);
+    }
+    .ui-datepicker-header a.ui-datepicker-next {
+        right: 0;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==');
+        background-repeat: no-repeat;
+        background-size: 10px;
+        background-position: 50%;
+    }
+    .ui-datepicker-header a>span {
+        display: none;
+    }
+    .ui-datepicker-title {
+        text-align: center;
+        line-height: 2rem;
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding-bottom: 0.25rem;
+    }
+    .ui-datepicker-week-col {
+        color: #78909C;
+        font-weight: 400;
+        font-size: 0.75rem;
+    }
 
 </style>
 <style>
@@ -151,6 +250,26 @@
         overflow: inherit !important;
     }
 
+    .activity-avatar-initials {
+        width: 40px;
+        height: 40px;
+        background-color: #017e84;
+        color: white;
+        font-size: 20px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+    }
+
+    .today-label {
+        --color: RGBA(154, 107, 1, var(--text-opacity, 1));
+        color: var(--color) !important;
+    }
+
+    .today-icon {
+        background-color: #E99D00;/* Adjust background color for today */
+        color: #E99D00;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -624,13 +743,167 @@
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
                                     <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
-                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
                                         <div class="o-mail-Followers d-flex me-1"><button class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" disabled="" title="Show Followers" aria-expanded="false"><i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">0</sup></button></div><button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
                                             <div class="position-relative"><span class="d-flex invisible text-nowrap">Following</span><span class="position-absolute end-0 top-0"> Follow </span></div>
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                            @if($activitiesCount > 0)
+                                <div class="d-flex pt-2 cursor-pointer fw-bolder" id="toggleHeader">
+                                    <hr class="flex-grow-1 fs-3">
+                                    <div class="d-flex align-items-center px-3">
+                                        <i class="fa fa-fw fa-caret-down" id="toggleIcon"></i> Planned Activities 
+                                        <span class="badge rounded-pill ms-2 text-bg-success" id="badgeCount" style="display: none;">{{$activitiesCount ?? ''}}</span>
+                                    </div>
+                                    <hr class="flex-grow-1 fs-3">
+                                </div>
+                                @endif
+                            @php
+                                use Carbon\Carbon;
+                            @endphp
+                            @if($activities->count() > 0)
+                                @foreach ($activities as $activity) 
+                                    @php
+                                    $dueDate = Carbon::parse($activity->due_date);
+                                    $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
+                                    $tomorrow = $now->copy()->addDay();
+
+                                    // Calculate the difference in days
+                                    $daysRemaining = $now->diffInDays($dueDate);
+                                    $isTomorrow = $dueDate->isSameDay($tomorrow);
+                                    $isToday = $dueDate->isSameDay($now);
+
+                                    // Determine the label based on due date
+                                    if ($isToday) {
+                                        $label = 'Today:';
+                                        $labelClass = 'today-label';
+                                        $iconClass = 'text-bg-warning';
+                                        $checkClass = 'text-black';
+                                    } elseif ($isTomorrow) {
+                                        $label = 'Tomorrow:';
+                                        $labelClass = 'text-success';
+                                        $iconClass = 'text-success';
+                                        $checkClass = 'text-white';
+                                    } elseif ($dueDate->isFuture()) {
+                                        $label = 'Due in ' . $daysRemaining . ' days:';
+                                        $labelClass = 'text-success';
+                                        $iconClass = 'text-success';
+                                        $checkClass = 'text-white';
+                                    } else {
+                                        $label = 'Due ' . abs($daysRemaining) . ' days ago:';
+                                        $labelClass = 'text-success';
+                                        $iconClass = 'text-success';
+                                        $checkClass = 'text-white';
+                                    }
+                                    @endphp                                                       
+                                    <div class="o-mail-Activity-container">
+                                        <div class="o-mail-Activity d-flex py-1 mb-2" data-activity-id="{{ $activity->id }}">
+                                            <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
+                                                <a role="button">
+                                                <span
+                                                    class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                    {{ strtoupper($activity->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                </span>
+                                                </a>
+                                                <div class="o-mail-Activity-iconContainer position-absolute top-100 start-100 translate-middle d-flex align-items-center justify-content-center mt-n1 ms-n1 rounded-circle w-50 h-50 {{$iconClass}}">
+                                                    <b><i class="fa small fa-check {{$checkClass}}"></i></b>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow px-3">
+                                                <div class="o-mail-Activity-info lh-1">
+                                                <span class="fw-bolder {{ $labelClass }}">
+                                                    {{ $label }}
+                                                </span>
+                                                    <span class="fw-bolder px-2 text-break"> {{ ucwords(str_replace('-', ' ', strtolower($activity->activity_type ?? ''))) }}</span>
+                                                    <span class="o-mail-Activity-user px-1">for {{$activity->getUser->email ?? ''}}</span>
+                                                    <button class="btn btn-link btn-primary p-0 lh-1 border-0">
+                                                        <i class="fa fa-info-circle" role="img" title="Info" aria-label="Info"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="lh-lg">
+                                                    <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3">
+                                                        <i class="fa fa-check"></i> Mark Done
+                                                    </button>
+                                                    <button type="button" class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
+                                                        <i class="fa fa-pencil"></i> Edit
+                                                    </button>
+                                                    <button type="button" class="btn btn-link btn-danger p-0 o-mail-Activity-delete" data-activity-id="{{ $activity->id }}">
+                                                        <i class="fa fa-times"></i> Cancel
+                                                    </button>
+                                                    
+            
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Edit Modal -->
+                                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editModalLabel">Edit Activity</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form id="editForm" action="" method="POST">
+                                                <input type="hidden" id="edit_activity_id" name="id">
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="edit_activity_type" class="form-label">Activity Type</label>
+                                                                    <select class="form-select" id="edit_activity_type" name="activity_type">
+                                                                        <option value="email">Email</option>
+                                                                        <option value="call">Call</option>
+                                                                        <option value="meeting">Meeting</option>
+                                                                        <option value="to-do">To-Do</option>
+                                                                        <option value="upload_document">Upload Document</option>
+                                                                        <option value="request_signature">Request Signature</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="edit_due_date" class="form-label">Due Date</label>
+                                                                    <input type="date" class="form-control" id="edit_due_date" name="due_date">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="edit_summary" class="form-label">Summary</label>
+                                                                    <input type="text" class="form-control" id="edit_summary" name="summary" placeholder="e.g. Discuss proposal">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="mb-3">
+                                                                    <label for="edit_assigned_to" class="form-label">Assigned to</label>
+                                                                    <select class="form-control" id="edit_assigned_to" name="assigned_to" style="width: 100%;">
+                                                                        @foreach ($users as $user)
+                                                                            <option value="{{ $user->id }}">{{ $user->email }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <div class="mb-3">
+                                                                    <label for="edit_log_note" class="form-label">Log Note</label>
+                                                                    <textarea class="form-control edit_log_note" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
                             <div class="o-mail-Chatter-content">
                                 @if(isset($data) && $data->lead_type == 1)
                                 @php
@@ -743,14 +1016,123 @@
     <div class="o_notification_manager"></div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Schedule Activity</h5> 
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+    <form id="scheduleForm" action="{{ route('lead.scheduleActivityStore') }}" method="POST">
+        @csrf
+        <input type="hidden" value="{{$data->id ?? ''}}" name="lead_id">
+        <div class="modal-body">
+            <div class="row col-md-12">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <div class="col-md-4">
+                            <label for="activity_type" class="mr-2">Activity Type</label>
+                        </div>
+                        <div class="col-md-8" id="activityTypeField">
+                            <select class="form-control" id="activity_type" name="activity_type" style="width: 100%;">
+                                <option value="email">Email</option>
+                                <option value="call">Call</option>
+                                <option value="meeting">Meeting</option>
+                                <option value="to-do" selected>To-Do</option>
+                                <option value="upload_document">Upload Document</option>
+                                <option value="request_signature">Request Signature</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6" id="dueDateField">
+                    <!-- Due Date field -->
+                    <div class="d-flex align-items-center">
+                        <div class="col-md-4">
+                            <label for="" class="mr-2">Due Date</label>    
+                        </div>
+                        <div class="col-md-8">
+                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                <div class="o_row o_row_readonly">
+                                    <div name="due_date" class="o_field_widget">
+                                        <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;" type="text" id="due_date"></div>
+                                    </div>                                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-3" id="summaryField">
+                    <div class="d-flex align-items-center">
+                        <div class="col-md-4">
+                            <label for="summary" class="mr-2">Summary</label>  
+                        </div>
+                        <div class="col-md-8">
+                            <input class="form-control" placeholder="e.g. Discuss proposal" style="width: 300px;" type="text" id="summary" name="summary">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-3" id="assignedToField">
+                    <div class="d-flex align-items-center">
+                        <div class="col-md-4">
+                            <label for="assigned_to" class="mr-2">Assigned to</label>  
+                        </div>
+                        <div class="col-md-8">
+                            <select class="form-control" id="assigned_to" name="assigned_to" style="width: 100%;">
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}">{{ $user->email }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-3" id="logNoteField">
+                    <textarea name="log_note" id="log_note" cols="30" rows="10"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+            <button type="submit" class="btn btn-primary">Schedule</button>
+            <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
+            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </form>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
 <script>
     $("#title_0").select2({
-        placeholder: "Select Title"
+        plholder: "Select Title"
         , allowClear: true
     });
     $("#country_id_0").select2({
@@ -768,34 +1150,46 @@
     $("#sales_person").select2({
         placeholder: "Salesperson"
         , allowClear: true
-    });
+    });    
+    $(function() {
+    var currentDate = new Date();
 
-    $(document).ready(function() {
-        function formatTag(tag) {
-            if (!tag.id) {
-                return tag.text; // Return text for non-tag elements
-            }
+    $(".datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        duration: "fast",
+        onSelect: function(dateText, inst) {
+            // Optional: Do something when a date is selected
+            console.log("Selected date: " + dateText);
+        }
+    }).datepicker("setDate", currentDate);
+});
 
-            var color = $(tag.element).data('color');
-            var $tag = $('<span>').text(tag.text);
-
-            // Apply background color if specified
-            if (color) {
-                $tag.css('background-color', color);
-                $tag.css('color', '#fff'); // Ensure text color is readable
-                $tag.css('padding', '2px 12px');
-                $tag.css('border-radius', '23px');
-            }
-
-            return $tag;
+$(document).ready(function() {
+    function formatTag(tag) {
+        if (!tag.id) {
+            return tag.text; // Return text for non-tag elements
         }
 
-        $('#tag_ids_1').select2({
-            templateResult: formatTag
-            , templateSelection: formatTag
-            , width: 'resolve' // Adjust width if necessary
-        });
+        var color = $(tag.element).data('color');
+        var $tag = $('<span>').text(tag.text);
+
+        // Apply background color if specified
+        if (color) {
+            $tag.css('background-color', color);
+            $tag.css('color', '#fff'); // Ensure text color is readable
+            $tag.css('padding', '2px 12px');
+            $tag.css('border-radius', '23px');
+        }
+
+        return $tag;
+    }
+
+    $('#tag_ids_1').select2({
+        templateResult: formatTag
+        , templateSelection: formatTag
+        , width: 'resolve' // Adjust width if necessary
     });
+});
 
 </script>
 
@@ -1185,7 +1579,205 @@
         .catch(error => {
             console.error(error);
         });
+
+        // ClassicEditor
+        // .create(document.querySelector('#log_note'))
+        // .catch(error => {
+        //     console.error(error);
+        // });
 </script>
+
+<script>
+    $(document).ready(function() {
+        // $('#staticBackdrop').on('shown.bs.modal', function () {
+        //     $('#activity_type').select2({
+        //         placeholder: "Activity Type",
+        //         allowClear: true
+        //     });
+        //     $('#assigned_to').select2({
+        //         placeholder: "Assigned To",
+        //         allowClear: true
+        //     });
+        // });
+
+        $('#scheduleForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            
+            $.ajax({
+                url: $(this).attr('action'),
+                method: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#staticBackdrop').modal('hide'); // Hide the modal
+                    location.reload();
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        let editorInstance = null;
+
+        // Function to initialize CKEditor
+        function initializeEditor(selector, callback) {
+            ClassicEditor
+                .create(document.querySelector(selector))
+                .then(editor => {
+                    if (callback) callback(editor);
+                })
+                .catch(error => {
+                    console.error('Error initializing CKEditor:', error);
+                });
+        }
+
+        // Initialize CKEditors
+        initializeEditor('#description');
+        initializeEditor('#log_note');
+
+        // Initialize CKEditor for the log note with existing content
+        initializeEditor('.edit_log_note', editor => {
+            editorInstance = editor;
+            const existingContent = $('#edit_log_note').data('content') || ''; // Default to empty string if no content
+            if (existingContent) {
+                editorInstance.setData(existingContent);
+            }
+        });
+
+        // Define URLs using Laravel's route helper
+        const deleteUrl = "{{ route('lead.activitiesDelete', ['id' => '']) }}";
+        const baseUrl = "{{ route('lead.activitiesEdit', ['id' => '']) }}";
+        const updateUrl = "{{ route('lead.activitiesUpdate') }}"; // Assuming this is your update URL
+
+        // Handle the Edit button click
+        $('.o-mail-Activity-edit').on('click', function() {
+            const activityId = $(this).closest('.o-mail-Activity').data('activity-id');
+            if (!activityId) {
+                console.error('Activity ID not found.');
+                return;
+            }
+
+            const url = baseUrl + '/' + activityId;
+            console.log('Fetching data from URL:', url);
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(response) {
+                    console.log('Response data:', response);
+
+                    $('#edit_activity_id').val(response.activity.id);
+                    $('#edit_activity_type').val(response.activity.activity_type);
+                    $('#edit_due_date').val(response.activity.due_date);
+                    $('#edit_summary').val(response.activity.summary);
+                    $('#edit_assigned_to').val(response.activity.assigned_to);
+
+                    const logNoteElement = document.querySelector('.edit_log_note');
+                    if (logNoteElement) {
+                        if (editorInstance) {
+                            const noteContent = response.activity.note || ''; // Default to empty string if no note
+                            editorInstance.setData(noteContent);
+                        } else {
+                            initializeEditor('.edit_log_note', editor => {
+                                editorInstance = editor;
+                                const noteContent = response.activity.note || ''; // Default to empty string if no note
+                                editorInstance.setData(noteContent);
+                            });
+                        }
+                    } else {
+                        console.error('CKEditor element not found.');
+                    }
+
+                    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                    editModal.show();
+                },
+                error: function(xhr) {
+                    console.error('Error fetching activity data:', xhr.responseText);
+                }
+            });
+        });
+
+        // Handle form submission
+        $('#editForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const formData = $(this).serializeArray();
+            const editorData = editorInstance ? editorInstance.getData() : '';
+
+            const formObject = {};
+            formData.forEach(field => {
+                formObject[field.name] = field.value;
+            });
+
+            formObject.log_note = editorData;
+
+            $.ajax({
+                url: updateUrl,
+                method: 'POST',
+                data: formObject,
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#editModal').modal('hide');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    console.error('Error updating activity:', xhr.responseText);
+                }
+            });
+        });
+
+        // Handle the Delete button click
+        $('.o-mail-Activity-delete').on('click', function() {
+            const activityId = $(this).data('activity-id');
+            if (!activityId) {
+                console.error('Activity ID not found.');
+                return;
+            }
+            $.ajax({
+                url: deleteUrl + '/' + activityId,
+                method: 'DELETE',
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('div[data-activity-id="' + activityId + '"]').remove();
+                },
+                error: function(xhr) {
+                    console.error('Error deleting activity:', xhr.responseText);
+                }
+            });
+        });
+
+        // Clean up CKEditor instance when the modal is hidden
+        $('#editModal').on('hidden.bs.modal', function() {
+            if (editorInstance) {
+                editorInstance.destroy().then(() => {
+                    editorInstance = null;
+                }).catch(error => {
+                    console.error('Error destroying CKEditor instance:', error);
+                });
+            }
+        });
+
+        // Reset form when modal is hidden
+        $('#editModal').on('hidden.bs.modal', function() {
+            $('#editForm')[0].reset();
+            // Additional logic to reset other elements or states if necessary
+        });
+    });
+</script>
+
 
         <!-- <script>
             ClassicEditor
