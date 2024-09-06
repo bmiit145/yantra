@@ -68,8 +68,9 @@ class LeadController extends Controller
         //     ->leftJoin('tags', 'generate_lead.tag_id', '=', 'tags.id')
         //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'pers on_titles.id')
         //     ->first();
+        $lost_reasons = LostReason::all();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities', 'lost_reasons'));
     }
 
 
