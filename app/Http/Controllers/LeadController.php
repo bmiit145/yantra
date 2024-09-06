@@ -54,7 +54,7 @@ class LeadController extends Controller
             $activitiesCount = 0;
         }
         if($data){
-            $activities = Activity::orderBy('id','DESC')->where('lead_id',$data->id)->get();
+            $activities = Activity::orderBy('id','DESC')->where('status','0')->where('lead_id',$data->id)->get();
         }else{
             $activities = 0;
         }
@@ -69,7 +69,7 @@ class LeadController extends Controller
         //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'pers on_titles.id')
         //     ->first();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities'));
     }
 
 
