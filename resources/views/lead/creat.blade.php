@@ -41,7 +41,6 @@
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> --}}
 <!-- Select2 CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
 <style>
     .buyerlead h3 {
         font-size: 30px;
@@ -122,104 +121,6 @@
     .lead-user-info p a {
         color: #0d6efd;
         text-decoration: underline !important;
-    }
-    input {
-        font-family: 'Roboto', sans-serif;
-        display:block;
-        border: none;
-        border-radius: 0.25rem;
-        border: 1px solid transparent;
-        line-height: 1.5rem;
-        padding: 0;
-        font-size: 1rem;
-        color: #607D8B;
-        width: 100%;
-        margin-top: 0.5rem;
-    }
-    input:focus {outline: none;}
-    #ui-datepicker-div {
-        display: none;
-        background-color: #fff;
-        box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.1);
-        margin-top: 0.25rem;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
-    }
-    table {
-        border-collapse: collapse;
-        border-spacing: 0;
-    }
-    .ui-datepicker-calendar thead th {
-        padding: 0.25rem 0;
-        text-align: center;
-        font-size: 0.75rem;
-        font-weight: 400;
-        color: #78909C;
-    }
-    .ui-datepicker-calendar tbody td {
-        width: 2.5rem;
-        text-align: center;
-        padding: 0;
-    }
-    .ui-datepicker-calendar tbody td a {
-        display: block;
-        border-radius: 0.25rem;
-        line-height: 2rem;
-        transition: 0.3s all;
-        color: #546E7A;
-        font-size: 0.875rem;
-        text-decoration: none;
-    }
-    .ui-datepicker-calendar tbody td a:hover {	
-        background-color: #E0F2F1;
-    }
-    .ui-datepicker-calendar tbody td a.ui-state-active {
-        background-color: #009688;
-        color: white;
-    }
-    .ui-datepicker-header a.ui-corner-all {
-        cursor: pointer;
-        position: absolute;
-        top: 0;
-        width: 2rem;
-        height: 2rem;
-        margin: 0.5rem;
-        border-radius: 0.25rem;
-        transition: 0.3s all;
-    }
-    .ui-datepicker-header a.ui-corner-all:hover {
-        background-color: #ECEFF1;
-    }
-    .ui-datepicker-header a.ui-datepicker-prev {	
-        left: 0;	
-        background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==");
-        background-repeat: no-repeat;
-        background-size: 0.5rem;
-        background-position: 50%;
-        transform: rotate(180deg);
-    }
-    .ui-datepicker-header a.ui-datepicker-next {
-        right: 0;
-        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMyIgaGVpZ2h0PSIxMyIgdmlld0JveD0iMCAwIDEzIDEzIj48cGF0aCBmaWxsPSIjNDI0NzcwIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik03LjI4OCA2LjI5NkwzLjIwMiAyLjIxYS43MS43MSAwIDAgMSAuMDA3LS45OTljLjI4LS4yOC43MjUtLjI4Ljk5OS0uMDA3TDguODAzIDUuOGEuNjk1LjY5NSAwIDAgMSAuMjAyLjQ5Ni42OTUuNjk1IDAgMCAxLS4yMDIuNDk3bC00LjU5NSA0LjU5NWEuNzA0LjcwNCAwIDAgMS0xLS4wMDcuNzEuNzEgMCAwIDEtLjAwNi0uOTk5bDQuMDg2LTQuMDg2eiIvPjwvc3ZnPg==');
-        background-repeat: no-repeat;
-        background-size: 10px;
-        background-position: 50%;
-    }
-    .ui-datepicker-header a>span {
-        display: none;
-    }
-    .ui-datepicker-title {
-        text-align: center;
-        line-height: 2rem;
-        margin-bottom: 0.25rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-        padding-bottom: 0.25rem;
-    }
-    .ui-datepicker-week-col {
-        color: #78909C;
-        font-weight: 400;
-        font-size: 0.75rem;
     }
 
 </style>
@@ -306,8 +207,9 @@
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
                             <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
-                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary" name="511" type="action"><span>Convert to
-                                        Opportunity</span></button><button data-hotkey="l" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary" name="510" type="action" data-tooltip="Mark as lost"><span>Lost</span></button>
+                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary " name="511" type="action"><span>Convert to
+                                        Opportunity</span></button>
+                                        <button data-hotkey="l" data-id="{{isset($data) ? $data->id : ''}}" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary lead_lost_btn" name="510" type="action" data-tooltip="Mark as lost" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Lost</span></button>
                                         @if($count > 1)
                                             <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                                                 <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
@@ -320,6 +222,14 @@
                         </div>
                         <input type="hidden" name="lead_id" id="lead_id" value="{{ isset($data) ? $data->id : '' }}">
                         <div class="o_form_sheet position-relative">
+                        @if(isset($data) && $data->is_lost == 2)
+                            <div class="o_widget o_widget_web_ribbon">
+                                <div class="ribbon ribbon-top-right">
+                                    <span class="text-bg-danger" title="">Lost</span>
+                                </div>
+                            </div>
+                        @endif
+                  
                             <div class="oe_title">
                                 <h1>
                                     <div name="name" class="o_field_widget">
@@ -753,7 +663,7 @@
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
                                     <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
-                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
                                         <div class="o-mail-Followers d-flex me-1"><button class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" disabled="" title="Show Followers" aria-expanded="false"><i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">0</sup></button></div><button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
                                             <div class="position-relative"><span class="d-flex invisible text-nowrap">Following</span><span class="position-absolute end-0 top-0"> Follow </span></div>
                                         </button>
@@ -1046,122 +956,48 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Schedule Activity</h5> 
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-    <form id="scheduleForm" action="{{ route('lead.scheduleActivityStore') }}" method="POST">
-        @csrf
-        <input type="hidden" value="{{$data->id ?? ''}}" name="lead_id">
-        <div class="modal-body">
-            <div class="row col-md-12">
-                <div class="col-md-6">
-                    <div class="d-flex align-items-center">
-                        <div class="col-md-4">
-                            <label for="activity_type" class="mr-2">Activity Type</label>
-                        </div>
-                        <div class="col-md-8" id="activityTypeField">
-                            <select class="form-control" id="activity_type" name="activity_type" style="width: 100%;">
-                                <option value="email">Email</option>
-                                <option value="call">Call</option>
-                                <option value="meeting">Meeting</option>
-                                <option value="to-do" selected>To-Do</option>
-                                <option value="upload_document">Upload Document</option>
-                                <option value="request_signature">Request Signature</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6" id="dueDateField">
-                    <!-- Due Date field -->
-                    <div class="d-flex align-items-center">
-                        <div class="col-md-4">
-                            <label for="" class="mr-2">Due Date</label>    
-                        </div>
-                        <div class="col-md-8">
-                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
-                                <div class="o_row o_row_readonly">
-                                    <div name="due_date" class="o_field_widget">
-                                        <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;" type="text" id="due_date"></div>
-                                    </div>                                                
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mt-3" id="summaryField">
-                    <div class="d-flex align-items-center">
-                        <div class="col-md-4">
-                            <label for="summary" class="mr-2">Summary</label>  
-                        </div>
-                        <div class="col-md-8">
-                            <input class="form-control" placeholder="e.g. Discuss proposal" style="width: 300px;" type="text" id="summary" name="summary">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mt-3" id="assignedToField">
-                    <div class="d-flex align-items-center">
-                        <div class="col-md-4">
-                            <label for="assigned_to" class="mr-2">Assigned to</label>  
-                        </div>
-                        <div class="col-md-8">
-                            <select class="form-control" id="assigned_to" name="assigned_to" style="width: 100%;">
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->email }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12 mt-3" id="logNoteField">
-                    <textarea name="log_note" id="log_note" cols="30" rows="10"></textarea>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-            <button type="submit" class="btn btn-primary">Schedule</button>
-            <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
-            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        </div>
-    </form>
-  </div>
-</div>
-
-
-
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+           <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
+                    <div class="resonse_select_hide">
+                        <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
+                            <option value=""></option>
+                            @foreach ($lost_reasons as $reason)
+                            <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
+                                {{ $reason->name }}</option>
+                            @endforeach
+                            <option value="add_new_reson">Start typing...
+                            </option>
+                        </select>
+                    </div>
+                    <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
+          
+            <br>
+            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
+            <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
       </div>
     </div>
   </div>
 </div>
-
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-
 <script>
     $("#title_0").select2({
-        plholder: "Select Title"
+        placeholder: "Select Title"
         , allowClear: true
     });
     $("#country_id_0").select2({
@@ -1179,46 +1015,34 @@
     $("#sales_person").select2({
         placeholder: "Salesperson"
         , allowClear: true
-    });    
-    $(function() {
-    var currentDate = new Date();
-
-    $(".datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        duration: "fast",
-        onSelect: function(dateText, inst) {
-            // Optional: Do something when a date is selected
-            console.log("Selected date: " + dateText);
-        }
-    }).datepicker("setDate", currentDate);
-});
-
-$(document).ready(function() {
-    function formatTag(tag) {
-        if (!tag.id) {
-            return tag.text; // Return text for non-tag elements
-        }
-
-        var color = $(tag.element).data('color');
-        var $tag = $('<span>').text(tag.text);
-
-        // Apply background color if specified
-        if (color) {
-            $tag.css('background-color', color);
-            $tag.css('color', '#fff'); // Ensure text color is readable
-            $tag.css('padding', '2px 12px');
-            $tag.css('border-radius', '23px');
-        }
-
-        return $tag;
-    }
-
-    $('#tag_ids_1').select2({
-        templateResult: formatTag
-        , templateSelection: formatTag
-        , width: 'resolve' // Adjust width if necessary
     });
-});
+
+    $(document).ready(function() {
+        function formatTag(tag) {
+            if (!tag.id) {
+                return tag.text; // Return text for non-tag elements
+            }
+
+            var color = $(tag.element).data('color');
+            var $tag = $('<span>').text(tag.text);
+
+            // Apply background color if specified
+            if (color) {
+                $tag.css('background-color', color);
+                $tag.css('color', '#fff'); // Ensure text color is readable
+                $tag.css('padding', '2px 12px');
+                $tag.css('border-radius', '23px');
+            }
+
+            return $tag;
+        }
+
+        $('#tag_ids_1').select2({
+            templateResult: formatTag
+            , templateSelection: formatTag
+            , width: 'resolve' // Adjust width if necessary
+        });
+    });
 
 </script>
 
@@ -1243,6 +1067,30 @@ $(document).ready(function() {
                     });
                 }
             });
+        });
+
+        $('.lead_lost_btn').on('click', function() {
+            console.log('clicked');
+            var id = $(this).data('id');
+            $('#lostleadmodel').show();
+
+             $.ajax({
+                url: "{{ route('fetch-states') }}"
+                , type: "POST"
+                , data: {
+                    id: id
+                    , _token: '{{ csrf_token() }}'
+                }
+                , dataType: 'json'
+                , success: function(result) {
+                    $('#state_id_0').html('<option value="">-- Select State --</option>');
+                    $.each(result.states, function(key, value) {
+                        $("#state_id_0").append('<option value="' + value
+                            .id + '">' + value.name + '</option>');
+                    });
+                }
+            });
+            
         });
 
         const select = $('#title_0');
@@ -1608,12 +1456,7 @@ $(document).ready(function() {
         .catch(error => {
             console.error(error);
         });
-
-        // ClassicEditor
-        // .create(document.querySelector('#log_note'))
-        // .catch(error => {
-        //     console.error(error);
-        // });
+    
 </script>
 
 <script>
@@ -1955,6 +1798,120 @@ $(document).ready(function() {
     });
 
 </script> -->
+<script>
+  const select = $('#lost_reasons');
+        const newlostInput = $('#new_lost_input');
+        const startlostTypingOptionValue = 'add_new_reson'; // Value for "Add New" option
+        const titleSelectHide = $('.resonse_select_hide');
+
+        // Function to add "Add New" option to the dropdown
+        function addStartTypingOption() {
+            if (!select.find(`option[value="${startlostTypingOptionValue}"]`).length) {
+                const startTypingOption = new Option('Add New', startlostTypingOptionValue, false, false);
+                select.append(startTypingOption);
+            }
+        }
+
+        // Function to remove "Add New" option from the dropdown
+        function removeStartTypingOption() {
+            select.find(`option[value="${startlostTypingOptionValue}"]`).remove();
+        }
+
+        select.on('focus', function() {
+            addStartTypingOption();
+        });
+
+        // Handle dropdown blur to hide "Add New" if not focused
+        select.on('blur', function() {
+            setTimeout(() => {
+                if (!select.is(':focus') && !newlostInput.is(':focus')) {
+                    removeStartTypingOption();
+                }
+            }, 100);
+        });
+
+        // Handle selection change
+        select.on('change', function() {
+            if ($(this).val() === startlostTypingOptionValue) {
+                titleSelectHide.hide();
+                newlostInput.show().focus();
+            } else {
+                newlostInput.hide();
+                titleSelectHide.show();
+            }
+        });
+
+        // Handle new title input
+        newlostInput.on('keypress', function(e) {
+            if (e.which === 13) {
+                const newlost = $(this).val();
+                var closing_notes = $('#closing_notes').val();
+                if (newlost) {
+                    $.ajax({
+                        url: '{{ route('leads.storeLost') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: newlost,
+                        },
+                        success: function(response) {
+                            // Add the new title to the dropdown
+                            const newOption = new Option(response.name, response.id, false, false);
+                            select.append(newOption);
+                            select.val(response.id);
+                            newlostInput.hide().val('');
+                            titleSelectHide.show();
+                            addStartTypingOption();
+                        },
+                        error: function() {
+                            alert('Error adding title.');
+                        }
+                    });
+                }
+            }
+        });
+
+        // Ensure "Add New" is hidden when typing in new title input
+        newlostInput.on('focus', function() {
+            removeStartTypingOption();
+        });
+
+        let closingNotesEditor; // Store the CKEditor instance
+
+        ClassicEditor
+            .create(document.querySelector('#closing_notes'))
+            .then(editor => {
+                closingNotesEditor = editor; // Save the CKEditor instance
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        $(document).on('click', '.mark_as_lost', function() {
+            var lead_id = $('#lead_id').val();
+            var lost_reasons = $('#lost_reasons').val();
+               var closing_notes = closingNotesEditor.getData();
+            
+            $.ajax({
+                url: '{{ route('leads.markAsLost') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    lead_id: lead_id,
+                    lost_reasons: lost_reasons,
+                    closing_notes: closing_notes,
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#staticBackdrop').modal('hide');
+                  
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+</script>
 @endpush
 
 @endsection
