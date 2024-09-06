@@ -11,6 +11,7 @@ use App\Models\PersonTitle;
 use App\Models\Country;
 use App\Models\state;
 use App\Models\Tag;
+use App\Models\LostReason;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -21,6 +22,11 @@ class LeadController extends Controller
     {        
         // $data = generate_lead::with('tags')->get();
         $datas = generate_lead::with('tags')->get();
+
+        // Filter out leads with unique product_name while preserving the first occurrence
+        $data = $datas->groupBy('product_name')->map(function ($group) {
+            return $group->first();
+        });
 
         // Filter out leads with unique product_name while preserving the first occurrence
         $data = $datas->groupBy('product_name')->map(function ($group) {
@@ -60,10 +66,10 @@ class LeadController extends Controller
         //     ->leftJoin('countries', 'generate_lead.country', '=', 'countries.id')
         //     ->leftJoin('states', 'generate_lead.state', '=', 'states.id')
         //     ->leftJoin('tags', 'generate_lead.tag_id', '=', 'tags.id')
-        //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'person_titles.id')
+        //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'pers on_titles.id')
         //     ->first();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count'));
     }
 
 
@@ -367,6 +373,29 @@ class LeadController extends Controller
         return view('lead.similar_lead', compact('similarLeads', 'productName'));
     }
 
+    public function storeLost(Request $request)
+    {
+   
+        $data =  LostReason::create([
+            'name' => $request->name,
+        ]);
+        
+        return response()->json($data);
+    }
+
+    public function manageLostReasons(Request $request)
+    {
+      
+        $data = generate_lead::where('id', $request->lead_id)->update(['lost_reason' => $request->lost_reasons, 
+                                                                        'closing_note' => $request->closing_notes,
+                                                                         'is_lost' => 2   ]);
+     
+        // return response()->json($data);
+        return response()->json(['message' => 'Lead Lost successfully']);
+    }
+
+    
+    
     public function scheduleActivityStore(Request $request)
     {        
         try{

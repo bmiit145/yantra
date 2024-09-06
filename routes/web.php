@@ -111,6 +111,8 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');
+    Route::post('/leads/storeLost', [LeadController::class, 'storeLost'])->name('leads.storeLost');
+    Route::post('/leads/manageLostReasons', [LeadController::class, 'manageLostReasons'])->name('leads.markAsLost');
 
     // Activities Store Route
     Route::post('/schedule-activity', [LeadController::class, 'scheduleActivityStore'])->name('lead.scheduleActivityStore');
