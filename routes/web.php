@@ -101,6 +101,7 @@ Route::middleware(['auth'])->group(function () {
 
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
+    Route::get('/lead-data', [LeadController::class, 'getLeads'])->name('lead.get');
     Route::get('/lead-add/{id?}', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
     Route::POST('/storeLead', [LeadController::class, 'storeLead'])->name('lead.storeLead');

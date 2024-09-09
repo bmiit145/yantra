@@ -15,25 +15,39 @@ use App\Models\LostReason;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
 {
     public function index($id = null)
     {        
         // $data = generate_lead::with('tags')->get();
-        $datas = generate_lead::with('tags')->get();
+        // $datas = generate_lead::with('tags')->get();
 
-        // Filter out leads with unique product_name while preserving the first occurrence
-        $data = $datas->groupBy('product_name')->map(function ($group) {
-            return $group->first();
-        });
+        // // Filter out leads with unique product_name while preserving the first occurrence
+        // $data = $datas->groupBy('product_name')->map(function ($group) {
+        //     return $group->first();
+        // });
 
-        // Filter out leads with unique product_name while preserving the first occurrence
-        $data = $datas->groupBy('product_name')->map(function ($group) {
-            return $group->first();
-        });
+        // return view('lead.index', compact('data'));
+        return view('lead.index');
+    }
 
-        return view('lead.index', compact('data'));
+    public function getLeads(Request $request)
+    {
+        $filter = $request->input('filter');
+
+        if ($filter === 'my_activities') {
+            // Fetch leads where activities status is 0
+            $leads = generate_lead::whereHas('activities', function ($query) {
+                $query->where('status', 0);
+            })->get();
+        } else {
+            // Fetch all leads (default case)
+            $leads = generate_lead::all();
+        }
+
+        return response()->json(['data' => $leads]);
     }
 
     public function create($id = null)
@@ -49,7 +63,7 @@ class LeadController extends Controller
             $count = 0; 
         }
         if($data){
-            $activitiesCount = Activity::where('lead_id',$data->id)->count();
+            $activitiesCount = Activity::where('lead_id',$data->id)->where('status','0')->count();
         }else{
             $activitiesCount = 0;
         }
@@ -57,6 +71,11 @@ class LeadController extends Controller
             $activities = Activity::orderBy('id','DESC')->where('status','0')->where('lead_id',$data->id)->get();
         }else{
             $activities = 0;
+        }
+        if($data){
+            $activitiesDone = Activity::orderBy('id','DESC')->where('status','1')->where('lead_id',$data->id)->get();
+        }else{
+            $activitiesDone = 0;
         }
         // $data = generate_lead::select('generate_lead.*', 
         //                              'countries.name as country_name', 
@@ -70,7 +89,7 @@ class LeadController extends Controller
         //     ->first();
         $lost_reasons = LostReason::all();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities', 'lost_reasons'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','users','count','activitiesCount','activities', 'lost_reasons','activitiesDone'));
     }
 
     public function store(Request $request)
@@ -295,7 +314,7 @@ class LeadController extends Controller
     
     public function scheduleActivityStore(Request $request)
     {        
-        try{
+        try{            
             // Create a new activity record
             $activity = new Activity();
             $activity->lead_id = $request->lead_id;
@@ -362,7 +381,7 @@ class LeadController extends Controller
     public function fetchActivities()
     {
         // Fetch activities with the lead title relationship
-        $activities = Activity::with('getLeadTitle')->get();
+        $activities = Activity::with('getLeadTitle')->where('status','0')->get();
         
         // Format activities for FullCalendar
         $events = $activities->map(function ($activity) {

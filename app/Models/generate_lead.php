@@ -12,7 +12,7 @@ class generate_lead extends Model
     protected $table = 'generate_lead';
     protected $fillable = ['product_name', 'probability', 'company_name','address_1','address_2',
                         'city','state','zip','country','website_link','sales_person','sales_team','contact_name',
-                        'title','email','job_postion','phone','mobile','tag_id','priority','is_lost','lost_reason','closing_note'];
+                        'title','email','job_postion','phone','mobile','tag_id','priority','is_lost','lost_reason','closing_note','lead_type'];
 
 
     protected static function boot()
@@ -73,9 +73,19 @@ class generate_lead extends Model
         return $this->hasOne(Country::class,'id','country');
     }
 
+    public function getAutoCountry()
+    {
+        return $this->hasOne(Country::class,'code','country');
+    }
+
     public function getState()
     {
         return $this->hasOne(State::class,'id','state');
+    }
+
+    public function getAutoState()
+    {
+        return $this->hasOne(State::class,'name','state');
     }
 
     public function getTilte()
@@ -96,6 +106,11 @@ class generate_lead extends Model
     public function title()
     {
         return $this->product_name; // or whatever method/attribute provides the title
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class,'lead_id','id');
     }
 
 }
