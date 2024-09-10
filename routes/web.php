@@ -101,7 +101,7 @@ Route::middleware(['auth'])->group(function () {
 
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
-    Route::get('/lead-data', [LeadController::class, 'getLeads'])->name('lead.get');
+    Route::post('/lead-data', [LeadController::class, 'getLeads'])->name('lead.get');
     Route::get('/lead-add/{id?}', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
     Route::POST('/storeLead', [LeadController::class, 'storeLead'])->name('lead.storeLead');
@@ -109,6 +109,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/updatePriority', [LeadController::class, 'updatePriority'])->name('lead.updatePriority');
     Route::get('/lead-calendar', [LeadController::class, 'calendar'])->name('lead.calendar')->defaults('lead', 'calendar');
     Route::get('/activities', [LeadController::class, 'fetchActivities'])->name('activities.fetch');
+    Route::get('/activity-detail/{id}', [LeadController::class, 'activityDetail'])->name('lead.activityDetail');
+
 
 
     Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');

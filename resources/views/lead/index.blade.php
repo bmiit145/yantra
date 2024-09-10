@@ -40,11 +40,15 @@
     role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
+        <input type="hidden" id="filter" name="filter" value="">
+
             <h5 class="o_dropdown_title d-inline">Filters</h5>
         </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false" id="my-activities">My Activities</span><span
+            tabindex="0" title="" aria-checked="false" id="my-activities"><span class="float-end checkmark"
+                style="display:none;">✔</span>My Activities</span><span
             class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Unassigned</span>
+            tabindex="0" title="" aria-checked="false" id="unassigned"><span class="float-end checkmark"
+                style="display:none;">✔</span>Unassigned</span>
         <div class="dropdown-divider" role="separator"></div><span
             class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false">Lost</span>
@@ -70,16 +74,30 @@
             tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-    <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Salesperson</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Sales Team</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>City</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Country</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Campaign</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Medium</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Source</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Salesperson</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Sales Team</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>City</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Country</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Campaign</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Medium</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Source</span>
         <div class="dropdown-divider" role="separator">
         </div>
         <div class="o_accordion position-relative">
@@ -376,6 +394,7 @@
         transform: rotate(180deg);
         /* Rotate the arrow */
     }
+
     .tag {
         display: inline-block;
         padding: 5px 10px;
@@ -387,10 +406,12 @@
         top: 5px;
         left: 5px;
     }
+
     .remove-tag {
         margin-left: 5px;
         cursor: pointer;
     }
+
     .tag-input-container {
         display: flex;
         align-items: center;
@@ -509,14 +530,257 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
 <script>
     $(document).ready(function () {
+        // Initialize DataTable with server-side processing
         var table = $('#example').DataTable({
-            columnDefs: [{
-                visible: false,
-                targets: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19] // Set initial visibility
-            }]
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: '{{ route('lead.get') }}',
+                type: "POST",
+                data: function (d) {
+                    d.search = { value: $('#example_filter input').val() };
+                    d.filter = $('#filter').val();
+                }
+            },
+            order: [[1, 'DESC']],
+            pageLength: 10,
+            aoColumns: [
+                {
+                    data: 'product_name',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'email',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'city',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'get_state',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data.name;
+                        } if (row && row.get_auto_state) {
+
+                            return row.get_auto_state.name;
+                        }
+                        return '';
+                    }
+                },
+                {
+                    data: 'get_country',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data.name;
+                        }
+                        if (row && row.get_auto_country) {
+
+                            return row.get_auto_country.name;
+                        }
+                        return '';
+                    }
+
+                },
+                {
+                    data: 'zip',
+                    render: function (data, type, row) {
+
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'probability',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'company_name',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'address_1',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'address_2',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'website_link',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'contact_name',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'job_postion',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'phone',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'mobile',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'priority',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'title',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'tag',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'sales_person',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                },
+                {
+                    data: 'sales_team',
+                    render: function (data, type, row) {
+                        if (data) {
+                            return data;
+                        } else {
+                            return '';
+                        }
+                    }
+                }
+                // Uncomment and modify the following column if needed
+                // {
+                //     data: 'id',
+                //     width: "20%",
+                //     render: function(data, type, row) {
+                //         return `<a href="${row.id}">View</a>`;
+                //     }
+                // }
+            ],
+            createdRow: function (row, data, dataIndex) {
+                $(row).attr('data-id', data.id);
+            }
+        });
+
+        // Handle row click event
+        $('#example tbody').on('click', 'tr', function () {
+            var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+            if (id) {
+                window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+            }
+        });
+
+        // Handle filter click event
+        $('.o_menu_item').on('click', function () {
+            var filter = $(this).attr('id'); // Get the filter ID
+            $('#filter').val(filter); // Set the filter value
+            table.ajax.reload(); // Reload the DataTable with new filter
         });
 
         // Restore column visibility from local storage
@@ -567,71 +831,15 @@
             }
         });
 
-        // Load default data
-        loadTableData();
-
-        // Click event for "My Activities" filter
-        $('#my-activities').on('click', function () {
-            loadTableData('my_activities');
-        });
-
-        // Function to load table data
-        function loadTableData(filter = '') {
-            $.ajax({
-                url: '{{route('lead.get')}}', // Change this to your server endpoint
-                method: 'GET',
-                data: {
-                    filter: filter
-                },
-                success: function (response) {
-                    // Clear existing table data
-                    table.clear();
-
-                    // Add new rows
-                    response.data.forEach(function (lead) {
-                        var rowNode = table.row.add([
-                            lead.product_name || '',
-                            lead.email || '',
-                            lead.city || '',
-                            lead.state || '',
-                            lead.country || '',
-                            lead.zip || '',
-                            lead.probability || '',
-                            lead.company_name || '',
-                            lead.address_1 || '',
-                            lead.address_2 || '',
-                            lead.website_link || '',
-                            lead.contact_name || '',
-                            lead.job_postion || '',
-                            lead.phone || '',
-                            lead.mobile || '',
-                            lead.priority || '',
-                            lead.title || '',
-                            lead.tag || '',
-                            lead.sales_person || '',
-                            lead.sales_team || '',
-                            lead.id // Ensure ID is included here
-                        ]).draw().node();
-
-                        // Set data-id attribute
-                        $(rowNode).attr('data-id', lead.id);
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-        }
-
-        // Handle row click event
-        $('#example tbody').on('click', 'tr', function () {
-            var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-            if (id) {
-                window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+        // CSRF token setup for AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
     });
 </script>
+
 
 <script>
     $(document).ready(function () {
@@ -705,30 +913,29 @@
         $('#search-input').on('click', function () {
             $('#search-dropdown').show();
         });
+
         // Handle selection and deselection of dropdown items
         $(document).on('click', '.o-dropdown-item', function () {
             var $item = $(this);
             var selectedValue = $item.clone().children().remove().end().text().trim();
-            var $input = $('#search-input');
             var $tag = $('.tag');
             var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
             if ($tagItem.length > 0) {
+
                 // Value is already selected, so remove it
                 $tagItem.remove();
-                // If no tag items remain, remove the tag and clear the input
+
+                // Update tag separators and remove button
+                updateTagSeparators();
+
+
+                // If no tag items remain, remove the tag container, clear the input and show placeholder
                 if ($tag.children().length === 0) {
                     $tag.remove();
-                    $input.val('');
-                } else {
-                    // Remove trailing separator if present
-                    if ($tag.html().endsWith(' > ')) {
-                        $tag.html($tag.html().slice(0, -3)); // Remove the last ' > '
-                    }
-                    // Ensure the remove-tag span is present if there are still tags
-                    if ($('.remove-tag').length === 0) {
-                        $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
-                    }
+                    $('#search-input').val('').attr('placeholder', 'Search...');
                 }
+
                 // Hide the checkmark in the dropdown item
                 $item.find('.checkmark').hide();
             } else {
@@ -739,34 +946,76 @@
                         '<span class="tag">' +
                         '<span class="tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
-                        '</span> <span class="remove-tag" style="cursor:pointer">&times;</span></span>'
+                        '</span></span>'
                     );
                 } else {
                     // Append the new value to the existing tag with a separator
-                    $('.remove-tag').remove(); // Remove old remove-tag span
+                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
                     $tag.html(function (i, oldHtml) {
-                        return oldHtml.replace('</span>', '') + ' > <span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+                        if (oldHtml.includes('</span>')) {
+                            // There are existing tags, so add ' > ' separator before the new tag
+                            return oldHtml.replace('</span>', '</span> > ' + newTagHtml);
+                        } else {
+                            // No existing tags, just add the new tag
+                            return oldHtml + ' ' + newTagHtml;
+                        }
                     });
-                    // Append the new remove-tag span
-                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
                 }
+                // Append or update the remove-tag button
+                updateRemoveTagButton();
                 // Show the checkmark
                 $item.find('.checkmark').show();
-                // Set the value of the input field to the selected value
-                $input.val(selectedValue);
+                // Clear the input field value
+                $('#search-input').val('');
+                // Remove placeholder
+                $('#search-input').attr('placeholder', '');
             }
+
             // Hide the dropdown after selection
             $('#search-dropdown').hide();
         });
+
+        // Function to update the visibility of the remove-tag button
+        function updateRemoveTagButton() {
+            var $tag = $('.tag');
+            if ($tag.find('.tag-item').length > 0) {
+                // Show remove button if there are one or more tags
+                if ($('.remove-tag').length === 0) {
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                // Hide remove button if there are no tags
+                $('.remove-tag').remove();
+            }
+        }
+
+        // Function to update tag separators
+        function updateTagSeparators() {
+            var $tag = $('.tag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' > ';
+                }
+            });
+            // Update the tag HTML with separators
+            $tag.html(html);
+            // Update the remove-tag button visibility
+            updateRemoveTagButton();
+        }
+
         // Remove the entire tag when the close button is clicked
         $(document).on('click', '.remove-tag', function () {
-            // Remove the tag
+            // Remove the tag container
             $('.tag').remove();
             // Hide all checkmarks in the dropdown items
             $('.o-dropdown-item .checkmark').hide();
-            // Clear the input field
-            $('#search-input').val('');
+            // Clear the input field and reset placeholder
+            $('#search-input').val('').attr('placeholder', 'Search...');
         });
+
         // Hide dropdown when clicking outside
         $(document).on('click', function (e) {
             if (!$(e.target).closest('#search-input, #search-dropdown').length) {
@@ -775,6 +1024,8 @@
         });
     });
 </script>
+
+
 <script>
     $(document).on('click', '.lead-row', function () {
         var leadId = $(this).data('id');
@@ -815,8 +1066,8 @@
 
         // Add selected value to the input field and hide the dropdown
         $(document).on('click', '#search-dropdown .o-dropdown-item', function () {
-            var selectedValue = $(this).text().trim();
-            $('#search-input').val(selectedValue);
+            // var selectedValue = $(this).text().trim();
+            // $('#search-input').val(selectedValue);
             $('#search-dropdown').hide();
         });
 

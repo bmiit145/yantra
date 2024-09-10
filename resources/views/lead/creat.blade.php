@@ -790,38 +790,40 @@
                             <div id="activitiesContainer">
                                 @foreach ($activities as $activity) 
                                     @php
-                                    $dueDate = Carbon::parse($activity->due_date);
-                                    $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
-                                    $tomorrow = $now->copy()->addDay();
+                                        $dueDate = Carbon::parse($activity->due_date);
+                                        $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
+                                        $tomorrow = $now->copy()->addDay();
 
-                                    // Calculate the difference in days
-                                    $daysRemaining = $now->diffInDays($dueDate);
-                                    $isTomorrow = $dueDate->isSameDay($tomorrow);
-                                    $isToday = $dueDate->isSameDay($now);
+                                        // Calculate the difference in days
+                                        $daysRemaining = $now->diffInDays($dueDate);
+                                        $isTomorrow = $dueDate->isSameDay($tomorrow);
+                                        $isToday = $dueDate->isSameDay($now);
 
-                                    // Determine the label based on due date
-                                    if ($isToday) {
-                                        $label = 'Today:';
-                                        $labelClass = 'today-label';
-                                        $iconClass = 'text-bg-warning';
-                                        $checkClass = 'text-black';
-                                    } elseif ($isTomorrow) {
-                                        $label = 'Tomorrow:';
-                                        $labelClass = 'text-success';
-                                        $iconClass = 'text-success';
-                                        $checkClass = 'text-white';
-                                    } elseif ($dueDate->isFuture()) {
-                                        $label = 'Due in ' . $daysRemaining . ' days:';
-                                        $labelClass = 'text-success';
-                                        $iconClass = 'text-success';
-                                        $checkClass = 'text-white';
-                                    } else {
-                                        $label = 'Due ' . abs($daysRemaining) . ' days ago:';
-                                        $labelClass = 'text-success';
-                                        $iconClass = 'text-success';
-                                        $checkClass = 'text-white';
-                                    }
-                                    @endphp                                                       
+                                        // Determine the label and styling based on due date
+                                        if ($isToday) {
+                                            $label = 'Today:';
+                                            $labelClass = 'today-label'; // Customize this class as needed
+                                            $iconClass = 'text-bg-warning';
+                                            $checkClass = 'text-black';
+                                        } elseif ($isTomorrow) {
+                                            $label = 'Tomorrow:';
+                                            $labelClass = 'text-success';
+                                            $iconClass = 'text-success';
+                                            $checkClass = 'text-white';
+                                        } elseif ($dueDate->isFuture()) {
+                                            $label = 'Due in ' . $daysRemaining . ' days:';
+                                            $labelClass = 'text-success';
+                                            $iconClass = 'text-success';
+                                            $checkClass = 'text-white';
+                                        } else {
+                                            // If the due date is in the past
+                                            $daysOverdue = abs($daysRemaining);
+                                            $label = 'Overdue by ' . $daysOverdue . ' days:';
+                                            $labelClass = 'text-danger'; // Class for overdue, usually red
+                                            $iconClass = 'text-danger'; // Red icon
+                                            $checkClass = 'text-danger'; // Red text
+                                        }
+                                    @endphp                                                     
                                     <div class="o-mail-Activity-container">
                                         <div class="o-mail-Activity d-flex py-1 mb-2" data-activity-id="{{ $activity->id }}">
                                             <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
@@ -837,14 +839,23 @@
                                             </div>
                                             <div class="flex-grow px-3">
                                                 <div class="o-mail-Activity-info lh-1">
-                                                <span class="fw-bolder {{ $labelClass }}">
-                                                    {{ $label }}
-                                                </span>
-                                                    <span class="fw-bolder px-2 text-break"> {{ ucwords(str_replace('-', ' ', strtolower($activity->activity_type ?? ''))) }}</span>
+                                                    <span class="fw-bolder {{ $labelClass }}">
+                                                        {{ $label }}
+                                                    </span>
+                                                    @if(!empty($activity->summary))
+                                                        <!-- Show summary if it exists -->
+                                                        <span class="fw-bolder px-2 text-break">{{ $activity->summary ?? ''}}</span>
+                                                    @else
+                                                        <!-- Show activity type if summary does not exist -->
+                                                        <span class="fw-bolder px-2 text-break">{{ ucwords(str_replace('-', ' ', strtolower($activity->activity_type ?? ''))) }}</span>
+                                                    @endif
                                                     <span class="o-mail-Activity-user px-1">for {{$activity->getUser->email ?? ''}}</span>
-                                                    <button class="btn btn-link btn-primary p-0 lh-1 border-0">
+                                                    <button class="btn btn-link btn-primary p-0 lh-1 border-0" onclick="toggleDetails({{ $activity->id }})">
                                                         <i class="fa fa-info-circle" role="img" title="Info" aria-label="Info"></i>
                                                     </button>
+                                                </div>
+                                                <div id="activity-details-{{ $activity->id }}" class="d-none">
+                                                    <!-- Details will be populated here -->
                                                 </div>
                                                 <div class="lh-lg">
                                                     <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3" data-bs-toggle="modal" data-bs-target="#markDoneModal">
@@ -855,7 +866,7 @@
                                                     </button>
                                                     <button type="button" class="btn btn-link btn-danger p-0 o-mail-Activity-delete" data-activity-id="{{ $activity->id }}">
                                                         <i class="fa fa-times"></i> Cancel
-                                                    </button>                                                                
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -2247,6 +2258,73 @@
                 }
             });
         });
+</script>
+
+<script>
+function toggleDetails(activityId) {
+    var detailsDiv = document.getElementById('activity-details-' + activityId);
+    
+    if (!detailsDiv) {
+        console.error('Details div not found for activityId:', activityId);
+        return;
+    }
+
+    if (detailsDiv.classList.contains('d-none')) {
+        console.log('Fetching details for activityId:', activityId);
+        
+        // Make AJAX request to fetch activity details
+        fetch(`/activity-detail/${activityId}`)
+            .then(response => {
+                // Check if the response is OK (status code 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error('Error fetching data:', data.error);
+                    return;
+                }
+
+                console.log('Data received:', data);
+
+                // Populate the details
+                detailsDiv.innerHTML = `
+                    <table class="o-mail-Activity-details table table-sm mt-2">
+                        <tbody>
+                            <tr>
+                                <td class="text-end fw-bolder">Activity type</td>
+                                <td>${data.activity_type}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-end fw-bolder">Created</td>
+                                <td>${data.created_at} by ${data.email}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-end fw-bolder">Assigned to</td>
+                                <td>${data.get_email}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-end fw-bolder">Due on</td>
+                                <td>${data.due_date}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="o-mail-Activity-note text-break mt-2">
+                        <p>${data.note ?? ''}</p>
+                    </div>
+                `;
+
+                // Show the details div
+                detailsDiv.classList.remove('d-none');
+            })
+            .catch(error => console.error('Fetch error:', error));
+    } else {
+        // Hide the details if already shown
+        detailsDiv.classList.add('d-none');
+    }
+}
 </script>
 @endpush
 
