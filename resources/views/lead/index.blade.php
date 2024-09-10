@@ -34,6 +34,14 @@
         <a href="#">Sales Teams</a>
     </div>
 </li>
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- jQuery (required for Bootstrap JS components) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 @endsection
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
@@ -766,6 +774,8 @@
             createdRow: function (row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
             }
+
+         
         });
 
         // Handle row click event
@@ -850,6 +860,7 @@
         $('.o_add_custom_filter').on('click', function () {
             customFilterModal.show();
         });
+
 
         // Handle form submission with AJAX
         $('#saveFilterBtn').on('click', function () {
@@ -938,6 +949,7 @@
 
                 // Hide the checkmark in the dropdown item
                 $item.find('.checkmark').hide();
+                 filter(selectedValue);
             } else {
                 // Value is not selected, so add it
                 if ($tag.length === 0) {
@@ -948,6 +960,7 @@
                         selectedValue +
                         '</span></span>'
                     );
+                     filter(selectedValue);
                 } else {
                     // Append the new value to the existing tag with a separator
                     var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
@@ -960,6 +973,13 @@
                             return oldHtml + ' ' + newTagHtml;
                         }
                     });
+
+                     let selectedTags = [];
+                    $('.tag-item').each(function() {
+                        selectedTags.push($(this).data('value')); 
+                    });
+
+                    filter(selectedTags);
                 }
                 // Append or update the remove-tag button
                 updateRemoveTagButton();
@@ -988,6 +1008,63 @@
                 $('.remove-tag').remove();
             }
         }
+
+
+        function filter(selectedTags) {
+    $.ajax({
+        url: '/lead-filter', // Endpoint for applying filters
+        type: 'POST',
+        data: {
+            selectedTags: selectedTags
+        },
+        success: function(response) {
+            console.log('Filter applied successfully:', response);
+
+            var tableBody = $('#lead-table-body');
+            tableBody.empty(); // Clear the current table body
+
+            var leads = response.data;
+
+            // Append each lead to the table
+            $.each(leads, function(groupKey, groupLeads) {
+                $.each(groupLeads, function(index, lead) {
+                    var row = `
+                        <tr>
+                            <td title="${lead.name}">${lead.name}</td>
+                            <td>${lead.email}</td>
+                            <td>${lead.city}</td>
+                            <td>${lead.state}</td>
+                            <td>${lead.country}</td>
+                            <td>${lead.zip}</td>
+                            <td>${lead.probability}</td>
+                            <td>${lead.company_name}</td>
+                            <td>${lead.address_1}</td>
+                            <td>${lead.address_2}</td>
+                            <td><a href="${lead.website_link}" target="_blank">${lead.website_link}</a></td>
+                            <td>${lead.contact_name}</td>
+                            <td>${lead.job_position}</td>
+                            <td>${lead.phone}</td>
+                            <td>${lead.mobile}</td>
+                            <td>${lead.priority}</td>
+                            <td>${lead.title}</td>
+                            <td>${lead.tag}</td>
+                            <td>${lead.sales_person}</td>
+                            <td>${lead.sales_team}</td>
+                        </tr>`;
+                    tableBody.append(row);
+                });
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error applying filter:', error);
+        }
+    });
+}
+
+
+
+
+
 
         // Function to update tag separators
         function updateTagSeparators() {

@@ -514,5 +514,55 @@ class LeadController extends Controller
         ]);
     }
 
+    public function filter(Request $request)
+    {
+        $selectedTags = $request->selectedTags;
+
+        // Ensure $selectedTags is an array
+        if (is_string($selectedTags)) {
+            $selectedTags = explode(',', $selectedTags);
+        }
+
+        if (!is_array($selectedTags)) {
+            return response()->json(['error' => 'Invalid tags format'], 400);
+        }
+
+        // Fetch all leads
+        $leads = generate_lead::all();
+
+        $mappedLeads = [];
+
+        foreach ($leads as $lead) {
+            $groupedLeads = &$mappedLeads;
+
+            if (in_array('City', $selectedTags)) {
+                $cityKey = isset($lead->city) ? $lead->city : 'None';
+                $groupedLeads = &$groupedLeads[$cityKey];
+            }
+
+        
+            if (in_array('Country', $selectedTags)) {
+                $countryKey = isset($lead->country) ? $lead->country : 'None';
+                $groupedLeads = &$groupedLeads[$countryKey];
+            }
+
+
+            if (in_array('Salesperson', $selectedTags)) {
+                $salesPersonKey = isset($lead->sales_person) ? $lead->sales_person : 'None';
+                $groupedLeads = &$groupedLeads[$salesPersonKey];
+            }
+            if (in_array('Sales Team', $selectedTags)) {
+                $sales_teamKey = isset($lead->sales_team) ? $lead->sales_team : 'None';
+                $groupedLeads = &$groupedLeads[$sales_teamKey];
+            }
+
+            $groupedLeads[] = $lead;
+        }
+
+        // Return the mapped data
+        return response()->json(['data' => $mappedLeads]);
+    }
+
+
 }
 

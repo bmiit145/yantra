@@ -110,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-calendar', [LeadController::class, 'calendar'])->name('lead.calendar')->defaults('lead', 'calendar');
     Route::get('/activities', [LeadController::class, 'fetchActivities'])->name('activities.fetch');
     Route::get('/activity-detail/{id}', [LeadController::class, 'activityDetail'])->name('lead.activityDetail');
+    Route::post('/lead-filter', [LeadController::class, 'filter'])->name('lead.filter');
 
 
 
