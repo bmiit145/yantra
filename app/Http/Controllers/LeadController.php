@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Campaign;
+use App\Models\Medium;
+use App\Models\Source;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
@@ -32,23 +35,6 @@ class LeadController extends Controller
         // return view('lead.index', compact('data'));
         return view('lead.index');
     }
-
-    // public function getLeads(Request $request)
-    // {
-    //     $filter = $request->input('filter');
-
-    //     if ($filter === 'my_activities') {
-    //         // Fetch leads where activities status is 0
-    //         $leads = generate_lead::whereHas('activities', function ($query) {
-    //             $query->where('status', 0);
-    //         })->get();
-    //     } else {
-    //         // Fetch all leads (default case)
-    //         $leads = generate_lead::all();
-    //     }
-
-    //     return response()->json(['data' => $leads]);
-    // }
 
     public function getLeads(Request $request)
     {
@@ -162,50 +148,53 @@ class LeadController extends Controller
         } else {
             $activitiesDone = 0;
         }
-        // $data = generate_lead::select('generate_lead.*', 
-        //                              'countries.name as country_name', 
-        //                              'states.name as state_name', 
-        //                              'tags.name as tag_name', 
-        //                              'person_titles.title as title_name')
-        //     ->leftJoin('countries', 'generate_lead.country', '=', 'countries.id')
-        //     ->leftJoin('states', 'generate_lead.state', '=', 'states.id')
-        //     ->leftJoin('tags', 'generate_lead.tag_id', '=', 'tags.id')
-        //     ->leftJoin('person_titles', 'generate_lead.title', '=', 'pers on_titles.id')
-        //     ->first();
+        $campaigns = Campaign::orderBy('id','DESC')->get();
+        $mediums = Medium::orderBy('id','DESC')->get();
+        $sources = Source::orderBy('id','DESC')->get();
         $lost_reasons = LostReason::all();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone','campaigns','mediums','sources'));
     }
 
     public function store(Request $request)
     {
-        $lead = generate_lead::updateOrCreate(
-            ['id' => $request->lead_id],
-            [
-                'product_name' => $request->name_0,
-                'probability' => $request->probability_0,
-                'company_name' => $request->partner_name_0,
-                'address_1' => $request->street_0,
-                'address_2' => $request->street2_0,
-                'city' => $request->city_0,
-                'zip' => $request->zip_0,
-                'state' => $request->state_id_0,
-                'country' => $request->country_id_0,
-                'website_link' => $request->website_0,
-                'sales_person' => $request->sales_person,
-                'sales_team' => $request->team_id_0,
-                'contact_name' => $request->contact_name_0,
-                'title' => $request->title_0,
-                'email' => $request->email_from_1,
-                'job_postion' => $request->function_0,
-                'phone' => $request->phone_1,
-                'mobile' => $request->mobile_0,
-                'tag_id' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
-                'lead_type' => '1',
-                'priority' => $request->priority,
+        $existingLead = generate_lead::find($request->lead_id);
 
-            ]
-        );
+    // Determine if sales_person has changed
+    $salesPersonChanged = $existingLead && $existingLead->sales_person !== $request->sales_person;
+
+    // Update or create the lead
+    $lead = generate_lead::updateOrCreate(
+        ['id' => $request->lead_id],
+        [
+            'product_name' => $request->name_0,
+            'probability' => $request->probability_0,
+            'company_name' => $request->partner_name_0,
+            'address_1' => $request->street_0,
+            'address_2' => $request->street2_0,
+            'city' => $request->city_0,
+            'zip' => $request->zip_0,
+            'state' => $request->state_id_0,
+            'country' => $request->country_id_0,
+            'website_link' => $request->website_0,
+            'sales_person' => $request->sales_person,
+            'sales_team' => $request->team_id_0,
+            'contact_name' => $request->contact_name_0,
+            'title' => $request->title_0,
+            'email' => $request->email_from_1,
+            'job_postion' => $request->function_0,
+            'phone' => $request->phone_1,
+            'mobile' => $request->mobile_0,
+            'tag_id' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
+            'lead_type' => '1',
+            'priority' => $request->priority,
+            'campaign_id' => $request->campaign_id_0,
+            'medium_id' => $request->medium_id_0,
+            'source_id' => $request->source_id_0,
+            'referred_by' => $request->referred_0,
+            'assignment_date' => $salesPersonChanged ? now() : ($existingLead ? $existingLead->assignment_date : null),
+        ]
+    );
 
         // Log changes
         $action = $request->lead_id ? 'updated' : 'created';
@@ -294,6 +283,48 @@ class LeadController extends Controller
         ]);
     }
 
+    public function addCampaign(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $campaign = Campaign::create(['name' => $request->name]);
+
+        return response()->json([
+            'id' => $campaign->id,
+            'name' => $campaign->name,
+        ]);
+    }
+
+    public function addMedium(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $medium = Medium::create(['name' => $request->name]);
+
+        return response()->json([
+            'id' => $medium->id,
+            'name' => $medium->name,
+        ]);
+    }
+
+    public function addSource(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $source = Source::create(['name' => $request->name]);
+
+        return response()->json([
+            'id' => $source->id,
+            'name' => $source->name,
+        ]);
+    }
+
 
     public function storeLead()
     {
@@ -376,7 +407,6 @@ class LeadController extends Controller
 
     public function storeLost(Request $request)
     {
-
         $data = LostReason::create([
             'name' => $request->name,
         ]);
@@ -386,7 +416,6 @@ class LeadController extends Controller
 
     public function manageLostReasons(Request $request)
     {
-
         $data = generate_lead::where('id', $request->lead_id)->update([
             'lost_reason' => $request->lost_reasons,
             'closing_note' => $request->closing_notes,

@@ -318,6 +318,41 @@
                                                 </button>
                                             </a>
                                         @endif
+                                            <!-- Modal -->
+                                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-md">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
+                                                            <div class="resonse_select_hide">
+                                                                <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
+                                                                    <option value=""></option>
+                                                                    @foreach ($lost_reasons as $reason)
+                                                                    <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
+                                                                        {{ $reason->name }}</option>
+                                                                    @endforeach
+                                                                    <option value="add_new_reson">Start typing...
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
+                                                
+                                                    <br>
+                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
+                                                    <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        
                             </div>                            
                         </div>
                         <input type="hidden" name="lead_id" id="lead_id" value="{{ isset($data) ? $data->id : '' }}">
@@ -671,11 +706,23 @@
                                                         <label class="o_form_label" for="campaign_id_0">Campaign<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is a name that helps you keep track of your different campaign efforts, e.g. Fall_Drive, Christmas_Special&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label>
                                                     </div>
                                                     <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                                        <div name="campaign_id" class="o_field_widget o_field_many2one">
+                                                        <div name="campaign" class="o_field_widget o_field_many2one">
                                                             <div class="o_field_many2one_selection">
                                                                 <div class="o_input_dropdown">
-                                                                    <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="campaign_id_0" placeholder="" aria-expanded="false">
-                                                                    </div><span class="o_dropdown_button"></span>
+                                                                    <div class="o-autocomplete dropdown">
+                                                                        <div class="campaign_select_hide">
+                                                                            <select class="o-autocomplete--input o_input" id="campaign_id_0" style="width: 150px;">
+                                                                                <option value="">Selecte Campaign</option>
+                                                                                @foreach ($campaigns as $campaign)
+                                                                                    <option value="{{ $campaign->id }}" @if (isset($data->campaign_id) && $campaign->id == $data->campaign_id) selected @endif>
+                                                                                        {{ $campaign->name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                                <option value="add_campaign">Start typing...</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <input type="text" id="new_campaign_input" class="o_input mt-2" style="display: none;">
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="o_field_many2one_extra"></div>
@@ -690,8 +737,20 @@
                                                         <div name="medium_id" class="o_field_widget o_field_many2one">
                                                             <div class="o_field_many2one_selection">
                                                                 <div class="o_input_dropdown">
-                                                                    <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="medium_id_0" placeholder="" aria-expanded="false">
-                                                                    </div><span class="o_dropdown_button"></span>
+                                                                    <div class="o-autocomplete dropdown">
+                                                                        <div class="medium_select_hide">
+                                                                            <select class="o-autocomplete--input o_input" id="medium_id_0" style="width: 150px;">
+                                                                                <option value="">Selecte Medium</option>
+                                                                                @foreach ($mediums as $medium)
+                                                                                    <option value="{{ $medium->id }}" @if (isset($data->medium_id) && $medium->id == $data->medium_id) selected @endif>
+                                                                                        {{ $medium->name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                                <option value="add_medium">Start typing...</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <input type="text" id="new_medium_input" class="o_input mt-2" style="display: none;">
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="o_field_many2one_extra"></div>
@@ -706,8 +765,20 @@
                                                         <div name="source_id" class="o_field_widget o_field_many2one">
                                                             <div class="o_field_many2one_selection">
                                                                 <div class="o_input_dropdown">
-                                                                    <div class="o-autocomplete dropdown"><input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="source_id_0" placeholder="" aria-expanded="false">
-                                                                    </div><span class="o_dropdown_button"></span>
+                                                                    <div class="o-autocomplete dropdown">
+                                                                        <div class="source_select_hide">
+                                                                            <select class="o-autocomplete--input o_input" id="source_id_0" style="width: 150px;">
+                                                                                <option value="">Selecte Source</option>
+                                                                                @foreach ($sources as $source)
+                                                                                    <option value="{{ $source->id }}" @if (isset($data->source_id) && $source->id == $data->source_id) selected @endif>
+                                                                                        {{ $source->name }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                                <option value="add_source">Start typing...</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <input type="text" id="new_source_input" class="o_input mt-2" style="display: none;">
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <div class="o_field_many2one_extra"></div>
@@ -737,7 +808,7 @@
                                                     </div>
                                                     <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
                                                         <div name="date_open" class="o_field_widget o_readonly_modifier o_field_datetime">
-                                                            <div class="d-flex gap-2 align-items-center"><span class="text-truncate">14/08/2024 09:46:54</span>
+                                                            <div class="d-flex gap-2 align-items-center"><span class="text-truncate">{{ \Carbon\Carbon::parse($data->assignment_date)->format('d/m/Y H:i:s') ?? '' }}</span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1233,48 +1304,16 @@
         </div>
         <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
             <button type="submit" class="btn btn-primary">Schedule</button>
-            <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
-            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button>
+            <!-- <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
+            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button> -->
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
     </form>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-           <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
-                    <div class="resonse_select_hide">
-                        <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
-                            <option value=""></option>
-                            @foreach ($lost_reasons as $reason)
-                            <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
-                                {{ $reason->name }}</option>
-                            @endforeach
-                            <option value="add_new_reson">Start typing...
-                            </option>
-                        </select>
-                    </div>
-                    <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
-          
-            <br>
-            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
-            <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -1301,6 +1340,18 @@
     $("#sales_person").select2({
         placeholder: "Salesperson"
         , allowClear: true
+    });
+
+    $("#campaign_id_0").select2({
+        allowClear: true
+    });
+
+    $("#medium_id_0").select2({
+        allowClear: true
+    });
+
+    $("#source_id_0").select2({
+        allowClear: true
     });
 
     $(function() {
@@ -1413,7 +1464,7 @@
         $('.lead_lost_btn').on('click', function() {
             console.log('clicked');
             var id = $(this).data('id');
-            $('#lostleadmodel').show();
+            $('#staticBackdrop').show();
 
              $.ajax({
                 url: "{{ route('fetch-states') }}"
@@ -1508,6 +1559,257 @@
         // Ensure "Add New" is hidden when typing in new title input
         newTitleInput.on('focus', function() {
             removeStartTypingOption();
+        });
+
+
+        // Campaign dropdown elements
+        const selectCampaign = $('#campaign_id_0');
+        const newCampaignInput = $('#new_campaign_input');
+        const startCampaignTypingOptionValue = 'add_campaign'; // Value for "Add New" option
+        const campaignSelectHide = $('.campaign_select_hide');
+
+        // Function to add "Add New" option to the dropdown
+        function addStartTypingOptionCampaign() {
+            if (!selectCampaign.find(`option[value="${startCampaignTypingOptionValue}"]`).length) {
+                const startTypingOption = new Option('Start typing..', startCampaignTypingOptionValue, false, false);
+                selectCampaign.append(startTypingOption);
+                console.log('Added "Add New" option to campaign dropdown.');
+            }
+        }
+
+        // Function to remove "Add New" option from the dropdown
+        function removeStartTypingOptionCampaign() {
+            selectCampaign.find(`option[value="${startCampaignTypingOptionValue}"]`).remove();
+            console.log('Removed "Add New" option from campaign dropdown.');
+        }
+
+        // Add "Add New" option on focus
+        selectCampaign.on('focus', function() {
+            console.log('Campaign dropdown focused.');
+            addStartTypingOptionCampaign();
+        });
+
+        // Remove "Add New" option if dropdown and input are not focused
+        selectCampaign.on('blur', function() {
+            console.log('Campaign dropdown blurred.');
+            setTimeout(() => {
+                if (!selectCampaign.is(':focus') && !newCampaignInput.is(':focus')) {
+                    removeStartTypingOptionCampaign();
+                }
+            }, 100);
+        });
+
+        // Handle dropdown change event
+        selectCampaign.on('change', function() {
+            console.log('Campaign dropdown changed. Selected value:', $(this).val());
+            if ($(this).val() === startCampaignTypingOptionValue) {
+                campaignSelectHide.hide();
+                newCampaignInput.show().focus();
+            } else {
+                newCampaignInput.hide();
+                campaignSelectHide.show();
+            }
+        });
+
+        // Handle new campaign input on Enter key press
+        newCampaignInput.on('keypress', function(e) {
+            if (e.which === 13) {
+                const newCampaign = $(this).val();
+                if (newCampaign) {
+                    $.ajax({
+                        url: '{{ route('add-campaign') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: newCampaign
+                        },
+                        success: function(response) {
+                            console.log('Campaign added successfully:', response);
+                            // Add the new name to the dropdown
+                            const newOption = new Option(response.name, response.id, false, false);
+                            selectCampaign.append(newOption);
+                            selectCampaign.val(response.id);
+                            newCampaignInput.hide().val('');
+                            campaignSelectHide.show();
+                            addStartTypingOptionCampaign();
+                        },
+                        error: function() {
+                            alert('Error adding campaign.');
+                        }
+                    });
+                }
+            }
+        });
+
+        // Ensure "Add New" is hidden when typing in new campaign input
+        newCampaignInput.on('focus', function() {
+            removeStartTypingOptionCampaign();
+        });
+
+        // Medium dropdown elements
+        const selectMedium = $('#medium_id_0');
+        const newMediumInput = $('#new_medium_input');
+        const startMediumTypingOptionValue = 'add_medium'; // Value for "Add New" option
+        const mediumSelectHide = $('.medium_select_hide');
+
+        // Function to add "Add New" option to the dropdown
+        function addStartTypingOptionMedium() {
+            if (!selectMedium.find(`option[value="${startMediumTypingOptionValue}"]`).length) {
+                const startTypingOption = new Option('Start typing..', startMediumTypingOptionValue, false, false);
+                selectMedium.append(startTypingOption);
+            }
+        }
+
+        // Function to remove "Add New" option from the dropdown
+        function removeStartTypingOptionMedium() {
+            selectMedium.find(`option[value="${startMediumTypingOptionValue}"]`).remove();
+            console.log('Removed "Add New" option from campaign dropdown.');
+        }
+
+        // Add "Add New" option on focus
+        selectMedium.on('focus', function() {
+            console.log('Campaign dropdown focused.');
+            addStartTypingOptionMedium();
+        });
+
+        // Remove "Add New" option if dropdown and input are not focused
+        selectMedium.on('blur', function() {
+            console.log('Campaign dropdown blurred.');
+            setTimeout(() => {
+                if (!selectMedium.is(':focus') && !newMediumInput.is(':focus')) {
+                    removeStartTypingOptionMedium();
+                }
+            }, 100);
+        });
+
+        // Handle dropdown change event
+        selectMedium.on('change', function() {
+            console.log('Campaign dropdown changed. Selected value:', $(this).val());
+            if ($(this).val() === startMediumTypingOptionValue) {
+                mediumSelectHide.hide();
+                newMediumInput.show().focus();
+            } else {
+                newMediumInput.hide();
+                mediumSelectHide.show();
+            }
+        });
+
+        // Handle new campaign input on Enter key press
+        newMediumInput.on('keypress', function(e) {
+            if (e.which === 13) {
+                const newMedium = $(this).val();
+                if (newMedium) {
+                    $.ajax({
+                        url: '{{ route('add-medium') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: newMedium
+                        },
+                        success: function(response) {
+                            console.log('Campaign added successfully:', response);
+                            // Add the new name to the dropdown
+                            const newOption = new Option(response.name, response.id, false, false);
+                            selectMedium.append(newOption);
+                            selectMedium.val(response.id);
+                            newMediumInput.hide().val('');
+                            mediumSelectHide.show();
+                            addStartTypingOptionMedium();
+                        },
+                        error: function() {
+                            alert('Error adding campaign.');
+                        }
+                    });
+                }
+            }
+        });
+
+        // Ensure "Add New" is hidden when typing in new campaign input
+        newMediumInput.on('focus', function() {
+            removeStartTypingOptionMedium();
+        });
+
+         // Source dropdown elements
+        const selectSource = $('#source_id_0');
+        const newSourceInput = $('#new_source_input');
+        const startSourceTypingOptionValue = 'add_source'; // Value for "Add New" option
+        const sourceSelectHide = $('.source_select_hide');
+
+        // Function to add "Add New" option to the dropdown
+        function addStartTypingOptionMedium() {
+            if (!selectSource.find(`option[value="${startSourceTypingOptionValue}"]`).length) {
+                const startTypingOption = new Option('Start typing..', startSourceTypingOptionValue, false, false);
+                selectSource.append(startTypingOption);
+            }
+        }
+
+        // Function to remove "Add New" option from the dropdown
+        function removeStartTypingOptionMedium() {
+            selectSource.find(`option[value="${startSourceTypingOptionValue}"]`).remove();
+            console.log('Removed "Add New" option from campaign dropdown.');
+        }
+
+        // Add "Add New" option on focus
+        selectSource.on('focus', function() {
+            console.log('Campaign dropdown focused.');
+            addStartTypingOptionMedium();
+        });
+
+        // Remove "Add New" option if dropdown and input are not focused
+        selectSource.on('blur', function() {
+            console.log('Campaign dropdown blurred.');
+            setTimeout(() => {
+                if (!selectSource.is(':focus') && !newSourceInput.is(':focus')) {
+                    removeStartTypingOptionMedium();
+                }
+            }, 100);
+        });
+
+        // Handle dropdown change event
+        selectSource.on('change', function() {
+            console.log('Campaign dropdown changed. Selected value:', $(this).val());
+            if ($(this).val() === startSourceTypingOptionValue) {
+                sourceSelectHide.hide();
+                newSourceInput.show().focus();
+            } else {
+                newSourceInput.hide();
+                sourceSelectHide.show();
+            }
+        });
+
+        // Handle new campaign input on Enter key press
+        newSourceInput.on('keypress', function(e) {
+            if (e.which === 13) {
+                const newMedium = $(this).val();
+                if (newMedium) {
+                    $.ajax({
+                        url: '{{ route('add-source') }}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            name: newMedium
+                        },
+                        success: function(response) {
+                            console.log('Campaign added successfully:', response);
+                            // Add the new name to the dropdown
+                            const newOption = new Option(response.name, response.id, false, false);
+                            selectSource.append(newOption);
+                            selectSource.val(response.id);
+                            newSourceInput.hide().val('');
+                            sourceSelectHide.show();
+                            addStartTypingOptionMedium();
+                        },
+                        error: function() {
+                            alert('Error adding campaign.');
+                        }
+                    });
+                }
+            }
+        });
+
+        // Ensure "Add New" is hidden when typing in new campaign input
+        newSourceInput.on('focus', function() {
+            removeStartTypingOptionMedium();
         });
 
         $('#contact_name_0').on('input', function() {
@@ -1707,6 +2009,10 @@
             var tag_ids_1 = $('#tag_ids_1').val();                
             var priority = $('.o_priority .o_priority_star.fa-star').last().data('value');
             var sales_person = $('#sales_person').val();
+            var campaign_id_0 = $('#campaign_id_0').val();
+            var medium_id_0 = $('#medium_id_0').val();
+            var source_id_0 = $('#source_id_0').val();
+            var referred_0 = $('#referred_0').val();
 
             // Validate fields
             if (!name_0) {
@@ -1774,6 +2080,10 @@
                         tag_ids_1: tag_ids_1,
                         priority: priority,
                         sales_person: sales_person,
+                        campaign_id_0: campaign_id_0,
+                        medium_id_0: medium_id_0,
+                        source_id_0: source_id_0,
+                        referred_0: referred_0,
                     },
                     success: function(response) {
                         toastr.success(response.message);
@@ -1807,17 +2117,7 @@
 </script>
 
 <script>
-    $(document).ready(function() {
-        // $('#staticBackdrop').on('shown.bs.modal', function () {
-        //     $('#activity_type').select2({
-        //         placeholder: "Activity Type",
-        //         allowClear: true
-        //     });
-        //     $('#assigned_to').select2({
-        //         placeholder: "Assigned To",
-        //         allowClear: true
-        //     });
-        // });
+    $(document).ready(function() {       
 
         $('#scheduleForm').on('submit', function(e) {
             e.preventDefault(); // Prevent the default form submission
@@ -2251,6 +2551,7 @@
                 success: function(response) {
                     toastr.success(response.message);
                     $('#staticBackdrop').modal('hide');
+                    location.reload();
                   
                 },
                 error: function(xhr, status, error) {
