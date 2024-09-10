@@ -136,6 +136,9 @@ Route::middleware(['auth'])->group(function () {
     // Add Title
     Route::post('/add-title', [LeadController::class, 'addTitle'])->name('add-title');
     Route::post('/add-tag', [LeadController::class, 'addTag'])->name('add-tag');
+    Route::post('/add-campaign', [LeadController::class, 'addCampaign'])->name('add-campaign');
+    Route::post('/add-medium', [LeadController::class, 'addMedium'])->name('add-medium');
+    Route::post('/add-source', [LeadController::class, 'addSource'])->name('add-source');
 
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');
