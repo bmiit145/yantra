@@ -85,25 +85,25 @@
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Salesperson</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Sales Team</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>City</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Country</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Campaign</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Medium</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Source</span>
         <div class="dropdown-divider" role="separator">
@@ -117,11 +117,11 @@
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
-                <span class="dropdown-item">Year</span>
-                <span class="dropdown-item">Quarter</span>
-                <span class="dropdown-item">Month</span>
-                <span class="dropdown-item">Week</span>
-                <span class="dropdown-item">Day</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span> <span class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
         <div class="o_accordion position-relative">
@@ -132,11 +132,11 @@
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
-                <span class="dropdown-item">Year</span>
-                <span class="dropdown-item">Quarter</span>
-                <span class="dropdown-item">Month</span>
-                <span class="dropdown-item">Week</span>
-                <span class="dropdown-item">Day</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
 
@@ -934,7 +934,8 @@
 <script>
 $(document).ready(function () {
     // Handle item selection from dropdown
-    $(document).on('click', '.o-dropdown-item', function () {
+    $(document).on('click', '.o-dropdown-item_1', function (e) {
+         e.stopPropagation(); 
         var $item = $(this);
         var selectedValue = $item.clone().children().remove().end().text().trim();
         var $tag = $('.tag');
@@ -1029,6 +1030,57 @@ $(document).ready(function () {
             $('#search-dropdown').hide();
         }
     });
+
+      $('#creationDateBtn').on('click', function (event) {
+            event.preventDefault();
+
+            // Toggle the dropdown visibility
+            $('#creationDateDropdown').slideToggle();
+
+            // Toggle the arrow rotation
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+             let selectedTags = [];
+                $('.tag-item').each(function() {
+                    selectedTags.push($(this).data('value'));
+                });
+
+                // Call the filter function with the selected tags
+                filter(selectedTags);
+
+            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
+            $('.o_dropdown_content').not('#creationDateDropdown').slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Optional: Close the dropdown if clicking outside of it
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.o_accordion').length) {
+                $('#creationDateDropdown').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
+        $('#closeDateBtn').on('click', function (event) {
+            event.preventDefault();
+
+            // Toggle the dropdown visibility
+            $('#closeDateDropdown').slideToggle();
+
+            // Toggle the arrow rotation
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
+            $('.o_dropdown_content').not('#closeDateDropdown').slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Optional: Close the dropdown if clicking outside of it
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.o_accordion').length) {
+                $('#closeDateDropdown').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
 
     // Send selected tags to the server and process response
     function filter(selectedTags) {
@@ -1171,48 +1223,7 @@ $(document).ready(function () {
 </script>
 <script>
     $(document).ready(function () {
-        $('#creationDateBtn').on('click', function (event) {
-            event.preventDefault();
-
-            // Toggle the dropdown visibility
-            $('#creationDateDropdown').slideToggle();
-
-            // Toggle the arrow rotation
-            $(this).find('.arrow-icon').toggleClass('rotate');
-
-            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
-            $('.o_dropdown_content').not('#creationDateDropdown').slideUp();
-            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
-        });
-
-        // Optional: Close the dropdown if clicking outside of it
-        $(document).on('click', function (event) {
-            if (!$(event.target).closest('.o_accordion').length) {
-                $('#creationDateDropdown').slideUp();
-                $('.o_menu_item .arrow-icon').removeClass('rotate');
-            }
-        });
-        $('#closeDateBtn').on('click', function (event) {
-            event.preventDefault();
-
-            // Toggle the dropdown visibility
-            $('#closeDateDropdown').slideToggle();
-
-            // Toggle the arrow rotation
-            $(this).find('.arrow-icon').toggleClass('rotate');
-
-            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
-            $('.o_dropdown_content').not('#closeDateDropdown').slideUp();
-            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
-        });
-
-        // Optional: Close the dropdown if clicking outside of it
-        $(document).on('click', function (event) {
-            if (!$(event.target).closest('.o_accordion').length) {
-                $('#closeDateDropdown').slideUp();
-                $('.o_menu_item .arrow-icon').removeClass('rotate');
-            }
-        });
+      
 
         $('#customer_filter_select').on('change' , function(event){
             var selectedValue = $(this).val();
