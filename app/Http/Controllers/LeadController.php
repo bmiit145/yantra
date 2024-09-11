@@ -545,50 +545,48 @@ class LeadController extends Controller
 
     public function filter(Request $request)
     {
-        $selectedTags = $request->selectedTags;
-
-        // Ensure $selectedTags is an array
-        if (is_string($selectedTags)) {
-            $selectedTags = explode(',', $selectedTags);
-        }
+        $selectedTags = json_decode($request->input('selectedTags'), true);
 
         if (!is_array($selectedTags)) {
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        // Fetch all leads
-        $leads = generate_lead::all();
-
+        $leads = generate_lead::with(['getCountry', 'getState','getUser'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {
-            $groupedLeads = &$mappedLeads;
+            $currentGroup = &$mappedLeads;
 
-            if (in_array('City', $selectedTags)) {
-                $cityKey = isset($lead->city) ? $lead->city : 'None';
-                $groupedLeads = &$groupedLeads[$cityKey];
+            foreach ($selectedTags as $tag) {
+                $key = match ($tag) {
+                    'City' => $lead->city ?? 'None',
+                    'Country' => $lead->getCountry->name ?? 'None',
+                    'State' => $lead->getState->name ?? 'None',
+                    'Salesperson' => $lead->getUser->email ?? 'None',
+                    default => 'Unknown'
+                };
+
+                if (!isset($currentGroup[$key])) {
+                    $currentGroup[$key] = [];
+                }
+                $currentGroup = &$currentGroup[$key];
             }
 
-        
-            if (in_array('Country', $selectedTags)) {
-                $countryKey = isset($lead->country) ? $lead->country : 'None';
-                $groupedLeads = &$groupedLeads[$countryKey];
-            }
-
-
-            if (in_array('Salesperson', $selectedTags)) {
-                $salesPersonKey = isset($lead->sales_person) ? $lead->sales_person : 'None';
-                $groupedLeads = &$groupedLeads[$salesPersonKey];
-            }
-            if (in_array('Sales Team', $selectedTags)) {
-                $sales_teamKey = isset($lead->sales_team) ? $lead->sales_team : 'None';
-                $groupedLeads = &$groupedLeads[$sales_teamKey];
-            }
-
-            $groupedLeads[] = $lead;
+            // Add lead to the last nested group
+            $currentGroup[] = $lead;
         }
 
-        // Return the mapped data
+        function sortGroups(&$groups) {
+            ksort($groups);
+            foreach ($groups as &$subGroup) {
+                if (is_array($subGroup)) {
+                    sortGroups($subGroup);
+                }
+            }
+        }
+
+        sortGroups($mappedLeads);
+
         return response()->json(['data' => $mappedLeads]);
     }
 
