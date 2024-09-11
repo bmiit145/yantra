@@ -562,7 +562,7 @@ class LeadController extends Controller
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getSource','getMedium'])->get();
+        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getSource','getMedium','activities'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {
@@ -578,7 +578,29 @@ class LeadController extends Controller
                     'Campaign' => $lead->getCampaign->name ?? 'None',
                     'Medium' => $lead->getMedium->name ?? 'None',
                     'Sales Team' => 'Sales',
-                    default => 'Unknown'
+                    'Creation Date:Quarter' => 'Q' . Carbon::parse($lead->created_at)->quarter . ' ' . Carbon::parse($lead->created_at)->year,
+                    'Creation Date: Year' => Carbon::parse($lead->created_at)->format('Y'),
+                    'Creation Date:Month' => Carbon::parse($lead->created_at)->format('F Y'), // E.g., March 2023
+                    'Creation Date:Week' => 'Week ' . Carbon::parse($lead->created_at)->weekOfYear . ' ' . Carbon::parse($lead->created_at)->year,
+                    'Creation Date:Day' => Carbon::parse($lead->created_at)->format('d-m-Y'),
+                    'Priority' => $lead->priority,
+                    'Active' => $lead->activities->count() > 0 ? 'Yes' : 'No',
+                    'Company' => $lead->company_name ?? 'None',
+                    'Contact Name' => $lead->contact_name ?? 'None',
+                    'Created by'=> $lead->getUser ?? 'None',
+                    'Created on'=> Carbon::parse($lead->assignment_date)->format('d-m-Y') ?? 'None',
+                    'Email'=> $lead->email ?? 'None',
+                    'Lost Reason' => $lead->lost_reason ?? 'None',
+                    'Mobile' => $lead->mobile ?? 'None',
+                    'Phone' => $lead->phone ?? 'None',
+                    'referred' => $lead->referred_by->count() > 0 ? 'yes' : 'no',
+                    'Stage' => $lead->getCrmStage->name ?? 'None',
+                    'Street' => $lead->address_1 ?? 'None',
+                    'Street2' => $lead->address_2 ?? 'None',
+                    'Tags' => $lead->tags ?? 'None',
+                    'Website' => $lead->website_link ?? 'None',
+                    'Zip' => $lead->zip ?? 'None',
+
                 };                
 
                 if (!isset($currentGroup[$key])) {
