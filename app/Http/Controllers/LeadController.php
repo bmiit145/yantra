@@ -122,7 +122,7 @@ class LeadController extends Controller
         }
 
         // Get Paginated Results
-        $leads = $query->with('getCountry','getState','getAutoCountry','getAutoState')->skip($skip)->take($pageLength)->get();
+        $leads = $query->with('getCountry','getState','getAutoCountry','getAutoState','getUser','getTilte')->where('is_lost','1')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -562,7 +562,7 @@ class LeadController extends Controller
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = generate_lead::with(['getCountry', 'getState','getUser'])->get();
+        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getSource','getMedium'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {
@@ -571,11 +571,15 @@ class LeadController extends Controller
             foreach ($selectedTags as $tag) {
                 $key = match ($tag) {
                     'City' => $lead->city ?? 'None',
-                    'Country' => $lead->getCountry->name ?? 'None',
-                    'State' => $lead->getState->name ?? 'None',
+                    'Country' => $lead->getCountry->name ?? ($lead->getAutoCountry->name ?? 'None'),
+                    'State' => $lead->getState->name ?? ($lead->getAutoState->name ?? 'None'),
                     'Salesperson' => $lead->getUser->email ?? 'None',
+                    'Source' => $lead->getSource->name ?? 'None',
+                    'Campaign' => $lead->getCampaign->name ?? 'None',
+                    'Medium' => $lead->getMedium->name ?? 'None',
+                    'Sales Team' => 'Sales',
                     default => 'Unknown'
-                };
+                };                
 
                 if (!isset($currentGroup[$key])) {
                     $currentGroup[$key] = [];

@@ -113,4 +113,19 @@ class generate_lead extends Model
         return $this->hasMany(Activity::class,'lead_id','id');
     }
 
+    public function getSource()
+    {
+        return $this->hasOne(Source::class, 'id', 'source_id');
+    }
+
+    public function getCampaign()
+    {
+        return $this->hasOne(Campaign::class, 'id', 'campaign_id');
+    }
+
+    public function getMedium()
+    {
+        return $this->hasOne(Medium::class, 'id', 'medium_id');
+    }
+
 }

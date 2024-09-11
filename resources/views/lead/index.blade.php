@@ -353,6 +353,7 @@
         cursor: pointer;
         padding: 10px;
         border-radius: 5px;
+        position: relative;
     }
 
     .hide-show-dropdown-menu {
@@ -361,8 +362,9 @@
         background-color: #f9f9f9;
         min-width: auto !important;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
+        z-index: 999; /* Ensure it stays above the table */
         padding: 10px;
+        left: 0; /* Align with the button */
     }
 
     .dropdown-menu {
@@ -373,6 +375,7 @@
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
         padding: 10px;
+        top:auto;
     }
 
     .dropdown-menu a {
@@ -736,10 +739,10 @@
                     }
                 },
                 {
-                    data: 'title',
+                    data: 'get_tilte',
                     render: function (data, type, row) {
                         if (data) {
-                            return data;
+                            return data.title;
                         } else {
                             return '';
                         }
@@ -756,10 +759,10 @@
                     }
                 },
                 {
-                    data: 'sales_person',
+                    data: 'get_user',
                     render: function (data, type, row) {
                         if (data) {
-                            return data;
+                            return data.email;
                         } else {
                             return '';
                         }
@@ -959,18 +962,11 @@ $(document).ready(function () {
 
         } else {
             // Add selected value
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
             if ($tag.length === 0) {
-                $('#search-input').before(
-                    '<span class="tag">' +
-                    '<span class="tag-item" data-value="' + selectedValue + '">' +
-                    selectedValue +
-                    '</span></span>'
-                );
+                $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
             } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-                $tag.html(function (i, oldHtml) {
-                    return oldHtml + (oldHtml ? ' > ' : '') + newTagHtml;
-                });
+                $tag.append(' > ' + newTagHtml);
             }
             updateTagSeparators();
             $item.find('.checkmark').show();
@@ -988,6 +984,22 @@ $(document).ready(function () {
         $('#search-dropdown').hide();
     });
 
+    // Update tag separators and remove button
+    function updateTagSeparators() {
+        var $tag = $('.tag');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function (index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' > ';
+            }
+        });
+        html += ' <span class="remove-tag" style="cursor:pointer">&times;</span>';
+        $tag.html(html);
+        updateRemoveTagButton();
+    }
+
     // Update/remove tag button
     function updateRemoveTagButton() {
         var $tag = $('.tag');
@@ -1000,27 +1012,13 @@ $(document).ready(function () {
         }
     }
 
-    // Update tag separators
-    function updateTagSeparators() {
-        var $tag = $('.tag');
-        var $tagItems = $tag.find('.tag-item');
-        var html = '';
-        $tagItems.each(function (index) {
-            html += $(this).prop('outerHTML');
-            if (index < $tagItems.length - 1) {
-                html += ' > ';
-            }
-        });
-        // Add the close icon at the end
-        html += ' <span class="remove-tag" style="cursor:pointer">&times;</span>';
-        $tag.html(html);
-    }
-
     // Remove all tags
     $(document).on('click', '.remove-tag', function () {
         $('.tag').remove();
         $('.o-dropdown-item .checkmark').hide();
         $('#search-input').val('').attr('placeholder', 'Search...');
+        $('#filter').val(''); // Clear the filter value
+        table.ajax.reload();
     });
 
     // Hide dropdown when clicking outside
@@ -1060,7 +1058,7 @@ $(document).ready(function () {
                         if ($.isArray(groupValue)) {
                             $.each(groupValue, function(index, lead) {
                                 var leadRow = `
-                                    <tr class="lead-row" data-level="${level + 1}" style="display:none;">
+                                    <tr class="lead-row" data-id="${lead.id}" data-level="${level + 1}" style="display:none;">
                                         <td title="${lead.product_name}">${lead.product_name ?? ''}</td>
                                         <td>${lead.email ?? ''}</td>
                                         <td>${lead.city ?? ''}</td>
@@ -1080,7 +1078,6 @@ $(document).ready(function () {
                                         <td>${lead.title ?? ''}</td>
                                         <td>${lead.tag ?? ''}</td>
                                         <td>${lead.getUser ? lead.getUser.email : ''}</td>
-                                        // <td>${lead.sales_person ?? ''}</td>
                                         <td>${lead.sales_team ?? ''}</td>
                                     </tr>
                                 `;
@@ -1109,10 +1106,18 @@ $(document).ready(function () {
             }
         });
     }
+
+    $(document).on('click', '.lead-row', function() {
+        var leadId = $(this).data('id');
+        if (leadId) {
+            window.location.href = '/lead.create/' + leadId;
+        }
+    });
+
+    // Initialize tags if any tags are present on page load
+    updateTagSeparators(); // Ensure that the close icon is added correctly
 });
 </script>
-
-
 
 
 <script>
