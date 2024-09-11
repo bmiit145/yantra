@@ -601,7 +601,7 @@
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete dropdown"><input type="text"
                                                                     class="o-autocomplete--input o_input"
-                                                                    autocomplete="off" role="combobox"
+                                                                    autocomplete="off" role="combobox" value="Sales" readonly
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
                                                                     id="team_id_0" placeholder="" aria-expanded="false">
                                                             </div><span class="o_dropdown_button"></span>
