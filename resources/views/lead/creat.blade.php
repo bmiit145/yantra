@@ -808,7 +808,13 @@
                                                     </div>
                                                     <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
                                                         <div name="date_open" class="o_field_widget o_readonly_modifier o_field_datetime">
-                                                            <div class="d-flex gap-2 align-items-center"><span class="text-truncate">{{ \Carbon\Carbon::parse($data->assignment_date)->format('d/m/Y H:i:s') ?? '' }}</span>
+                                                            <div class="d-flex gap-2 align-items-center"><span class="text-truncate">
+                                                            @if ($data && $data->assignment_date)
+                                                                    {{ \Carbon\Carbon::parse($data->assignment_date)->format('d/m/Y H:i:s') }}
+                                                            @else
+                                                                    
+                                                            @endif
+                                                            </span>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1121,7 +1127,6 @@
                                         @endforeach
                                     @endif
                                 @endif
-
                                 @if(isset($data->lead_type) && $data->lead_type == 2)
                                 
                               

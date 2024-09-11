@@ -932,188 +932,187 @@
 
 </script>
 <script>
-    $(document).ready(function () {
-        // Show the dropdown when the input field is clicked
-        $('#search-input').on('click', function () {
-            $('#search-dropdown').show();
-        });
+$(document).ready(function () {
+    // Handle item selection from dropdown
+    $(document).on('click', '.o-dropdown-item', function () {
+        var $item = $(this);
+        var selectedValue = $item.clone().children().remove().end().text().trim();
+        var $tag = $('.tag');
+        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
-        // Handle selection and deselection of dropdown items
-        $(document).on('click', '.o-dropdown-item', function () {
-            var $item = $(this);
-            var selectedValue = $item.clone().children().remove().end().text().trim();
-            var $tag = $('.tag');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+        if ($tagItem.length > 0) {
+            // Remove selected value
+            $tagItem.remove();
+            updateTagSeparators();
 
-            if ($tagItem.length > 0) {
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
 
-                // Value is already selected, so remove it
-                $tagItem.remove();
+            $item.find('.checkmark').hide();
+            let selectedTags = [];
+            $('.tag-item').each(function() {
+                selectedTags.push($(this).data('value'));
+            });
+            filter(selectedTags);
 
-                // Update tag separators and remove button
-                updateTagSeparators();
-
-
-                // If no tag items remain, remove the tag container, clear the input and show placeholder
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                // Hide the checkmark in the dropdown item
-                $item.find('.checkmark').hide();
-                 filter(selectedValue);
+        } else {
+            // Add selected value
+            if ($tag.length === 0) {
+                $('#search-input').before(
+                    '<span class="tag">' +
+                    '<span class="tag-item" data-value="' + selectedValue + '">' +
+                    selectedValue +
+                    '</span></span>'
+                );
             } else {
-                // Value is not selected, so add it
-                if ($tag.length === 0) {
-                    // Create the span tag for the first time
-                    $('#search-input').before(
-                        '<span class="tag">' +
-                        '<span class="tag-item" data-value="' + selectedValue + '">' +
-                        selectedValue +
-                        '</span></span>'
-                    );
-                     filter(selectedValue);
-                } else {
-                    // Append the new value to the existing tag with a separator
-                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-                    $tag.html(function (i, oldHtml) {
-                        if (oldHtml.includes('</span>')) {
-                            // There are existing tags, so add ' > ' separator before the new tag
-                            return oldHtml.replace('</span>', '</span> > ' + newTagHtml);
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+                $tag.html(function (i, oldHtml) {
+                    return oldHtml + (oldHtml ? ' > ' : '') + newTagHtml;
+                });
+            }
+            updateTagSeparators();
+            $item.find('.checkmark').show();
+            $('#search-input').val('');
+            $('#search-input').attr('placeholder', '');
+
+            // Collect selected tags
+            let selectedTags = [];
+            $('.tag-item').each(function() {
+                selectedTags.push($(this).data('value'));
+            });
+            filter(selectedTags);
+        }
+
+        $('#search-dropdown').hide();
+    });
+
+    // Update/remove tag button
+    function updateRemoveTagButton() {
+        var $tag = $('.tag');
+        if ($tag.find('.tag-item').length > 0) {
+            if ($('.remove-tag').length === 0) {
+                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+            }
+        } else {
+            $('.remove-tag').remove();
+        }
+    }
+
+    // Update tag separators
+    function updateTagSeparators() {
+        var $tag = $('.tag');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function (index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' > ';
+            }
+        });
+        // Add the close icon at the end
+        html += ' <span class="remove-tag" style="cursor:pointer">&times;</span>';
+        $tag.html(html);
+    }
+
+    // Remove all tags
+    $(document).on('click', '.remove-tag', function () {
+        $('.tag').remove();
+        $('.o-dropdown-item .checkmark').hide();
+        $('#search-input').val('').attr('placeholder', 'Search...');
+    });
+
+    // Hide dropdown when clicking outside
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+            $('#search-dropdown').hide();
+        }
+    });
+
+    // Send selected tags to the server and process response
+    function filter(selectedTags) {
+        $.ajax({
+            url: '/lead-filter',
+            type: 'POST',
+            data: {
+                selectedTags: JSON.stringify(selectedTags)
+            },
+            success: function(response) {
+                console.log('Response:', response);
+                
+                var tableBody = $('#lead-table-body');
+                tableBody.empty();
+
+                var leads = response.data;
+
+                function renderGroup(groupLeads, level) {
+                    $.each(groupLeads, function(groupKey, groupValue) {
+                        var groupRow = `
+                            <tr class="group-header" data-level="${level}" style="cursor:pointer;">
+                                <td colspan="20" style="padding-left:${level * 20}px;">
+                                    <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(groupRow);
+
+                        if ($.isArray(groupValue)) {
+                            $.each(groupValue, function(index, lead) {
+                                var leadRow = `
+                                    <tr class="lead-row" data-level="${level + 1}" style="display:none;">
+                                        <td title="${lead.product_name}">${lead.product_name ?? ''}</td>
+                                        <td>${lead.email ?? ''}</td>
+                                        <td>${lead.city ?? ''}</td>
+                                        <td>${lead.getState ? lead.getState.name : ''}</td>
+                                        <td>${lead.getCountry ? lead.getCountry.name : ''}</td>
+                                        <td>${lead.zip ?? ''}</td>
+                                        <td>${lead.probability ?? ''}</td>
+                                        <td>${lead.company_name ?? ''}</td>
+                                        <td>${lead.address_1 ?? ''}</td>
+                                        <td>${lead.address_2 ?? ''}</td>
+                                        <td><a href="${lead.website_link}" target="_blank">${lead.website_link ?? ''}</a></td>
+                                        <td>${lead.contact_name ?? ''}</td>
+                                        <td>${lead.job_postion ?? ''}</td>
+                                        <td>${lead.phone ?? ''}</td>
+                                        <td>${lead.mobile ?? ''}</td>
+                                        <td>${lead.priority ?? ''}</td>
+                                        <td>${lead.title ?? ''}</td>
+                                        <td>${lead.tag ?? ''}</td>
+                                        <td>${lead.getUser ? lead.getUser.email : ''}</td>
+                                        // <td>${lead.sales_person ?? ''}</td>
+                                        <td>${lead.sales_team ?? ''}</td>
+                                    </tr>
+                                `;
+                                tableBody.append(leadRow);
+                            });
                         } else {
-                            // No existing tags, just add the new tag
-                            return oldHtml + ' ' + newTagHtml;
+                            renderGroup(groupValue, level + 1);
                         }
                     });
-
-                     let selectedTags = [];
-                    $('.tag-item').each(function() {
-                        selectedTags.push($(this).data('value')); 
-                    });
-
-                    filter(selectedTags);
                 }
-                // Append or update the remove-tag button
-                updateRemoveTagButton();
-                // Show the checkmark
-                $item.find('.checkmark').show();
-                // Clear the input field value
-                $('#search-input').val('');
-                // Remove placeholder
-                $('#search-input').attr('placeholder', '');
-            }
 
-            // Hide the dropdown after selection
-            $('#search-dropdown').hide();
-        });
+                renderGroup(leads, 0);
 
-        // Function to update the visibility of the remove-tag button
-        function updateRemoveTagButton() {
-            var $tag = $('.tag');
-            if ($tag.find('.tag-item').length > 0) {
-                // Show remove button if there are one or more tags
-                if ($('.remove-tag').length === 0) {
-                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
-                }
-            } else {
-                // Hide remove button if there are no tags
-                $('.remove-tag').remove();
-            }
-        }
-
-
-        function filter(selectedTags) {
-    $.ajax({
-        url: '/lead-filter', // Endpoint for applying filters
-        type: 'POST',
-        data: {
-            selectedTags: selectedTags
-        },
-        success: function(response) {
-            console.log('Filter applied successfully:', response);
-
-            var tableBody = $('#lead-table-body');
-            tableBody.empty(); // Clear the current table body
-
-            var leads = response.data;
-
-            // Append each lead to the table
-            $.each(leads, function(groupKey, groupLeads) {
-                $.each(groupLeads, function(index, lead) {
-                    var row = `
-                        <tr>
-                            <td title="${lead.name}">${lead.name}</td>
-                            <td>${lead.email}</td>
-                            <td>${lead.city}</td>
-                            <td>${lead.state}</td>
-                            <td>${lead.country}</td>
-                            <td>${lead.zip}</td>
-                            <td>${lead.probability}</td>
-                            <td>${lead.company_name}</td>
-                            <td>${lead.address_1}</td>
-                            <td>${lead.address_2}</td>
-                            <td><a href="${lead.website_link}" target="_blank">${lead.website_link}</a></td>
-                            <td>${lead.contact_name}</td>
-                            <td>${lead.job_position}</td>
-                            <td>${lead.phone}</td>
-                            <td>${lead.mobile}</td>
-                            <td>${lead.priority}</td>
-                            <td>${lead.title}</td>
-                            <td>${lead.tag}</td>
-                            <td>${lead.sales_person}</td>
-                            <td>${lead.sales_team}</td>
-                        </tr>`;
-                    tableBody.append(row);
+                // Toggle visibility of nested groups
+                $('.group-header').on('click', function() {
+                    var level = $(this).data('level');
+                    var nextRow = $(this).next();
+                    while (nextRow.length && nextRow.data('level') > level) {
+                        nextRow.toggle();
+                        nextRow = nextRow.next();
+                    }
                 });
-            });
-        },
-        error: function(xhr, status, error) {
-            console.error('Error applying filter:', error);
-        }
-    });
-}
-
-
-
-
-
-
-        // Function to update tag separators
-        function updateTagSeparators() {
-            var $tag = $('.tag');
-            var $tagItems = $tag.find('.tag-item');
-            var html = '';
-            $tagItems.each(function (index) {
-                html += $(this).prop('outerHTML');
-                if (index < $tagItems.length - 1) {
-                    html += ' > ';
-                }
-            });
-            // Update the tag HTML with separators
-            $tag.html(html);
-            // Update the remove-tag button visibility
-            updateRemoveTagButton();
-        }
-
-        // Remove the entire tag when the close button is clicked
-        $(document).on('click', '.remove-tag', function () {
-            // Remove the tag container
-            $('.tag').remove();
-            // Hide all checkmarks in the dropdown items
-            $('.o-dropdown-item .checkmark').hide();
-            // Clear the input field and reset placeholder
-            $('#search-input').val('').attr('placeholder', 'Search...');
-        });
-
-        // Hide dropdown when clicking outside
-        $(document).on('click', function (e) {
-            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
-                $('#search-dropdown').hide();
+            },
+            error: function(xhr, status, error) {
+                console.error('Error applying filter:', error);
             }
         });
-    });
+    }
+});
 </script>
+
+
 
 
 <script>
