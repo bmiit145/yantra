@@ -14,7 +14,9 @@ use App\Models\PersonTitle;
 use App\Models\Country;
 use App\Models\state;
 use App\Models\Tag;
+use App\Models\Contact;
 use App\Models\LostReason;
+use App\Models\CrmStage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -33,7 +35,16 @@ class LeadController extends Controller
         // });
 
         // return view('lead.index', compact('data'));
-        return view('lead.index');
+        $Countrs = Country::all();
+        $tages = Tag::where('tage_type', 2)->get();
+        $users = User::all();
+        $customers = Contact::all();
+        $Sources = Source::all();
+        $CrmStages = CrmStage::all();
+        $States = state::all();
+        $PersonTitle = PersonTitle::all();
+        $Campaigns = Campaign::all();
+        return view('lead.index', compact('Countrs','tages','users','customers','Sources','CrmStages','States','PersonTitle','Campaigns'));
     }
 
     public function getLeads(Request $request)

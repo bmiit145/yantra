@@ -226,7 +226,7 @@
 <!-- Modal -->
 <div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
     aria-labelledby="customFilterModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog  modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="customFilterModalLabel">Add Custom Filter</h5>
@@ -242,8 +242,34 @@
                             <!-- Initial rule row -->
                             <div class="rule-row mt-2 row">
                                 <div class="col-md-3">
-                                    <select name="" id="" class="form-control">
-                                        <option value="test">test</option>
+                                    <select name="" id="customer_filter_select" class="form-control">
+                                        <option value="">selecte filter</option>
+                                        <option value="Country">Country</option>
+                                        <option value="Zip">Zip</option>
+                                        <option value="Tags">Tags</option>
+                                        <option value="Created by">Created by</option>
+                                        <option value="Created on">Created on</option>
+                                        <option value="Customer">Customer</option>
+                                        <option value="Email">Email</option>
+                                        <option value="ID">ID</option>
+                                        <option value="Phone">Phone</option>
+                                        <option value="Priority">Priority</option>
+                                        <option value="Probability">Probability</option>
+                                        {{-- <option value="Properties">Properties</option> --}}
+                                        <option value="Referred By">Referred By</option>
+                                        <option value="Sales Team">Sales Team</option>
+                                        <option value="Salesperson">Salesperson</option>
+                                        <option value="Source">Source</option>
+                                        <option value="Stage">Stage</option>
+                                        <option value="State">State</option>
+                                        <option value="Street">Street</option>
+                                        <option value="Street2">Street2</option>
+                                        <option value="Title">Title</option>
+                                        <option value="Type">Type</option>
+                                        <option value="Website">Website</option>
+                                        <option value="Campaign">Campaign</option>
+                                        <option value="City">City</option>
+                                        {{-- <option value="Company">Company</option> --}}
                                     </select>
                                 </div>
                                 <div class="col-md-2">
@@ -260,28 +286,15 @@
                                         <option value="matches_none_of">matches none of</option>
                                     </select>
                                 </div>
-                                <div class="col-md-5">
-                                    <select name="" id="" class="form-control">
-                                        <option value="test">test</option>
-                                    </select>
+                                <div class="col-md-5 customer_filter_input">
+                                   
                                 </div>
-                                <div class="col-md-2">
-                                    <div class="o_tree_editor_node_control_panel d-flex" role="toolbar"
-                                        aria-label="Domain node">
-                                        <button class="btn px-2 fs-5 add-new-rule" role="button" title="Add New Rule"
-                                            aria-label="Add New Rule"><i class="fa fa-plus"></i></button>
-                                        <button class="btn px-2 fs-5" role="button" title="Add branch"
-                                            aria-label="Add branch"><i class="fa fa-sitemap"></i></button>
-                                        <button class="btn btn-link px-2 text-danger fs-5 delete-rule" role="button"
-                                            title="Delete node" aria-label="Delete node"><i
-                                                class="fa fa-trash"></i></button>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
-                        <div class="o_tree_editor_row d-flex align-items-center">
+                        {{-- <div class="o_tree_editor_row d-flex align-items-center">
                             <a id="addNewRule" style="color: #017E84;" href="#" role="button">New Rule</a>
-                        </div>
+                        </div> --}}
                     </div>
                 </form>
             </div>
@@ -1199,6 +1212,128 @@
             if (!$(event.target).closest('.o_accordion').length) {
                 $('#closeDateDropdown').slideUp();
                 $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
+
+        $('#customer_filter_select').on('change' , function(event){
+            var selectedValue = $(this).val();
+            var filterInput = $('.customer_filter_input');
+            
+            filterInput.empty();
+
+             if (selectedValue === 'Country') {
+            // Show the country dropdown
+            var countryDropdown = `
+                <select name="country" id="country_select" class="form-control">
+                    @foreach($Countrs as $Country)
+                        <option value="{{ $Country->id }}">{{ $Country->name }}</option>
+                    @endforeach
+                </select>`;
+            filterInput.append(countryDropdown);
+            } else if (selectedValue === 'Zip') {
+      
+                var zipInput = `<input type="text" name="zip" class="form-control" placeholder="Enter Zip">`;
+                filterInput.append(zipInput);
+            } else if (selectedValue === 'Tags') {
+           
+                var tag = ` <select name="country" id="country_select" class="form-control">
+                    @foreach($tages as $tage)
+                        <option value="{{ $tage->id }}">{{ $tage->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(tag);
+            }else if(selectedValue === 'Created by'){
+                var created_by = ` <select name="created_by" id="created_by" class="form-control">
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(created_by);
+            }else if(selectedValue === 'Created on'){
+                var created_on = ` <input type="date" name="created_on" class="form-control">`;
+                filterInput.append(created_on);
+            }else if(selectedValue === 'Customer'){
+                  var customer = ` <select name="customer" id="customer" class="form-control">
+                    @foreach($customers as $customer)
+                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(customer);
+            }else if(selectedValue === 'Email'){
+                var email = ` <input type="email" name="email" class="form-control">`;
+                filterInput.append(email);
+            }else if(selectedValue === 'ID'){ 
+                var id = ` <input type="text" name="id" class="form-control">`;
+                filterInput.append(id);
+            }else if(selectedValue === 'Phone'){    
+                var phone = ` <input type="text" name="phone" class="form-control">`;
+                filterInput.append(phone);
+            }else if(selectedValue === 'Priority'){
+                var priority = ` <select name="priority" id="priority" class="form-control">
+                     <option value="Medium">Medium</option>
+                     <option value="High">High</option>
+                     <option value="Very High">Very High</option>
+                 
+                </select>`;
+                filterInput.append(priority);
+            }else if(selectedValue === 'Probability'){  
+                var probability = ` <input type="text" name="probability" class="form-control" value="1">`;
+                filterInput.append(probability);
+            }else if(selectedValue === 'Referred By'){
+                var referred_by = ` <input type="text" name="referred_by" class="form-control">`;
+                filterInput.append(referred_by);
+            }else if(selectedValue === 'Salesperson'){
+                var salesperson = ` <select name="salesperson" id="salesperson" class="form-control">
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(salesperson);
+            }else if(selectedValue == 'source'){
+                var source = ` <select name="salesperson" id="salesperson" class="form-control">
+                    @foreach($Sources as $Source)
+                        <option value="{{ $Source->id }}">{{ $Source->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(source);
+            }else if(selectedValue == 'Stage'){
+                var stage = ` <select name="stage" id="stage" class="form-control">
+                    @foreach($CrmStages as $Stage)
+                        <option value="{{ $Stage->id }}">{{ $Stage->title }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(stage);
+            }else if(selectedValue == 'State'){
+                var state = ` <select name="state" id="state" class="form-control">
+                    @foreach($States as $State)
+                        <option value="{{ $State->id }}">{{ $State->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(state);
+            }else if(selectedValue == 'Street'){
+                var street = ` <input type="text" name="street" class="form-control">`;
+                filterInput.append(street);
+            }else if(selectedValue == 'Street2'){
+                var street2 = ` <input type="text" name="street2" class="form-control">`;
+                filterInput.append(street2);
+            } else if(selectedValue == 'type'){
+                var title = `<select name="type" id="type" class="form-control">
+                          <option value="Lead">Lead</option>
+                        <option value="Opportunity">Opportunity</option> `;
+                filterInput.append(title);
+            } else if(selectedValue == 'Website'){
+                var website = ` <input type="text" name="website" class="form-control">`;
+                filterInput.append(website);
+            }else if(selectedValue == 'Campaign'){
+                var campaign = ` <select name="campaign" id="campaign" class="form-control">
+                    @foreach($Campaigns as $Campaign)
+                        <option value="{{ $Campaign->id }}">{{ $Campaign->name }}</option>
+                    @endforeach
+                </select>`;
+                filterInput.append(campaign);
+            }else if(selectedValue == 'City'){
+                var City = ` <input type="text" name="City" id="City" class="form-control">`;
+                filterInput.append(City);
             }
         });
     });
