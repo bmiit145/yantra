@@ -111,6 +111,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activities', [LeadController::class, 'fetchActivities'])->name('activities.fetch');
     Route::get('/activity-detail/{id}', [LeadController::class, 'activityDetail'])->name('lead.activityDetail');
     Route::post('/lead-filter', [LeadController::class, 'filter'])->name('lead.filter');
+    Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
 
 
 

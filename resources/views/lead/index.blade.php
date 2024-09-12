@@ -54,13 +54,15 @@
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
         <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Lost</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark" style="display:none;">✔</span>Lost & Archived</span>
         <div class="dropdown-divider" role="separator"></div>
         <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button></div>
         <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div>
         <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
-        <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
-        <div role="separator" class="dropdown-divider"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
+        <div class="dropdown-divider" role="separator"></div>
+        <!-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
+        <div role="separator" class="dropdown-divider"></div> -->
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
@@ -805,6 +807,15 @@
             }
         });
 
+        // Remove all tags
+        // $(document).on('click', '.remove-tag', function() {
+        //     $('.tag').remove();
+        //     $('.checkmark').hide();
+        //     $('#search-input').val('').attr('placeholder', 'Search...');
+        //     $('#filter').val(''); // Clear the filter value
+        //     table.ajax.reload();
+        // });
+
         // CSRF token setup for AJAX requests
         $.ajaxSetup({
             headers: {
@@ -883,14 +894,17 @@
     });
 
 </script>
-{{-- ------------------ lost_span --------------------- --}}
+
+{{-- ------------------ lost_span & activities  --------------------- --}}
+
 <script>
- $(document).on('click', '.lost_span', function(e) {
+    $(document).on('click', '.lost_span', function(e) {
         e.stopPropagation();
         var $item = $(this);
 
         // Get the text of the clicked "Lost" span
-        var selectedValue = $item.text().trim();
+        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+        
         handleTagSelection3(selectedValue, $item);
     });
 
@@ -914,16 +928,9 @@
                 $item.find('.checkmark').hide();
             }
 
-            // Update remaining selected tags and filter
-            let selectedTags = [];
-            $('.tag-item').each(function() {
-                selectedTags.push($(this).data('value'));
-            });
-            
-
         } else {
             // Add new tag with filter icon and close button
-            var newTagHtml = '<span class="lost" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag">×</span></span>';
 
             // If no tags exist, create the tag container
             if ($tag.length === 0) {
@@ -940,70 +947,12 @@
             // Reset input and placeholder
             $('#search-input').val('');
             $('#search-input').attr('placeholder', '');
-
-            // Update the selected tags and filter
-            let selectedTags = [];
-            $('.tag-item').each(function() {
-                selectedTags.push($(this).data('value'));
-            });
-           
         }
 
-        // Hide dropdown after selection
-        $('#search-dropdown').hide();
+        // Update selected tags and send to server
+        updateFilterTags();
     }
 
-    function updateTagSeparators3() {
-        var $tag = $('.tag1');
-        var $tagItems = $tag.find('.tag-item');
-        var html = '';
-        $tagItems.each(function(index) {
-            html += $(this).prop('outerHTML');
-            if (index < $tagItems.length - 1) {
-                html += ' & ';
-            }
-        });
-        $tag.html(html);
-        updateRemoveTagButton3();
-    }
-
-    function updateTagSeparators3() {
-        var $tag = $('.tag1');
-        var $tagItems = $tag.find('.tag-item');
-        var html = '';
-        $tagItems.each(function(index) {
-            html += $(this).prop('outerHTML');
-            if (index < $tagItems.length - 1) {
-                html += ' & ';
-            }
-        });
-        $tag.html(html);
-        updateRemoveTagButton3();
-    }
-
-    // Remove the "Lost" tag when the close button is clicked
-    $(document).on('click', '.remove-lost-tag', function() {
-        $(this).parent('.tag-item').remove();
-        updateTagSeparators3();
-
-        // Remove checkmark from the dropdown
-        $('.activities:contains("Lost")').find('.checkmark').hide();
-    });
-
-    function updateRemoveTagButton3() {
-        var $tag = $('.tag1');
-        if ($tag.find('.tag-item').length > 0) {
-            if ($('.remove-tag').length === 0) {
-                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
-            }
-        } else {
-            $('.remove-tag').remove();
-        }
-    }
-</script>
-{{-- ----------------------- activities -------------------------- --}}
-<script>
-   
     $(document).on('click', '.activities', function(e) {
         e.stopPropagation();
         var $item = $(this);
@@ -1013,12 +962,9 @@
         handleTagSelection2(selectedValue, $item);
     });
 
-
     function handleTagSelection2(selectedValue, $item = null) {
         var $tag = $('.tag');
         var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-        console.log(selectedValue, 'sdhasuih');
 
         if ($tagItem.length > 0) {
             // If the tag already exists, remove it
@@ -1035,20 +981,9 @@
             if ($item) {
                 $item.find('.checkmark').hide();
             }
-
-            // Collect remaining selected tags
-            let selectedTags = [];
-            $('.tag-item').each(function() {
-                selectedTags.push($(this).data('value'));
-            });
-           
-
         } else {
             // If the tag does not exist, add it
             var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-
-
 
             // Check if a tag container exists, if not, create one
             if ($tag.length === 0) {
@@ -1067,17 +1002,10 @@
             // Reset input and placeholder
             $('#search-input').val('');
             $('#search-input').attr('placeholder', '');
-
-            // Collect selected tags
-            let selectedTags = [];
-            $('.tag-item').each(function() {
-                selectedTags.push($(this).data('value'));
-            });
-        
         }
 
-        // Hide dropdown after selection
-        $('#search-dropdown').hide();
+        // Collect selected tags
+        updateFilterTags();
     }
 
     function updateTagSeparators2() {
@@ -1094,14 +1022,19 @@
         updateRemoveTagButton2();
     }
 
-    // Remove the "Lost" tag when the close button is clicked
-    $(document).on('click', '.remove-lost-tag', function() {
-        $(this).parent('.tag-item').remove();
-        updateTagSeparators2();
-
-        // Remove checkmark from the dropdown
-        $('.activities:contains("Lost")').find('.checkmark').hide();
-    });
+    function updateTagSeparators3() {
+        var $tag = $('.tag1');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function(index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' & ';
+            }
+        });
+        $tag.html(html);
+        updateRemoveTagButton3();
+    }
 
     function updateRemoveTagButton2() {
         var $tag = $('.tag');
@@ -1114,7 +1047,118 @@
         }
     }
 
+    function updateRemoveTagButton3() {
+        var $tag = $('.tag1');
+        if ($tag.find('.tag-item').length > 0) {
+            if ($('.remove-lost-tag').length === 0) {
+                $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
+            }
+        } else {
+            $('.remove-lost-tag').remove();
+        }
+    }
+
+    // Function to update filters after tag removal
+    function updateFilterTags() {
+        let selectedTags = [];
+        $('.tag-item').each(function() {
+            selectedTags.push($(this).data('value'));
+        });
+
+        // Send selected tags to the server for filtering
+        filterData(selectedTags);
+    }
+
+    // Remove tag and preserve "Lost" tag filter
+    $(document).on('click', '.remove-lost-tag', function() {
+        var $tagItem = $(this).parent('.tag-item');
+        $tagItem.remove();
+        $('.tag1').remove(); // Only remove the container if it's empty
+        updateTagSeparators3();
+
+        // Reapply filters after removing "Lost" tag
+        updateFilterTags();
+
+        // Remove checkmark from the dropdown
+        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+    });
+
+    $(document).on('click', '.remove-tag', function() {
+        var $tagItem = $(this).parent('.tag-item');
+        $tagItem.remove();
+        $('.tag').remove(); // Only remove the container if it's empty
+        updateTagSeparators3();
+
+        // Reapply filters after removing "Lost" tag
+        updateFilterTags();
+
+        // Remove checkmark from the dropdown
+        $('.activities .checkmark').hide();
+    });
+
+    function filterData(selectedTags) {
+        $.ajax({
+            url: '{{route('lead.activities')}}', // Your endpoint for fetching leads
+            method: 'GET',
+            data: {
+                tags: selectedTags
+                // Include other parameters if needed
+            },
+            success: function(response) {
+                var $tableBody = $('#lead-table-body');
+
+                // Clear existing table data
+                $tableBody.empty();
+
+                // Check if response contains data
+                if (response.success && response.data && response.data.length > 0) {
+                    // Loop through the response and create table rows
+                    response.data.forEach(function(item) {
+                        var rowHtml = `
+                            <tr>
+                                <td>${item.product_name || ''}</td>
+                                <td>${item.email || ''}</td>
+                                <td>${item.city || ''}</td>
+                                <td>
+                                    ${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}
+                                </td>
+                                <td>
+                                    ${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}
+                                </td>
+                                <td>${item.zip || ''}</td>
+                                <td>${item.probability || ''}</td>
+                                <td>${item.company_name || ''}</td>
+                                <td>${item.address_1 || ''}</td>
+                                <td>${item.address_2 || ''}</td>
+                                <td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>
+                                <td>${item.contact_name || ''}</td>
+                                <td>${item.job_position || ''}</td>
+                                <td>${item.phone || ''}</td>
+                                <td>${item.mobile || ''}</td>
+                                <td>${item.priority || ''}</td>
+                                <td>${item.title ? (item.get_tilte?.title || '') : ''}</td>
+                                <td>${item.tag || ''}</td>
+                                <td>${item.get_user?.email || ''}</td>
+                                <td>${item.sales_team || ''}</td>
+                            </tr>
+                        `;
+                        $tableBody.append(rowHtml);
+                    });
+                } else {
+                    // If no data, show a message or keep it empty
+                    $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                }
+            },
+            error: function() {
+                // Handle errors here
+                console.error('Failed to fetch data');
+            }
+        });
+    }
 </script>
+
+
+
  {{-- ----------------------------- Group by ------------------------------ --}}
 <script>
     $(document).ready(function() {
@@ -1240,7 +1284,6 @@
             $('.o-dropdown-item .checkmark').hide();
             $('#search-input').val('').attr('placeholder', 'Search...');
             $('#filter').val(''); // Clear the filter value
-            table.ajax.reload();
         });
 
         // Hide dropdown when clicking outside

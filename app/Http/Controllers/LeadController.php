@@ -44,7 +44,7 @@ class LeadController extends Controller
         $States = state::all();
         $PersonTitle = PersonTitle::all();
         $Campaigns = Campaign::all();
-        return view('lead.index', compact('Countrs','tages','users','customers','Sources','CrmStages','States','PersonTitle','Campaigns'));
+        return view('lead.index', compact('Countrs', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns'));
     }
 
     public function getLeads(Request $request)
@@ -60,21 +60,6 @@ class LeadController extends Controller
 
         // Build Query
         $query = generate_lead::query();
-
-        // Apply Filter
-        $filter = $request->filter ?? '';
-        switch ($filter) {
-            case 'my-activities':
-                $query->whereHas('activities', function ($q) {
-                    $q->where('status', 0);
-                });
-                break;
-            case 'unassigned':
-                $query->whereNull('sales_person');
-                break;
-            default:
-                break;
-        }
 
         // Search
         $searchValue = $request->search['value'] ?? '';
@@ -122,7 +107,7 @@ class LeadController extends Controller
         }
 
         // Get Paginated Results
-        $leads = $query->with('getCountry','getState','getAutoCountry','getAutoState','getUser','getTilte')->where('is_lost','1')->skip($skip)->take($pageLength)->get();
+        $leads = $query->with('getCountry', 'getState', 'getAutoCountry', 'getAutoState', 'getUser', 'getTilte')->where('is_lost', '1')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -159,53 +144,53 @@ class LeadController extends Controller
         } else {
             $activitiesDone = 0;
         }
-        $campaigns = Campaign::orderBy('id','DESC')->get();
-        $mediums = Medium::orderBy('id','DESC')->get();
-        $sources = Source::orderBy('id','DESC')->get();
+        $campaigns = Campaign::orderBy('id', 'DESC')->get();
+        $mediums = Medium::orderBy('id', 'DESC')->get();
+        $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone','campaigns','mediums','sources'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources'));
     }
 
     public function store(Request $request)
     {
         $existingLead = generate_lead::find($request->lead_id);
 
-    // Determine if sales_person has changed
-    $salesPersonChanged = $existingLead && $existingLead->sales_person !== $request->sales_person;
+        // Determine if sales_person has changed
+        $salesPersonChanged = $existingLead && $existingLead->sales_person !== $request->sales_person;
 
-    // Update or create the lead
-    $lead = generate_lead::updateOrCreate(
-        ['id' => $request->lead_id],
-        [
-            'product_name' => $request->name_0,
-            'probability' => $request->probability_0,
-            'company_name' => $request->partner_name_0,
-            'address_1' => $request->street_0,
-            'address_2' => $request->street2_0,
-            'city' => $request->city_0,
-            'zip' => $request->zip_0,
-            'state' => $request->state_id_0,
-            'country' => $request->country_id_0,
-            'website_link' => $request->website_0,
-            'sales_person' => $request->sales_person,
-            'sales_team' => $request->team_id_0,
-            'contact_name' => $request->contact_name_0,
-            'title' => $request->title_0,
-            'email' => $request->email_from_1,
-            'job_postion' => $request->function_0,
-            'phone' => $request->phone_1,
-            'mobile' => $request->mobile_0,
-            'tag_id' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
-            'lead_type' => '1',
-            'priority' => $request->priority,
-            'campaign_id' => $request->campaign_id_0,
-            'medium_id' => $request->medium_id_0,
-            'source_id' => $request->source_id_0,
-            'referred_by' => $request->referred_0,
-            'assignment_date' => $salesPersonChanged ? now() : ($existingLead ? $existingLead->assignment_date : null),
-        ]
-    );
+        // Update or create the lead
+        $lead = generate_lead::updateOrCreate(
+            ['id' => $request->lead_id],
+            [
+                'product_name' => $request->name_0,
+                'probability' => $request->probability_0,
+                'company_name' => $request->partner_name_0,
+                'address_1' => $request->street_0,
+                'address_2' => $request->street2_0,
+                'city' => $request->city_0,
+                'zip' => $request->zip_0,
+                'state' => $request->state_id_0,
+                'country' => $request->country_id_0,
+                'website_link' => $request->website_0,
+                'sales_person' => $request->sales_person,
+                'sales_team' => $request->team_id_0,
+                'contact_name' => $request->contact_name_0,
+                'title' => $request->title_0,
+                'email' => $request->email_from_1,
+                'job_postion' => $request->function_0,
+                'phone' => $request->phone_1,
+                'mobile' => $request->mobile_0,
+                'tag_id' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
+                'lead_type' => '1',
+                'priority' => $request->priority,
+                'campaign_id' => $request->campaign_id_0,
+                'medium_id' => $request->medium_id_0,
+                'source_id' => $request->source_id_0,
+                'referred_by' => $request->referred_0,
+                'assignment_date' => $salesPersonChanged ? now() : ($existingLead ? $existingLead->assignment_date : null),
+            ]
+        );
 
         // Log changes
         $action = $request->lead_id ? 'updated' : 'created';
@@ -562,7 +547,7 @@ class LeadController extends Controller
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getSource','getMedium','activities'])->get();
+        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getSource', 'getMedium', 'activities'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {
@@ -587,9 +572,9 @@ class LeadController extends Controller
                     'Active' => $lead->activities->count() > 0 ? 'Yes' : 'No',
                     'Company' => $lead->company_name ?? 'None',
                     'Contact Name' => $lead->contact_name ?? 'None',
-                    'Created by'=> $lead->getUser ?? 'None',
-                    'Created on'=> Carbon::parse($lead->assignment_date)->format('d-m-Y') ?? 'None',
-                    'Email'=> $lead->email ?? 'None',
+                    'Created by' => $lead->getUser ?? 'None',
+                    'Created on' => Carbon::parse($lead->assignment_date)->format('d-m-Y') ?? 'None',
+                    'Email' => $lead->email ?? 'None',
                     'Lost Reason' => $lead->lost_reason ?? 'None',
                     'Mobile' => $lead->mobile ?? 'None',
                     'Phone' => $lead->phone ?? 'None',
@@ -601,7 +586,7 @@ class LeadController extends Controller
                     'Website' => $lead->website_link ?? 'None',
                     'Zip' => $lead->zip ?? 'None',
 
-                };                
+                };
 
                 if (!isset($currentGroup[$key])) {
                     $currentGroup[$key] = [];
@@ -613,7 +598,8 @@ class LeadController extends Controller
             $currentGroup[] = $lead;
         }
 
-        function sortGroups(&$groups) {
+        function sortGroups(&$groups)
+        {
             ksort($groups);
             foreach ($groups as &$subGroup) {
                 if (is_array($subGroup)) {
@@ -627,6 +613,57 @@ class LeadController extends Controller
         return response()->json(['data' => $mappedLeads]);
     }
 
+    public function activities(Request $request)
+{
+    // Get all tags from the request
+    $tags = $request->tags ?? [];
+
+    // Normalize tags to handle "Lost & Archived" as "Lost"
+    $normalizedTags = array_map(function($tag) {
+        return $tag === 'Lost & Archived' ? 'Lost' : $tag;
+    }, $tags);
+
+    // Initialize variables to determine which filters to apply
+    $includeMyActivities = in_array('My Activities', $normalizedTags);
+    $includeUnassigned = in_array('Unassigned', $normalizedTags);
+    $includeLost = in_array('Lost', $normalizedTags);
+
+    // Start building the query
+    $leadsQuery = generate_lead::query();
+
+    // Apply filters based on specific tag combinations
+    if ($includeLost) {
+        // Apply the "Lost" filter
+        $leadsQuery->where('is_lost', '2'); // Assuming '2' indicates "Lost"
+    }
+
+    if ($includeMyActivities || $includeUnassigned) {
+        // Apply "My Activities" and/or "Unassigned" filters
+        $leadsQuery->where(function ($query) use ($includeMyActivities, $includeUnassigned) {
+            if ($includeMyActivities) {
+                $query->whereHas('activities', function ($q) {
+                    $q->where('status', 0); // Status for "My Activities"
+                });
+            }
+
+            if ($includeUnassigned) {
+                $query->orWhereNull('sales_person');
+            }
+        });
+    }
+
+    // Always include necessary relationships
+    $leadsQuery->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
+
+    // Fetch results
+    $generateLeads = $leadsQuery->get();
+
+    // Return results as JSON
+    return response()->json([
+        'success' => true,
+        'data' => $generateLeads
+    ], 200);
+}
 
 }
 
