@@ -56,8 +56,58 @@
         <div class="dropdown-divider" role="separator"></div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark" style="display:none;">✔</span>Lost & Archived</span>
         <div class="dropdown-divider" role="separator"></div>
-        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button></div>
-        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false" id="creationDateBtn1">
+                Creation Date
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="creationDateDropdown1" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <?php   
+                        // Get the current date
+                        $currentMonth = date('F '); // e.g., September 2024
+                        $lastMonth = date('F ', strtotime('-1 month')); // Last month
+                        $twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
+                        $threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
+                    ?>
+                <?php
+                        // Get the current year
+                        $currentYear = date('Y'); // e.g., 2024
+                        $lastYear = date('Y', strtotime('-1 year')); // Last year
+                        $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
+                    ?>
+                <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentMonth; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastMonth; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q4</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q3</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q2</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q1</span>
+                <hr>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentYear; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastYear; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
+            </div>
+        </div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
+                Closed Date
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="closeDateDropdown1" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_2 closed_time">
+                    <span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentMonth; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastMonth; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q4</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q3</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q2</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q1</span>
+                <hr>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentYear; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastYear; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
+            </div>
+        </div>
         <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
         <div class="dropdown-divider" role="separator"></div>
         <!-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
@@ -390,7 +440,31 @@
         padding: 5px;
         background-color: #F1F1F1;
     }
+    .creation_time {
+        display: block;
+        width: 100%;
+        padding: .25rem 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
 
+    .closed_time {
+        display: block;
+        width: 100%;
+        padding: .25rem 1.5rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
 </style>
 
 <div class="card" style="padding: 1%">
@@ -1364,6 +1438,78 @@
             }
         });
 
+        //---------------------- second ---------------
+        $('#creationDateBtn1').on('click', function(event) {
+            event.preventDefault();
+
+            // Toggle the dropdown visibility
+            $('#creationDateDropdown1').slideToggle();
+
+            // Toggle the arrow rotation
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            let selectedTags = [];
+            if ($('.tag-item').length > 0) {
+                $('.tag-item').each(function() {
+                    selectedTags.push($(this).data('value'));
+                });
+            }
+
+            // If selectedTags is not empty, call the filter function
+            if (selectedTags.length > 0) {
+                filter(selectedTags);
+            } else {
+                console.log('No tags selected');
+            }
+
+            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
+            $('.o_dropdown_content').not('#creationDateDropdown1').slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Optional: Close the dropdown if clicking outside of it
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.o_accordion').length) {
+                $('#creationDateDropdown1').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
+        $('#closeDateBtn1').on('click', function(event) {
+            event.preventDefault();
+
+            // Toggle the dropdown visibility
+            $('#closeDateDropdown1').slideToggle();
+
+            // Toggle the arrow rotation
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            let selectedTags = [];
+            if ($('.tag-item').length > 0) {
+                $('.tag-item').each(function() {
+                    selectedTags.push($(this).data('value'));
+                });
+            }
+
+            // If selectedTags is not empty, call the filter function
+            if (selectedTags.length > 0) {
+                filter(selectedTags);
+            } else {
+                console.log('No tags selected');
+            }
+
+            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
+            $('.o_dropdown_content').not('#closeDateDropdown1').slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Optional: Close the dropdown if clicking outside of it
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.o_accordion').length) {
+                $('#closeDateDropdown1').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
+
         // Send selected tags to the server and process response
         function filter(selectedTags) {
             console.log('Selected tags:', selectedTags);
@@ -1456,6 +1602,126 @@
     });
 
 </script>
+ {{-- ---------------- time ------------------- --}}
+<script>
+    $(document).ready(function() {
+        // Handle item selection from dropdown
+        $(document).on('click', '.o-dropdown-item_2', function(e) {
+            e.stopPropagation();
+            var $item = $(this);
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+
+            // Check if the selected item is Creation Date or Closed Date
+            if ($item.hasClass('creation_time')) {
+                handleTagSelection4(selectedValue, $item, 'Creation Date');
+            } else if ($item.hasClass('closed_time')) {
+                handleTagSelection4(selectedValue, $item, 'Closed Date');
+            }
+        });
+
+        // Function to handle tag selection for both Creation and Closed dates
+        function handleTagSelection4(selectedValue, $item = null, type) {
+            var $tag = $('.tag3');
+            var $creationTag = $tag.find('.creation-date-tag');
+            var $closedTag = $tag.find('.closed-date-tag');
+
+            // Helper function to remove value from tag and tag if empty
+            function updateTag($tag, selectedValue, type) {
+                var existingValues = $tag.text().split('/').map(v => v.trim()).filter(v => v);
+                var valueIndex = existingValues.indexOf(selectedValue);
+
+                if (valueIndex !== -1) {
+                    // Remove value
+                    existingValues.splice(valueIndex, 1);
+                    var newTagText = existingValues.join('/');
+
+                    // Update tag text
+                    if (newTagText) {
+                        $tag.text(newTagText);
+                    } else {
+                        // Remove tag if empty
+                        $tag.remove();
+
+                        // Check if there are no other tags left in the parent tag
+                        var $parentTag = $tag.parent();
+                        if (!$parentTag.find('.creation-date-tag').length && !$parentTag.find('.closed-date-tag').length) {
+                            $parentTag.remove(); // Remove parent tag if no tags left
+                        }
+                    }
+                } else {
+                    // Add new value
+                    $tag.append('/' + selectedValue);
+                }
+            }
+
+            if (type === 'Creation Date') {
+                if ($creationTag.length > 0) {
+                    updateTag($creationTag, selectedValue, type);
+                } else {
+                    // Add new creation date tag
+                    if ($tag.length === 0) {
+                        $('#search-input').before('<span class="tag3">Creation Date: <span class="creation-date-tag">' + selectedValue + '</span></span>');
+                    } else {
+                        $tag.append('Creation Date: <span class="creation-date-tag">' + selectedValue + '</span>');
+                    }
+                }
+            } else if (type === 'Closed Date') {
+                if ($closedTag.length > 0) {
+                    updateTag($closedTag, selectedValue, type);
+                } else {
+                    // Add new closed date tag
+                    if ($tag.length > 0) {
+                        $tag.append(' or Closed Date: <span class="closed-date-tag">' + selectedValue + '</span>');
+                    } else {
+                        $('#search-input').before('<span class="tag3">Closed Date: <span class="closed-date-tag">' + selectedValue + '</span></span>');
+                    }
+                }
+            }
+
+            // Hide or show checkmark
+            if ($item) {
+                // Toggle visibility of the checkmark based on whether the item is being checked or unchecked
+                var $checkmark = $item.find('.checkmark');
+                if ($checkmark.is(':visible')) {
+                    $checkmark.hide(); // Hide if currently visible
+                } else {
+                    $checkmark.show(); // Show if currently hidden
+                }
+            }
+
+            updateTagSeparators4();
+            $('#search-input').val('');
+            $('#search-dropdown').hide();
+        }
+
+
+
+
+
+        // Update tag separators and close button
+        function updateTagSeparators4() {
+            var $tag = $('.tag3');
+            console.log($tag, 'tags123');
+            if ($tag.length > 0) {
+                // Add a single close button for all tags
+                if (!$tag.find('.remove-tag').length) {
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                }
+            }
+        }
+
+        // Remove all tags when the close button is clicked
+        $(document).on('click', '.remove-tag', function() {
+            $('.tag3').remove();
+            $('.o-dropdown-item_2 .checkmark').hide();
+            $('#search-input').val('').attr('placeholder', 'Search...');
+        });
+
+        updateTagSeparators4(); // Ensure that the close icon is added correctly
+    });
+
+</script>
+
  {{-- ---------------- custom filter ------------------- --}}
 <script>
     $(document).ready(function() {
