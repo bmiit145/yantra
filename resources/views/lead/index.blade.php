@@ -53,7 +53,8 @@
         </div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
-        <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Lost</span>
+        <div class="dropdown-divider" role="separator"></div>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Lost</span>
         <div class="dropdown-divider" role="separator"></div>
         <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Creation Date</button></div>
         <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false">Closed Date</button></div>
@@ -358,7 +359,17 @@
         border-radius: 22px;
         margin-right: 12px;
         font-size: 14px;
-        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+
+    .tag1 {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #E0E0E0;
+        border-radius: 22px;
+        margin-right: 12px;
+        font-size: 14px;
         top: 5px;
         left: 5px;
     }
@@ -494,8 +505,7 @@
             processing: true
             , serverSide: true
             , ajax: {
-                url: '{{ route('
-                lead.get ') }}'
+                url: '{{ route('lead.get') }}'
                 , type: "POST"
                 , data: function(d) {
                     d.search = {
@@ -873,81 +883,239 @@
     });
 
 </script>
+{{-- ------------------ lost_span --------------------- --}}
 <script>
-    $(document).ready(function() {
-        $(document).on('click', '.activities', function(e) {
-            e.stopPropagation();
-            var $item = $(this);
-            console.log($item);
+ $(document).on('click', '.lost_span', function(e) {
+        e.stopPropagation();
+        var $item = $(this);
 
-            // Clone the item, remove the checkmark span and get the trimmed text
-            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelection2(selectedValue, $item);
-        });
-
-        function handleTagSelection2(selectedValue, $item = null) {
-            var $tag = $('.tag');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-            if ($tagItem.length > 0) {
-                // If the tag already exists, remove it
-                $tagItem.remove();
-                updateTagSeparators();
-
-                // If no tags left, remove the container and reset the input
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                // Hide the checkmark if it's being deselected
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-
-                // Collect remaining selected tags
-                let selectedTags = [];
-                $('.tag-item').each(function() {
-                    selectedTags.push($(this).data('value'));
-                });
-                filter(selectedTags);
-
-            } else {
-                // If the tag does not exist, add it
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-                // Check if a tag container exists, if not, create one
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
-                } else {
-                    $tag.append(' & ' + newTagHtml);
-                }
-                updateTagSeparators();
-
-                // Show the checkmark on the selected item
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                // Reset input and placeholder
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-
-                // Collect selected tags
-                let selectedTags = [];
-                $('.tag-item').each(function() {
-                    selectedTags.push($(this).data('value'));
-                });
-                filter(selectedTags);
-            }
-
-            // Hide dropdown after selection
-            $('#search-dropdown').hide();
-        }
-
+        // Get the text of the clicked "Lost" span
+        var selectedValue = $item.text().trim();
+        handleTagSelection3(selectedValue, $item);
     });
 
+    function handleTagSelection3(selectedValue, $item = null) {
+        var $tag = $('.tag1');
+        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+        if ($tagItem.length > 0) {
+            // Remove existing tag
+            $tagItem.remove();
+            updateTagSeparators3();
+
+            // Remove the tag container if no more tags
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+
+            // Hide checkmark in case of deselection
+            if ($item) {
+                $item.find('.checkmark').hide();
+            }
+
+            // Update remaining selected tags and filter
+            let selectedTags = [];
+            $('.tag-item').each(function() {
+                selectedTags.push($(this).data('value'));
+            });
+            
+
+        } else {
+            // Add new tag with filter icon and close button
+            var newTagHtml = '<span class="lost" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+            // If no tags exist, create the tag container
+            if ($tag.length === 0) {
+                $('#search-input').before('<span class="tag1">' + newTagHtml + '</span>');
+            } else {
+                $tag.append(newTagHtml);
+            }
+
+            // Show the checkmark for the selected item
+            if ($item) {
+                $item.find('.checkmark').show();
+            }
+
+            // Reset input and placeholder
+            $('#search-input').val('');
+            $('#search-input').attr('placeholder', '');
+
+            // Update the selected tags and filter
+            let selectedTags = [];
+            $('.tag-item').each(function() {
+                selectedTags.push($(this).data('value'));
+            });
+           
+        }
+
+        // Hide dropdown after selection
+        $('#search-dropdown').hide();
+    }
+
+    function updateTagSeparators3() {
+        var $tag = $('.tag1');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function(index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' & ';
+            }
+        });
+        $tag.html(html);
+        updateRemoveTagButton3();
+    }
+
+    function updateTagSeparators3() {
+        var $tag = $('.tag1');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function(index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' & ';
+            }
+        });
+        $tag.html(html);
+        updateRemoveTagButton3();
+    }
+
+    // Remove the "Lost" tag when the close button is clicked
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).parent('.tag-item').remove();
+        updateTagSeparators3();
+
+        // Remove checkmark from the dropdown
+        $('.activities:contains("Lost")').find('.checkmark').hide();
+    });
+
+    function updateRemoveTagButton3() {
+        var $tag = $('.tag1');
+        if ($tag.find('.tag-item').length > 0) {
+            if ($('.remove-tag').length === 0) {
+                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+            }
+        } else {
+            $('.remove-tag').remove();
+        }
+    }
 </script>
+{{-- ----------------------- activities -------------------------- --}}
+<script>
+   
+    $(document).on('click', '.activities', function(e) {
+        e.stopPropagation();
+        var $item = $(this);
+
+        // Clone the item, remove the checkmark span and get the trimmed text
+        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+        handleTagSelection2(selectedValue, $item);
+    });
+
+
+    function handleTagSelection2(selectedValue, $item = null) {
+        var $tag = $('.tag');
+        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+        console.log(selectedValue, 'sdhasuih');
+
+        if ($tagItem.length > 0) {
+            // If the tag already exists, remove it
+            $tagItem.remove();
+            updateTagSeparators2();
+
+            // If no tags left, remove the container and reset the input
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+
+            // Hide the checkmark if it's being deselected
+            if ($item) {
+                $item.find('.checkmark').hide();
+            }
+
+            // Collect remaining selected tags
+            let selectedTags = [];
+            $('.tag-item').each(function() {
+                selectedTags.push($(this).data('value'));
+            });
+           
+
+        } else {
+            // If the tag does not exist, add it
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+
+
+
+            // Check if a tag container exists, if not, create one
+            if ($tag.length === 0) {
+                $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
+            } else {
+                $tag.append(' & ' + newTagHtml);
+            }
+
+            updateTagSeparators2();
+
+            // Show the checkmark on the selected item
+            if ($item) {
+                $item.find('.checkmark').show();
+            }
+
+            // Reset input and placeholder
+            $('#search-input').val('');
+            $('#search-input').attr('placeholder', '');
+
+            // Collect selected tags
+            let selectedTags = [];
+            $('.tag-item').each(function() {
+                selectedTags.push($(this).data('value'));
+            });
+        
+        }
+
+        // Hide dropdown after selection
+        $('#search-dropdown').hide();
+    }
+
+    function updateTagSeparators2() {
+        var $tag = $('.tag');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function(index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' & ';
+            }
+        });
+        $tag.html(html);
+        updateRemoveTagButton2();
+    }
+
+    // Remove the "Lost" tag when the close button is clicked
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).parent('.tag-item').remove();
+        updateTagSeparators2();
+
+        // Remove checkmark from the dropdown
+        $('.activities:contains("Lost")').find('.checkmark').hide();
+    });
+
+    function updateRemoveTagButton2() {
+        var $tag = $('.tag');
+        if ($tag.find('.tag-item').length > 0) {
+            if ($('.remove-tag').length === 0) {
+                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+            }
+        } else {
+            $('.remove-tag').remove();
+        }
+    }
+
+</script>
+ {{-- ----------------------------- Group by ------------------------------ --}}
 <script>
     $(document).ready(function() {
         // Handle item selection from dropdown
@@ -1245,61 +1413,7 @@
     });
 
 </script>
-
-
-<script>
-    $(document).on('click', '.lead-row', function() {
-        var leadId = $(this).data('id');
-        window.location.href = "{{ route('lead.create') }}/" + leadId;
-    });
-
-    function storeLead() {
-        $.ajax({
-            url: "{{ route('lead.storeLead') }}"
-            , type: "POST"
-            , data: {
-                _token: "{{ csrf_token() }}"
-            , }
-            , success: function(response) {
-                console.log('Lead stored successfully.', response);
-            }
-            , error: function(error) {
-                console.error('Error storing lead:', error);
-            }
-        });
-    }
-
-    // Auto-refresh every 2 minutes
-    setInterval(function() {
-        console.log('Attempting to store lead...');
-        storeLead();
-    }, 2 * 60 * 1000);
-    storeLead();
-
-</script>
-<script>
-    $(document).ready(function() {
-        // Show the dropdown when the input field is clicked
-        $('#search-input').on('click', function() {
-            $('#search-dropdown').show();
-        });
-
-        // Add selected value to the input field and hide the dropdown
-        $(document).on('click', '#search-dropdown .o-dropdown-item', function() {
-            // var selectedValue = $(this).text().trim();
-            // $('#search-input').val(selectedValue);
-            $('#search-dropdown').hide();
-        });
-
-        // Hide dropdown when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
-                $('#search-dropdown').hide();
-            }
-        });
-    });
-
-</script>
+ {{-- ---------------- custom filter ------------------- --}}
 <script>
     $(document).ready(function() {
 
@@ -1428,6 +1542,62 @@
     });
 
 </script>
+
+
+<script>
+    $(document).on('click', '.lead-row', function() {
+        var leadId = $(this).data('id');
+        window.location.href = "{{ route('lead.create') }}/" + leadId;
+    });
+
+    function storeLead() {
+        $.ajax({
+            url: "{{ route('lead.storeLead') }}"
+            , type: "POST"
+            , data: {
+                _token: "{{ csrf_token() }}"
+            , }
+            , success: function(response) {
+                console.log('Lead stored successfully.', response);
+            }
+            , error: function(error) {
+                console.error('Error storing lead:', error);
+            }
+        });
+    }
+
+    // Auto-refresh every 2 minutes
+    setInterval(function() {
+        console.log('Attempting to store lead...');
+        storeLead();
+    }, 2 * 60 * 1000);
+    storeLead();
+
+</script>
+<script>
+    $(document).ready(function() {
+        // Show the dropdown when the input field is clicked
+        $('#search-input').on('click', function() {
+            $('#search-dropdown').show();
+        });
+
+        // Add selected value to the input field and hide the dropdown
+        $(document).on('click', '#search-dropdown .o-dropdown-item', function() {
+            // var selectedValue = $(this).text().trim();
+            // $('#search-input').val(selectedValue);
+            $('#search-dropdown').hide();
+        });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+                $('#search-dropdown').hide();
+            }
+        });
+    });
+
+</script>
+
 
 
 
