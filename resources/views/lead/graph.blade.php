@@ -4,6 +4,7 @@
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
+@section('activity', route('lead.graph'))
 @vite([
     'resources/css/chats.css',
     //    'resources/css/odoo/web.assets_web_print.min.css'
@@ -49,6 +50,22 @@
 .location{
     display:none
 }
+#search-input{
+    display:none
+}
+canvas#leadChart {
+    height: 80vh !important;
+    width: 100% !important;
+}
+canvas#pieChart {
+    height: 70vh !important;
+    width: 50% !important;
+    margin : 0 auto;
+  
+}
+#main_save_btn{
+    display:none
+}
 </style>
 @endsection
    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -66,74 +83,100 @@
                     <button class="btn btn-secondary fa fa-line-chart o_graph_button" data-tooltip="Line Chart" aria-label="Line Chart" data-mode="line"></button>
                     <button class="btn btn-secondary fa fa-pie-chart o_graph_button" data-tooltip="Pie Chart" aria-label="Pie Chart" data-mode="pie"></button>
             </div>
-            <div class="btn-group" role="toolbar" aria-label="Change graph">
+            {{-- <div class="btn-group" role="toolbar" aria-label="Change graph">
                     <button class="btn btn-secondary fa fa-database o_graph_button" data-tooltip="Stacked" aria-label="Stacked"></button>
             </div>
             <div class="btn-group" role="toolbar" aria-label="Sort graph" name="toggleOrderToolbar">
                 <button class="btn btn-secondary fa fa-sort-amount-desc o_graph_button" data-tooltip="Descending" aria-label="Descending"></button>
                 <button class="btn btn-secondary fa fa-sort-amount-asc o_graph_button" data-tooltip="Ascending" aria-label="Ascending"></button>
-            </div>
+            </div> --}}
         </div>
         <div class="o_graph_canvas_container flex-grow-1 position-relative px-3 pb-3" style="">
-            <canvas id="leadChart" style="display: block; box-sizing: border-box;"></canvas>
+             <canvas id="leadChart" ></canvas>
+            <canvas id="pieChart" style="display: none;"></canvas>
         </div>
     </div>
 
-    {{-- <canvas style="padding: %;" id="leadChart" width="200" height="100"></canvas> --}}
 
-    <script>
-    var chartType = 'bar'; // Default chart type
+<script>
+    var leadChartType = 'bar'; // Default chart type for leadChart (bar/line)
+    var pieChartType = 'pie';  // Chart type for pieChart
 
     // Sample chart data
     var chartData = {
-        labels: ["{{ Auth::user()->name }}"],
+        labels: ["{{ Auth::user()->email }}"],
         datasets: [{
-            label: 'Number of Lost Leads',
-            data: @json($data->pluck('lead_count')),  // Replace this with actual dynamic data
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            label: '{{ Auth::user()->email }}', 
+            data: @json($data->pluck('lead_count')),  
+            backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)', 'rgba(75, 192, 192, 0.5)'], // For pie chart
             borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1
         }]
     };
 
-    // Create initial chart
-    var ctx = document.getElementById('leadChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: chartType, // initial type 'bar'
-        data: chartData,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+    // Function to update chart options based on chart type
+    function getChartOptions(chartType) {
+        if (chartType === 'pie') {
+            return { responsive: true }; // No scales for pie chart
+        } else {
+            return { scales: { y: { beginAtZero: true } } }; // Scales for bar/line chart
         }
+    }
+
+    // Create the initial lead chart (bar/line)
+    var leadCtx = document.getElementById('leadChart').getContext('2d');
+    var leadChart = new Chart(leadCtx, {
+        type: leadChartType, // Default type 'bar'
+        data: chartData,
+        options: getChartOptions(leadChartType)
     });
 
-    // jQuery to handle chart type switching and class toggling
+    // Create the initial pie chart (hidden initially)
+    var pieCtx = document.getElementById('pieChart').getContext('2d');
+    var pieChart = null; // Initialize but do not create the pie chart until needed
+
+    // jQuery to handle chart type switching and canvas visibility toggling
     $('.o_graph_button').on('click', function() {
         // Remove active class from all buttons and add to clicked button
         $('.o_graph_button').removeClass('active');
-        $(this).addClass('active');
+        $(this).addClass('active'); // Add active class to the clicked button
 
         // Get the chart type from the clicked button's data-mode attribute
         var selectedChartType = $(this).data('mode');
 
-        // Update the chart type dynamically
-        chart.destroy(); // Destroy the old chart
-        chart = new Chart(ctx, {
-            type: selectedChartType, // Update the chart type based on button clicked
-            data: chartData,
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
+        if (selectedChartType === 'pie') {
+            // Show pie chart canvas and hide lead chart canvas
+            $('#leadChart').hide();
+            $('#pieChart').show();
+
+            // If pieChart is null or not initialized, create it
+            if (pieChart === null) {
+                pieChart = new Chart(pieCtx, {
+                    type: 'pie',
+                    data: chartData,
+                    options: getChartOptions('pie')
+                });
             }
-        });
+        } else {
+            // Show lead chart canvas and hide pie chart canvas
+            $('#pieChart').hide();
+            $('#leadChart').show();
+
+            // Destroy and recreate lead chart with the new selected type (bar/line)
+            leadChart.destroy();
+            leadChart = new Chart(leadCtx, {
+                type: selectedChartType, // Update the chart type based on button clicked
+                data: chartData,
+                options: getChartOptions(selectedChartType)
+            });
+        }
     });
 </script>
+
+
+
+
+
 
 
 @endsection

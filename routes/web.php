@@ -12,6 +12,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\GraphController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManufacturingController;
 
 Route::middleware(['web'])->group(function () {
