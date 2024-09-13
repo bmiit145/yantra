@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\EncryptionService;
 
 class LeadController extends Controller
 {
@@ -59,7 +60,7 @@ class LeadController extends Controller
         $orderBy = $request->order[0]['dir'] ?? 'desc';
 
         // Build Query
-        $query = generate_lead::query();
+        $query = generate_lead::where('is_lost', '1');
 
         // Search
         $searchValue = $request->search['value'] ?? '';
@@ -107,7 +108,7 @@ class LeadController extends Controller
         }
 
         // Get Paginated Results
-        $leads = $query->with('getCountry', 'getState', 'getAutoCountry', 'getAutoState', 'getUser', 'getTilte')->where('is_lost', '1')->skip($skip)->take($pageLength)->get();
+        $leads = $query->with('getCountry', 'getState', 'getAutoCountry', 'getAutoState', 'getUser', 'getTilte')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -662,6 +663,126 @@ class LeadController extends Controller
         return response()->json([
             'success' => true,
             'data' => $generateLeads
+        ], 200);
+    }
+
+
+    public function customFilter(Request $request)
+    {
+        // Retrieve the filter parameters
+        $filterType = $request->input('filterType');
+        $operatesValue = $request->input('operatesValue');
+        $filterValue = $request->input('filterValue');
+
+        // Create a query
+        $query = generate_lead::query();
+
+        // Apply filters based on filter type
+        switch ($filterType) {
+            case 'Country':
+                // $query->where('country', $operatesValue, $filterValue);
+                // break;
+                $query->where(function($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    })
+                    ->orWhereHas('getAutoCountry', function($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                });
+                break;
+            case 'Zip':
+                $query->where('zip', $operatesValue, $filterValue);
+                break;
+            case 'Tags':
+                $query->whereHas('tags', function($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Created by':
+                $createdByName = $filterValue;
+                $user = User::where('name',$createdByName)->first();
+                $query->whereHas('getUser', function($q) use ($operatesValue,$createdByName) {
+                    $q->where('name', $operatesValue,$createdByName);
+                });
+                break;
+            case 'Created on':
+                $query->whereDate('created_at', $operatesValue, $filterValue);
+                break;
+            case 'Customer':
+                $query->where('name', $operatesValue, $filterValue);
+                break;
+            case 'Email':
+                $query->where('email', $operatesValue, $filterValue);
+                break;
+            case 'ID':
+                $query->where('id', $operatesValue, $filterValue);
+                break;
+            case 'Phone':
+                $query->where('phone', $operatesValue, $filterValue);
+                break;
+            case 'Priority':
+                $query->where('priority', $operatesValue, $filterValue);
+                break;
+            case 'Probability':
+                $query->where('probability', $operatesValue, $filterValue);
+                break;
+            case 'Referred By':
+                $query->where('referred_by', $operatesValue, $filterValue);
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email',$salespersonId)->first();
+                $query->whereHas('getUser', function($q) use ($operatesValue,$salespersonId) {
+                    $q->where('email', $operatesValue,$salespersonId);
+                });
+                break;
+            case 'Source':
+                $query->where('source', $operatesValue, $filterValue);
+                break;
+            case 'Stage':
+                $query->where('stage', $operatesValue, $filterValue);
+                break;
+            case 'State':
+                $query->where('state', $operatesValue, $filterValue);
+                break;
+            case 'Street':
+                $query->where('street', $operatesValue, $filterValue);
+                break;
+            case 'Street2':
+                $query->where('street2', $operatesValue, $filterValue);
+                break;
+            case 'Title':
+                $query->where('title', $operatesValue, $filterValue);
+                break;
+            case 'Type':
+                $query->where('type', $operatesValue, $filterValue);
+                break;
+            case 'Website':
+                $query->where('website', $operatesValue, $filterValue);
+                break;
+            case 'Campaign':
+                $query->where('campaign', $operatesValue, $filterValue);
+                break;
+            case 'City':
+                $query->where('city', $operatesValue, $filterValue);
+                break;
+            default:
+                // Handle cases where the filterType does not match any case
+                break;
+        }
+
+        // Execute the query and get results
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
+
+        // Fetch results
+        $customFilter = $query->get();
+        // dd($customFilter); 
+
+        // Return JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $customFilter
         ], 200);
     }
 
