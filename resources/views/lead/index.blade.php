@@ -1762,7 +1762,7 @@
 
 
 {{-- ---------------- custom filter ------------------- --}}
-<script>
+<!-- <script>
     $(document).ready(function() {
 
 
@@ -1972,8 +1972,235 @@
 
     });
 
-</script>
+</script> -->
 
+
+<script>
+    $(document).ready(function() {
+    $('#customer_filter_select').on('change', function() {
+        var selectedValue = $(this).val();
+        var filterInput = $('.customer_filter_input');
+        filterInput.empty();
+
+        // Dynamic content based on selected filter
+        switch (selectedValue) {
+            case 'Country':
+                filterInput.append('<select name="country" id="customer_filter_input_value" class="form-control">@foreach($Countrs as $Country)<option value="{{ $Country->name }}">{{ $Country->name }}</option>@endforeach</select>');
+                break;
+            case 'Zip':
+                filterInput.append('<input type="text" name="zip" id="customer_filter_input_value" class="form-control" placeholder="Enter Zip">');
+                break;
+            case 'Tags':
+                filterInput.append('<select name="tags" id="customer_filter_input_value" class="form-control">@foreach($tages as $tag)<option value="{{ $tag->name }}">{{ $tag->name }}</option>@endforeach</select>');
+                break;
+            case 'Created by':
+                filterInput.append('<select name="created_by" id="customer_filter_input_value" class="form-control">@foreach($users as $user)<option value="{{ $user->name }}">{{ $user->name }}</option>@endforeach</select>');
+                break;
+            case 'Created on':
+                filterInput.append('<input type="date" name="customer_filter_input_value" id="customer_filter_input_value" class="form-control">');
+                break;
+            case 'Customer':
+                filterInput.append('<select name="customer" id="customer_filter_input_value" class="form-control">@foreach($customers as $customer)<option value="{{ $customer->name }}">{{ $customer->name }}</option>@endforeach</select>');
+                break;
+            case 'Email':
+                filterInput.append('<input type="email" name="email" id="customer_filter_input_value" class="form-control" placeholder="Enter email">');
+                break;
+            case 'ID':
+                filterInput.append('<input type="text" id="customer_filter_input_value" class="form-control" placeholder="Enter ID">');
+                break;
+            case 'Phone':
+                filterInput.append('<input type="text" name="phone" id="customer_filter_input_value" class="form-control" placeholder="Enter phone">');
+                break;
+            case 'Priority':
+                filterInput.append('<select name="priority" id="customer_filter_input_value" class="form-control"><option value="Medium">Medium</option><option value="High">High</option><option value="Very High">Very High</option></select>');
+                break;
+            case 'Probability':
+                filterInput.append('<input type="text" name="probability" id="customer_filter_input_value" class="form-control" placeholder="Enter probability">');
+                break;
+            case 'Referred By':
+                filterInput.append('<input type="text" id="customer_filter_input_value" name="referred_by" class="form-control" placeholder="Enter referred by">');
+                break;
+            case 'Salesperson':
+                filterInput.append('<select name="salesperson" id="customer_filter_input_value" class="form-control">@foreach($users as $user)<option value="{{ $user->email }}">{{ $user->email }}</option>@endforeach</select>');
+                break;
+            case 'Source':
+                filterInput.append('<select name="source" id="customer_filter_input_value" class="form-control">@foreach($Sources as $Source)<option value="{{ $Source->id }}">{{ $Source->name }}</option>@endforeach</select>');
+                break;
+            case 'Stage':
+                filterInput.append('<select name="stage" id="customer_filter_input_value" class="form-control">@foreach($CrmStages as $Stage)<option value="{{ $Stage->id }}">{{ $Stage->title }}</option>@endforeach</select>');
+                break;
+            case 'State':
+                filterInput.append('<select name="state" id="customer_filter_input_value" class="form-control">@foreach($States as $State)<option value="{{ $State->id }}">{{ $State->name }}</option>@endforeach</select>');
+                break;
+            case 'Street':
+                filterInput.append('<input type="text" id="customer_filter_input_value" name="street" class="form-control" placeholder="Enter street">');
+                break;
+            case 'Street2':
+                filterInput.append('<input type="text" name="street2" id="customer_filter_input_value" class="form-control" placeholder="Enter street2">');
+                break;
+            case 'Title':
+                filterInput.append('<input type="text" name="title" id="customer_filter_input_value" class="form-control" placeholder="Enter title">');
+                break;
+            case 'Type':
+                filterInput.append('<select name="type" id="customer_filter_input_value" class="form-control"><option value="Lead">Lead</option><option value="Opportunity">Opportunity</option></select>');
+                break;
+            case 'Website':
+                filterInput.append('<input type="text" id="customer_filter_input_value" name="website" class="form-control" placeholder="Enter website">');
+                break;
+            case 'Campaign':
+                filterInput.append('<select name="campaign" id="customer_filter_input_value" class="form-control">@foreach($Campaigns as $Campaign)<option value="{{ $Campaign->id }}">{{ $Campaign->name }}</option>@endforeach</select>');
+                break;
+            case 'City':
+                filterInput.append('<input type="text" name="city" id="customer_filter_input_value" class="form-control" placeholder="Enter city">');
+                break;
+            default:
+                filterInput.append('<input type="text" id="customer_filter_input_value" class="form-control" placeholder="Enter value">');
+                break;
+        }
+    });
+
+    $('.add_filter').on('click', function(event) {
+        event.preventDefault();
+        var filterType = $('#customer_filter_select').val();
+        var filterValue = $('#customer_filter_input_value').val();
+        var operatesValue = $('#customer_filter_operates').val();
+
+        handleTagSelection(filterType, operatesValue, filterValue);
+
+        // Prepare data to send
+        var data = {
+            filterType: filterType,
+            filterValue: filterValue,
+            operatesValue: operatesValue
+        };
+
+        // Send AJAX request
+        $.ajax({
+            url: '{{route('lead.custom.filter')}}',
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                var $tableBody = $('#lead-table-body');
+
+                // Clear existing table data
+                $tableBody.empty();
+
+                // Check if response contains data
+                if (response.success && response.data && response.data.length > 0) {
+                    // Loop through the response and create table rows
+                    response.data.forEach(function(item) {
+                        var rowHtml = `
+                            <tr class="lead-row" data-id="${item.id}">
+                                <td>${item.product_name || ''}</td>
+                                <td>${item.email || ''}</td>
+                                <td>${item.city || ''}</td>
+                                <td>
+                                    ${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}
+                                </td>
+                                <td>
+                                    ${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}
+                                </td>
+                                <td>${item.zip || ''}</td>
+                                <td>${item.probability || ''}</td>
+                                <td>${item.company_name || ''}</td>
+                                <td>${item.address_1 || ''}</td>
+                                <td>${item.address_2 || ''}</td>
+                                <td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>
+                                <td>${item.contact_name || ''}</td>
+                                <td>${item.job_position || ''}</td>
+                                <td>${item.phone || ''}</td>
+                                <td>${item.mobile || ''}</td>
+                                <td>${item.priority || ''}</td>
+                                <td>${item.title ? (item.get_tilte?.title || '') : ''}</td>
+                                <td>${item.tag || ''}</td>
+                                <td>${item.get_user?.email || ''}</td>
+                                <td>${item.sales_team || ''}</td>
+                            </tr>
+                        `;
+                        $tableBody.append(rowHtml);
+                    });
+
+                     // Attach click event handler to rows
+                    $('#lead-table-body .lead-row').on('click', function() {
+                        var leadId = $(this).data('id');
+                        window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                    });
+                } else {
+                    // If no data, show a message or keep it empty
+                    $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+
+        $('#customFilterModal').modal('hide');
+    });
+
+    function handleTagSelection(filterType, operatesValue, filterValue) {
+        var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue; 
+        var $tag = $('.tag5');
+        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+        if ($tagItem.length > 0) {
+            $tagItem.remove();
+            updateTagSeparators();
+
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            } 
+        } else {
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
+            if ($tag.length === 0) {
+                $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
+            } else {
+                $tag.append(newTagHtml);
+            }
+            $('#search-input').val('').attr('placeholder', '');
+        }
+
+        updateTagSeparators();
+    }
+
+    function updateTagSeparators() {
+        var $tag = $('.tag5');
+        var $tagItems = $tag.find('.tag-item');
+        var html = '';
+        $tagItems.each(function(index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' & ';
+            }
+        });
+        $tag.html(html);
+        updateRemoveTagButton();
+    }
+
+    function updateRemoveTagButton() {
+        var $tag = $('.tag5');
+        if ($tag.find('.tag-item').length > 0) {
+            if ($('.custom-filter-remove').length === 0) {
+                $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
+            }
+        } else {
+            $('.custom-filter-remove').remove();
+        }
+    }
+
+    $(document).on('click', '.custom-filter-remove', function() {
+        var valueToRemove = $(this).closest('.tag-item').data('value');
+        $(this).closest('.tag-item').remove();
+        if ($('.tag5').children().length === 0) {
+            $('.tag5').remove();
+        }
+
+        // Optionally, you could send a request to update the filters on the server if necessary
+    });
+});
+
+</script>
 
 <script>
     $(document).on('click', '.lead-row', function() {

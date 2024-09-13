@@ -112,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activity-detail/{id}', [LeadController::class, 'activityDetail'])->name('lead.activityDetail');
     Route::post('/lead-filter', [LeadController::class, 'filter'])->name('lead.filter');
     Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
+    Route::post('/custom-filter', [LeadController::class, 'customFilter'])->name('lead.custom.filter');
 
 
 
