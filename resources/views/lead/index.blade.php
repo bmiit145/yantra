@@ -4,6 +4,7 @@
 @section('head_new_btn_link', route('lead.create'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
+@section('char_area', route('lead.graph'))
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
@@ -473,6 +474,9 @@
         white-space: nowrap;
         background-color: transparent;
         border: 0;
+    }
+    .location{
+        display:none
     }
 
 </style>

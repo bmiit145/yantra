@@ -11,6 +11,8 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\GraphController;
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManufacturingController;
 
 Route::middleware(['web'])->group(function () {
@@ -141,6 +143,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add-campaign', [LeadController::class, 'addCampaign'])->name('add-campaign');
     Route::post('/add-medium', [LeadController::class, 'addMedium'])->name('add-medium');
     Route::post('/add-source', [LeadController::class, 'addSource'])->name('add-source');
+
+
+    Route::get('/graph/index', [GraphController::class, 'index'])->name('lead.graph');
 
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');

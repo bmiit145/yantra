@@ -156,7 +156,7 @@
 
     @section('header_left_side')
         <div class="new_btn_info">
-            <a class="head_new_btn" data-toggle="modal" data-target="#exampleModalCenter" href="@yield('head_new_btn_link' , '#')">New</a>
+            <a class="head_new_btn"  href="@yield('head_new_btn_link' , '#')">New</a>
         </div>
         <div class="head_breadcrumb_info">
             <p class="head_breadcrumb_title">@yield('head_breadcrumb_title' , 'Quotations')</p>
