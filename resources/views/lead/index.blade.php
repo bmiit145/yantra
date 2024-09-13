@@ -240,7 +240,6 @@
                                         <option value="Phone">Phone</option>
                                         <option value="Priority">Priority</option>
                                         <option value="Probability">Probability</option>
-                                        {{-- <option value="Properties">Properties</option> --}}
                                         <option value="Referred By">Referred By</option>
                                         <option value="Sales Team">Sales Team</option>
                                         <option value="Salesperson">Salesperson</option>
@@ -254,21 +253,20 @@
                                         <option value="Website">Website</option>
                                         <option value="Campaign">Campaign</option>
                                         <option value="City">City</option>
-                                        {{-- <option value="Company">Company</option> --}}
                                     </select>
                                 </div>
                                 <div class="col-md-2">
-                                    <select name="" id="" class="form-control">
-                                        <option value="is_in">is in</option>
-                                        <option value="is_not_in">is not in</option>
+                                    <select name="" id="customer_filter_operates" class="form-control">
+                                        <option value="is in">is in</option>
+                                        <option value="is not in">is not in</option>
                                         <option value="=">=</option>
                                         <option value="!=">!=</option>
                                         <option value="contains">contains</option>
-                                        <option value="does_not_contain">does not contain</option>
-                                        <option value="is_set">is set</option>
-                                        <option value="is_not_set">is not set</option>
+                                        <option value="does not contain">does not contain</option>
+                                        <option value="is set">is set</option>
+                                        <option value="is not set">is not set</option>
                                         <option value="matches">matches</option>
-                                        <option value="matches_none_of">matches none of</option>
+                                        <option value="matches none of">matches none of</option>
                                     </select>
                                 </div>
                                 <div class="col-md-5 customer_filter_input">
@@ -284,7 +282,7 @@
                 </form>
             </div>
             <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                <button type="submit" style="background-color: #714B67;border-color: #714B67;" class="btn btn-primary">Add</button>
+                <button type="submit" style="background-color: #714B67;border-color: #714B67;" class="btn btn-primary add_filter">Add</button>
                 <button type="button" style="background-color: #e7e9ed;border-color: #e7e9ed;color: #374151;" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -425,6 +423,16 @@
         top: 5px;
         left: 5px;
     }
+    .tag5 {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #E0E0E0;
+        border-radius: 22px;
+        margin-right: 12px;
+        font-size: 14px;
+        top: 5px;
+        left: 5px;
+    }
 
     .remove-tag {
         margin-left: 5px;
@@ -440,6 +448,7 @@
         padding: 5px;
         background-color: #F1F1F1;
     }
+
     .creation_time {
         display: block;
         width: 100%;
@@ -465,6 +474,7 @@
         background-color: transparent;
         border: 0;
     }
+
 </style>
 
 <div class="card" style="padding: 1%">
@@ -882,13 +892,13 @@
         });
 
         // Remove all tags
-        // $(document).on('click', '.remove-tag', function() {
-        //     $('.tag').remove();
-        //     $('.checkmark').hide();
-        //     $('#search-input').val('').attr('placeholder', 'Search...');
-        //     $('#filter').val(''); // Clear the filter value
-        //     table.ajax.reload();
-        // });
+        $(document).on('click', '.remove-tag', function() {
+            $('.tag').remove();
+            $('.checkmark').hide();
+            $('#search-input').val('').attr('placeholder', 'Search...');
+            $('#filter').val(''); // Clear the filter value
+            table.ajax.reload();
+        });
 
         // CSRF token setup for AJAX requests
         $.ajaxSetup({
@@ -972,61 +982,6 @@
 {{-- ------------------ lost_span & activities  --------------------- --}}
 
 <script>
-    $(document).on('click', '.lost_span', function(e) {
-        e.stopPropagation();
-        var $item = $(this);
-
-        // Get the text of the clicked "Lost" span
-        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-        
-        handleTagSelection3(selectedValue, $item);
-    });
-
-    function handleTagSelection3(selectedValue, $item = null) {
-        var $tag = $('.tag1');
-        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-        if ($tagItem.length > 0) {
-            // Remove existing tag
-            $tagItem.remove();
-            updateTagSeparators3();
-
-            // Remove the tag container if no more tags
-            if ($tag.children().length === 0) {
-                $tag.remove();
-                $('#search-input').val('').attr('placeholder', 'Search...');
-            }
-
-            // Hide checkmark in case of deselection
-            if ($item) {
-                $item.find('.checkmark').hide();
-            }
-
-        } else {
-            // Add new tag with filter icon and close button
-            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag">×</span></span>';
-
-            // If no tags exist, create the tag container
-            if ($tag.length === 0) {
-                $('#search-input').before('<span class="tag1">' + newTagHtml + '</span>');
-            } else {
-                $tag.append(newTagHtml);
-            }
-
-            // Show the checkmark for the selected item
-            if ($item) {
-                $item.find('.checkmark').show();
-            }
-
-            // Reset input and placeholder
-            $('#search-input').val('');
-            $('#search-input').attr('placeholder', '');
-        }
-
-        // Update selected tags and send to server
-        updateFilterTags();
-    }
-
     $(document).on('click', '.activities', function(e) {
         e.stopPropagation();
         var $item = $(this);
@@ -1096,6 +1051,73 @@
         updateRemoveTagButton2();
     }
 
+
+    function updateRemoveTagButton2() {
+        var $tag = $('.tag');
+        if ($tag.find('.tag-item').length > 0) {
+            if ($('.remove-tag').length === 0) {
+                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+            }
+        } else {
+            $('.remove-tag').remove();
+        }
+    }
+
+    $(document).on('click', '.lost_span', function(e) {
+        e.stopPropagation();
+        var $item = $(this);
+
+        // Get the text of the clicked "Lost" span
+        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+
+        handleTagSelection3(selectedValue, $item);
+    });
+
+    function handleTagSelection3(selectedValue, $item = null) {
+        var $tag = $('.tag1');
+        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+        if ($tagItem.length > 0) {
+            // Remove existing tag
+            $tagItem.remove();
+            updateTagSeparators3();
+
+            // Remove the tag container if no more tags
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+
+            // Hide checkmark in case of deselection
+            if ($item) {
+                $item.find('.checkmark').hide();
+            }
+
+        } else {
+            // Add new tag with filter icon and close button
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag">×</span></span>';
+
+            // If no tags exist, create the tag container
+            if ($tag.length === 0) {
+                $('#search-input').before('<span class="tag1">' + newTagHtml + '</span>');
+            } else {
+                $tag.append(newTagHtml);
+            }
+
+            // Show the checkmark for the selected item
+            if ($item) {
+                $item.find('.checkmark').show();
+            }
+
+            // Reset input and placeholder
+            $('#search-input').val('');
+            $('#search-input').attr('placeholder', '');
+        }
+
+        // Update selected tags and send to server
+        updateFilterTags();
+    }
+
     function updateTagSeparators3() {
         var $tag = $('.tag1');
         var $tagItems = $tag.find('.tag-item');
@@ -1110,16 +1132,6 @@
         updateRemoveTagButton3();
     }
 
-    function updateRemoveTagButton2() {
-        var $tag = $('.tag');
-        if ($tag.find('.tag-item').length > 0) {
-            if ($('.remove-tag').length === 0) {
-                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
-            }
-        } else {
-            $('.remove-tag').remove();
-        }
-    }
 
     function updateRemoveTagButton3() {
         var $tag = $('.tag1');
@@ -1163,6 +1175,7 @@
         $('.tag').remove(); // Only remove the container if it's empty
         updateTagSeparators3();
 
+
         // Reapply filters after removing "Lost" tag
         updateFilterTags();
 
@@ -1173,12 +1186,12 @@
     function filterData(selectedTags) {
         $.ajax({
             url: '{{route('lead.activities')}}', // Your endpoint for fetching leads
-            method: 'GET',
-            data: {
+            method: 'GET'
+            , data: {
                 tags: selectedTags
                 // Include other parameters if needed
-            },
-            success: function(response) {
+            }
+            , success: function(response) {
                 var $tableBody = $('#lead-table-body');
 
                 // Clear existing table data
@@ -1222,18 +1235,19 @@
                     // If no data, show a message or keep it empty
                     $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
                 }
-            },
-            error: function() {
+            }
+            , error: function() {
                 // Handle errors here
                 console.error('Failed to fetch data');
             }
         });
     }
+
 </script>
 
 
 
- {{-- ----------------------------- Group by ------------------------------ --}}
+{{-- ----------------------------- Group by ------------------------------ --}}
 <script>
     $(document).ready(function() {
         // Handle item selection from dropdown
@@ -1275,6 +1289,11 @@
                 $('.tag-item').each(function() {
                     selectedTags.push($(this).data('value'));
                 });
+
+
+                if (selectedTags.length == 0) {
+                    table.ajax.reload();
+                }
                 filter(selectedTags);
 
             } else {
@@ -1602,7 +1621,7 @@
     });
 
 </script>
- {{-- ---------------- time ------------------- --}}
+{{-- ---------------- time ------------------- --}}
 <script>
     $(document).ready(function() {
         // Handle item selection from dropdown
@@ -1722,7 +1741,7 @@
 
 </script>
 
- {{-- ---------------- custom filter ------------------- --}}
+{{-- ---------------- custom filter ------------------- --}}
 <script>
     $(document).ready(function() {
 
@@ -1736,52 +1755,52 @@
             if (selectedValue === 'Country') {
                 // Show the country dropdown
                 var countryDropdown = `
-                <select name="country" id="country_select" class="form-control">
+                <select name="country" id="customer_filter_input_value" class="form-control">
                     @foreach($Countrs as $Country)
-                        <option value="{{ $Country->id }}">{{ $Country->name }}</option>
+                        <option value="{{ $Country->name }}">{{ $Country->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(countryDropdown);
             } else if (selectedValue === 'Zip') {
 
-                var zipInput = `<input type="text" name="zip" class="form-control" placeholder="Enter Zip">`;
+                var zipInput = `<input type="text" name="zip" id="customer_filter_input_value" class="form-control" placeholder="Enter Zip">`;
                 filterInput.append(zipInput);
             } else if (selectedValue === 'Tags') {
 
-                var tag = ` <select name="country" id="country_select" class="form-control">
+                var tag = ` <select name="country" id="customer_filter_input_value" class="form-control">
                     @foreach($tages as $tage)
-                        <option value="{{ $tage->id }}">{{ $tage->name }}</option>
+                        <option value="{{ $tage->name }}">{{ $tage->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(tag);
             } else if (selectedValue === 'Created by') {
-                var created_by = ` <select name="created_by" id="created_by" class="form-control">
+                var created_by = ` <select name="created_by" id="customer_filter_input_value" class="form-control">
                     @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <option value="{{ $user->name }}">{{ $user->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(created_by);
             } else if (selectedValue === 'Created on') {
-                var created_on = ` <input type="date" name="created_on" class="form-control">`;
+                var created_on = ` <input type="date" name="customer_filter_input_value" id="customer_filter_input_value" class="form-control" >`;
                 filterInput.append(created_on);
             } else if (selectedValue === 'Customer') {
-                var customer = ` <select name="customer" id="customer" class="form-control">
+                var customer = ` <select name="customer" id="customer_filter_input_value" class="form-control" >
                     @foreach($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                        <option value="{{ $customer->name }}">{{ $customer->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(customer);
             } else if (selectedValue === 'Email') {
-                var email = ` <input type="email" name="email" class="form-control">`;
+                var email = ` <input type="email" name="email" id="customer_filter_input_value" class="form-control" placeholder="enter email">`;
                 filterInput.append(email);
             } else if (selectedValue === 'ID') {
-                var id = ` <input type="text" name="id" class="form-control">`;
+                var id = ` <input type="text" id="customer_filter_input_value" class="form-control" value="1">`;
                 filterInput.append(id);
             } else if (selectedValue === 'Phone') {
-                var phone = ` <input type="text" name="phone" class="form-control">`;
+                var phone = ` <input type="text" name="phone" id="customer_filter_input_value" placeholder="enter phone" class="form-control">`;
                 filterInput.append(phone);
             } else if (selectedValue === 'Priority') {
-                var priority = ` <select name="priority" id="priority" class="form-control">
+                var priority = ` <select name="priority" id="customer_filter_input_value" class="form-control">
                      <option value="Medium">Medium</option>
                      <option value="High">High</option>
                      <option value="Very High">Very High</option>
@@ -1789,65 +1808,148 @@
                 </select>`;
                 filterInput.append(priority);
             } else if (selectedValue === 'Probability') {
-                var probability = ` <input type="text" name="probability" class="form-control" value="1">`;
+                var probability = ` <input type="text" name="probability" id="customer_filter_input_value" class="form-control" value="1">`;
                 filterInput.append(probability);
             } else if (selectedValue === 'Referred By') {
-                var referred_by = ` <input type="text" name="referred_by" class="form-control">`;
+                var referred_by = ` <input type="text" id="customer_filter_input_value" name="referred_by" class="form-control">`;
                 filterInput.append(referred_by);
             } else if (selectedValue === 'Salesperson') {
-                var salesperson = ` <select name="salesperson" id="salesperson" class="form-control">
+                var salesperson = ` <select name="salesperson" id="customer_filter_input_value" class="form-control">
                     @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                        <option value="{{ $user->name }}">{{ $user->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(salesperson);
             } else if (selectedValue == 'source') {
-                var source = ` <select name="salesperson" id="salesperson" class="form-control">
+                var source = ` <select name="salesperson" id="customer_filter_input_value" class="form-control">
                     @foreach($Sources as $Source)
-                        <option value="{{ $Source->id }}">{{ $Source->name }}</option>
+                        <option value="{{ $Source->name }}">{{ $Source->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(source);
             } else if (selectedValue == 'Stage') {
-                var stage = ` <select name="stage" id="stage" class="form-control">
+                var stage = ` <select name="stage" id="customer_filter_input_value" class="form-control">
                     @foreach($CrmStages as $Stage)
-                        <option value="{{ $Stage->id }}">{{ $Stage->title }}</option>
+                        <option value="{{ $Stage->title }}">{{ $Stage->title }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(stage);
             } else if (selectedValue == 'State') {
-                var state = ` <select name="state" id="state" class="form-control">
+                var state = ` <select name="state" id="customer_filter_input_value" class="form-control">
                     @foreach($States as $State)
-                        <option value="{{ $State->id }}">{{ $State->name }}</option>
+                        <option value="{{ $State->name }}">{{ $State->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(state);
             } else if (selectedValue == 'Street') {
-                var street = ` <input type="text" name="street" class="form-control">`;
+                var street = ` <input type="text" id="customer_filter_input_value" name="street" placeholder="enter street" class="form-control">`;
                 filterInput.append(street);
             } else if (selectedValue == 'Street2') {
-                var street2 = ` <input type="text" name="street2" class="form-control">`;
+                var street2 = ` <input type="text" name="street2" id="customer_filter_input_value" placeholder="enter street2" class="form-control">`;
                 filterInput.append(street2);
             } else if (selectedValue == 'type') {
-                var title = `<select name="type" id="type" class="form-control">
+                var title = `<select name="type" id="customer_filter_input_value" class="form-control">
                           <option value="Lead">Lead</option>
                         <option value="Opportunity">Opportunity</option> `;
                 filterInput.append(title);
             } else if (selectedValue == 'Website') {
-                var website = ` <input type="text" name="website" class="form-control">`;
+                var website = ` <input type="text" id="customer_filter_input_value" placeholder="enter website" name="website" class="form-control">`;
                 filterInput.append(website);
             } else if (selectedValue == 'Campaign') {
-                var campaign = ` <select name="campaign" id="campaign" class="form-control">
+                var campaign = ` <select name="campaign" id="customer_filter_input_value" class="form-control">
                     @foreach($Campaigns as $Campaign)
-                        <option value="{{ $Campaign->id }}">{{ $Campaign->name }}</option>
+                        <option value="{{ $Campaign->name }}">{{ $Campaign->name }}</option>
                     @endforeach
                 </select>`;
                 filterInput.append(campaign);
             } else if (selectedValue == 'City') {
-                var City = ` <input type="text" name="City" id="City" class="form-control">`;
+                var City = ` <input type="text" name="City" id="customer_filter_input_value" placeholder="enter city" class="form-control">`;
                 filterInput.append(City);
             }
         });
+
+        $('.add_filter').on('click', function(event) {
+            event.preventDefault();
+            var filterType = $('#customer_filter_select').val();
+            var filterValue = $('#customer_filter_input_value').val();
+            var operatesvalue = $('#customer_filter_operates').val();
+            console.log(filterType, operatesvalue, filterValue);
+
+            handleTagSelection5(filterType, operatesvalue, filterValue);
+            $('#customFilterModal').modal('hide');
+
+        });
+
+        function handleTagSelection5(filterType, operatesvalue, filterValue) {
+            var selectedValue = filterType + ' ' + operatesvalue + ' ' + filterValue; 
+            var $tag = $('.tag5');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // Remove existing tag
+                $tagItem.remove();
+                updateTagSeparators5();
+
+                // Remove the tag container if no more tags
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                } 
+
+            } else {
+                // Add new tag with filter icon and close button
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
+
+                // If no tags exist, create the tag container
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(newTagHtml);
+                }
+
+                // Show the checkmark for the selected item
+              
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Update selected tags and send to server
+       
+        }
+
+        function updateTagSeparators5() {
+            var $tag = $('.tag5');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function(index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton5();
+        }
+
+
+        function updateRemoveTagButton5() {
+            var $tag = $('.tag5');
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.custom-filter-remove').length === 0) {
+                    $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.custom-filter-remove').remove();
+            }
+        }
+
+        $(document).on('click', '.custom-filter-remove', function() {
+            $('.tag5').remove();
+            $('.o-dropdown-item_2 .checkmark').hide();
+        });
+
     });
 
 </script>
