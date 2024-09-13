@@ -738,31 +738,44 @@ class LeadController extends Controller
                 });
                 break;
             case 'Source':
-                $query->where('source', $operatesValue, $filterValue);
+                $query->whereHas('getSource', function($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
                 break;
             case 'Stage':
                 $query->where('stage', $operatesValue, $filterValue);
                 break;
             case 'State':
-                $query->where('state', $operatesValue, $filterValue);
+                $query->where(function($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    })
+                    ->orWhereHas('getAutoState', function($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                });
                 break;
             case 'Street':
-                $query->where('street', $operatesValue, $filterValue);
+                $query->where('address_1', $operatesValue, $filterValue);
                 break;
             case 'Street2':
-                $query->where('street2', $operatesValue, $filterValue);
+                $query->where('address_1', $operatesValue, $filterValue);
                 break;
             case 'Title':
-                $query->where('title', $operatesValue, $filterValue);
+                $query->whereHas('getTilte', function($q) use ($operatesValue, $filterValue) {
+                    $q->where('title', $operatesValue, $filterValue);
+                });
                 break;
             case 'Type':
                 $query->where('type', $operatesValue, $filterValue);
                 break;
             case 'Website':
-                $query->where('website', $operatesValue, $filterValue);
+                $query->where('website_link', $operatesValue, $filterValue);
                 break;
             case 'Campaign':
-                $query->where('campaign', $operatesValue, $filterValue);
+                $query->whereHas('getCampaign', function($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
                 break;
             case 'City':
                 $query->where('city', $operatesValue, $filterValue);
