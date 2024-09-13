@@ -614,56 +614,56 @@ class LeadController extends Controller
     }
 
     public function activities(Request $request)
-{
-    // Get all tags from the request
-    $tags = $request->tags ?? [];
+    {
+        // Get all tags from the request
+        $tags = $request->tags ?? [];
 
-    // Normalize tags to handle "Lost & Archived" as "Lost"
-    $normalizedTags = array_map(function($tag) {
-        return $tag === 'Lost & Archived' ? 'Lost' : $tag;
-    }, $tags);
+        // Normalize tags to handle "Lost & Archived" as "Lost"
+        $normalizedTags = array_map(function($tag) {
+            return $tag === 'Lost & Archived' ? 'Lost' : $tag;
+        }, $tags);
 
-    // Initialize variables to determine which filters to apply
-    $includeMyActivities = in_array('My Activities', $normalizedTags);
-    $includeUnassigned = in_array('Unassigned', $normalizedTags);
-    $includeLost = in_array('Lost', $normalizedTags);
+        // Initialize variables to determine which filters to apply
+        $includeMyActivities = in_array('My Activities', $normalizedTags);
+        $includeUnassigned = in_array('Unassigned', $normalizedTags);
+        $includeLost = in_array('Lost', $normalizedTags);
 
-    // Start building the query
-    $leadsQuery = generate_lead::query();
+        // Start building the query
+        $leadsQuery = generate_lead::query();
 
-    // Apply filters based on specific tag combinations
-    if ($includeLost) {
-        // Apply the "Lost" filter
-        $leadsQuery->where('is_lost', '2'); // Assuming '2' indicates "Lost"
+        // Apply filters based on specific tag combinations
+        if ($includeLost) {
+            // Apply the "Lost" filter
+            $leadsQuery->where('is_lost', '2'); // Assuming '2' indicates "Lost"
+        }
+
+        if ($includeMyActivities || $includeUnassigned) {
+            // Apply "My Activities" and/or "Unassigned" filters
+            $leadsQuery->where(function ($query) use ($includeMyActivities, $includeUnassigned) {
+                if ($includeMyActivities) {
+                    $query->whereHas('activities', function ($q) {
+                        $q->where('status', 0); // Status for "My Activities"
+                    });
+                }
+
+                if ($includeUnassigned) {
+                    $query->orWhereNull('sales_person');
+                }
+            });
+        }
+
+        // Always include necessary relationships
+        $leadsQuery->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
+
+        // Fetch results
+        $generateLeads = $leadsQuery->get();
+
+        // Return results as JSON
+        return response()->json([
+            'success' => true,
+            'data' => $generateLeads
+        ], 200);
     }
-
-    if ($includeMyActivities || $includeUnassigned) {
-        // Apply "My Activities" and/or "Unassigned" filters
-        $leadsQuery->where(function ($query) use ($includeMyActivities, $includeUnassigned) {
-            if ($includeMyActivities) {
-                $query->whereHas('activities', function ($q) {
-                    $q->where('status', 0); // Status for "My Activities"
-                });
-            }
-
-            if ($includeUnassigned) {
-                $query->orWhereNull('sales_person');
-            }
-        });
-    }
-
-    // Always include necessary relationships
-    $leadsQuery->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
-
-    // Fetch results
-    $generateLeads = $leadsQuery->get();
-
-    // Return results as JSON
-    return response()->json([
-        'success' => true,
-        'data' => $generateLeads
-    ], 200);
-}
 
 }
 

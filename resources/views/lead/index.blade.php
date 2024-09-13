@@ -1189,7 +1189,7 @@
                     // Loop through the response and create table rows
                     response.data.forEach(function(item) {
                         var rowHtml = `
-                            <tr>
+                            <tr class="lead-row" data-id="${item.id}">
                                 <td>${item.product_name || ''}</td>
                                 <td>${item.email || ''}</td>
                                 <td>${item.city || ''}</td>
@@ -1217,6 +1217,12 @@
                             </tr>
                         `;
                         $tableBody.append(rowHtml);
+                    });
+
+                     // Attach click event handler to rows
+                    $('#lead-table-body .lead-row').on('click', function() {
+                        var leadId = $(this).data('id');
+                        window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
                     });
                 } else {
                     // If no data, show a message or keep it empty
@@ -1593,7 +1599,7 @@
         $(document).on('click', '.lead-row', function() {
             var leadId = $(this).data('id');
             if (leadId) {
-                window.location.href = '/lead.create/' + leadId;
+                window.location.href = '/lead-add/' + leadId;
             }
         });
 
@@ -1603,7 +1609,7 @@
 
 </script>
  {{-- ---------------- time ------------------- --}}
-<script>
+ <script>
     $(document).ready(function() {
         // Handle item selection from dropdown
         $(document).on('click', '.o-dropdown-item_2', function(e) {
@@ -1611,22 +1617,22 @@
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
 
-            // Check if the selected item is Creation Date or Closed Date
+            // Determine if the selected item is Creation Date or Closed Date
             if ($item.hasClass('creation_time')) {
-                handleTagSelection4(selectedValue, $item, 'Creation Date');
+                handleTagSelection4(selectedValue, 'Creation Date');
             } else if ($item.hasClass('closed_time')) {
-                handleTagSelection4(selectedValue, $item, 'Closed Date');
+                handleTagSelection4(selectedValue, 'Closed Date');
             }
         });
 
         // Function to handle tag selection for both Creation and Closed dates
-        function handleTagSelection4(selectedValue, $item = null, type) {
+        function handleTagSelection4(selectedValue, type) {
             var $tag = $('.tag3');
             var $creationTag = $tag.find('.creation-date-tag');
             var $closedTag = $tag.find('.closed-date-tag');
 
             // Helper function to remove value from tag and tag if empty
-            function updateTag($tag, selectedValue, type) {
+            function updateTag($tag, selectedValue) {
                 var existingValues = $tag.text().split('/').map(v => v.trim()).filter(v => v);
                 var valueIndex = existingValues.indexOf(selectedValue);
 
@@ -1641,12 +1647,6 @@
                     } else {
                         // Remove tag if empty
                         $tag.remove();
-
-                        // Check if there are no other tags left in the parent tag
-                        var $parentTag = $tag.parent();
-                        if (!$parentTag.find('.creation-date-tag').length && !$parentTag.find('.closed-date-tag').length) {
-                            $parentTag.remove(); // Remove parent tag if no tags left
-                        }
                     }
                 } else {
                     // Add new value
@@ -1656,7 +1656,15 @@
 
             if (type === 'Creation Date') {
                 if ($creationTag.length > 0) {
-                    updateTag($creationTag, selectedValue, type);
+                    updateTag($creationTag, selectedValue);
+
+                    // Remove Creation Date label if it's the last tag
+                    if ($creationTag.text().trim() === '') {
+                        $creationTag.remove();
+                        if (!$tag.find('.creation-date-tag').length) {
+                            $tag.remove(); // Remove label if it's the last tag
+                        }
+                    }
                 } else {
                     // Add new creation date tag
                     if ($tag.length === 0) {
@@ -1667,7 +1675,15 @@
                 }
             } else if (type === 'Closed Date') {
                 if ($closedTag.length > 0) {
-                    updateTag($closedTag, selectedValue, type);
+                    updateTag($closedTag, selectedValue);
+
+                    // Remove Closed Date label if it's the last tag
+                    if ($closedTag.text().trim() === '') {
+                        $closedTag.remove();
+                        if (!$tag.find('.closed-date-tag').length) {
+                            $tag.remove(); // Remove label if it's the last tag
+                        }
+                    }
                 } else {
                     // Add new closed date tag
                     if ($tag.length > 0) {
@@ -1680,13 +1696,8 @@
 
             // Hide or show checkmark
             if ($item) {
-                // Toggle visibility of the checkmark based on whether the item is being checked or unchecked
                 var $checkmark = $item.find('.checkmark');
-                if ($checkmark.is(':visible')) {
-                    $checkmark.hide(); // Hide if currently visible
-                } else {
-                    $checkmark.show(); // Show if currently hidden
-                }
+                $checkmark.toggle(); // Toggle visibility of the checkmark
             }
 
             updateTagSeparators4();
@@ -1694,21 +1705,28 @@
             $('#search-dropdown').hide();
         }
 
-
-
-
-
         // Update tag separators and close button
         function updateTagSeparators4() {
             var $tag = $('.tag3');
-            console.log($tag, 'tags123');
-            if ($tag.length > 0) {
-                // Add a single close button for all tags
-                if (!$tag.find('.remove-tag').length) {
-                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
-                }
+            var $creationTag = $tag.find('.creation-date-tag');
+            var $closedTag = $tag.find('.closed-date-tag');
+
+            // Remove existing close button
+            $tag.find('.remove-tag').remove();
+
+            // Add a single close button if there are any tags present
+            if ($tag.length > 0 && ($creationTag.length > 0 || $closedTag.length > 0)) {
+                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
             }
         }
+
+        // Remove individual tags when clicked
+        $(document).on('click', '.creation-date-tag, .closed-date-tag', function() {
+            var $tag = $(this).closest('.tag3');
+            var type = $(this).hasClass('creation-date-tag') ? 'Creation Date' : 'Closed Date';
+            var selectedValue = $(this).text().trim();
+            handleTagSelection4(selectedValue, type);
+        });
 
         // Remove all tags when the close button is clicked
         $(document).on('click', '.remove-tag', function() {
@@ -1719,8 +1737,10 @@
 
         updateTagSeparators4(); // Ensure that the close icon is added correctly
     });
-
 </script>
+
+
+
 
  {{-- ---------------- custom filter ------------------- --}}
 <script>
