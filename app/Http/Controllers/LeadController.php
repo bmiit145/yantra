@@ -335,7 +335,7 @@ class LeadController extends Controller
                     ['id' => $leadData['ID'] ?? null],
                     [
                         'product_name' => $leadData['QUERY_PRODUCT_NAME'],
-                        'probability' => $leadData['QUERY_TYPE'],
+                        // 'probability' => $leadData['QUERY_TYPE'],
                         'company_name' => $leadData['SENDER_COMPANY'] ?? '',
                         'address_1' => $leadData['SENDER_ADDRESS'],
                         'city' => $leadData['SENDER_CITY'],

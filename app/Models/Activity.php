@@ -9,6 +9,19 @@ class Activity extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'lead_id',
+        'activity_type',
+        'due_date',
+        'summary',
+        'assigned_to',
+        'note',
+        'status',
+        'feedback',
+        'document',
+        'status_feedback'
+    ];
+
     public function getLeadTitle()
     {
         return $this->hasOne(generate_lead::class, 'id', 'lead_id');
