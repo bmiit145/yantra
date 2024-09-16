@@ -5,10 +5,7 @@
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
-@vite([
-    'resources/css/chats.css',
-    //    'resources/css/odoo/web.assets_web_print.min.css'
-])
+
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
