@@ -10,7 +10,7 @@
     //    'resources/css/crm.css' ,
     'resources/css/common/header.css',
     'resources/css/all.css',
-     'resources/css/chats.css',
+    
 ])
     {{-- font awesome by npm --}}
 
