@@ -12,7 +12,7 @@ use App\Models\generate_lead;
 use App\Models\Opportunity;
 use App\Models\PersonTitle;
 use App\Models\Country;
-use App\Models\state;
+use App\Models\State;
 use App\Models\Tag;
 use App\Models\Contact;
 use App\Models\LostReason;
@@ -42,7 +42,7 @@ class LeadController extends Controller
         $customers = Contact::all();
         $Sources = Source::all();
         $CrmStages = CrmStage::all();
-        $States = state::all();
+        $States = State::all();
         $PersonTitle = PersonTitle::all();
         $Campaigns = Campaign::all();
         return view('lead.index', compact('Countrs', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns'));
