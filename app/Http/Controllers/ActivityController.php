@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 use App\Models\Activity;
-
-use App\Models\Activity;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;

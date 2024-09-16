@@ -295,7 +295,7 @@
                                                 <img class="me-2 rounded" style="max-width: 1.5rem; max-height: 1.5rem;" src="https://yantra-design1.odoo.com/web/image?field=avatar_128&amp;id=2&amp;model=res.users">
                                                 <div class="mt-1">
                                                     @php
-                                                    $dueDate = \Carbon\Carbon::parse($value->due_date); // Ensure due_date is a Carbon instance
+                                                    $dueDate = \Carbon\Carbon::parse($value->due_date);
                                                     $status = 'Planned';
                                                     $bgColor = '#28a745';
                                                     @endphp
