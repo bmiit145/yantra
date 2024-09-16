@@ -230,11 +230,12 @@ ul.top_right_navbar {
     align-items: end;
 }
 ul.top_right_navbar li a,.dropbtn {
-    padding: 5px 10px;
+    /* padding: 5px 10px;
     background: #e8f7f7;
     box-shadow: 0px 1px 4px 0px #00000038;
-    display: inline-block;
+    display: inline-block; */
     border:0;
+    background: transparent;
 }
 .top_header_inner p {
     margin: 0;

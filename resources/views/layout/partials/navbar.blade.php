@@ -46,24 +46,8 @@
     <div class="crm_head_rightside">
         @yield('header_rightside')
         <div class="crmright_head_inner">
-            <ul class="crmright_head_main crmright_head_main__1">
-                <li><a href="{{route('lead.index')}}"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                            </g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path d="M0 1H7V0H0V1Z" fill="#000000"></path>
-                                <path d="M8 1H15V0H8V1Z" fill="#000000"></path>
-                                <path
-                                    d="M0.5 3C0.223858 3 0 3.22386 0 3.5V14.5C0 14.7761 0.223858 15 0.5 15H6.5C6.77614 15 7 14.7761 7 14.5V3.5C7 3.22386 6.77614 3 6.5 3H0.5Z"
-                                    fill="#000000"></path>
-                                <path
-                                    d="M8.5 3C8.22386 3 8 3.22386 8 3.5V9.5C8 9.77614 8.22386 10 8.5 10H14.5C14.7761 10 15 9.77614 15 9.5V3.5C15 3.22386 14.7761 3 14.5 3H8.5Z"
-                                    fill="#000000"></path>
-                            </g>
-                        </svg></a></li>
-                <li><a href="@yield('kanban' , route('lead.kanban'))"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
+            <ul class="crmright_head_main crmright_head_main__1">                
+                <li><a href="@yield('lead' , route('lead.index'))"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
                                      version="1.1" preserveAspectRatio="xMidYMid meet"
                                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -90,7 +74,23 @@
                                 <rect x="0" y="0" width="36" height="36" fill-opacity="0"></rect>
                             </g>
                         </svg></a></li>
-                <li><a href="@yield('calendar' , route('lead.calendar'))"><svg fill="#000000" height="64px" width="64px" version="1.1"
+                        <li><a href="@yield('kanban' , route('lead.kanban'))"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                            </g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path d="M0 1H7V0H0V1Z" fill="#000000"></path>
+                                <path d="M8 1H15V0H8V1Z" fill="#000000"></path>
+                                <path
+                                    d="M0.5 3C0.223858 3 0 3.22386 0 3.5V14.5C0 14.7761 0.223858 15 0.5 15H6.5C6.77614 15 7 14.7761 7 14.5V3.5C7 3.22386 6.77614 3 6.5 3H0.5Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M8.5 3C8.22386 3 8 3.22386 8 3.5V9.5C8 9.77614 8.22386 10 8.5 10H14.5C14.7761 10 15 9.77614 15 9.5V3.5C15 3.22386 14.7761 3 14.5 3H8.5Z"
+                                    fill="#000000"></path>
+                            </g>
+                        </svg></a></li>
+                <li class="calendar" ><a href="@yield('calendar' , route('lead.calendar'))"><svg fill="#000000" height="64px" width="64px" version="1.1"
                                      id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                      xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 289.48 289.48"
                                      xml:space="preserve">
@@ -133,7 +133,7 @@
                                 </g>
                             </g>
                                 </svg></a></li>
-                <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 32 32"
+                <li class="pivot" ><a href="#"><svg width="64px" height="64px" viewBox="0 0 32 32"
                                      xmlns="http://www.w3.org/2000/svg" fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
@@ -147,7 +147,7 @@
                                 </g>
                             </g>
                         </svg></a></li>
-                <li><a href="@yield('char_area')"><svg width="64px" height="64px" viewBox="0 0 48 48"
+                <li class="graph" ><a href="@yield('char_area')"><svg width="64px" height="64px" viewBox="0 0 48 48"
                                      xmlns="http://www.w3.org/2000/svg" fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
@@ -183,7 +183,7 @@
                                     stroke-linejoin="round"></path>
                             </g>
                         </svg></a></li>
-                <li><a href="@yield('activity')" ><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                <li class="activity"><a href="@yield('activity')" ><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
                                      xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">

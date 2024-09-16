@@ -145,6 +145,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/add-source', [LeadController::class, 'addSource'])->name('add-source');
 
 
+    // Activity Route
+    Route::get('/all-activities',[ActivityController::class,'allActivities'])->name('lead.allActivities');
+    Route::post('/all-activities-data', [ActivityController::class, 'AllActivitiesGetLeads'])->name('lead.AllActivitiesGetLeads');
+    Route::post('/activity/done/{id}', [ActivityController::class, 'markAsDone'])->name('activity.markAsDone');
+    Route::post('/activity/cancel/{id}', [ActivityController::class, 'cancelActivity'])->name('activity.cancel');
+    Route::post('/activity/snooze/{id}', [ActivityController::class, 'snoozeActivity'])->name('activity.snooze');
+    Route::get('/activity-kanban', [ActivityController::class, 'kanbanIndex'])->name('activity.kanban');
+    Route::get('/activity-filter', [ActivityController::class, 'activityFilter'])->name('activity.filter');
+    Route::post('/activity-custom-filter', [ActivityController::class, 'activityCustomFilter'])->name('activity.custom.filter');
+
+
     Route::get('/graph/index', [GraphController::class, 'index'])->name('lead.graph');
 
     // setting

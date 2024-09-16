@@ -18,4 +18,15 @@ class Activity extends Model
     {
         return $this->belongsTo(User::class, 'assigned_to', 'id');
     }
+
+    public function getLead()
+    {
+        return $this->hasOne(generate_lead::class, 'id', 'lead_id');
+    }
+
+    public function getUserEmail()
+    {
+        return $this->hasOne(User::class, 'id', 'assigned_to');
+    }
+    
 }
