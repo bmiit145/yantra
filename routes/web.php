@@ -55,6 +55,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
 
 
+    Route::get('activity' , [ActivityController::class, 'index'])->name('lead.activity');
+
+
 
     Route::get('orders' , [SalesController::class, 'index'])->name('orders.index');
     Route::get('orders/new' , [SalesController::class, 'create'])->name('orders.create');

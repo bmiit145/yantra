@@ -5,6 +5,7 @@
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
+@section('activity', route('lead.activity'))
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
