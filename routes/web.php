@@ -56,7 +56,10 @@ Route::middleware(['auth'])->group(function () {
 
 
     Route::get('activity' , [ActivityController::class, 'index'])->name('lead.activity');
-
+    Route::post('/activity-submit-feedback', [ActivityController::class, 'submitFeedback'])->name('lead.submit.feedback');
+    Route::get('/feedback-activity/{id}', [ActivityController::class, 'feedbackActivityShow'])->name('lead.feedback.activity.show');
+    Route::post('/feedback-activity-update', [ActivityController::class, 'feedbackActivityUpdate'])->name('lead.feedback.activity.update');
+    Route::delete('/feedback-activity-delete/{id}', [ActivityController::class, 'feedbackActivityDelete'])->name('lead.feedback.activity.delete');
 
 
     Route::get('orders' , [SalesController::class, 'index'])->name('orders.index');
