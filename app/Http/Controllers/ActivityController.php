@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Activity;
+<<<<<<< HEAD
+=======
+
+>>>>>>> dbfbc0200a05fc236efe4c3430aa3de006e764e2
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -9,20 +13,21 @@ use App\Services\EncryptionService;
 
 class ActivityController extends Controller
 {
-     public function index()
-     {
+    public function index()
+    {
         $activities = Activity::leftjoin('generate_lead', 'activities.lead_id', '=', 'generate_lead.id')
             ->select('activities.*', 'generate_lead.product_name', 'generate_lead.probability', 'activities.activity_type') // Assuming 'type' column holds activity type
             ->get()
             ->groupBy('lead_id');
+            $users = User::all();
 
-            // $dueDate = \Carbon\Carbon::parse($activities->due_date);
-            // $daysDiff = \Carbon\Carbon::now()->diffInDays($dueDate, false);
-            // return $daysDiff;
+        // $dueDate = \Carbon\Carbon::parse($activities->due_date);
+        // $daysDiff = \Carbon\Carbon::now()->diffInDays($dueDate, false);
+        // return $daysDiff;
 
-    
-         return view('lead.viewactivity', compact('activities'));
-     }
+
+        return view('lead.viewactivity', compact('activities','users'));
+    }
 
     public function create()
     {
@@ -158,7 +163,7 @@ class ActivityController extends Controller
             if ($includeOverdue) {
                 $query->orWhere(function ($query) {
                     $query->where('status', '0')
-                          ->where('due_date', '<', now());
+                        ->where('due_date', '<', now());
                 });
             }
 
@@ -284,6 +289,53 @@ class ActivityController extends Controller
             'success' => true,
             'data' => $customFilter
         ], 200);
+    }
+
+
+    public function submitFeedback(Request $request)
+    {
+        $activity = Activity::where('id', $request->activity_id)->first();
+
+        if ($activity) {
+            $activity->status_feedback = $request->feedback;
+            $activity->status = 1;
+            $activity->save();
+
+            return response()->json(['message' => 'Feedback submitted successfully.']);
+        }
+
+        return response()->json(['message' => 'Activity not found.'], 404);
+    }
+
+    public function feedbackActivityShow($id)
+    {
+        $activity = Activity::findOrFail($id);
+        return response()->json($activity);
+    }
+
+    public function feedbackActivityUpdate(Request $request)
+    {
+        $activity = Activity::find($request->id);
+        $activity->activity_type = $request->activity_type;
+        $activity->due_date = $request->due_date;
+        $activity->summary = $request->summary;
+        $activity->assigned_to = $request->assigned_to;
+        $activity->note = $request->log_note; // Assuming you want to save this too
+        $activity->save();
+
+        return response()->json(['message' => 'Activity updated successfully!', 'status' => $activity->status]);
+    }
+
+    public function feedbackActivityDelete($id)
+    {
+        $activity = Activity::find($id);
+
+        if ($activity) {
+            $activity->delete();
+            return response()->json(['message' => 'Activity deleted successfully!']);
+        } else {
+            return response()->json(['message' => 'Activity not found.'], 404);
+        }
     }
 
 }
