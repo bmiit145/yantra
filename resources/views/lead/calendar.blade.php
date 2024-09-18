@@ -3,6 +3,8 @@
 @section('head_breadcrumb_title', 'Leads')
 @section('head_new_btn_link', route('lead.create'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
+@section('char_area', route('lead.graph'))
+@section('activity', route('lead.activity'))
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
@@ -49,6 +51,9 @@
         padding: 0;
         font-family: "Lucida Grande", Helvetica, Arial, Verdana, sans-serif;
         font-size: 14px;
+    }
+    .location{
+        display:none
     }
 
     #calendar {

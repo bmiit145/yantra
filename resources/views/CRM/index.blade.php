@@ -34,6 +34,7 @@
     </li>
 @endsection
 
+@section('head_breadcrumb_title', 'Pipeline')
 @section('head')
 @vite([
     'resources/css/crm_2.css',
@@ -41,7 +42,15 @@
     ])
 @endsection
 
+
+
 @section('content')
+
+<style>
+#main_save_btn {
+    display: none;
+}
+</style>
 <div class="o_content" style="height: 100%">
     <div class="o_kanban_renderer o_renderer d-flex o_kanban_grouped align-content-stretch">
         @php($crmStages = Auth::user()->crmStages->sortBy('seq_no'))
@@ -153,195 +162,6 @@
 
         </div>
         @endforeach
-
-{{--        <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable o_kanban_no_records" data-id="datapoint_10">--}}
-{{--            <div class="o_kanban_header position-sticky top-0 z-index-1 py-2">--}}
-{{--                <div class="o_kanban_header_title position-relative d-flex lh-lg"><span--}}
-{{--                        class="o_column_title flex-grow-1 d-inline-block mw-100 text-truncate fs-4 fw-bold align-top text-900">Qualified</span>--}}
-{{--                    <div class="o_kanban_config">--}}
-{{--                        <button class="btn px-2 o-dropdown dropdown-toggle dropdown"--}}
-{{--                            aria-expanded="false"><i class="fa fa-gear opacity-50 opacity-100-hover" role="img"--}}
-{{--                                aria-label="Settings" title="Settings"></i></button></div><button--}}
-{{--                        class="o_kanban_quick_add qualified-btn btn pe-2 me-n2"><i--}}
-{{--                            class="fa fa-plus opacity-75 opacity-100-hover" role="img" aria-label="Quick add"--}}
-{{--                            title="Quick add"></i></button>--}}
-{{--                </div>--}}
-{{--                <div--}}
-{{--                    class="o_kanban_counter position-relative d-flex align-items-center justify-content-between opacity-25">--}}
-{{--                    <div class="o_column_progress progress bg-300 w-50"></div>--}}
-{{--                    <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false"--}}
-{{--                        title="Expected Revenue"><b>0</b></div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--            <div id="append-container-qualified"></div>--}}
-{{--        </div>--}}
-{{--        <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable" data-id="datapoint_12">--}}
-{{--            <div class="o_kanban_header position-sticky top-0 z-index-1 py-2">--}}
-{{--                <div class="o_kanban_header_title position-relative d-flex lh-lg"><span--}}
-{{--                        class="o_column_title flex-grow-1 d-inline-block mw-100 text-truncate fs-4 fw-bold align-top text-900">Proposition</span>--}}
-{{--                    <div class="o_kanban_config"><button class="btn px-2 o-dropdown dropdown-toggle dropdown"--}}
-{{--                            aria-expanded="false"><i class="fa fa-gear opacity-50 opacity-100-hover" role="img"--}}
-{{--                                aria-label="Settings" title="Settings"></i></button></div><button--}}
-{{--                        class="o_kanban_quick_add proposition-btn btn pe-2 me-n2">--}}
-{{--                        <i class="fa fa-plus opacity-75 opacity-100-hover" role="img" aria-label="Quick add"--}}
-{{--                            title="Quick add"></i>--}}
-{{--                    </button>--}}
-{{--                </div>--}}
-{{--                <div class="o_kanban_counter position-relative d-flex align-items-center justify-content-between">--}}
-{{--                    <div class="o_column_progress progress bg-300 w-50">--}}
-{{--                        <div role="progressbar" class="progress-bar o_bar_has_records cursor-pointer bg-200"--}}
-{{--                            aria-valuemin="0" aria-label="Progress bar" data-tooltip-delay="0" style="width: 100%;"--}}
-{{--                            aria-valuemax="1" aria-valuenow="1" data-tooltip="1 Other" title=""></div>--}}
-{{--                    </div>--}}
-{{--                    <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false"--}}
-{{--                        title="Expected Revenue"><b>0</b></div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--            <div id="append-container-proposition"></div>--}}
-
-{{--            <div role="article" class="o_kanban_record d-flex o_draggable oe_kanban_card_undefined"--}}
-{{--                data-id="datapoint_14" tabindex="0">--}}
-{{--                <div class="oe_kanban_color_0 oe_kanban_global_click oe_kanban_card d-flex flex-column">--}}
-{{--                    <div class="oe_kanban_content flex-grow-1">--}}
-{{--                        <div class="oe_kanban_details"><strong--}}
-{{--                                class="o_kanban_record_title"><span>dsad</span></strong></div>--}}
-{{--                        <div class="o_kanban_record_subtitle"></div>--}}
-{{--                        <div></div>--}}
-{{--                        <div>--}}
-{{--                            <div name="tag_ids" class="o_field_widget o_field_many2many_tags">--}}
-{{--                                <div class="d-flex flex-wrap gap-1"></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div>--}}
-{{--                            <div name="lead_properties" class="o_field_widget o_field_properties">--}}
-{{--                                <div class="w-100 fw-normal text-muted"></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="oe_kanban_footer">--}}
-{{--                        <div class="o_kanban_record_bottom">--}}
-{{--                            <div class="oe_kanban_bottom_left">--}}
-{{--                                <div name="priority" class="o_field_widget o_field_priority">--}}
-{{--                                    <div class="o_priority" role="radiogroup" name="priority" aria-label="Priority">--}}
-{{--                                        <a href="#" class="o_priority_star fa fa-star-o" role="radio"--}}
-{{--                                            tabindex="-1" data-tooltip="Priority: Medium" aria-label="Medium"></a><a--}}
-{{--                                            href="#" class="o_priority_star fa fa-star-o" role="radio"--}}
-{{--                                            tabindex="-1" data-tooltip="Priority: High" aria-label="High"></a><a--}}
-{{--                                            href="#" class="o_priority_star fa fa-star-o" role="radio"--}}
-{{--                                            tabindex="-1" data-tooltip="Priority: Very High"--}}
-{{--                                            aria-label="Very High"></a></div>--}}
-{{--                                </div>--}}
-{{--                                <div name="activity_ids" class="o_field_widget o_field_kanban_activity"><a--}}
-{{--                                        class="o-mail-ActivityButton" role="button" aria-label="Show activities"--}}
-{{--                                        title="Show activities"><i--}}
-{{--                                            class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"--}}
-{{--                                            role="img"></i></a></div>--}}
-{{--                            </div>--}}
-{{--                            <div class="oe_kanban_bottom_right">--}}
-{{--                                <div name="user_id"--}}
-{{--                                    class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">--}}
-{{--                                    <div class="d-flex align-items-center gap-1"--}}
-{{--                                        data-tooltip="info@yantradesign.co.in"><span--}}
-{{--                                            class="o_avatar o_m2o_avatar d-flex"><img class="rounded"--}}
-{{--                                                src="https://i.pinimg.com/550x/a8/23/0a/a8230a2a558297bc90a394ec0283ff4f.jpg"></span>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="clearfix"></div>--}}
-{{--                </div>--}}
-{{--                <div class="o_dropdown_kanban bg-transparent position-absolute end-0"><button--}}
-{{--                        class="btn o-no-caret rounded-0 o-dropdown dropdown-toggle dropdown" title="Dropdown menu"--}}
-{{--                        aria-expanded="false"><span class="fa fa-ellipsis-v"></span></button></div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--        <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable" data-id="datapoint_17">--}}
-{{--            <div class="o_kanban_header position-sticky top-0 z-index-1 py-2">--}}
-{{--                <div class="o_kanban_header_title position-relative d-flex lh-lg"><span--}}
-{{--                        class="o_column_title flex-grow-1 d-inline-block mw-100 text-truncate fs-4 fw-bold align-top text-900">Won</span>--}}
-{{--                    <div class="o_kanban_config"><button class="btn px-2 o-dropdown dropdown-toggle dropdown"--}}
-{{--                            aria-expanded="false"><i class="fa fa-gear opacity-50 opacity-100-hover" role="img"--}}
-{{--                                aria-label="Settings" title="Settings"></i></button></div><button--}}
-{{--                        class="o_kanban_quick_add won-btn btn pe-2 me-n2"><i--}}
-{{--                            class="fa fa-plus opacity-75 opacity-100-hover" role="img" aria-label="Quick add"--}}
-{{--                            title="Quick add"></i></button>--}}
-{{--                </div>--}}
-{{--                <div class="o_kanban_counter position-relative d-flex align-items-center justify-content-between">--}}
-{{--                    <div class="o_column_progress progress bg-300 w-50">--}}
-{{--                        <div role="progressbar" class="progress-bar o_bar_has_records cursor-pointer bg-200"--}}
-{{--                            aria-valuemin="0" aria-label="Progress bar" data-tooltip-delay="0" style="width: 100%;"--}}
-{{--                            aria-valuemax="1" aria-valuenow="1" data-tooltip="1 Other">--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false"--}}
-{{--                        title="Expected Revenue"><b>0</b></div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
-
-{{--            <div id="append-container-won"></div>--}}
-
-
-{{--            <div role="article" class="o_kanban_record d-flex o_draggable oe_kanban_card_undefined"--}}
-{{--                data-id="datapoint_19" tabindex="0">--}}
-{{--                <div class="oe_kanban_color_0 oe_kanban_global_click oe_kanban_card d-flex flex-column">--}}
-{{--                    <div class="oe_kanban_content flex-grow-1">--}}
-{{--                        <div class="oe_kanban_details"><strong--}}
-{{--                                class="o_kanban_record_title"><span>Industrylots</span></strong></div>--}}
-{{--                        <div class="o_kanban_record_subtitle"></div>--}}
-{{--                        <div></div>--}}
-{{--                        <div>--}}
-{{--                            <div name="tag_ids" class="o_field_widget o_field_many2many_tags">--}}
-{{--                                <div class="d-flex flex-wrap gap-1"></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div>--}}
-{{--                            <div name="lead_properties" class="o_field_widget o_field_properties">--}}
-{{--                                <div class="w-100 fw-normal text-muted"></div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="oe_kanban_footer">--}}
-{{--                        <div class="o_kanban_record_bottom">--}}
-{{--                            <div class="oe_kanban_bottom_left">--}}
-{{--                                <div name="priority" class="o_field_widget o_field_priority">--}}
-{{--                                    <div class="o_priority" role="radiogroup" name="priority" aria-label="Priority">--}}
-{{--                                        <a href="#" class="o_priority_star fa fa-star" role="radio"--}}
-{{--                                            tabindex="-1" data-tooltip="Priority: Medium" aria-checked=""--}}
-{{--                                            aria-label="Medium"></a><a href="#"--}}
-{{--                                            class="o_priority_star fa fa-star" role="radio" tabindex="-1"--}}
-{{--                                            data-tooltip="Priority: High" aria-checked="" aria-label="High"></a><a--}}
-{{--                                            href="#" class="o_priority_star fa fa-star" role="radio"--}}
-{{--                                            tabindex="-1" data-tooltip="Priority: Very High" aria-checked=""--}}
-{{--                                            aria-label="Very High"></a></div>--}}
-{{--                                </div>--}}
-{{--                                <div name="activity_ids" class="o_field_widget o_field_kanban_activity"><a--}}
-{{--                                        class="o-mail-ActivityButton" role="button" aria-label="Show activities"--}}
-{{--                                        title="Show activities"><i--}}
-{{--                                            class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark"--}}
-{{--                                            role="img"></i></a></div>--}}
-{{--                            </div>--}}
-{{--                            <div class="oe_kanban_bottom_right">--}}
-{{--                                <div name="user_id"--}}
-{{--                                    class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">--}}
-{{--                                    <div class="d-flex align-items-center gap-1"--}}
-{{--                                        data-tooltip="info@yantradesign.co.in"><span--}}
-{{--                                            class="o_avatar o_m2o_avatar d-flex"><img class="rounded"--}}
-{{--                                                src="https://i.pinimg.com/550x/a8/23/0a/a8230a2a558297bc90a394ec0283ff4f.jpg"></span>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="clearfix"></div>--}}
-{{--                </div>--}}
-{{--                <div class="o_dropdown_kanban bg-transparent position-absolute end-0"><button--}}
-{{--                        class="btn o-no-caret rounded-0 o-dropdown dropdown-toggle dropdown" title="Dropdown menu"--}}
-{{--                        aria-expanded="false"><span class="fa fa-ellipsis-v"></span></button></div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
 
         <div class="o_column_quick_create flex-shrink-0 flex-grow-1 flex-md-grow-0">
             <div class="o_quick_create_folded position-sticky z-index-1 my-3 text-nowrap">
