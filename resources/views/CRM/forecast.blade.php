@@ -29,8 +29,14 @@
     <li class="dropdown">
         <a href="#">Configuration</a>
         <div class="dropdown-content">
-            <a href="#">Settings</a>
-            <a href="#">Sales Teams</a>
+                 <a href="#"><b>Sales Teams</b></a>
+                <a href="#"><b>Activities</b></a>
+                <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
+                <a href="#" style="margin-left: 15px;">Activity Plans</a>
+                <a href="{{route('configuration.recurring_index')}}"><b>Recurring Plans</b></a>
+                <a href="#"><b>Pipeline</b></a>
+                <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
+                <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
         </div>
     </li>
     @endsection

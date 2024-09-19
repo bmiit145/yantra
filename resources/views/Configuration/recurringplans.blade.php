@@ -28,7 +28,7 @@
 <li class="dropdown">
     <a href="#">Configuration</a>
     <div class="dropdown-content">
-          <a href="#"><b>Sales Teams</b></a>
+         <a href="#"><b>Sales Teams</b></a>
         <a href="#"><b>Activities</b></a>
         <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
         <a href="#" style="margin-left: 15px;">Activity Plans</a>
@@ -36,12 +36,11 @@
         <a href="#"><b>Pipeline</b></a>
         <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
         <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
-
     </div>
 </li>
 @endsection
 
-@section('head_breadcrumb_title', 'Activity Types')
+@section('head_breadcrumb_title', 'Recurring Plan')
 @section('head')
 @vite([
 'resources/css/crm_2.css',
@@ -64,10 +63,9 @@
     #search-input {
         display: none;
     }
-     .seeting{
+    .seeting{
         display: none;
     }
-
 
 </style>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -79,8 +77,8 @@
             <thead>
                 <tr>
                     <th>Number</th>
-                    <th>Name</th>
-                    <th>Activities</th>
+                    <th>Plan Name</th>
+                    <th>Months</th>
                     <th>Action<th>
                 </tr>
             </thead>
@@ -91,10 +89,10 @@
                 @foreach($data as $value)
                 <tr>
                     <td>{{$index ++}}</td>
-                    <td>{{$value->name}}</td>
-                    <td>{{$value->action}}</td>
+                    <td>{{$value->plan_name}}</td>
+                    <td>{{$value->months}}</td>
                     <td>
-                        <a href="#" style="font-size: x-large;" data-id="{{$value->id}}" data-name="{{$value->name}}" data-action="{{$value->action}}" class="edit"><i class="fa fa-edit"></i></a>
+                        <a href="#" style="font-size: x-large;" data-id="{{$value->id}}" data-name="{{$value->plan_name}}" data-action="{{$value->months}}" class="edit"><i class="fa fa-edit"></i></a>
                        <a href="#" style="font-size: x-large; color: red" class="delete" data-id="{{ $value->id }}"><i class="fa fa-trash-o"></i></a>
 
                     <td>
@@ -111,26 +109,19 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title hader_activity" id="exampleModalLabel">Add Activity</h5>
+                <h5 class="modal-title hader_activity" id="exampleModalLabel">Recurring Plans</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body"> 
-                <form id="activityForm" action="{{ route('configuration.Store_activity_types') }}" method="post">
+                <form id="activityForm" action="{{ route('configuration.store_recurring') }}" method="post">
                     @csrf
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Name</label>
-                        <input type="text" name="name" class="form-control" id="recipient-name" required>
+                        <label for="recipient-name" class="col-form-label">Plan Name</label>
+                        <input type="text" name="plan_name" class="form-control" id="plan-name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="activity-type" class="col-form-label">Activity Type</label>
-                        <select class="form-select" name="activity_type" id="activity-type">
-                            <option selected disabled>Open this select menu</option>
-                            <option value="">None</option>
-                            <option value="Upload Document">Upload Document</option>
-                            <option value="PhoneCall">PhoneCall</option>
-                            <option value="Meeting">Meeting</option>
-                            <option value="Request Signature">Request Signature</option>
-                        </select>
+                        <label for="months" class="col-form-label">months</label>
+                        <input type="number" name="months" id="months" class="form-control">
                     </div>
                 </form>
             </div>
@@ -158,19 +149,19 @@
     
     $('.head_new_btn').click(function() {
         $('#exampleModal').modal('show');
-          $('#recipient-name').val('');
-        $('#activity-type').val('');
+          $('#plan-name').val('');
+        $('#months').val('');
     });
     $('.edit').click(function() {
         $('#exampleModal').modal('show');
         var id = $(this).data('id');
         var name = $(this).data('name');
         var action = $(this).data('action');
-        $('#recipient-name').val(name);
-        $('#activity-type').val(action);
-        $('.hader_activity').text('Update Activity');
+        $('#plan-name').val(name);
+        $('#months').val(action);
+        $('.hader_activity').text('Update Recurring Plan');
         $('.activityForm_txt').text('Update');
-        $('#activityForm').attr('action', '/configuration/update_activity_types/' + id);
+        $('#activityForm').attr('action', '/configuration/update_recurring/' + id);
 
     });
    
@@ -200,7 +191,7 @@
                     )
 
                   if (result.isConfirmed) {
-                        window.location.href = '/configuration/delete_activity_types/' + itemId;
+                        window.location.href = '/configuration/delete_recurring/' + itemId;
                     }
                 }
             });
