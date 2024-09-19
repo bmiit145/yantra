@@ -41,7 +41,7 @@
 </li>
 @endsection
 
-@section('head_breadcrumb_title', 'Activity Types')
+@section('head_breadcrumb_title', 'Lost Reasons')
 @section('head')
 @vite([
 'resources/css/crm_2.css',
@@ -68,7 +68,32 @@
         display: none;
     }
 
-
+</style>
+<style>
+    /* Style for the color radio buttons */
+    .color-radio {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        margin: 5px;
+        position: relative;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    .color-radio input[type="radio"] {
+        display: none;
+    }
+    .color-radio input[type="radio"]:checked + .color-swatch {
+        border: 2px solid black; /* Add border when radio is selected */
+    }
+    .color-swatch {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        display: inline-block;
+        background-color: transparent;
+        border: 2px solid #ddd;
+    }
 </style>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -79,8 +104,7 @@
             <thead>
                 <tr>
                     <th>Number</th>
-                    <th>Name</th>
-                    <th>Activities</th>
+                    <th>Description</th>   
                     <th>Action<th>
                 </tr>
             </thead>
@@ -92,9 +116,9 @@
                 <tr>
                     <td>{{$index ++}}</td>
                     <td>{{$value->name}}</td>
-                    <td>{{$value->action}}</td>
+                
                     <td>
-                        <a href="#" style="font-size: x-large;" data-id="{{$value->id}}" data-name="{{$value->name}}" data-action="{{$value->action}}" class="edit"><i class="fa fa-edit"></i></a>
+                        <a href="#" style="font-size: x-large;" data-id="{{$value->id}}" data-name="{{$value->name}}"  class="edit"><i class="fa fa-edit"></i></a>
                        <a href="#" style="font-size: x-large; color: red" class="delete" data-id="{{ $value->id }}"><i class="fa fa-trash-o"></i></a>
 
                     <td>
@@ -111,32 +135,21 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title hader_activity" id="exampleModalLabel">Add Activity</h5>
+                <h5 class="modal-title hader_activity" id="exampleModalLabel">Add Lost Reasons</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body"> 
-                <form id="activityForm" action="{{ route('configuration.Store_activity_types') }}" method="post">
+                <form id="activityForm" action="{{ route('configuration.store_lostreasons') }}" method="post">
                     @csrf
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Name</label>
-                        <input type="text" name="name" class="form-control" id="recipient-name" required>
+                        <label for="recipient-name" class="col-form-label">Description</label>
+                        <input type="text" name="name" class="form-control" id="name" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="activity-type" class="col-form-label">Activity Type</label>
-                        <select class="form-select" name="activity_type" id="activity-type">
-                            <option selected disabled>Open this select menu</option>
-                            <option value="">None</option>
-                            <option value="Upload Document">Upload Document</option>
-                            <option value="PhoneCall">PhoneCall</option>
-                            <option value="Meeting">Meeting</option>
-                            <option value="Request Signature">Request Signature</option>
-                        </select>
-                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-           
                 <button type="submit" form="activityForm" class="btn btn-primary activityForm_txt">Save</button>
             </div>
         </div>
@@ -158,19 +171,16 @@
     
     $('.head_new_btn').click(function() {
         $('#exampleModal').modal('show');
-          $('#recipient-name').val('');
-        $('#activity-type').val('');
+        $('#name').val('');
     });
     $('.edit').click(function() {
         $('#exampleModal').modal('show');
         var id = $(this).data('id');
         var name = $(this).data('name');
-        var action = $(this).data('action');
-        $('#recipient-name').val(name);
-        $('#activity-type').val(action);
-        $('.hader_activity').text('Update Activity');
+        $('#name').val(name);
+        $('.hader_activity').text('Update Lost Reason');
         $('.activityForm_txt').text('Update');
-        $('#activityForm').attr('action', '/configuration/update_activity_types/' + id);
+        $('#activityForm').attr('action', '/configuration/update_lostreasons/' + id);
 
     });
    
@@ -200,7 +210,7 @@
                     )
 
                   if (result.isConfirmed) {
-                        window.location.href = '/configuration/delete_activity_types/' + itemId;
+                        window.location.href = '/configuration/delete_lostreasons/' + itemId;
                     }
                 }
             });

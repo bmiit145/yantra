@@ -75,6 +75,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pricelists/new' , [SalesController::class, 'Pricelists_create'])->name('pricelists.create');
 
 
+    Route::get('configuration/activity-types' , [ConfigurationController::class, 'index'])->name('configuration.activitytype');
+    Route::post('configuration/Store_activity_types' , [ConfigurationController::class, 'Store_activity_types'])->name('configuration.Store_activity_types');
+    Route::post('configuration/update_activity_types/{id}' , [ConfigurationController::class, 'update_activity_types'])->name('configuration.update_activity_types');
+    Route::get('configuration/delete_activity_types/{id}' , [ConfigurationController::class, 'delete_activity_types'])->name('configuration.delete_activity_types');
+    Route::get('configuration/recurring_index' , [ConfigurationController::class, 'recurring_index'])->name('configuration.recurring_index');
+    Route::post('configuration/store_recurring' , [ConfigurationController::class, 'store_recurring'])->name('configuration.store_recurring');
+    Route::post('configuration/update_recurring/{id}' , [ConfigurationController::class, 'update_recurring'])->name('configuration.update_recurring');
+    Route::get('configuration/delete_recurring/{id}' , [ConfigurationController::class, 'delete_recurring'])->name('configuration.delete_recurring');
+    Route::get('configuration/tag_index' , [ConfigurationController::class, 'tag_index'])->name('configuration.tag_index');
+    Route::post('configuration/store_tag' , [ConfigurationController::class, 'store_tag'])->name('configuration.store_tag');
+    Route::post('configuration/update_tag/{id}' , [ConfigurationController::class, 'update_tag'])->name('configuration.update_tag');
+    Route::get('configuration/delete_tag/{id}' , [ConfigurationController::class, 'delete_tag'])->name('configuration.delete_tag');
+    Route::get('configuration/lostreasons_index/' , [ConfigurationController::class, 'lostreasons_index'])->name('configuration.lostreasons_index');
+    Route::post('configuration/store_lostreasons/' , [ConfigurationController::class, 'store_lostreasons'])->name('configuration.store_lostreasons');
+    Route::post('configuration/update_lostreasons/{id}' , [ConfigurationController::class, 'update_lostreasons'])->name('configuration.update_lostreasons');
+    Route::get('configuration/delete_lostreasons/{id}' , [ConfigurationController::class, 'delete_lostreasons'])->name('configuration.delete_lostreasons');
+
+
     //contact
     Route::resource('/contact', ContactController::class , [ 'except' => [] ]);
 //    Route::get('/contact-create', [ContactController::class, 'create'])->name('contact.create');
