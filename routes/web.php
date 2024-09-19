@@ -51,7 +51,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/pipeline-list',[CRMController::class,'pipelineList'])->name('crm.pipeline.list');
     Route::post('/pipeline-list-data',[CRMController::class,'pipelineListData'])->name('crm.pipeline.list.data');
-    Route::get('/pipeline-create',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
+    Route::get('/pipeline-create/{id?}',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
+    Route::post('/pipeline-store',[CRMController::class,'pipelineStore'])->name('crm.pipeline.store');
+    Route::get('/customer/{id}', [CRMController::class, 'getCustomerDetails'])->name('getCustomerDetails');
+
 
 
     // sale

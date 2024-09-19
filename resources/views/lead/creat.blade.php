@@ -621,7 +621,7 @@
                                             <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                                 style="width: 100%;">
                                                 <div name="priority" class="o_field_widget o_field_priority">
-                                                <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                    <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
                                                         <a href="#" class="o_priority_star fa {{ isset($data->priority) && ($data->priority == 'medium' || $data->priority == 'high' || $data->priority == 'very_high') ? 'fa-star' : 'fa-star-o' }}"
                                                         role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
                                                         <a href="#" class="o_priority_star fa {{ isset($data->priority) && ($data->priority == 'high' || $data->priority == 'very_high') ? 'fa-star' : 'fa-star-o' }}"

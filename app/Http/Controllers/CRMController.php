@@ -1,16 +1,26 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Activity;
+use App\Models\Campaign;
 use App\Models\Contact;
+use App\Models\Country;
 use App\Models\CrmSaleExtra;
 use App\Models\CrmStage;
+use App\Models\Medium;
 use App\Models\Opportunity;
+use App\Models\PersonTitle;
 use App\Models\Pipeline;
 
 use App\Models\Sale;
+use App\Models\Source;
+use App\Models\Tag;
+use App\Models\User;
 use App\Services\LogService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
 
 class CRMController extends Controller
 {
@@ -259,7 +269,7 @@ class CRMController extends Controller
         }
 
         // Get Paginated Results
-        $leads = $query->skip($skip)->take($pageLength)->get();
+        $leads = $query->with('contact','getState','getCountry','user')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -270,6 +280,140 @@ class CRMController extends Controller
     }
 
 
+    public function pipelineCreate($id = null)
+    {
+        try{
+            $data = Sale::find($id);
+            $customers = Contact::all();
+            $countrys = Country::all();
+            $titles = PersonTitle::all();
+            $campaigns = Campaign::orderBy('id', 'DESC')->get();
+            $mediums = Medium::orderBy('id', 'DESC')->get();
+            $sources = Source::orderBy('id', 'DESC')->get();
+            $users = User::orderBy('id', 'DESC')->get();
+            $tags = Tag::where('tage_type', 2)->get();
+            if ($data && isset($data->product_name)) {
+                $count = Sale::where('email', $data->product_name)->count();
+            } else {
+                $count = 0;
+            }
+            if ($data) {
+                $activitiesCount = Activity::where('lead_id', $data->id)->where('status', '0')->count();
+            } else {
+                $activitiesCount = 0;
+            }
+            if ($data) {
+                $activities = Activity::orderBy('id', 'DESC')->where('status', '0')->where('lead_id', $data->id)->get();
+            } else {
+                $activities = 0;
+            }
+            if ($data) {
+                $activitiesDone = Activity::orderBy('id', 'DESC')->where('status', '1')->where('lead_id', $data->id)->get();
+            } else {
+                $activitiesDone = 0;
+            }
+            return view('CRM.pipeline_create',compact('data','titles','campaigns','mediums','sources','countrys','count','users','tags','activitiesCount','activities','activitiesDone','customers'));
+        }catch(Exception $e){
+            return redirect()->back()->with('error',value: 'Something went wrong!');
+        }
+    }
+
+    public function pipelineStore(Request $request)
+    {
+        // dd($request->all());
+        // $existingLead = Sale::find($request->lead_id);
+
+        // // Determine if sales_person has changed
+        // $salesPersonChanged = $existingLead && $existingLead->sales_person !== $request->sales_person;
+
+        // Update or create the lead
+        $pipeline = Sale::updateOrCreate(
+            ['id' => $request->pipeline_id],
+            [
+                'opportunity' => $request->name_0,
+                'probability' => $request->probability_0,
+                'company_name' => $request->partner_name_0,
+                'contact_id' => $request->customer_select,
+                'street_1' => $request->street_0,
+                'street_2' => $request->street2_0,
+                'city' => $request->city_0, 
+                'zip' => $request->zip_0,
+                'state' => $request->state_id_0,
+                'country' => $request->country_id_0,
+                'website_link' => $request->website_0,
+                'sales_person' => $request->sales_person,
+                'sales_team' => $request->team_id_0,
+                'contact_name' => $request->contact_name_0,
+                'title' => $request->title_0,
+                'expected_revenue' => $request->expected_revenue_0,
+                'recurring_revenue' => $request->recurring_revenue_0,
+                'deadline' => $request->date_deadline_0,
+                'recurring_plan' => $request->recurring_plan_0,
+                'email' => $request->email_from_1,
+                'job_postion' => $request->function_0,
+                'phone' => $request->phone_1,
+                'mobile' => $request->mobile_0,
+                'tag' => $request->has('tag_ids_1') && $request->tag_ids_1 !== null ? implode(',', $request->tag_ids_1) : null,
+                'priority' => $request->priority,
+                'campaign_id' => $request->campaign_id_0,
+                'medium_id' => $request->medium_id_0,
+                'source_id' => $request->source_id_0,
+                'referred_by' => $request->referred_0,
+                'description' => $request->description,
+                'stage_id' => '2',
+                'user_id' => Auth::user()->id,
+            ]
+        );
+
+        // Log changes
+        $action = $request->pipeline_id ? 'updated' : 'created';
+        $message = $action === 'updated' ? 'Pipeline updated successfully' : 'Pipeline created successfully';
+
+        // Fetch the original data if it's an update
+        if ($request->pipeline_id) {
+            $originalData = Sale::find($request->pipeline_id)->getOriginal();
+            $changes = [];
+
+            // Define the fields you want to check for changes
+            $fields = ['opportunity', 'probability', 'company_name', 'street_1', 'street_2', 'city', 'state', 'zip', 'country', 'website_link', 'sales_person', 'contact_name', 'title', 'email', 'job_postion', 'phone', 'mobile', 'tag'];
+
+            // Iterate over fields to check for changes
+            foreach ($fields as $field) {
+                if (isset($originalData[$field]) && $originalData[$field] != $pipeline->$field) {
+                    $changes[$field] = [
+                        'old' => $originalData[$field] ?? 'None',
+                        'new' => $pipeline->$field ?? 'None'
+                    ];
+                }
+            }
+
+            // Create message only if there are changes
+            if (!empty($changes)) {
+                $message .= '. Changes: ' . json_encode($changes, JSON_PRETTY_PRINT);
+            }
+        }
+
+        Log::info($message, ['pipeline_id' => $pipeline->id, 'data' => $pipeline->toArray()]);
+
+        return response()->json(['message' => $message]);
+    }
+
+    public function getCustomerDetails($id)
+    {
+        // Fetch customer by ID
+        $customer = Contact::find($id);
+
+        if ($customer) {
+            return response()->json([
+                'email' => $customer->email,
+                'phone' => $customer->phone
+            ]);
+        } else {
+            return response()->json([
+                'error' => 'Customer not found'
+            ], 404);
+        }
+    }
 
 
 }

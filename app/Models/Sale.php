@@ -20,6 +20,30 @@ class Sale extends Model
         'probability',
         'deadline',
         'internal_notes',
+        'company_name',
+        'street_1',
+        'street_2',
+        'city',
+        'state',
+        'zip',
+        'country',
+        'website_link',
+        'sales_person',
+        'contact_name',
+        'title',
+        'email',
+        'job_postion',
+        'phone',
+        'mobile',
+        'tag',
+        'campaign_id',
+        'medium_id',
+        'source_id',
+        'referred_by',
+        'description',
+        'recurring_revenue',
+        'recurring_plan',
+
     ];
 
     protected $casts = [
@@ -30,9 +54,50 @@ class Sale extends Model
     protected static function boot()
     {
         parent::boot();
-        static::created(function ($model) {
-           LogService::log($model , 'created', 'Sale created');
+
+        static::created(function ($lead) {
+            $lead->logChanges('created', 'Lead created');
         });
+
+        static::updated(function ($lead) {
+            $originalData = $lead->getOriginal();
+            $changes = [];
+
+            $fields = [
+                'opportunity', 'probability', 'company_name', 'street_1', 'street_2',
+                'city', 'state', 'zip', 'country', 'website_link', 'sales_person',
+                'contact_name', 'title', 'email', 'job_postion', 'phone', 'mobile', 'tag', 'priority'
+            ];
+
+            foreach ($fields as $field) {
+                if (isset($originalData[$field]) && $originalData[$field] != $lead->$field) {
+                    $changes[$field] = [
+                        'old' => $originalData[$field] ?? 'None',
+                        'new' => $lead->$field ?? 'None'
+                    ];
+                }
+            }
+
+            if (!empty($changes)) {
+                $message = json_encode($changes, JSON_PRETTY_PRINT);
+                $lead->logChanges('updated', $message);
+            }
+        });
+    }
+
+    public function logChanges($action, $message, $user_id = null, $attachments = null, $is_system = true)
+    {
+        $this->logs()->create([
+            'loggable_id' => $this->id,
+            'loggable_type' => get_class($this),
+            'action' => $action,
+            'message' => $message,
+            'user_id' => $user_id ?? auth()->id(),
+            'attachments' => $attachments ?? null,
+            'is_system' => $is_system,
+            'ip_address' => request()->ip(),
+            'user_agent' => request()->header('User-Agent')
+        ]);
     }
 
     public function contact()
@@ -58,5 +123,15 @@ class Sale extends Model
     public function logs()
     {
         return $this->morphMany(ChangeLog::class, 'loggable');
+    }
+
+    public function getState()
+    {
+        return $this->hasOne(State::class,'id','state');
+    }
+
+    public function getCountry()
+    {
+        return $this->hasOne(Country::class,'id','country');
     }
 }

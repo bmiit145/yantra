@@ -3,8 +3,8 @@
 @section('head_breadcrumb_title', 'Pipeline')
 @section('lead', route('crm.pipeline.list'))
 @section('head_new_btn_link', route('crm.pipeline.create'))
-<!-- @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
-@section('calendar', route('lead.calendar', ['lead' => 'calendar']))
+@section('kanban', url('crm'))
+<!-- @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity')) -->
 @section('navbar_menu')
@@ -716,7 +716,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             }
                 , {
-                data: 'email'
+                data: 'opportunity'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -726,8 +726,49 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             }
                 , {
+                data: 'contact'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+                , {
+                data: 'contact_name'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    }
+                    return '';
+                }
+            }
+                , {
                 data: 'email'
                 , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    }
+                    return '';
+                }
+
+            }
+            , {
+                data: 'phone'
+                , render: function (data, type, row) {
+
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: 'city'
+                , render: function (data, type, row) {
+
                     if (data) {
                         return data;
                     } else {
@@ -740,12 +781,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 , render: function (data, type, row) {
                     if (data) {
                         return data.name;
+                    } else {
+                        return '';
                     }
-                    if (row && row.get_auto_state) {
-
-                        return row.get_auto_state.name;
-                    }
-                    return '';
                 }
             }
                 , {
@@ -753,58 +791,23 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 , render: function (data, type, row) {
                     if (data) {
                         return data.name;
-                    }
-                    if (row && row.get_auto_country) {
-
-                        return row.get_auto_country.name;
-                    }
-                    return '';
-                }
-
-            }
-                , {
-                data: 'zip'
-                , render: function (data, type, row) {
-
-                    if (data) {
-                        return data;
                     } else {
                         return '';
                     }
                 }
             }
                 , {
-                data: 'probability'
+                data: 'user'
                 , render: function (data, type, row) {
                     if (data) {
-                        return data;
+                        return data.email;
                     } else {
                         return '';
                     }
                 }
             }
                 , {
-                data: 'company_name'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'address_1'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'address_2'
+                data: 'sales'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -933,7 +936,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         $('#example tbody').on('click', 'tr', function () {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
             if (id) {
-                window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+                window.location.href = '/pipeline-create/' + id; // Adjust the URL to your edit page
             }
         });
 
