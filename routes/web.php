@@ -14,6 +14,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\GraphController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManufacturingController;
+use App\Http\Controllers\ConfigurationController;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('loginPage');
