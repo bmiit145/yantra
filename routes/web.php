@@ -48,6 +48,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/getdedline/{monthYear}', [CRMController::class, 'getdedline'])->name('crm.getdedline');
     Route::post('/new/sale/{sale?}' , [CRMController::class, 'newSales'])->name('crm.newSales')->defaults('sale', 'new');
 
+    Route::get('/pipeline-list',[CRMController::class,'pipelineList'])->name('crm.pipeline.list');
+    Route::post('/pipeline-list-data',[CRMController::class,'pipelineListData'])->name('crm.pipeline.list.data');
+    Route::get('/pipeline-create',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
+
 
     // sale
     Route::post('sale/setPriority' , [CRMController::class, 'setPriority'])->name('sale.setPriority');

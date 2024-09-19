@@ -1,5 +1,6 @@
 @extends('layout.header')
 {{--@section('head_new_btn_link', route('crm.show' , ['crm' => 'new']))--}}
+@section('lead', route('crm.pipeline.list'))
 
 @section('navbar_menu')
     <li class="dropdown">

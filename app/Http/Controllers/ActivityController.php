@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 use App\Models\Activity;
-<<<<<<< HEAD
-=======
-
->>>>>>> dbfbc0200a05fc236efe4c3430aa3de006e764e2
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -20,13 +16,14 @@ class ActivityController extends Controller
             ->get()
             ->groupBy('lead_id');
             $users = User::all();
+            $currentUser = auth()->user();
 
         // $dueDate = \Carbon\Carbon::parse($activities->due_date);
         // $daysDiff = \Carbon\Carbon::now()->diffInDays($dueDate, false);
         // return $daysDiff;
 
 
-        return view('lead.viewactivity', compact('activities','users'));
+        return view('lead.viewactivity', compact('activities','users','currentUser'));
     }
 
     public function create()
