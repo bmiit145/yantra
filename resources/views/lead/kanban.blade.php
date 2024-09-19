@@ -3,6 +3,9 @@
 @section('head_breadcrumb_title', 'Leads')
 @section('head_new_btn_link', route('lead.create'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
+@section('calendar', route('lead.calendar', ['lead' => 'calendar']))
+@section('char_area', route('lead.graph'))
+@section('activity', route('lead.activity'))
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
@@ -138,6 +141,9 @@
         border-radius: 50%;
         text-align: center;
         line-height: 40px;
+    }
+    .location{
+     display: none;
     }
 </style>
 

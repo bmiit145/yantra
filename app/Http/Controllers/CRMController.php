@@ -194,6 +194,80 @@ class CRMController extends Controller
         return response()->json(['sales' => $sales]);
     }
 
+    public function pipelineList()
+    {
+        return view('CRM.crmlist');
+    }
+
+    public function pipelineListData(Request $request)
+    {
+        // Page Length
+        $pageNumber = ($request->start / $request->length) + 1;
+        $pageLength = $request->length;
+        $skip = ($pageNumber - 1) * $pageLength;
+
+        // Page Order
+        $orderColumnIndex = $request->order[0]['column'] ?? '0';
+        $orderBy = $request->order[0]['dir'] ?? 'desc';
+
+        // Build Query
+        $query = Sale::query();
+
+        // Search
+        $searchValue = $request->search['value'] ?? '';
+        if ($searchValue) {
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('opportunity', 'like', "%{$searchValue}%")
+                    ->orWhere('email', 'like', "%{$searchValue}%")
+                    ->orWhere('phone', 'like', "%{$searchValue}%")
+                    ->orWhere('expected_revenue', 'like', "%{$searchValue}%")
+                    ->orWhere('deadline', 'like', "%{$searchValue}%");
+            });
+        }
+
+        // Determine Order By Column
+        $orderByName = 'opportunity';
+        switch ($orderColumnIndex) {
+            case '0':
+                $orderByName = 'opportunity';
+                break;
+            case '1':
+                $orderByName = 'email';
+                break;
+            case '2':
+                $orderByName = 'phone';
+                break;
+            case '3':
+                $orderByName = 'expected_revenue';
+                break;
+            // Add more cases as needed
+            default:
+                $orderByName = 'opportunity';
+                break;
+        }
+
+        $query = $query->orderBy($orderByName, $orderBy);
+
+        // Get Total Records
+        $recordsTotal = $query->count();
+
+        // Get Filtered Records
+        $recordsFiltered = $recordsTotal; // Will be updated after applying search
+
+        if ($searchValue) {
+            $recordsFiltered = $query->count();
+        }
+
+        // Get Paginated Results
+        $leads = $query->skip($skip)->take($pageLength)->get();
+
+        return response()->json([
+            "draw" => $request->draw,
+            "recordsTotal" => $recordsTotal,
+            "recordsFiltered" => $recordsFiltered,
+            'data' => $leads
+        ], 200);
+    }
 
 
 
