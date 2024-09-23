@@ -17,9 +17,12 @@ use App\Models\Tag;
 use App\Models\Contact;
 use App\Models\LostReason;
 use App\Models\CrmStage;
+use App\Models\send_message;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use ZipArchive;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Services\EncryptionService;
 
@@ -150,7 +153,10 @@ class LeadController extends Controller
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources'));
+        $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
+  
+
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
     }
 
     public function store(Request $request)
@@ -802,5 +808,120 @@ class LeadController extends Controller
         ], 200);
     }
 
+    public function send_message(Request $request)
+    {
+         
+
+        $data = new send_message();
+        $data->message = $request->send_message;
+        $data->to_mail = $request->to_mail;
+        $data->type_id = $request->lead_id;
+        $data->type = 'lead';
+        $data->from_mail = auth()->user()->email;
+        
+         $uploadedFiles = []; // Array to hold the file paths
+
+    
+         if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+    
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+    
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+    
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+    
+        $data->save();
+    
+
+        return response()->json(['message' => 'Message sent successfully']);
+    }
+
+    public function deleteImage(Request $request)
+    {
+       
+        $messageId = $request->input('message_id');
+        $imagePath = $request->input('image');
+    
+        // Fetch the record from the database
+        $message = send_message::find($messageId);
+    
+        if (!$message) {
+            return response()->json(['success' => false, 'message' => 'Message not found'], 404);
+        }
+    
+        // Get the current image array
+        $imageArray = json_decode($message->image);
+    
+        if (!$imageArray) {
+            return response()->json(['success' => false, 'message' => 'No images found'], 404);
+        }
+    
+        // Remove the image from storage
+        Storage::disk('public')->delete($imagePath);
+    
+        // Filter out the image that was deleted from the array
+        $updatedImageArray = array_filter($imageArray, function($img) use ($imagePath) {
+            return $img !== $imagePath;
+        });
+    
+        // Save the updated image array back to the database
+        $message->image = json_encode(array_values($updatedImageArray)); // Re-index and encode
+        $message->save();
+    
+        return response()->json(['success' => true]);
+    }
+
+    public function downloadAllImages($id)
+    {
+    
+        $message = send_message::find($id); 
+
+        // Get the images from the 'image' field
+        $images = json_decode($message->image);
+
+        // Create a temporary file for the zip
+        $zipFileName = 'images_' . time() . '.zip';
+        $zipFilePath = storage_path($zipFileName);
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            // Add each image to the zip
+            foreach ($images as $image) {
+                // Get the image path from the 'storage' directory
+                $imagePath = storage_path('app/public/' . $image);
+                if (file_exists($imagePath)) {
+                    $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+                }
+            }
+            $zip->close();
+        }
+
+        // Return the zip file for download
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
+    }
+
+    public function delete_send_message(Request $request)
+    {
+        $message = send_message::find($request->id);
+        $message->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
+
+    public function click_star(Request $request)
+    {
+        $lead = send_message::find($request->id);
+        $lead->is_star = '1';
+        $lead->save();
+
+        return response()->json($lead);
+    }
 }
 

@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class send_message extends Model
 {
     use HasFactory;
-    protected $fillable = ['to_mail', 'from_mail', 'message', 'image', 'type_id', 'type'];
+    protected $fillable = ['to_mail', 'from_mail', 'message', 'image', 'type_id', 'type','is_star'];
 }
