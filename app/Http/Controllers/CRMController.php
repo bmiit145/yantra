@@ -612,5 +612,23 @@ class CRMController extends Controller
         ]);
     }
 
+    public function pipelineActivity()
+    {
+        // Retrieve activities associated with pipeline_id only and exclude those with a lead_id
+        $activities = Activity::leftJoin('sales', 'activities.pipeline_id', '=', 'sales.id')
+            ->select('activities.*', 'sales.opportunity', 'sales.probability', 'activities.activity_type')
+            ->whereNull('activities.lead_id') // Exclude records where lead_id is not null
+            ->get()
+            ->groupBy('pipeline_id');
+    
+        $users = User::all();
+        $currentUser = auth()->user();
+        
+        // Debugging: Uncomment to see the activities
+        // dd($activities);
+    
+        return view('CRM.viewactivity', compact('activities', 'users', 'currentUser'));
+    }
+
 
 }

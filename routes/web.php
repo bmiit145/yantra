@@ -66,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-activities', [CRMController::class, 'pipelinefetchActivities'])->name('crm.pipeline.activities.fetch');
     Route::get('/pipeline-activity-detail/{id}', [CRMController::class, 'pipelineactivityDetail'])->name('crm.pipeline.activityDetail');
     Route::get('/pipeline-calendar', [CRMController::class, 'calendar'])->name('crm.pipeline.calendar');
+    Route::get('/pipeline-activity' , [CRMController::class, 'pipelineActivity'])->name('crm.pipeline.activity');
+    
 
 
 
@@ -173,6 +175,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/activities/update', [LeadController::class, 'activitiesUpdate'])->name('lead.activitiesUpdate');
     Route::delete('/activities/{id?}', [LeadController::class, 'activitiesDelete'])->name('lead.activitiesDelete');
     Route::post('/update-activity-status', [LeadController::class, 'activitiesUpdateStatus'])->name('lead.activitiesUpdateStatus');
+    Route::post('/upload-file', [LeadController::class, 'uploadFile'])->name('lead.uploadFile');
+    Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
+
+    
 
 
     // Check Email Or Phone Exists Route

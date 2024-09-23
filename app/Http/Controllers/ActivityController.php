@@ -291,6 +291,7 @@ class ActivityController extends Controller
 
     public function submitFeedback(Request $request)
     {
+        
         $activity = Activity::where('id', $request->activity_id)->first();
 
         if ($activity) {

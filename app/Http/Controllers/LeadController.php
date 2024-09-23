@@ -7,6 +7,7 @@ use App\Models\Campaign;
 use App\Models\Medium;
 use App\Models\Source;
 use App\Models\User;
+use File;
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
 use App\Models\Opportunity;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Services\EncryptionService;
+use League\CommonMark\Node\Block\Document;
 
 class LeadController extends Controller
 {
@@ -434,6 +436,7 @@ class LeadController extends Controller
             // Create a new activity record
             $activity = new Activity();
             $activity->lead_id = $request->lead_id;
+            $activity->pipeline_id = $request->pipeline_id;
             $activity->activity_type = $request->activity_type;
             $activity->due_date = $request->due_date;
             $activity->summary = $request->summary;
@@ -498,7 +501,7 @@ class LeadController extends Controller
     public function fetchActivities()
     {
         // Fetch activities with the lead title relationship
-        $activities = Activity::with('getLeadTitle')->where('lead_id','!=', null)->where('status', '0')->get();
+        $activities = Activity::with('getLeadTitle')->where('lead_id', '!=', null)->where('status', '0')->get();
 
         // Format activities for FullCalendar
         $events = $activities->map(function ($activity) {
@@ -625,7 +628,7 @@ class LeadController extends Controller
         $tags = $request->tags ?? [];
 
         // Normalize tags to handle "Lost & Archived" as "Lost"
-        $normalizedTags = array_map(function($tag) {
+        $normalizedTags = array_map(function ($tag) {
             return $tag === 'Lost & Archived' ? 'Lost' : $tag;
         }, $tags);
 
@@ -687,28 +690,28 @@ class LeadController extends Controller
             case 'Country':
                 // $query->where('country', $operatesValue, $filterValue);
                 // break;
-                $query->where(function($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getCountry', function($q) use ($operatesValue, $filterValue) {
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                    ->orWhereHas('getAutoCountry', function($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    });
+                        ->orWhereHas('getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
                 });
                 break;
             case 'Zip':
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
-                $query->whereHas('tags', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
             case 'Created by':
                 $createdByName = $filterValue;
-                $user = User::where('name',$createdByName)->first();
-                $query->whereHas('getUser', function($q) use ($operatesValue,$createdByName) {
-                    $q->where('name', $operatesValue,$createdByName);
+                $user = User::where('name', $createdByName)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
+                    $q->where('name', $operatesValue, $createdByName);
                 });
                 break;
             case 'Created on':
@@ -737,13 +740,13 @@ class LeadController extends Controller
                 break;
             case 'Salesperson':
                 $salespersonId = EncryptionService::encrypt($filterValue);
-                $user = User::where('email',$salespersonId)->first();
-                $query->whereHas('getUser', function($q) use ($operatesValue,$salespersonId) {
-                    $q->where('email', $operatesValue,$salespersonId);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
+                    $q->where('email', $operatesValue, $salespersonId);
                 });
                 break;
             case 'Source':
-                $query->whereHas('getSource', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -751,13 +754,13 @@ class LeadController extends Controller
                 $query->where('stage', $operatesValue, $filterValue);
                 break;
             case 'State':
-                $query->where(function($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getState', function($q) use ($operatesValue, $filterValue) {
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                    ->orWhereHas('getAutoState', function($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    });
+                        ->orWhereHas('getAutoState', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
                 });
                 break;
             case 'Street':
@@ -767,7 +770,7 @@ class LeadController extends Controller
                 $query->where('address_1', $operatesValue, $filterValue);
                 break;
             case 'Title':
-                $query->whereHas('getTilte', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('title', $operatesValue, $filterValue);
                 });
                 break;
@@ -778,7 +781,7 @@ class LeadController extends Controller
                 $query->where('website_link', $operatesValue, $filterValue);
                 break;
             case 'Campaign':
-                $query->whereHas('getCampaign', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -802,6 +805,64 @@ class LeadController extends Controller
             'success' => true,
             'data' => $customFilter
         ], 200);
+    }
+
+
+    // Upload Document Function
+    public function uploadFile(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|max:2048', // Adjust file validation as needed
+            'activity_id' => 'required|integer',
+        ]);
+
+        $activityId = $request->input('activity_id');
+
+        // Check if the file exists in the request
+        if ($request->hasFile('file')) {
+            $file = $request->file('file'); // Use 'file' instead of 'image'
+
+            // Generate a unique filename
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('uploads/upload_document'); // Use 'uploads' directory
+
+            // Create the uploads directory if it doesn't exist
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true);
+            }
+
+            // Move the file to the destination
+            $file->move($destinationPath, $fileName);
+
+            // Update the database
+            $activity = Activity::find($activityId);
+            if ($activity) {
+                $activity->status = 1; // Mark as completed
+                $activity->document = $fileName; // Save only the file name
+                $activity->save();
+                return response()->json(['success' => true]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Activity not found.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No file uploaded.']);
+    }
+
+    public function deleteDocument(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:activities,id',
+        ]);
+
+        $activity = Activity::find($request->id);
+        if ($activity) {
+            $activity->document = null; // Set the document field to null
+            $activity->save();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Activity not found.']);
     }
 
 }
