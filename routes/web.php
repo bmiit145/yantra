@@ -162,6 +162,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead-filter', [LeadController::class, 'filter'])->name('lead.filter');
     Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
     Route::post('/custom-filter', [LeadController::class, 'customFilter'])->name('lead.custom.filter');
+    Route::post('/lead-send_message', [LeadController::class, 'send_message'])->name('lead.send_message');
+    Route::post('/lead-deleteImage', [LeadController::class, 'deleteImage'])->name('lead.deleteImage');
+    Route::get('/lead-downloadAllImages/{id}', [LeadController::class, 'downloadAllImages'])->name('lead.downloadAllImages');
+    Route::get('/lead-delete_send_message', [LeadController::class, 'delete_send_message'])->name('lead.delete_send_message');
+    Route::get('/lead-click_star', [LeadController::class, 'click_star'])->name('lead.click_star');
 
 
 
