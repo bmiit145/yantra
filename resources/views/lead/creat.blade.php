@@ -42,6 +42,16 @@
 <!-- Select2 CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"> -->
+
+
+{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"> --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+
+
+
+
+
+
 <style>
     .buyerlead h3 {
         font-size: 30px;
@@ -669,6 +679,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="d-flex">
                                 <div name="lead_properties" class="o_field_widget o_field_properties">
                                     <div class="row d-none" columns="2">
@@ -688,11 +699,8 @@
                                 </div>
                                 <div class="tab-content">
                                     <div id="internal_notes" class="tab-pane fade show active">
-                                        <textarea name="" id="description" cols="30" rows="10"></textarea>
-                                        {{-- <div id="editableDiv" contenteditable="true"
-                                                style="width: 100%;height: 500px; border: 1px solid #ccc;padding: 10px;">
-                                                <!-- The user can paste content here -->
-                                            </div> --}}
+                                        <textarea name="" class="makeMeSummernote" value="{{ isset($data) ? $data->internal_notes : '' }}" id="description" cols="30" rows="10">{{ isset($data) ? $data->internal_notes : '' }}</textarea>
+                                  
                                     </div>
                                     <div id="extra" class="tab-pane fade">
                                         <div class="o_group row align-items-start">
@@ -713,6 +721,7 @@
                                                                         <div class="campaign_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="campaign_id_0" style="width: 150px;">
                                                                                 <option value="">Selecte Campaign</option>
+                                                                                
                                                                                 @foreach ($campaigns as $campaign)
                                                                                     <option value="{{ $campaign->id }}" @if (isset($data->campaign_id) && $campaign->id == $data->campaign_id) selected @endif>
                                                                                         {{ $campaign->name }}
@@ -844,12 +853,85 @@
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
                                     <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
                                     <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
-                                        <div class="o-mail-Followers d-flex me-1"><button class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" disabled="" title="Show Followers" aria-expanded="false"><i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">0</sup></button></div><button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
+                                        <div class="o-mail-Followers d-flex me-1">
+                                            <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
+                                                <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">0</sup>
+                                            </button>
+
+                                            <!-- Dropdown Menu -->
+                                            <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1537.12px;">
+                                                <a class="o-dropdown-item dropdown-item o-navigable focus" role="menuitem" tabindex="0" href="#">Add Followers</a>
+                                                <div role="separator" class="dropdown-divider"></div>
+                                                <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
+                                                    <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
+                                                        <img class="o-mail-Follower-avatar me-2 rounded" alt="" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                        <span class="flex-shrink text-truncate">info@yantradesign.co.in</span>
+                                                    </a>
+                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </button>
+                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Remove this follower" aria-label="Remove this follower">
+                                                        <i class="fa fa-remove"></i>
+                                                    </button>
+                                                </div>
+                                                <div role="separator" class="dropdown-divider"></div>
+                                            </div>
+                                        </div>
+                                        <button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
                                             <div class="position-relative"><span class="d-flex invisible text-nowrap">Following</span><span class="position-absolute end-0 top-0"> Follow </span></div>
                                         </button>
                                     </div>
                                 </div>
                             </div>
+                            <div class="d-flex flex-shrink-0 pt-3 text-truncate small mb-2 ms-5">
+                                <span class="fw-bold">To:</span>
+                                <span class="ps-1">
+                                <span class="text-muted">
+                                    @if($data)
+                                       @if($data->email)
+                                        {{$data->email}}
+                                        @else
+                                         No recipient
+                                        @endif
+                                    @endif
+                                </span>
+                                </span>
+                                <button class="o-mail-Chatter-recipientListButton btn btn-link badge rounded-pill border-0 p-1 ms-1" title="Show all recipients">
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                            </div>
+                            <div class="o-mail-Composer d-grid flex-shrink-0 pt-0 pb-2 o-extended o-hasSelfAvatar">
+                                                <div class="o-mail-Composer-sidebarMain flex-shrink-0">
+                                                    <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000"></div>
+                                                    <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
+                                                        <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
+                                                            <div class="position-relative flex-grow-1">
+                                                                <textarea class="o-mail-Composer-input o-mail-Composer-inputStyle form-control bg-view border-0 rounded-3 shadow-none overflow-auto" style="height:40px;" placeholder="Send a message to followers…"></textarea>
+                                                                <textarea class="o-mail-Composer-fake o-mail-Composer-inputStyle position-absolute border-0" disabled="1"></textarea>
+                                                            </div>
+                                                            <div class="o-mail-Composer-actions d-flex bg-view mx-3 border-top p-1 rounded">
+                                                                    <div class="d-flex flex-grow-1 align-items-baseline mt-1">
+                                                                        <button class="btn border-0 p-1 rounded-pill" aria-label="Emojis">
+                                                                            <i class="fa fa-fw fa-smile-o"></i>
+                                                                        </button>
+                                                                        <span style="display:contents">
+                                                                            <button class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1" title="Attach files" aria-label="Attach files" type="button">
+                                                                                    <i class="fa fa-fw fa-paperclip"></i>
+                                                                            </button>
+                                                                        </span>
+                                                                        <input type="file" class="o_input_file d-none" multiple="multiple" accept="*">
+                                                                    </div>
+                                                                    <button class="o-mail-Composer-fullComposer btn p-1 border-0 rounded-pill" title="Full composer" aria-label="Full composer" type="button" data-hotkey="shift+c" style="position: relative;">
+                                                                        <i class="fa fa-fw fa-expand"></i>
+                                                                    </button>
+                                                            </div>
+                                                        </div>
+                                                            <div class="d-flex align-items-center mt-2 gap-2">
+                                                                    <button class="o-mail-Composer-send btn btn-primary" aria-label="Send">Send</button>
+                                                                        <span><samp>CTRL-Enter</samp><i> to send</i></span>
+                                                            </div>
+                                                    </div>
+                                                </div>
                             @if($activitiesCount > 0)
                                 <div class="d-flex pt-2 cursor-pointer fw-bolder" id="toggleHeader">
                                     <hr class="flex-grow-1 fs-3">
@@ -1319,12 +1401,36 @@
 
 
 
+
+
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script>
+    $(document).ready(function(){
+       $(document).ready(function(){
+        $("#toggleFollowersDropdown").click(function(){
+            // Toggle the visibility of the dropdown
+            $("#followersDropdown").toggle();
+        });
+
+        // Optionally, close the dropdown when clicking outside of it
+        $(document).click(function(event) { 
+            if (!$(event.target).closest("#toggleFollowersDropdown, #followersDropdown").length) {
+                $("#followersDropdown").hide();
+            }
+        });
+    });
+    });
+</script>
 <script>
     $("#title_0").select2({
         placeholder: "Select Title"
@@ -2018,6 +2124,8 @@
             var medium_id_0 = $('#medium_id_0').val();
             var source_id_0 = $('#source_id_0').val();
             var referred_0 = $('#referred_0').val();
+            var internal_notes = $('#description').val();
+           
 
             // Validate fields
             if (!name_0) {
@@ -2089,6 +2197,7 @@
                         medium_id_0: medium_id_0,
                         source_id_0: source_id_0,
                         referred_0: referred_0,
+                        internal_notes : internal_notes
                     },
                     success: function(response) {
                         toastr.success(response.message);
@@ -2105,13 +2214,13 @@
     });
 
 </script>
-
 <script>
-    ClassicEditor
-        .create(document.querySelector('#description'))
-        .catch(error => {
-            console.error(error);
-        });
+  $(document).ready(function () {
+   $(".makeMeSummernote").summernote();
+});
+</script>
+<script>
+  
 
         ClassicEditor
         .create(document.querySelector('#log_note'))
@@ -2367,89 +2476,6 @@
     });
 </script>
 
-
-        <!-- <script>
-            ClassicEditor
-                .create(document.querySelector('#description'))
-                .catch(error => {
-                    console.error(error);
-                });
-        </script>
-        <script>
-            $('#main_save_btn').click(function() {
-                var lead_id = $('#lead_id').val();
-                var name_0 = $('#name_0').val();
-                var probability_0 = $('#probability_0').val();
-                var street_0 = $('#street_0').val();
-                var street2_0 = $('#street2_0').val();
-                var city_0 = $('#city_0').val();
-                var zip_0 = $('#zip_0').val();
-                var state_id_0 = $('#state_id_0').val();
-                var country_id_0 = $('#country_id_0').val();
-                var website_0 = $('#website_0').val();
-                var user_id_1 = $('#user_id_1').val();
-                var team_id_0 = $('#team_id_0').val();
-                var contact_name_0 = $('#contact_name_0').val();
-                var title_0 = $('#title_0').val();
-                var email_from_1 = $('#email_from_1').val();
-                var function_0 = $('#function_0').val();
-                var phone_1 = $('#phone_1').val();
-                var mobile_0 = $('#mobile_0').val();
-                var tag_ids_1 = $('#tag_ids_1').val();                
-                var priority = $('.o_priority .o_priority_star.fa-star').last().data('value');
-                var sales_person = $('#sales_person').val();
-
-
-        if (!name_0) {
-            toastr.error('fields is required');
-            $('#name_0').css({
-                'border-color': 'red'
-                , 'background-color': '#ff99993d'
-            });
-        }
-
-                $.ajax({
-                    url: '{{ route('lead.store') }}',
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        lead_id: lead_id,
-                        name_0: name_0,
-                        probability_0: probability_0,
-                        street_0: street_0,
-                        street2_0: street2_0,
-                        city_0: city_0,
-                        zip_0: zip_0,
-                        state_id_0: state_id_0,
-                        country_id_0: country_id_0,
-                        website_0: website_0,
-                        user_id_1: user_id_1,
-                        team_id_0: team_id_0,
-                        contact_name_0: contact_name_0,
-                        title_0: title_0,
-                        email_from_1: email_from_1,
-                        function_0: function_0,
-                        phone_1: phone_1,
-                        mobile_0: mobile_0,
-                        tag_ids_1: tag_ids_1,
-                        priority: priority,
-                        sales_person:sales_person,
-                    },
-                    success: function(response) {
-                        toastr.success(response.message);
-
-                setTimeout(function() {
-                    window.location.href = "{{ route('lead.index') }}";
-                }, 2000);
-
-            }
-            , error: function(xhr, status, error) {
-                toastr.error('Something went wrong!');
-            }
-        });
-    });
-
-</script> -->
 <script>
   const select = $('#lost_reasons');
         const newlostInput = $('#new_lost_input');

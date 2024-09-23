@@ -155,6 +155,8 @@ class LeadController extends Controller
 
     public function store(Request $request)
     {
+
+        // dd($request->all());
         $existingLead = generate_lead::find($request->lead_id);
 
         // Determine if sales_person has changed
@@ -190,6 +192,7 @@ class LeadController extends Controller
                 'source_id' => $request->source_id_0,
                 'referred_by' => $request->referred_0,
                 'assignment_date' => $salesPersonChanged ? now() : ($existingLead ? $existingLead->assignment_date : null),
+                'internal_notes' => $request->internal_notes,
             ]
         );
 
