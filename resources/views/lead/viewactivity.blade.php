@@ -8,6 +8,9 @@
 {{-- @vite([
 'resources/css/chats.css',
 ]) --}}
+@section('head')
+    @vite(['resources/css/chats.css'])
+@endsection
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
