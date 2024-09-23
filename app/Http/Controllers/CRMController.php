@@ -7,11 +7,13 @@ use App\Models\Contact;
 use App\Models\Country;
 use App\Models\CrmSaleExtra;
 use App\Models\CrmStage;
+use App\Models\LostReason;
 use App\Models\Medium;
 use App\Models\Opportunity;
 use App\Models\PersonTitle;
 use App\Models\Pipeline;
 
+use App\Models\RecurringPlans;
 use App\Models\Sale;
 use App\Models\Source;
 use App\Models\Tag;
@@ -20,6 +22,7 @@ use App\Services\LogService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Log;
 
 class CRMController extends Controller
@@ -28,12 +31,12 @@ class CRMController extends Controller
     {
         $data = Opportunity::all();
         $pipeline = Pipeline::all();
-        return view('CRM.index', compact('data','pipeline'));
+        return view('CRM.index', compact('data', 'pipeline'));
     }
 
     public function store(Request $request)
     {
-        $data = New  Opportunity;
+        $data = new Opportunity;
         $data->organization = $request->organization;
         $data->opportunity = $request->opportunity;
         $data->email = $request->email;
@@ -45,9 +48,9 @@ class CRMController extends Controller
 
     public function show($id)
     {
-        $stages = CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no' , 'desc')->get();
-        if ($id == 'new'){
-            return view('CRM.view' , compact('stages'))->with('crm' , $id);
+        $stages = CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no', 'desc')->get();
+        if ($id == 'new') {
+            return view('CRM.view', compact('stages'))->with('crm', $id);
         }
 
         $sale = Sale::find($id);
@@ -55,13 +58,13 @@ class CRMController extends Controller
             return back()->with('error', 'Sale not found');
         }
 
-        return view('CRM.view', compact('sale' , 'stages'))->with('crm' , $id);
+        return view('CRM.view', compact('sale', 'stages'))->with('crm', $id);
     }
 
     public function newStage(Request $request)
     {
         $newStage = $request->newStage;
-        $data = New CrmStage();
+        $data = new CrmStage();
         $data->title = $newStage;
         $data->user_id = auth()->user()->id;
         $data->seq_no = CrmStage::where('user_id', auth()->user()->id)->max('seq_no') + 1;
@@ -69,7 +72,7 @@ class CRMController extends Controller
         return response()->json($data);
     }
 
-    public function  newSales(Request $request , $sale)
+    public function newSales(Request $request, $sale)
     {
         $data = $sale == 'new' ? new Sale() : Sale::findOrFail($sale);
         // original
@@ -134,7 +137,7 @@ class CRMController extends Controller
                 'status' => 'success',
                 'message' => $msg,
                 'data' => $data
-            ] , 200);
+            ], 200);
         }
 
         return back()->with('success', 'Sale created successfully');
@@ -200,7 +203,7 @@ class CRMController extends Controller
     public function getdedline($monthYear)
     {
         list($year, $month) = explode('-', $monthYear);
-        $sales = Sale::whereYear('deadline', $year)->whereMonth('deadline' , $month)->get();
+        $sales = Sale::whereYear('deadline', $year)->whereMonth('deadline', $month)->get();
         return response()->json(['sales' => $sales]);
     }
 
@@ -221,7 +224,7 @@ class CRMController extends Controller
         $orderBy = $request->order[0]['dir'] ?? 'desc';
 
         // Build Query
-        $query = Sale::query();
+        $query = Sale::where('is_lost', '1');
 
         // Search
         $searchValue = $request->search['value'] ?? '';
@@ -269,7 +272,7 @@ class CRMController extends Controller
         }
 
         // Get Paginated Results
-        $leads = $query->with('contact','getState','getCountry','user')->skip($skip)->take($pageLength)->get();
+        $leads = $query->with('contact', 'getState', 'getCountry', 'user', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -281,8 +284,8 @@ class CRMController extends Controller
 
 
     public function pipelineCreate($id = null)
-    {
-        try{
+    {        
+        try {
             $data = Sale::find($id);
             $customers = Contact::all();
             $countrys = Country::all();
@@ -292,29 +295,39 @@ class CRMController extends Controller
             $sources = Source::orderBy('id', 'DESC')->get();
             $users = User::orderBy('id', 'DESC')->get();
             $tags = Tag::where('tage_type', 2)->get();
+            $crmStages = CrmStage::orderBy('id', 'DESC')->get();
+            $recurringPlans = RecurringPlans::all();
+            $lost_reasons = LostReason::all();
+            if ($data) {
+                $isWon = $data->stage_id;
+            } else {
+                $isWon = '';
+            }
+            $checkIsWon = CrmStage::where('id', $isWon)->first();
             if ($data && isset($data->product_name)) {
                 $count = Sale::where('email', $data->product_name)->count();
             } else {
                 $count = 0;
             }
             if ($data) {
-                $activitiesCount = Activity::where('lead_id', $data->id)->where('status', '0')->count();
+                $activitiesCount = Activity::where('pipeline_id', $data->id)->where('status', '0')->count();
             } else {
                 $activitiesCount = 0;
             }
             if ($data) {
-                $activities = Activity::orderBy('id', 'DESC')->where('status', '0')->where('lead_id', $data->id)->get();
+                $activities = Activity::orderBy('id', 'DESC')->where('status', '0')->where('pipeline_id', $data->id)->get();
             } else {
                 $activities = 0;
             }
             if ($data) {
-                $activitiesDone = Activity::orderBy('id', 'DESC')->where('status', '1')->where('lead_id', $data->id)->get();
+                $activitiesDone = Activity::orderBy('id', 'DESC')->where('status', '1')->where('pipeline_id', $data->id)->get();
             } else {
-                $activitiesDone = 0;
+                // $activitiesDone = 0;
+                $activitiesDone = collect();
             }
-            return view('CRM.pipeline_create',compact('data','titles','campaigns','mediums','sources','countrys','count','users','tags','activitiesCount','activities','activitiesDone','customers'));
-        }catch(Exception $e){
-            return redirect()->back()->with('error',value: 'Something went wrong!');
+            return view('CRM.pipeline_create', compact('data', 'titles', 'campaigns', 'mediums', 'sources', 'countrys', 'count', 'users', 'tags', 'activitiesCount', 'activities', 'activitiesDone', 'customers', 'recurringPlans', 'crmStages', 'checkIsWon', 'lost_reasons'));
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', value: 'Something went wrong!');
         }
     }
 
@@ -336,7 +349,7 @@ class CRMController extends Controller
                 'contact_id' => $request->customer_select,
                 'street_1' => $request->street_0,
                 'street_2' => $request->street2_0,
-                'city' => $request->city_0, 
+                'city' => $request->city_0,
                 'zip' => $request->zip_0,
                 'state' => $request->state_id_0,
                 'country' => $request->country_id_0,
@@ -360,7 +373,8 @@ class CRMController extends Controller
                 'source_id' => $request->source_id_0,
                 'referred_by' => $request->referred_0,
                 'description' => $request->description,
-                'stage_id' => '2',
+                'stage_id' => $request->selected_stage_id,
+                'is_lost' => '1',
                 'user_id' => Auth::user()->id,
             ]
         );
@@ -413,6 +427,189 @@ class CRMController extends Controller
                 'error' => 'Customer not found'
             ], 404);
         }
+    }
+
+    public function updateStage(Request $request)
+    {
+        // Check if the stage title is "Won"
+        if ($request->stage_id === 'Won') {
+            // Retrieve the ID of the "Won" stage from CrmStage
+            $wonStage = CrmStage::where('title', 'Won')->first();
+
+            if ($wonStage) {
+                // Set the stage ID to the "Won" stage ID
+                $request->merge(['stage_id' => $wonStage->id]);
+            } else {
+                // Return an error if "Won" stage is not found
+                return response()->json(['success' => false, 'message' => 'Won stage not found'], 404);
+            }
+        }
+
+        // Find the pipeline (Sale) by its ID
+        $pipeline = Sale::find($request->pipeline_id);
+
+        // If pipeline exists, update the stage_id
+        if ($pipeline) {
+            $pipeline->stage_id = $request->stage_id;
+            $pipeline->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        // If pipeline is not found, return an error response
+        return response()->json(['success' => false, 'message' => 'Pipeline not found'], 404);
+    }
+
+    public function pipelineManageLostReasons(Request $request)
+    {
+        $data = Sale::where('id', $request->pipeline_id)->update([
+            'lost_reason' => $request->lost_reasons,
+            'closing_note' => $request->closing_notes,
+            'is_lost' => 2
+        ]);
+
+        // return response()->json($data);
+        return response()->json(['message' => 'Pipeline Lost successfully']);
+    }
+
+    public function restoreIsLost(Request $request, $id)
+    {
+        $data = Sale::find($id);
+        if ($data) {
+            $data->is_lost = $request->input('is_lost');
+            $data->save();
+
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 404);
+    }
+
+    public function pipelineScheduleActivityStore(Request $request)
+    {
+        try {
+            // Create a new activity record
+            $activity = new Activity();
+            $activity->pipeline_id = $request->pipeline_id;
+            $activity->activity_type = $request->activity_type;
+            $activity->due_date = $request->due_date;
+            $activity->summary = $request->summary;
+            $activity->assigned_to = $request->assigned_to;
+            $activity->note = $request->log_note;
+            $activity->status = '0';
+            $activity->save();
+
+            // Redirect or return a response
+            // return redirect()->back()->with('message', 'Activity scheduled successfully.');
+            return response()->json(['message' => 'Activity scheduled successfully']);
+        } catch (Exception $e) {
+            return redirect()->back();
+        }
+    }
+
+
+    public function pipelineActivitiesEdit($id)
+    {
+        $activity = Activity::findOrFail($id);
+        return response()->json(['activity' => $activity]);
+    }
+
+    public function pipelineActivitiesUpdate(Request $request)
+    {
+        $data = $request->all();
+
+        // Find the activity by ID and update it
+        $activity = Activity::findOrFail($data['id']);
+        $activity->activity_type = $data['activity_type'];
+        $activity->due_date = $data['due_date'];
+        $activity->summary = $data['summary'];
+        $activity->assigned_to = $data['assigned_to'];
+        $activity->note = $data['log_note'];
+        $activity->save();
+
+        return response()->json(['message' => 'Activity updated successfully']);
+    }
+
+    public function pipelineActivitiesDelete($id)
+    {
+        $activity = Activity::find($id);
+
+        if ($activity) {
+            $activity->delete();
+            return response()->json(['message' => 'Activity deleted successfully']);
+        }
+
+        return response()->json(['message' => 'Activity not found'], 404);
+    }
+
+    public function pipelineActivitiesUpdateStatus(Request $request)
+    {
+        $activity = Activity::find($request['id']);
+        $activity->status = '1';
+        $activity->feedback = $request->feedback;
+        $activity->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function calendar()
+    {
+        return view('CRM.calendar');
+    }
+
+    // calendar activity
+    public function pipelinefetchActivities()
+    {
+        // Fetch activities with the lead title relationship
+        $activities = Activity::with('getPipelineLeadTitle','getPipelineLeadTitle.contact')->where('pipeline_id','!=', null)->where('status', '0')->get();
+        // dd($activities);
+
+        // Format activities for FullCalendar
+        $events = $activities->map(function ($activity) {
+            // Ensure due_date is a Carbon instance
+            $dueDate = Carbon::parse($activity->due_date);
+
+            // Get lead title
+            $pipelineTitle = $activity->getPipelineLeadTitle ? $activity->getPipelineLeadTitle->opportunity : 'No Opportunity';
+            $pipelineCustomer = $activity->getPipelineLeadTitle->contact ? $activity->getPipelineLeadTitle->contact->name : 'No Customer';
+            $pipelineRevanue = $activity->getPipelineLeadTitle ? $activity->getPipelineLeadTitle->expected_revenue : 'No Expected Revenue';
+
+            return [
+                'id' => $activity->id,
+                'pipeline_id' => $activity->pipeline_id,
+                'title' => "{$pipelineTitle}", // Include lead title in the title
+                'customer' => "{$pipelineCustomer}",
+                'expected_revenue' => "{$pipelineRevanue}",
+                'start' => $dueDate->toDateString(),
+                'color' => 'blue', // This can be replaced with dynamic values if needed
+                'description' => $activity->note,
+            ];
+        });
+
+        // Return JSON response
+        return response()->json($events);
+    }
+
+    // Info activity
+    public function pipelineactivityDetail($id)
+    {
+        $activity = Activity::find($id);
+
+        if (!$activity) {
+            return response()->json(['error' => 'Activity not found'], 404);
+        }
+
+        $getUser = User::where('id', $activity->assigned_to)->first();
+        $getEmail = $getUser ? $getUser->email : 'No email found'; // Safeguard against null
+        $email = \Auth::user() ? \Auth::user()->email : 'No email found'; // Safeguard against null
+
+        return response()->json([
+            'activity_type' => $activity->activity_type,
+            'created_at' => Carbon::parse($activity->created_at)->format('d/m/Y, H:i:s'),
+            'email' => $email,
+            'get_email' => $getEmail,
+            'due_date' => $activity->due_date,
+            'note' => $activity->note,
+        ]);
     }
 
 

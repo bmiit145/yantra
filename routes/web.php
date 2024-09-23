@@ -54,6 +54,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-create/{id?}',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
     Route::post('/pipeline-store',[CRMController::class,'pipelineStore'])->name('crm.pipeline.store');
     Route::get('/customer/{id}', [CRMController::class, 'getCustomerDetails'])->name('getCustomerDetails');
+    Route::post('/update-stage', [CRMController::class,'updateStage'])->name('crm.updateStage');
+    Route::post('/pipeline/manageLostReasons', [CRMController::class, 'pipelineManageLostReasons'])->name('crm.pipeline.markAsLost');
+    Route::post('/pipeline-restore/{id}', [CRMController::class, 'restoreIsLost'])->name('crm.pipeline.restore');;
+    // CRM pipeline Activities
+    Route::post('/pipeline-schedule-activity', [CRMController::class, 'pipelineScheduleActivityStore'])->name('crm.pipeline.scheduleActivityStore');
+    Route::get('/pipeline-activities-edit/{id?}', [CRMController::class, 'pipelineActivitiesEdit'])->name('crm.pipeline.activitiesEdit');
+    Route::post('/pipeline-activities/update', [CRMController::class, 'pipelineActivitiesUpdate'])->name('crm.pipeline.activitiesUpdate');
+    Route::delete('/pipeline-activities/{id?}', [CRMController::class, 'pipelineActivitiesDelete'])->name('crm.pipeline.activitiesDelete');
+    Route::post('/pipeline-update-activity-status', [CRMController::class, 'pipelineActivitiesUpdateStatus'])->name('crm.pipeline.activitiesUpdateStatus');
+    Route::get('/pipeline-activities', [CRMController::class, 'pipelinefetchActivities'])->name('crm.pipeline.activities.fetch');
+    Route::get('/pipeline-activity-detail/{id}', [CRMController::class, 'pipelineactivityDetail'])->name('crm.pipeline.activityDetail');
+    Route::get('/pipeline-calendar', [CRMController::class, 'calendar'])->name('crm.pipeline.calendar');
+
 
 
 

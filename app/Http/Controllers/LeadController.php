@@ -491,10 +491,11 @@ class LeadController extends Controller
         return response()->json(['success' => true]);
     }
 
+    // calendar activity
     public function fetchActivities()
     {
         // Fetch activities with the lead title relationship
-        $activities = Activity::with('getLeadTitle')->where('status', '0')->get();
+        $activities = Activity::with('getLeadTitle')->where('lead_id','!=', null)->where('status', '0')->get();
 
         // Format activities for FullCalendar
         $events = $activities->map(function ($activity) {
@@ -518,6 +519,7 @@ class LeadController extends Controller
         return response()->json($events);
     }
 
+    // Info activity
     public function activityDetail($id)
     {
         $activity = Activity::find($id);

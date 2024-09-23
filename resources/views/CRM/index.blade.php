@@ -1,6 +1,7 @@
 @extends('layout.header')
 {{--@section('head_new_btn_link', route('crm.show' , ['crm' => 'new']))--}}
 @section('lead', route('crm.pipeline.list'))
+@section('calendar', route('crm.pipeline.calendar'))
 
 @section('navbar_menu')
     <li class="dropdown">
@@ -94,10 +95,17 @@
 
             <div id="append-container-new" class="append-container-new"></div>
 
-            @foreach($stage->sales as $sale)
+            @foreach($stage->sales as $sale)            
             <div role="article" class="o_kanban_record sale-card d-flex o_draggable oe_kanban_card_undefined o_legacy_kanban_record"
                 data-id="{{ $sale->id }}" tabindex="0">
                 <div class="oe_kanban_color_0 oe_kanban_global_click oe_kanban_card d-flex flex-column">
+                @if(isset($sale) && $sale->is_lost == 2)
+                <div class="o_widget o_widget_web_ribbon">
+                    <div class="ribbon ribbon-top-right">
+                        <span class="text-bg-danger" title="">Lost</span>
+                    </div>
+                </div>
+            @endif
                     <div class="oe_kanban_content flex-grow-1">
                         <div class="oe_kanban_details"><strong
                                 class="o_kanban_record_title"><span>{{ $sale->opportunity }}</span></strong></div>
@@ -834,10 +842,10 @@
 <script>
     // contact-card click event by jquery
     $(document).on('click', '.sale-card', function () {
-        let id = $(this).data('id');
-        let url = "{{ route('crm.show', ['crm' => ':id']) }}";
-        url = url.replace(':id', id);
-        window.location.href = url;
+        var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+        if (id) {
+            window.location.href = '/pipeline-create/' + id; // Adjust the URL to your edit page
+        }
     });
 </script>
 @endpush

@@ -4,8 +4,8 @@
 @section('lead', route('crm.pipeline.list'))
 @section('head_new_btn_link', route('crm.pipeline.create'))
 @section('kanban', url('crm'))
-<!-- @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
-@section('char_area', route('lead.graph'))
+@section('calendar', route('crm.pipeline.calendar'))
+<!-- @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity')) -->
 @section('navbar_menu')
 <li class="dropdown">
@@ -649,9 +649,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     <th>Sales Person</th>
                     <th>Sales Team</th>
                     <th>Priority</th>
-                    <th>Activities</th>
-                    <th>Activity By</th>
-                    <th>My Deadline</th>
+                    <!-- <th>Activities</th>
+                    <th>Activity By</th> -->
+                    <!-- <th>My Deadline</th> -->
                     <th>Campaign</th>
                     <th>Medium</th>
                     <th>Source</th>
@@ -832,8 +832,68 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     }
                 }
             }
+            //     , {
+            //     data: 'contact_name'
+            //     , render: function (data, type, row) {
+            //         if (data) {
+            //             return data;
+            //         } else {
+            //             return '';
+            //         }
+            //     }
+            // }
+            //     , {
+            //     data: 'job_postion'
+            //     , render: function (data, type, row) {
+            //         if (data) {
+            //             return data;
+            //         } else {
+            //             return '';
+            //         }
+            //     }
+            // }
+            //     , {
+            //     data: 'deadline'
+            //     , render: function (data, type, row) {
+            //         if (data) {
+            //             return data;
+            //         } else {
+            //             return '';
+            //         }
+            //     }
+            // }
                 , {
-                data: 'contact_name'
+                data: 'get_campaign'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+                , {
+                data: 'get_medium'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+                , {
+                data: 'get_source'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+                , {
+                data: 'expected_revenue'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -843,7 +903,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             }
                 , {
-                data: 'job_postion'
+                data: 'deadline'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -853,7 +913,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             }
                 , {
-                data: 'phone'
+                data: 'expected_revenue'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -861,9 +921,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         return '';
                     }
                 }
-            }
-                , {
-                data: 'mobile'
+            },
+            {
+                data: 'recurring_revenue'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -871,9 +931,19 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         return '';
                     }
                 }
-            }
-                , {
-                data: 'priority'
+            },
+            {
+                data: 'get_recurring_plan'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.plan_name;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: 'stage_id'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;
@@ -881,39 +951,29 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         return '';
                     }
                 }
-            }
-                , {
-                data: 'get_tilte'
+            },
+            {
+                data: 'probability'
                 , render: function (data, type, row) {
                     if (data) {
-                        return data.title;
+                        return data;
                     } else {
                         return '';
                     }
                 }
-            }
-                , {
+            },
+            {
+                data: 'loslost_reasont'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
                 data: 'tag'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'get_user'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.email;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'sales_team'
                 , render: function (data, type, row) {
                     if (data) {
                         return data;

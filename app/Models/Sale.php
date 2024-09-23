@@ -43,6 +43,7 @@ class Sale extends Model
         'description',
         'recurring_revenue',
         'recurring_plan',
+        'is_lost',
 
     ];
 
@@ -133,5 +134,25 @@ class Sale extends Model
     public function getCountry()
     {
         return $this->hasOne(Country::class,'id','country');
+    }
+
+    public function getSource()
+    {
+        return $this->hasOne(Source::class, 'id', 'source_id');
+    }
+
+    public function getCampaign()
+    {
+        return $this->hasOne(Campaign::class, 'id', 'campaign_id');
+    }
+
+    public function getMedium()
+    {
+        return $this->hasOne(Medium::class, 'id', 'medium_id');
+    }
+
+    public function getRecurringPlan()
+    {
+        return $this->hasOne(RecurringPlans::class, 'id', 'recurring_plan');
     }
 }

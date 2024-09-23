@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('source_id')->nullable();
             $table->string('referred_by')->nullable();
             $table->longText('description')->nullable();
-            $table->string('is_lost')->nullable()->comment('Lost -> 1 , No Lost -> 0');
+            $table->string('is_lost')->nullable()->comment('Lost -> 2 , No Lost -> 1');
             $table->string('lost_reason')->nullable();
             $table->longText('closing_note')->nullable();
             $table->string('days_to_assign')->nullable();
