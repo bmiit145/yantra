@@ -827,18 +827,12 @@ class LeadController extends Controller
         // Check if the file exists in the request
         if ($request->hasFile('file')) {
             $file = $request->file('file'); // Use 'file' instead of 'image'
-
+            
             // Generate a unique filename
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $destinationPath = public_path('uploads/upload_document'); // Use 'uploads' directory
-
-            // Create the uploads directory if it doesn't exist
-            if (!File::exists($destinationPath)) {
-                File::makeDirectory($destinationPath, 0755, true);
-            }
-
-            // Move the file to the destination
-            $file->move($destinationPath, $fileName);
+            
+            // Move the file to the desired location, creating the folder if it doesn't exist
+            $file->move('uploads/upload_document', $fileName); // Folder path specified directly
 
             // Update the database
             $activity = Activity::find($activityId);
@@ -846,7 +840,8 @@ class LeadController extends Controller
                 $activity->status = 1; // Mark as completed
                 $activity->document = $fileName; // Save only the file name
                 $activity->save();
-                return response()->json(['success' => true]);
+
+                return response()->json(['success' => true, 'message' => 'File uploaded successfully!']);
             }
 
             return response()->json(['success' => false, 'message' => 'Activity not found.']);
@@ -863,8 +858,18 @@ class LeadController extends Controller
 
         $activity = Activity::find($request->id);
         if ($activity) {
-            $activity->document = null; // Set the document field to null
+            // Specify the path to the document
+            $documentPath = public_path('uploads/upload_document/' . $activity->document);
+
+            // Check if the file exists and delete it
+            if (file_exists(filename: $documentPath)) {
+                unlink($documentPath); // Delete the file
+            }
+
+            // Set the document field to null and save the activity
+            $activity->document = null;
             $activity->save();
+
             return response()->json(['success' => true]);
         }
 
