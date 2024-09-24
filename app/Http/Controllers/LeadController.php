@@ -826,19 +826,19 @@ class LeadController extends Controller
 
         // Check if the file exists in the request
         if ($request->hasFile('file')) {
-            $file = $request->file('file'); // Use 'file' instead of 'image'
+            $file = $request->file('file');
             
             // Generate a unique filename
             $fileName = time() . '_' . $file->getClientOriginalName();
             
-            // Move the file to the desired location, creating the folder if it doesn't exist
-            $file->move('uploads/upload_document', $fileName); // Folder path specified directly
+            // Store the file in the 'uploads/upload_document' directory in storage
+            $path = $file->storeAs('upload_document', $fileName,'public');
 
             // Update the database
             $activity = Activity::find($activityId);
             if ($activity) {
                 $activity->status = 1; // Mark as completed
-                $activity->document = $fileName; // Save only the file name
+                $activity->document = $path; // Save only the file name
                 $activity->save();
 
                 return response()->json(['success' => true, 'message' => 'File uploaded successfully!']);
@@ -858,19 +858,19 @@ class LeadController extends Controller
 
         $activity = Activity::find($request->id);
         if ($activity) {
-            // Specify the path to the document
-            $documentPath = public_path('uploads/upload_document/' . $activity->document);
+            // Specify the path to the document in storage
+            $documentPath = storage_path('app/public/' . $activity->document);
 
             // Check if the file exists and delete it
-            if (file_exists(filename: $documentPath)) {
-                unlink($documentPath); // Delete the file
+            if (file_exists($documentPath)) {
+                unlink($documentPath); // Delete the file from storage
             }
 
             // Set the document field to null and save the activity
             $activity->document = null;
             $activity->save();
 
-            return response()->json(['success' => true]);
+            return response()->json(['success' => true, 'message' => 'Document deleted successfully.']);
         }
 
         return response()->json(['success' => false, 'message' => 'Activity not found.']);

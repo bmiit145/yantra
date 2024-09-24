@@ -1607,10 +1607,6 @@
                                                 @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
                                                     <div class="grid row-gap-0 column-gap-0 delete_document"
                                                         id="document-{{ $activityDone->id }}">
-                                                        @php
-                                                            $imagePath = public_path('uploads/upload_document/' . $activityDone->document);
-                                                        @endphp
-                                                        @if(file_exists($imagePath))
                                                             <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
                                                                 style="margin-left:60px;width: max-content;" role="menu"
                                                                 title="{{ $activityDone->document }}"
@@ -1627,7 +1623,7 @@
                                                                         <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
                                                                     @endif
                                                                 </div>
-                                                                <div onclick="previewFile('{{ asset('uploads/upload_document/' . $activityDone->document) }}')"
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
                                                                     class="overflow-auto d-flex justify-content-center flex-column px-1">
                                                                     <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
                                                                     <small class="text-uppercase">{{ $extension }}</small>
@@ -1636,7 +1632,7 @@
                                                                 <div class="flex-grow-1"></div>
                                                                 <div
                                                                     class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
-                                                                    <a href="{{ asset('uploads/upload_document/' . $activityDone->document) }}"
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
                                                                         class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
                                                                         download title="Download">
                                                                         <i class="fa fa-download" role="img" aria-label="Download"></i>
@@ -1649,23 +1645,18 @@
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                        @endif
                                                     </div>
                                                 @else
+                                                @if($activityDone->document != null)
                                                     <div class="o-mail-AttachmentList overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
-                                                        @php
-                                                            $imagePath = public_path('uploads/upload_document/' . $activityDone->document);
-                                                            $isImage = in_array(pathinfo($activityDone->document, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif']);
-                                                        @endphp
-
-                                                        @if (file_exists($imagePath) && $isImage)
+                                                                                                        
                                                             <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
                                                                 <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
                                                                     tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
                                                                     title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
 
                                                                     <img class="img img-fluid my-0 mx-auto o-viewable rounded"
-                                                                        src="{{ asset('uploads/upload_document/' . $activityDone->document) }}"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
                                                                         alt="{{ $activityDone->document }}"
                                                                         style="max-width: min(100%, 1920px); max-height: 300px">
 
@@ -1675,7 +1666,7 @@
                                                                                 onclick="showDeleteConfirmation('{{ $activityDone->id }}')">
                                                                             <i class="fa fa-trash"></i>
                                                                         </button>
-                                                                        <a href="{{ asset('uploads/upload_document/' . $activityDone->document) }}"
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
                                                                         class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
                                                                         download title="Download">
                                                                             <i class="fa fa-download"></i>
@@ -1683,10 +1674,11 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @endif
+                                                        
 
                                                     <div class="grid row-gap-0 column-gap-0"></div>
                                                     </div>
+                                                    @endif
                                                 @endif
                                             </div>
 
