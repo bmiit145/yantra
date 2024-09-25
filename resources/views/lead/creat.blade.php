@@ -860,7 +860,7 @@
                         <div class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto o-chatter-disabled">
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
-                                    <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
+                                    <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
                                     <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
                                         <div class="o-mail-Followers d-flex me-1">
                                             <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
@@ -869,7 +869,7 @@
 
                                             <!-- Dropdown Menu -->
                                             <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1537.12px;">
-                                                <a class="o-dropdown-item dropdown-item o-navigable focus" role="menuitem" tabindex="0" href="#">Add Followers</a>
+                                                <a class="o-dropdown-item dropdown-item o-navigable focus add_followers" role="menuitem" tabindex="0" href="#">Add Followers</a>
                                                 <div role="separator" class="dropdown-divider"></div>
                                                 <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
                                                     <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
@@ -885,14 +885,65 @@
                                                 </div>
                                                 <div role="separator" class="dropdown-divider"></div>
                                             </div>
+                                            {{-- -------- add followers modal ---------------- --}}
+                                           <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="activitiesAddModalLable" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                    <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="activitiesAddModalLable">Invite Follower</h5> 
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form id="scheduleForm" action="{{ route('lead.scheduleActivityStore') }}" method="POST" enctype="application/x-www-form-urlencoded">
+                                                        @csrf
+                                                        <input type="hidden" value="{{$data->id ?? ''}}" name="lead_id">
+                                                        <div class="modal-body">
+                                                         
+                                                            <div class="d-flex">
+                                                                <label for="recipient-name" class="col-form-label mx-3">  Recipients: </label>
+                                                                <select class="form-control">
+                                                                    <option></option>
+                                                                    @foreach($employees as  $employee)
+                                                                         <option value="{{$employee->id}}">  {{ $employee->name }} ({{ $employee->work_email }})</option>
+                                                                    @endforeach
+                                                                    @foreach($users as $user) 
+                                                                    <option value="{{$user->id}}">{{$user->name}}({{$user->email}})</option>
+                                                                    @endforeach
+                                                                 <select> 
+                                                            </div>
+                                                            <div class=" my-2">
+                                                                <label for="recipient-name" class="col-form-label mx-3">  Send Notification: </label>
+                                                                <input type="checkbox" style="width: 15px;"> 
+                                                            </div>
+                                                          
+                                                            <div class="d-flex my-2">
+                                                                <label for="recipient-name" class="col-form-label mx-3"> Message </label>
+                                                                <textarea class="form-control" value="Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}">Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}</textarea>
+                                                            </div>
+                                                          
+                                                            
+                                                                                            
+                                                          
+                                                        </div>
+                                                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                            <button type="submit" class="btn btn-primary">Add Followers</button>
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                         <button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
-                                            <div class="position-relative"><span class="d-flex invisible text-nowrap">Following</span><span class="position-absolute end-0 top-0"> Follow </span></div>
+                                            <div class="position-relative followers"><span class="d-flex  text-nowrap">Follow</span></div>
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex flex-shrink-0 pt-3 text-truncate small mb-2 ms-5">
+                            <div class="flex-shrink-0 pt-3 text-truncate small mb-2 ms-5 show1" style="display: none !important;">
+                              <style>
+                              .hidden-important {
+                                                display: none !important;
+                                            }
+                              </style>
                                 <span class="fw-bold">To:</span>
                                 <span class="ps-1">
                                 <span class="text-muted">
@@ -909,9 +960,10 @@
                                     <i class="fa fa-caret-down"></i>
                                 </button>
                             </div>
-                            <div class="o-mail-Composer d-grid flex-shrink-0 pt-0 pb-2 o-extended o-hasSelfAvatar">
-                                                <div class="o-mail-Composer-sidebarMain flex-shrink-0">
-                                                    <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000"></div>
+                                                <div class="o-mail-Composer d-grid flex-shrink-0 pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
+                                                    <div class="o-mail-Composer-sidebarMain flex-shrink-0" >
+                                                        <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                    </div>
                                                     <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
                                                         <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
                                                             <div class="position-relative flex-grow-1">
@@ -920,9 +972,7 @@
                                                             </div>
                                                             <div class="o-mail-Composer-actions d-flex bg-view mx-3 border-top p-1 rounded">
                                                                     <div class="d-flex flex-grow-1 align-items-baseline mt-1">
-                                                                        {{-- <button class="btn border-0 p-1 rounded-pill opan_smile" aria-label="Emojis">
-                                                                            <i class="fa fa-fw fa-smile-o"></i>
-                                                                        </button> --}}
+                                                                 
                                                                         <span style="display:contents">
                                                                             <button class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1" title="Attach files" aria-label="Attach files" type="button">
                                                                                     <i class="fa fa-fw fa-paperclip"></i>
@@ -957,7 +1007,7 @@
                                                             <div class="w-100 o-min-width-0">
                                                                 <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
                                                                     <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
-                                                                        <strong class="me-1">{{$value->from_mail}}disha@gmail.com</strong>
+                                                                        <strong class="me-1">{{$value->from_mail}}</strong>
                                                                     </span>
                                                                     <div class="mx-1">
                                                                         <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
@@ -965,7 +1015,11 @@
                                                                         </span>
                                                                     </div>
                                                                         <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
+                                                                        @if($value->is_star == 1)
+                                                                          <a class="px-1 rounded-0 send_message_star" data-id="{{$value->id}}" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star o-mail-Message-starred"></i></a>
+                                                                        @else
                                                                           <a class="px-1 rounded-0 send_message_star" data-id="{{$value->id}}" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></a>
+                                                                        @endif
                                                                           <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
                                                                           <a class="px-1 rounded-0" title="Edit" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-pencil"></i></a>
                                                                       <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
@@ -995,15 +1049,17 @@
 
                                                                         <div class="o-mail-AttachmentList">
                                                                             <div class="o-mail-AttachmentList-mas" role="menu">
-                                                                               @foreach (json_decode($value->image) as $image)
-                                                                                <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1" tabindex="0" role="menuitem" aria-label="8.jfif" title="8.jfif" data-mimetype="image/jpeg">
-                                                                                      <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
-                                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
-                                                                                             <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
+                                                                              @if (!is_null($value->image) && !empty(json_decode($value->image)))
+                                                                                @foreach (json_decode($value->image) as $image)
+                                                                                    <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
+                                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
+                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
                                                                                             <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                 @endforeach
+                                                                                @endforeach
+                                                                            @endif
                                                                             </div>
                                                                             <div class="grid row-gap-0 column-gap-0"></div>
                                                                         </div>
@@ -1480,6 +1536,9 @@
     </form>
   </div>
 </div>
+
+
+
 
 
 
@@ -2798,6 +2857,8 @@
                 processData: false, // Important: Prevent jQuery from processing the data
                 success: function(response) {
                     console.log(response)
+                    location.reload();
+                    
                    
                 },
                 error: function(xhr, status, error) {
@@ -2915,6 +2976,42 @@
     });
 });
 
+</script>
+
+<script>
+   $('.send_message_btn').on('click', function() {
+        $('.show1').css('display','block');
+        $('.show2').css('display','block'); 
+  });
+
+</script>
+
+<script>
+   $('.followers').on('click', function() {
+        var id = $('#lead_id').val();
+         $.ajax({
+        url: '{{ route('lead.click_follow') }}',
+        type: 'post',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id : id
+         
+        },
+        success: function(response) {   
+           console.log(response);
+        },
+        error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        }); 
+   
+      
+    });
+
+    $(document).on('click', '.add_followers', function() {
+    
+         $('#followersModal').modal('show')
+    });
 </script>
 
 

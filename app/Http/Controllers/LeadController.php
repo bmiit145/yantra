@@ -6,7 +6,9 @@ use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Medium;
 use App\Models\Source;
+use App\Models\Following;
 use App\Models\User;
+use App\Models\Employee;
 use File;
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
@@ -26,6 +28,7 @@ use ZipArchive;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Services\EncryptionService;
+use Illuminate\Support\Facades\Auth;
 use League\CommonMark\Node\Block\Document;
 
 class LeadController extends Controller
@@ -154,11 +157,13 @@ class LeadController extends Controller
         $mediums = Medium::orderBy('id', 'DESC')->get();
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
+        $employees = Employee::all();
+        
 
         $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
   
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
     }
 
     public function store(Request $request)
@@ -983,6 +988,18 @@ class LeadController extends Controller
     {
         $lead = send_message::find($request->id);
         $lead->is_star = '1';
+        $lead->save();
+
+        return response()->json($lead);
+    }
+
+    public function click_follow(Request $request)
+    {
+        
+        $lead = new Following();
+        $lead->customer_id = Auth::user()->id;
+        $lead->type_id = $request->id;
+        $lead->type = 1;
         $lead->save();
 
         return response()->json($lead);
