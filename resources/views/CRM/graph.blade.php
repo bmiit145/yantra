@@ -233,7 +233,7 @@
   // Define a variable to store color codes
   var chartColors = {
     lineBackground: 'rgba(167, 210, 247, 1)',  // Fully transparent line background color
-    lineBorder: 'rgba(75, 192, 192, 0)',      // Fully transparent line border color
+    lineBorder: 'rgba(75, 192, 192, 0.5)',      // Fully transparent line border color
     pointBackground: 'rgba(75, 192, 192, 0)'  // Fully transparent point color
 };
 

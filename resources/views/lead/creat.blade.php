@@ -946,7 +946,7 @@
                               </style>
                                 <span class="fw-bold">To:</span>
                                 <span class="ps-1">
-                                <span class="text-muted">
+                                <span class="text-muted" id="to_mail">
                                     @if($data)
                                        @if($data->email)
                                         {{$data->email}}
@@ -2835,7 +2835,9 @@
             var send_message = $('#send_message').val(); 
             var image_uplode = $('.image_uplode')[0].files; // Files are objects
             var lead_id = $('#lead_id').val();
-            var to_mail = $('#to_mail').val();
+            // var to_mail = $('#to_mail').val();
+            const to_mail = $('#to_mail').text();
+            $('.send_messag_by_email').prop('disabled', true);
 
             // Create a FormData object
             var formData = new FormData();
