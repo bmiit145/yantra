@@ -183,6 +183,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/update-activity-status', [LeadController::class, 'activitiesUpdateStatus'])->name('lead.activitiesUpdateStatus');
     Route::post('/upload-file', [LeadController::class, 'uploadFile'])->name('lead.uploadFile');
     Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
+    Route::post('/lead/click_follow', [LeadController::class, 'click_follow'])->name('lead.click_follow');
 
     
     // Star Store Route
