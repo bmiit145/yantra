@@ -160,12 +160,68 @@ class LeadController extends Controller
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
         $employees = Employee::all();
-        
-
         $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
-  
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
+        $followers = Following::where('type_id', $id)
+        ->where('customer_id', '!=' , 'users/'.Auth::user()->id)
+        ->where('type', '1')
+        ->get()
+        ->map(function($follower) {
+            // Parse customer_id to determine if it's for Employee or User
+            $customerParts = explode('/', $follower->customer_id);
+            $entityType = $customerParts[0];
+            $entityId = $customerParts[1];
+    
+            if ($entityType === 'employee') {
+                // Fetch related employee details
+                $employee = Employee::find($entityId);
+                if ($employee) {
+                    $follower->customer = $employee; 
+                }
+            } elseif ($entityType === 'users') {
+                // Fetch related user details
+                $user = User::find($entityId);
+                if ($user) {
+                    $follower->customer = $user; 
+                }
+            }
+    
+            return $follower;
+        });
+
+        // return $followers;
+
+        $authfollowers = Following::where('type_id', $id)
+        ->where('type', '1')
+        ->where('customer_id', 'users/'.Auth::user()->id)
+        ->get()
+        ->map(function($follower1) {
+            // Parse customer_id to determine if it's for Employee or User
+            $customerParts = explode('/', $follower1->customer_id);
+            $entityType = $customerParts[0];
+            $entityId = $customerParts[1];
+    
+            if ($entityType === 'employee') {
+                // Fetch related employee details
+                $employee = Employee::find($entityId);
+                if ($employee) {
+                    $follower1->customer = $employee; 
+                }
+            } elseif ($entityType === 'users') {
+                // Fetch related user details
+                $user = User::find($entityId);
+                if ($user) {
+                    $follower1->customer = $user; 
+                }
+            }
+    
+            return $follower1;
+        });
+
+        $followerscount = $followers->count();
+        $authfollowerscount = $authfollowers->count();
+        $count = $followerscount + $authfollowerscount;
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
     }
 
     public function store(Request $request)
@@ -1035,15 +1091,26 @@ class LeadController extends Controller
 
     public function click_follow(Request $request)
     {
+     
         
         $lead = new Following();
-        $lead->customer_id = Auth::user()->id;
+        if($request->user_id){
+            $lead->customer_id = $request->user_id;
+        }else{
+            $lead->customer_id = 'users/' . Auth::user()->id;
+        }
         $lead->type_id = $request->id;
+        $lead->message = $request->message;
         $lead->type = 1;
         $lead->save();
-
-        return response()->json($lead);
+        
+        if($request->user_id){
+            return back();
+        }else{
+            return response()->json($lead);
+        }
     }
 
+   
 }
 

@@ -300,6 +300,9 @@
         width: 100%;
         height: 100px;
     }
+    #search-input{
+        display: none;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -864,17 +867,18 @@
                                     <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
                                         <div class="o-mail-Followers d-flex me-1">
                                             <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
-                                                <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">0</sup>
+                                                <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
                                             </button>
 
                                             <!-- Dropdown Menu -->
-                                            <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1537.12px;">
+                                            <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1537.12px;width: 300px;">
                                                 <a class="o-dropdown-item dropdown-item o-navigable focus add_followers" role="menuitem" tabindex="0" href="#">Add Followers</a>
                                                 <div role="separator" class="dropdown-divider"></div>
+                                                @foreach($authfollowers as $auth)
                                                 <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
                                                     <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
                                                         <img class="o-mail-Follower-avatar me-2 rounded" alt="" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                        <span class="flex-shrink text-truncate">info@yantradesign.co.in</span>
+                                                        <span class="flex-shrink text-truncate">{{$auth->customer->email}}</span>
                                                     </a>
                                                     <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
                                                         <i class="fa fa-pencil"></i>
@@ -884,6 +888,36 @@
                                                     </button>
                                                 </div>
                                                 <div role="separator" class="dropdown-divider"></div>
+                                                @endforeach
+                                               @foreach($followers as $follower1)
+                                                    <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
+                                                        <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
+                                                            <!-- Display the profile image if it exists -->
+                                                            @if(isset($follower1->customer->profile_image))
+                                                                <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
+                                                                    src="{{ asset('uploads/' . $follower1->customer->profile_image) }}">
+                                                            @else
+                                                                <!-- Default image if no profile image is available -->
+                                                                <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
+                                                                    src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                            @endif
+
+                                                            <!-- Display the name of the customer -->
+                                                            <span class="flex-shrink text-truncate">
+                                                                {{ $follower1->customer->email ?? $follower1->customer->work_email}}
+                                                            </span>
+                                                        </a>
+
+                                                        <!-- Edit and Remove buttons -->
+                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Remove this follower" aria-label="Remove this follower">
+                                                            <i class="fa fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div role="separator" class="dropdown-divider"></div>
+                                                @endforeach
                                             </div>
                                             {{-- -------- add followers modal ---------------- --}}
                                            <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="activitiesAddModalLable" aria-hidden="true">
@@ -893,35 +927,35 @@
                                                         <h5 class="modal-title" id="activitiesAddModalLable">Invite Follower</h5> 
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
-                                                    <form id="scheduleForm" action="{{ route('lead.scheduleActivityStore') }}" method="POST" enctype="application/x-www-form-urlencoded">
+                                                    <form id="inviteForm" action="{{route('lead.click_follow')}}" method="POST" enctype="application/x-www-form-urlencoded">
                                                         @csrf
-                                                        <input type="hidden" value="{{$data->id ?? ''}}" name="lead_id">
+                                                        <input type="hidden" value="{{$data->id ?? ''}}" name="id">
                                                         <div class="modal-body">
                                                          
                                                             <div class="d-flex">
-                                                                <label for="recipient-name" class="col-form-label mx-3">  Recipients: </label>
-                                                                <select class="form-control">
+                                                                <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
+                                                                <select class="form-control" name="user_id">
                                                                     <option></option>
                                                                     @foreach($employees as  $employee)
-                                                                         <option value="{{$employee->id}}">  {{ $employee->name }} ({{ $employee->work_email }})</option>
+                                                                         <option value="employee/{{$employee->id}}">  {{ $employee->name }} ({{ $employee->work_email }})</option>
                                                                     @endforeach
                                                                     @foreach($users as $user) 
-                                                                    <option value="{{$user->id}}">{{$user->name}}({{$user->email}})</option>
+                                                                    <option value="users/{{$user->id}}">{{$user->name}}({{$user->email}})</option>
                                                                     @endforeach
                                                                  <select> 
                                                             </div>
-                                                            <div class=" my-2">
+                                                            <div class="d-flex my-2">
                                                                 <label for="recipient-name" class="col-form-label mx-3">  Send Notification: </label>
-                                                                <input type="checkbox" style="width: 15px;"> 
+                                                                <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked> 
                                                             </div>
                                                           
-                                                            <div class="d-flex my-2">
+                                                            <div class="d-flex my-2 hiden_div">
                                                                 <label for="recipient-name" class="col-form-label mx-3"> Message </label>
-                                                                <textarea class="form-control" value="Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}">Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}</textarea>
+                                                                <textarea class="form-control" id="send_notification"  name="message" value="Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}">Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}</textarea>
                                                             </div>
                                                           
                                                             
-                                                                                            
+                                                                                        
                                                           
                                                         </div>
                                                         <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
@@ -995,8 +1029,6 @@
                                                 </div>
                                             @if($send_message)
                                                @foreach($send_message as $value)
-                                                
-                                               
                                                     <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
                                                         <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                                             <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
@@ -2357,7 +2389,10 @@
 </script>
 <script>
   $(document).ready(function () {
-    $(".makeMeSummernote").summernote();
+     $(".makeMeSummernote").summernote();
+    });
+  $(document).ready(function () {
+     $("#send_notification").summernote();
     });
 </script>
 <script>
@@ -2991,12 +3026,12 @@
 <script>
    $('.followers').on('click', function() {
         var id = $('#lead_id').val();
-         $.ajax({
-        url: '{{ route('lead.click_follow') }}',
-        type: 'post',
-        data: {
-            _token: '{{ csrf_token() }}',
-            id : id
+        $.ajax({
+            url: '{{ route('lead.click_follow') }}',
+            type: 'post',
+            data: {
+                _token: '{{ csrf_token() }}',
+                id : id
          
         },
         success: function(response) {   
@@ -3012,7 +3047,15 @@
 
     $(document).on('click', '.add_followers', function() {
     
-         $('#followersModal').modal('show')
+        $('#followersModal').modal('show')
+    });
+
+    $('#send_notofiction_chekbox').on('change', function() {
+        if($(this).is(':checked')) {
+            $('.hiden_div').attr('style', 'display:block !important'); 
+        } else {
+            $('.hiden_div').attr('style', 'display:none !important');
+        }
     });
 </script>
 
