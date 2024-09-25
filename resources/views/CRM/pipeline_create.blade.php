@@ -1,9 +1,11 @@
 @extends('layout.header')
+@section('head_breadcrumb_title', 'Pipeline')
 @section('head_new_btn_link', route('crm.pipeline.create'))
 @section('lead', route('crm.pipeline.list'))
 @section('kanban', route('crm.index'))
 @section('calendar', route('crm.pipeline.calendar'))
 @section('activity', route('crm.pipeline.activity'))
+@section('char_area', route('crm.pipeline.graph'))
 
 @section('navbar_menu')
 <li class="dropdown">
@@ -363,6 +365,10 @@
 
     .o_arrow_button+.o_arrow_button {
         border-left: none;
+    }
+
+    .selected-star {
+        color: #f3cc00; /* Gold color for the selected star */
     }
 </style>
 
@@ -1464,7 +1470,7 @@
                                                                                                                                 <div name="edit_due_date"
                                                                                                                                     class="o_field_widget">
                                                                                                                                     <div class="d-inline-flex w-100"><input
-                                                                                                                                            class="o_input datepicker"
+                                                                                                                                            class="o_input activity-datepicker"
                                                                                                                                             name="due_date"
                                                                                                                                             placeholder="Select Due Date"
                                                                                                                                             style="width: 300px;"
@@ -1587,6 +1593,9 @@
                                                                     <span
                                                                         class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
                                                                     done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
                                                                 </p>
                                                                 @if(!empty($activityDone->feedback))
                                                                     <div>
@@ -1788,7 +1797,7 @@
                                     <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                         <div class="o_row o_row_readonly">
                                             <div name="due_date" class="o_field_widget">
-                                                <div class="d-inline-flex w-100"><input class="o_input datepicker"
+                                                <div class="d-inline-flex w-100"><input class="o_input activity-datepicker"
                                                         name="due_date" placeholder="Select Due Date"
                                                         style="width: 300px;" type="text" id="due_date"></div>
                                             </div>
@@ -1909,6 +1918,15 @@
                         console.log("Selected date: " + dateText);
                     }
                 }).datepicker();
+
+                $(".activity-datepicker").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    duration: "fast",
+                    onSelect: function(dateText, inst) {
+                        // Optional: Do something when a date is selected
+                        console.log("Selected date: " + dateText);
+                    }
+                }).datepicker("setDate", currentDate);
             });
 
             $(document).ready(function () {
@@ -2713,7 +2731,7 @@
                         var closing_notes = $('#closing_notes').val();
                         if (newlost) {
                             $.ajax({
-                                url: '{{ route('crm.pipeline.markAsLost') }}',
+                                url: '{{ route('crm.pipeline.addLostReason') }}',
                                 type: 'POST',
                                 data: {
                                     _token: '{{ csrf_token() }}',
@@ -2771,30 +2789,34 @@
 
             function restoreLost() {
                 // Assuming you have the record ID available in $data->id
-                const recordId = {{ isset($data) && $data->id }};
+                const recordId = {{ $data->id ?? 'null' }}; // Use null if $data is not set
+
+                if (!recordId) {
+                    alert('Record ID is not available.');
+                    return;
+                }
 
                 // Make an AJAX request to update the is_lost value
-                fetch(`/pipeline-restore/${recordId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token if you're using Laravel
+                $.ajax({
+                    url: `/pipeline-restore/${recordId}`,
+                    type: 'POST',
+                    data: {
+                        is_lost: 1,
+                        _token: '{{ csrf_token() }}' // Include CSRF token
                     },
-                    body: JSON.stringify({ is_lost: 1 }) // Set is_lost to 1
-                })
-                    .then(response => response.json())
-                    .then(data => {
+                    success: function(data) {
                         if (data.success) {
-                            // Optionally, you can refresh the page or update the UI accordingly
+                            // Optionally, refresh the page or update the UI accordingly
                             location.reload(); // Reload the page
                         } else {
                             alert('Failed to restore the record.');
                         }
-                    })
-                    .catch((error) => {
+                    },
+                    error: function(xhr, status, error) {
                         console.error('Error:', error);
-                        alert('An error occurred while restoring the record.');
-                    });
+                        alert('An error occurred while restoring the record: ' + error.responseText);
+                    }
+                });
             }
 
         </script>
@@ -3141,6 +3163,60 @@
                     }
                 });
             };
+        </script>
+
+        <!-- Activity Done Star Store Function -->
+        <script>
+            $(document).ready(function() {
+                $('.toggle-star').each(function() {
+                    const activityId = $(this).data('id');
+                    const icon = $(this).find('i');
+                    
+                    // Check localStorage for the star state
+                    const storedState = localStorage.getItem(`activity_${activityId}_is_star`);
+                    
+                    if (storedState !== null) {
+                        const isStar = storedState === '1';
+                        icon.toggleClass('fa-star', isStar);
+                        icon.toggleClass('fa-star-o', !isStar);
+                        icon.toggleClass('selected-star', isStar); // Gold color for selected star
+                        icon.toggleClass('not-selected', !isStar); // Gray border for unselected star
+                    }
+                });
+
+                $('.toggle-star').on('click', function() {
+                    const icon = $(this).find('i'); // Target the icon for this button
+                    const activityId = $(this).data('id');
+                    const isStar = icon.hasClass('fa-star');
+                    const newIsStar = !isStar ? 1 : 0; // Set to 1 if selected, 0 if unselected
+
+                    // AJAX request to update the database
+                    $.ajax({
+                        url: `/star-update/${activityId}`,
+                        type: 'POST',
+                        data: {
+                            is_star: newIsStar,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                // Toggle star icon and classes for this button only
+                                icon.toggleClass('fa-star fa-star-o');
+                                icon.toggleClass('selected-star', newIsStar === 1);
+                                icon.toggleClass('not-selected', newIsStar === 0);
+                                
+                                // Store the state in localStorage for this activity
+                                localStorage.setItem(`activity_${activityId}_is_star`, newIsStar);
+                            } else {
+                                console.error(data.message);
+                            }
+                        }.bind(this),
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
         </script>
     @endpush
 

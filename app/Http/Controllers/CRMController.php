@@ -7,6 +7,7 @@ use App\Models\Contact;
 use App\Models\Country;
 use App\Models\CrmSaleExtra;
 use App\Models\CrmStage;
+use App\Models\generate_lead;
 use App\Models\LostReason;
 use App\Models\Medium;
 use App\Models\Opportunity;
@@ -19,6 +20,7 @@ use App\Models\Source;
 use App\Models\Tag;
 use App\Models\User;
 use App\Services\LogService;
+use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -460,6 +462,20 @@ class CRMController extends Controller
         return response()->json(['success' => false, 'message' => 'Pipeline not found'], 404);
     }
 
+    public function addLostReason(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $lostReason = LostReason::create(['name' => $request->name]);
+
+        return response()->json([
+            'id' => $lostReason->id,
+            'name' => $lostReason->name,
+        ]);
+    }
+
     public function pipelineManageLostReasons(Request $request)
     {
         $data = Sale::where('id', $request->pipeline_id)->update([
@@ -477,6 +493,8 @@ class CRMController extends Controller
         $data = Sale::find($id);
         if ($data) {
             $data->is_lost = $request->input('is_lost');
+            $data->lost_reason = null;
+            $data->closing_note = null;
             $data->save();
 
             return response()->json(['success' => true]);
@@ -558,36 +576,45 @@ class CRMController extends Controller
 
     // calendar activity
     public function pipelinefetchActivities()
-    {
-        // Fetch activities with the lead title relationship
-        $activities = Activity::with('getPipelineLeadTitle','getPipelineLeadTitle.contact')->where('pipeline_id','!=', null)->where('status', '0')->get();
-        // dd($activities);
+{
+    // Fetch activities with the lead title relationship
+    $activities = Activity::with('getPipelineLeadTitle', 'getPipelineLeadTitle.contact')
+        ->where('pipeline_id', '!=', null)
+        ->where('status', '0')
+        ->get();
 
-        // Format activities for FullCalendar
-        $events = $activities->map(function ($activity) {
-            // Ensure due_date is a Carbon instance
-            $dueDate = Carbon::parse($activity->due_date);
+    // Format activities for FullCalendar
+    $events = $activities->map(function ($activity) {
+        // Ensure due_date is a Carbon instance
+        $dueDate = Carbon::parse($activity->due_date);
 
-            // Get lead title
-            $pipelineTitle = $activity->getPipelineLeadTitle ? $activity->getPipelineLeadTitle->opportunity : 'No Opportunity';
+        // Initialize variables for lead title, customer, and expected revenue
+        $pipelineTitle = 'No Opportunity';
+        $pipelineCustomer = 'No Customer';
+        $pipelineRevanue = 'No Expected Revenue';
+
+        // Check if getPipelineLeadTitle is not null
+        if ($activity->getPipelineLeadTitle) {
+            $pipelineTitle = $activity->getPipelineLeadTitle->opportunity;
             $pipelineCustomer = $activity->getPipelineLeadTitle->contact ? $activity->getPipelineLeadTitle->contact->name : 'No Customer';
-            $pipelineRevanue = $activity->getPipelineLeadTitle ? $activity->getPipelineLeadTitle->expected_revenue : 'No Expected Revenue';
+            $pipelineRevanue = $activity->getPipelineLeadTitle->expected_revenue;
+        }
 
-            return [
-                'id' => $activity->id,
-                'pipeline_id' => $activity->pipeline_id,
-                'title' => "{$pipelineTitle}", // Include lead title in the title
-                'customer' => "{$pipelineCustomer}",
-                'expected_revenue' => "{$pipelineRevanue}",
-                'start' => $dueDate->toDateString(),
-                'color' => 'blue', // This can be replaced with dynamic values if needed
-                'description' => $activity->note,
-            ];
-        });
+        return [
+            'id' => $activity->id,
+            'pipeline_id' => $activity->pipeline_id,
+            'title' => $pipelineTitle, // Include lead title in the title
+            'customer' => $pipelineCustomer,
+            'expected_revenue' => $pipelineRevanue,
+            'start' => $dueDate->toDateString(),
+            'color' => 'blue', // This can be replaced with dynamic values if needed
+            'description' => $activity->note,
+        ];
+    });
 
-        // Return JSON response
-        return response()->json($events);
-    }
+    // Return JSON response
+    return response()->json($events);
+}
 
     // Info activity
     public function pipelineactivityDetail($id)
@@ -629,6 +656,77 @@ class CRMController extends Controller
     
         return view('CRM.viewactivity', compact('activities', 'users', 'currentUser'));
     }
+    
+    public function pipelineGraph()
+{
+    // Fetch sales data grouped by stage_id and sales_person, including user details
+    $salesData = Sale::with('salesPerson') // Eager load the user relationship
+        ->select('stage_id', 'sales_person', DB::raw('count(*) as total'))
+        ->groupBy('stage_id', 'sales_person')
+        ->get();
+
+    // Fetch all stages and key by ID
+    $stages = CrmStage::all()->keyBy('id'); 
+
+    // Prepare datasets for the chart
+    $datasets = [];
+    
+    foreach ($salesData as $data) {
+        if (!isset($stages[$data->stage_id])) {
+            error_log("Stage ID not found: " . $data->stage_id);
+            continue;
+        }
+
+        $user = $data->salesPerson; // Correctly reference the salesPerson relationship
+        $userName = $user->name ?? 'Unknown User'; 
+        $userEmail = $user->email ?? 'No Email'; // Fetch user email
+        $userColor = $this->getUserColor($data->sales_person);
+
+        // Ensure unique entries for each stage and user
+        $datasets[$data->stage_id]['data'][$data->sales_person] = [
+            'label' => "$userName ($userEmail)", // Combine name and email for the label
+            'total' => $data->total,
+            'backgroundColor' => $userColor,
+        ];
+    }
+
+    return view('CRM.graph', compact('datasets', 'stages'));
+}
+
+private function getUserColor($userId)
+{
+    $userId = abs((int)$userId);
+
+    // Colors with full transparency (alpha set to 0)
+    $colors = [
+        'rgba(255, 99, 132, 0.5)',  // Transparent red
+        'rgba(54, 162, 235, 0.5)',  // Transparent blue
+        'rgba(255, 206, 86, 0.5)',  // Transparent yellow
+        'rgba(75, 192, 192, 0.5)',  // Transparent teal
+        'rgba(153, 102, 255, 0.5)', // Transparent purple
+        'rgba(255, 159, 64, 0.5)',  // Transparent orange
+        'rgba(201, 203, 207, 0.5)', // Transparent gray
+        'rgba(255, 99, 71, 0.5)',   // Transparent tomato
+        'rgba(60, 179, 113, 0.5)',  // Transparent mediumseagreen
+        'rgba(255, 20, 147, 0.5)',  // Transparent deeppink
+        'rgba(100, 149, 237, 0.5)', // Transparent cornflower blue
+        'rgba(255, 165, 0, 0.5)',   // Transparent orange
+        'rgba(124, 252, 0, 0.5)',   // Transparent lawn green
+        'rgba(255, 105, 180, 0.5)', // Transparent hot pink
+        'rgba(186, 85, 211, 0.5)'   // Transparent medium orchid
+    ];
+
+    $index = $userId % count($colors);
+
+    error_log("User ID: $userId, Calculated Index: $index, Colors Count: " . count($colors));
+
+    if ($index < 0 || $index >= count($colors)) {
+        error_log("Index out of bounds: $index");
+        return 'rgba(0, 0, 0, 0)'; // Fully transparent black as default
+    }
+
+    return $colors[$index];
+}
 
 
 }

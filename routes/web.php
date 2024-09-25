@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pipeline-store',[CRMController::class,'pipelineStore'])->name('crm.pipeline.store');
     Route::get('/customer/{id}', [CRMController::class, 'getCustomerDetails'])->name('getCustomerDetails');
     Route::post('/update-stage', [CRMController::class,'updateStage'])->name('crm.updateStage');
+    Route::post('/add-lost-reason', [CRMController::class, 'addLostReason'])->name('crm.pipeline.addLostReason');
     Route::post('/pipeline/manageLostReasons', [CRMController::class, 'pipelineManageLostReasons'])->name('crm.pipeline.markAsLost');
     Route::post('/pipeline-restore/{id}', [CRMController::class, 'restoreIsLost'])->name('crm.pipeline.restore');;
     // CRM pipeline Activities
@@ -67,8 +68,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-activity-detail/{id}', [CRMController::class, 'pipelineactivityDetail'])->name('crm.pipeline.activityDetail');
     Route::get('/pipeline-calendar', [CRMController::class, 'calendar'])->name('crm.pipeline.calendar');
     Route::get('/pipeline-activity' , [CRMController::class, 'pipelineActivity'])->name('crm.pipeline.activity');
+    Route::get('/pipeline-graph', [CRMController::class, 'pipelineGraph'])->name('crm.pipeline.graph');
     
-
 
 
 
@@ -184,6 +185,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
 
     
+    // Star Store Route
+    Route::post('/star-update/{id}', [ActivityController::class, 'startStore'])->name('start-store');
 
 
     // Check Email Or Phone Exists Route

@@ -6,6 +6,7 @@
 @section('kanban', url('crm'))
 @section('calendar', route('crm.pipeline.calendar'))
 @section('activity', route('crm.pipeline.activity'))
+@section('char_area', route('crm.pipeline.graph'))
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>

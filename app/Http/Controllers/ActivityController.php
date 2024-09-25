@@ -336,4 +336,27 @@ class ActivityController extends Controller
         }
     }
 
+    // Star Store functuin
+    public function startStore(Request $request, $id)
+{
+    // Validate the incoming request
+    $request->validate([
+        'is_star' => 'required|boolean',
+    ]);
+
+    // Find the activity by ID
+    $activity = Activity::find($id);
+
+    if (!$activity) {
+        return response()->json(['success' => false, 'message' => 'Activity not found'], 404);
+    }
+
+    // Update the 'is_star' field
+    $activity->is_star = $request->input('is_star');
+    $activity->save();
+
+    // Return a success response
+    return response()->json(['success' => true]);
+}
+
 }
