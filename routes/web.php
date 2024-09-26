@@ -93,6 +93,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('products-store' , [SalesController::class, 'product_store'])->name('product.store');
     Route::get('pricelists' , [SalesController::class, 'Pricelists_index'])->name('pricelists.index');
     Route::get('pricelists/new' , [SalesController::class, 'Pricelists_create'])->name('pricelists.create');
+    Route::get('teams_create/new/{id?}' , [SalesController::class, 'Teams_create'])->name('sales.create');
+    Route::post('sales/teams_store' , [SalesController::class, 'teams_store'])->name('sales.teams_store');
 
 
     Route::get('configuration/activity-types' , [ConfigurationController::class, 'index'])->name('configuration.activitytype');
