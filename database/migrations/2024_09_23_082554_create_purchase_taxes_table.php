@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('followings', function (Blueprint $table) {
+        Schema::create('purchase_taxes', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_id')->nullable();
-            $table->string('type_id')->nullable();
-            $table->string('type')->nullable()->comment('1=lead, 2=pipline');
+            $table->string('tax_name')->nullable();
+            $table->string('tax_rate')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('followings');
+        Schema::dropIfExists('purchase_taxes');
     }
 };
