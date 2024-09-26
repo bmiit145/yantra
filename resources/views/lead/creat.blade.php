@@ -236,11 +236,21 @@
         display: flex;
     }
     .o-mail-AttachmentImage {
-        width: 33.33%;
-        padding: 0 15px;
+        width: 20%;
+        padding: 0 10px;
     }
     .o-mail-AttachmentList {
         max-width: 60%;
+    }
+    .document-container.d-flex.flex-wrap.mb-2 {
+        gap:13px;
+        grid-template-columns: repeat(var(--columns, 13), 1fr);
+    }
+    .delete_document{
+        width: 30%;
+    }
+    .image-container{
+        gap:5px;
     }
 </style>
 <style>
@@ -302,6 +312,18 @@
     }
     #search-input{
         display: none;
+    }
+    .o_form_view .o_form_renderer {
+        max-width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+    .o_form_sheet_bg {
+       width: 70%;
+        max-width: 70%;
+    }
+    .o-mail-ChatterContainer.o-mail-Form-chatter.o-aside.w-print-100 {
+        width: 30%;
+        max-width: 30%;
     }
 </style>
 
@@ -864,7 +886,11 @@
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
                                     <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
-                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i> <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
+                                        <i class="fa fa-paperclip fa-lg me-1"></i>
+                                        <sup id="fileCount">{{$fileCount ?? ''}}</sup>
+                                    </button>
+                                    <!-- <input type="file" id="fileInput" multiple style="display:none;"></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*"> -->
                                         <div class="o-mail-Followers d-flex me-1">
                                             <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
                                                 <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
@@ -880,10 +906,7 @@
                                                         <img class="o-mail-Follower-avatar me-2 rounded" alt="" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
                                                         <span class="flex-shrink text-truncate">{{$auth->customer->email}}</span>
                                                     </a>
-                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
-                                                        <i class="fa fa-pencil"></i>
-                                                    </button>
-                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Remove this follower" aria-label="Remove this follower">
+                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0 remove-follower" title="Remove this follower" aria-label="Remove this follower" data-follower-id="{{ $auth->id }}">
                                                         <i class="fa fa-remove"></i>
                                                     </button>
                                                 </div>
@@ -893,9 +916,9 @@
                                                     <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
                                                         <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
                                                             <!-- Display the profile image if it exists -->
-                                                            @if(isset($follower1->customer->profile_image))
+                                                            @if(isset($follower1->customer->image))
                                                                 <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
-                                                                    src="{{ asset('uploads/' . $follower1->customer->profile_image) }}">
+                                                                    src="{{ asset('uploads/' . $follower1->customer->image) }}">
                                                             @else
                                                                 <!-- Default image if no profile image is available -->
                                                                 <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
@@ -904,71 +927,65 @@
 
                                                             <!-- Display the name of the customer -->
                                                             <span class="flex-shrink text-truncate">
-                                                                {{ $follower1->customer->email ?? $follower1->customer->work_email}}
+                                                                {{ $follower1->customer->email ?? $follower1->customer->email ?? ''}}
                                                             </span>
                                                         </a>
 
-                                                        <!-- Edit and Remove buttons -->
-                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </button>
-                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Remove this follower" aria-label="Remove this follower">
+                                                        <!-- Remove buttons -->
+                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0 remove-follower" title="Remove this follower" aria-label="Remove this follower" data-follower-id="{{ $follower1->id }}">
                                                             <i class="fa fa-remove"></i>
                                                         </button>
                                                     </div>
                                                     <div role="separator" class="dropdown-divider"></div>
                                                 @endforeach
                                             </div>
-                                            {{-- -------- add followers modal ---------------- --}}
-                                           <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="activitiesAddModalLable" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                    <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="activitiesAddModalLable">Invite Follower</h5> 
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <form id="inviteForm" action="{{route('lead.click_follow')}}" method="POST" enctype="application/x-www-form-urlencoded">
-                                                        @csrf
-                                                        <input type="hidden" value="{{$data->id ?? ''}}" name="id">
-                                                        <div class="modal-body">
-                                                         
-                                                            <div class="d-flex">
-                                                                <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
-                                                                <select class="form-control" name="user_id">
-                                                                    <option></option>
-                                                                    @foreach($employees as  $employee)
-                                                                         <option value="employee/{{$employee->id}}">  {{ $employee->name }} ({{ $employee->work_email }})</option>
-                                                                    @endforeach
-                                                                    @foreach($users as $user) 
-                                                                    <option value="users/{{$user->id}}">{{$user->name}}({{$user->email}})</option>
-                                                                    @endforeach
-                                                                 <select> 
-                                                            </div>
-                                                            <div class="d-flex my-2">
-                                                                <label for="recipient-name" class="col-form-label mx-3">  Send Notification: </label>
-                                                                <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked> 
-                                                            </div>
-                                                          
-                                                            <div class="d-flex my-2 hiden_div">
-                                                                <label for="recipient-name" class="col-form-label mx-3"> Message </label>
-                                                                <textarea class="form-control" id="send_notification"  name="message" value="Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}">Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}</textarea>
-                                                            </div>
-                                                          
-                                                            
-                                                                                        
-                                                          
-                                                        </div>
-                                                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                                                            <button type="submit" class="btn btn-primary">Add Followers</button>
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                        </div>
-                                                    </form>
+                                            {{-- Add Followers Modal --}}
+                                            <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="followersModalLabel">Invite Follower</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
+                                                <form id="inviteForm" action="{{ route('lead.invite_followers') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" value="{{ $data->id ?? '' }}" name="id">
+                                                    <div class="modal-body">
+                                                        <div class="d-flex">
+                                                            <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
+                                                            <select class="form-control" name="user_id" required>
+                                                                <option value=""></option>
+                                                                @foreach($employees as $employee)
+                                                                    <option value="employee/{{ $employee->id }}">{{ $employee->name }} ({{ $employee->emial }})</option>
+                                                                @endforeach
+                                                                @foreach($users as $user)
+                                                                    <option value="users/{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="d-flex my-2">
+                                                            <label for="send-notification" class="col-form-label mx-3">Send Notification: </label>
+                                                            <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked>
+                                                        </div>
+                                                        <div class="d-flex my-2 hiden_div">
+                                                            <label for="message" class="col-form-label mx-3">Message</label>
+                                                            <textarea class="form-control" id="send_notification" name="message">Hello, {{ Auth::user()->email }} invited you to follow Lead/Opportunity document: {{ isset($data) ? $data->product_name : '' }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                        <button type="submit" class="btn btn-primary">Add Followers</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </div>
-                                        <button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
-                                            <div class="position-relative followers"><span class="d-flex  text-nowrap">Follow</span></div>
-                                        </button>
+                                            </div>
+                                            </div>
+                                            </div>
+                                            <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}">
+                                                <div class="position-relative">
+                                                    <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                </div>
+                                            </button>
                                     </div>
                                 </div>
                             </div>
@@ -1377,10 +1394,201 @@
                                                 </div>
                                             </div>
                                         @endforeach
-                                    @endif
+                                    @endif        
+                                    
+                                    <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
+                                    <div class="d-flex align-items-center">
+                                        <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
+                                        <hr class="flex-grow-1">
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                                @php
+                                                    $images = [];
+                                                    $documents = [];
+                                                @endphp
+
+                                                @foreach ($allFiles as $file)
+                                                    @php
+                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                        // Categorize files into images and documents
+                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                            $documents[] = $file;
+                                                        } else {
+                                                            $images[] = $file; // Add all other files to images
+                                                        }
+                                                    @endphp
+                                                @endforeach
+
+                                                <!-- Display Images -->
+                                                @if(count($images) > 0)
+                                                    <div class="image-container d-flex flex-wrap mb-2">
+                                                        @foreach ($images as $file)
+                                                            <div class="o-mail-AttachmentImage"
+                                                                tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                                
+                                                                <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                    src="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                    alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+
+                                                <!-- Display Documents -->
+                                                @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="showDeleteConfirmation('{{ $file }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                            <span style="display:contents">
+                                            <button class="btn btn-link" type="button" id="openFileUpload">
+                                                <i class="fa fa-plus-square"></i> Attach files
+                                            </button>
+                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                            </span>
+                                    </div>
+                                </div>
+
                                 @endif
                                 @if(isset($data->lead_type) && $data->lead_type == 2)
                                 
+                                <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
+                                    <div class="d-flex align-items-center">
+                                        <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
+                                        <hr class="flex-grow-1">
+                                    </div>
+                                    <div class="d-flex flex-column">
+                                                @php
+                                                    $images = [];
+                                                    $documents = [];
+                                                @endphp
+
+                                                @foreach ($allFiles as $file)
+                                                    @php
+                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                        // Categorize files into images and documents
+                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                            $documents[] = $file;
+                                                        } else {
+                                                            $images[] = $file; // Add all other files to images
+                                                        }
+                                                    @endphp
+                                                @endforeach
+
+                                                <!-- Display Images -->
+                                                @if(count($images) > 0)
+                                                    <div class="image-container d-flex flex-wrap mb-2">
+                                                        @foreach ($images as $file)
+                                                            <div class="o-mail-AttachmentImage"
+                                                                tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                                
+                                                                <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                    src="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                    alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+
+                                                <!-- Display Documents -->
+                                                @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="showDeleteConfirmation('{{ $file }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                            <span style="display:contents">
+                                            <button class="btn btn-link" type="button" id="openFileUpload">
+                                                <i class="fa fa-plus-square"></i> Attach files
+                                            </button>
+                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                            </span>
+                                    </div>
+                                </div>
+                                <br>
                               
                                 <div class="main-lead-details">
                                     <div class="lead-details">
@@ -3024,41 +3232,137 @@
 </script>
 
 <script>
-   $('.followers').on('click', function() {
+ $(document).ready(function() {
+    var $button = $('#follow-button');
+    var currentStatus = $button.data('follow-status');
+
+    // Check the current status and update the button text accordingly
+    if (currentStatus === 'following') {
+        $button.find('span').text('Following');
+    } else {
+        $button.find('span').text('Follow');
+    }
+
+    $('.followers').on('click', function() {
         var id = $('#lead_id').val();
+        var $button = $(this); // Reference the button that was clicked
+
         $.ajax({
             url: '{{ route('lead.click_follow') }}',
             type: 'post',
             data: {
                 _token: '{{ csrf_token() }}',
-                id : id
-         
-        },
-        success: function(response) {   
-           console.log(response);
-        },
-        error: function(xhr, status, error) {
+                id: id,
+                auth_id: '{{ Auth::user()->id }}' // Include the user ID
+            },
+            success: function(response) {
+                // Update button text and status based on response
+                if (response.isFollowing) {
+                    $button.data('follow-status', 'following').find('span').text('Following');
+                } else {
+                    $button.data('follow-status', 'not-following').find('span').text('Follow');
+                }
+                
+                // Reload the page to reflect the updated state
+                location.reload();
+            },
+            error: function(xhr, status, error) {
                 toastr.error('Something went wrong!');
             }
-        }); 
-   
-      
+        });
     });
 
     $(document).on('click', '.add_followers', function() {
-    
-        $('#followersModal').modal('show')
+        $('#followersModal').modal('show');
     });
 
     $('#send_notofiction_chekbox').on('change', function() {
-        if($(this).is(':checked')) {
-            $('.hiden_div').attr('style', 'display:block !important'); 
-        } else {
-            $('.hiden_div').attr('style', 'display:none !important');
-        }
+        $('.hiden_div').toggle(this.checked);
     });
+
+
+    $(document).on('click', '.remove-follower', function() {
+        var followerId = $(this).data('follower-id'); // Get the follower ID
+        var $item = $(this).closest('.dropdown-item'); // Get the closest dropdown item
+        var $separator = $item.next('.dropdown-divider'); // Get the next separator line
+
+        $.ajax({
+            url: '{{ route('lead.remove_follower') }}', // Update with your route
+            type: 'post',
+            data: {
+                _token: '{{ csrf_token() }}', // Include CSRF token
+                id: followerId // Send the follower ID to the server
+            },
+            success: function(response) {
+                if (response.success) {
+                    // Remove the follower item and separator line from the dropdown
+                    $item.remove();
+                    if ($separator.length) {
+                        $separator.remove(); // Remove the horizontal line
+                    }
+                    
+                    // Update the follower count
+                    var $countElement = $('.o-mail-Followers-counter'); // Adjust selector if needed
+                    var currentCount = parseInt($countElement.text());
+                    $countElement.text(currentCount - 1); // Decrease count
+
+                    toastr.success('Follower removed successfully.');
+                } else {
+                    toastr.error('Failed to remove follower.');
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+    });
+});
 </script>
 
+<script>
+$(document).ready(function() {
+    var lead_id = $('#lead_id').val();
+
+    // When the "Attach files" button is clicked, toggle the attachment box and open the file dialog
+    $('#attachFilesBtn').on('click', function() {
+        $('#attachmentBox').toggleClass('d-none'); 
+    });
+
+    $('#openFileUpload').on('click', function() {
+        $('.o-mail-Chatter-fileUploader').click(); // Open the file dialog
+    });
+
+    // When the file input changes, handle the file selection
+    $('.o-mail-Chatter-fileUploader').on('change', function(event) {
+        const files = event.target.files;
+        const fileList = Array.from(files).map(file => file.name).join(', ');
+        $('#fileList').text(`Selected files: ${fileList}`);
+
+        // Prepare form data for AJAX
+        const formData = new FormData();
+        formData.append('lead_id', lead_id); // Append lead_id
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files[]', files[i]);
+        }
+
+        // AJAX request to upload files
+        $.ajax({
+            url: '{{ route('lead.attachmentsAdd') }}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(response.message);
+                $('#fileCount').text(response.newFileCount); // Update file count
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Error uploading files: ' + textStatus);
+            }
+        });
+    });
+});
+</script>
 
 
 

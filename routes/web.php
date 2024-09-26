@@ -184,6 +184,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/upload-file', [LeadController::class, 'uploadFile'])->name('lead.uploadFile');
     Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
     Route::post('/lead/click_follow', [LeadController::class, 'click_follow'])->name('lead.click_follow');
+    Route::post('/lead/invite-followers', [LeadController::class, 'invite_followers'])->name('lead.invite_followers');
+    Route::post('/lead/remove_follower', [LeadController::class, 'removeFollower'])->name('lead.remove_follower');
+    Route::post('/attachments/add', [LeadController::class, 'attachmentsAdd'])->name('lead.attachmentsAdd');
+
 
     
     // Star Store Route

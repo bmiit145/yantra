@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
+use App\Models\Attachment;
 use App\Models\Campaign;
 use App\Models\Medium;
 use App\Models\Source;
@@ -159,7 +160,7 @@ class LeadController extends Controller
         $mediums = Medium::orderBy('id', 'DESC')->get();
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
-        $employees = Employee::all();
+        $employees = Contact::all();
         $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
 
         $followers = Following::where('type_id', $id)
@@ -174,7 +175,7 @@ class LeadController extends Controller
     
             if ($entityType === 'employee') {
                 // Fetch related employee details
-                $employee = Employee::find($entityId);
+                $employee = Contact::find($entityId);
                 if ($employee) {
                     $follower->customer = $employee; 
                 }
@@ -218,10 +219,35 @@ class LeadController extends Controller
             return $follower1;
         });
 
+            $userId = Auth::user()->id;
+
+        // Check if the current user is following the lead
+        $isFollowing = Following::where('customer_id', 'users/' . $userId)
+                                ->where('type_id', $id)
+                                ->exists();
+
         $followerscount = $followers->count();
         $authfollowerscount = $authfollowers->count();
         $count = $followerscount + $authfollowerscount;
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
+
+        $attachment = Attachment::where('type_id', $data->id)->first();
+
+        $fileCount = ''; // Initialize variable
+
+        if ($attachment) {
+            $fileArray = explode(',', $attachment->files);
+            $fileCount = count($fileArray);
+        }
+
+        $attachmentFiles = Attachment::where('type_id', $data->id)->get();
+
+        $allFiles = []; // Initialize an array to hold file details
+
+        foreach ($attachmentFiles as $attachmentFile) {
+            $fileArray = explode(',', $attachmentFile->files);
+            $allFiles = array_merge($allFiles, $fileArray); // Merge all files into a single array
+        }
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
     }
 
     public function store(Request $request)
@@ -1089,27 +1115,135 @@ class LeadController extends Controller
         return response()->json($lead);
     }
 
-    public function click_follow(Request $request)
-    {
+    // public function click_follow(Request $request)
+    // {
      
         
-        $lead = new Following();
-        if($request->user_id){
-            $lead->customer_id = $request->user_id;
-        }else{
-            $lead->customer_id = 'users/' . Auth::user()->id;
-        }
-        $lead->type_id = $request->id;
-        $lead->message = $request->message;
-        $lead->type = 1;
-        $lead->save();
+    //     $lead = new Following();
+    //     if($request->user_id){
+    //         $lead->customer_id = $request->user_id;
+    //     }else{
+    //         $lead->customer_id = 'users/' . Auth::user()->id;
+    //     }
+    //     $lead->type_id = $request->id;
+    //     $lead->message = $request->message;
+    //     $lead->type = 1;
+    //     $lead->save();
         
-        if($request->user_id){
-            return back();
-        }else{
-            return response()->json($lead);
+    //     if($request->user_id){
+    //         return back();
+    //     }else{
+    //         return response()->json($lead);
+    //     }
+    // }
+
+    public function click_follow(Request $request)
+{
+    $leadId = $request->id;
+    $userId = Auth::user()->id; // Current user ID
+
+    // Check if the user is already following the lead
+    $followRecord = Following::where('customer_id', 'users/' . $userId)
+                            ->where('type_id', $leadId)
+                            ->first();
+
+    if ($followRecord) {
+        // If the record exists, we are unfollowing
+        $followRecord->delete();
+        $isFollowing = false; // Update status
+    } else {
+        // If no record exists, we are following
+        $newFollow = new Following();
+        $newFollow->customer_id = 'users/' . $userId; // Ensure it references the user
+        $newFollow->type_id = $leadId;
+        $newFollow->type = 1; // Assuming '1' indicates a follow
+        $newFollow->save();
+        $isFollowing = true; // Update status
+    }
+
+    return response()->json([
+        'isFollowing' => $isFollowing,
+    ]);
+}
+
+public function invite_followers(Request $request)
+{
+    $leadId = $request->id;
+    $userId = $request->user_id; // The ID of the user to be followed
+
+    // Check if the user is already following the lead
+    $existingFollow = Following::where('customer_id', $userId)
+                                ->where('type_id', $leadId)
+                                ->first();
+
+    if ($existingFollow) {
+        // If they are already following, delete the existing record
+        $existingFollow->delete();
+    }
+
+    // Create a new follow record
+    $newFollow = new Following();
+    $newFollow->customer_id = $userId; // This is the new follower
+    $newFollow->type_id = $leadId;
+    $newFollow->type = 1; // Assuming '1' indicates a follow
+    $newFollow->save();
+
+    return redirect()->back()->with('success', 'Followers updated successfully.');
+}
+
+public function removeFollower(Request $request)
+{
+    $followerId = $request->id;
+
+    // Find the follower record and delete it
+    $followRecord = Following::find($followerId); // Assuming your id is unique and in the Following table
+
+    if ($followRecord) {
+        $followRecord->delete();
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false], 404);
+}
+
+public function attachmentsAdd(Request $request)
+{
+    $leadId = $request->input('lead_id');
+    $storedFileNames = []; // Array to hold stored file names
+
+    // Check if files are uploaded
+    if ($request->hasFile('files')) {
+        foreach ($request->file('files') as $file) {
+            // Store file in 'uploads' directory under 'public' storage
+            $path = $file->store('uploads/attachment', 'public'); 
+            
+            // Collect the stored file name (this is the name used in the folder)
+            $storedFileNames[] = basename($path); // Use basename to get just the file name
+        }
+
+        // Fetch existing attachment record
+        $attachment = Attachment::where('type_id', $leadId)->first();
+
+        if ($attachment) {
+            // If record exists, append new file names
+            $existingFiles = explode(',', $attachment->files);
+            $allFileNames = array_merge($existingFiles, $storedFileNames);
+            $fileNamesImploded = implode(',', $allFileNames);
+            // Update the existing record
+            $attachment->update(['files' => $fileNamesImploded]);
+        } else {           
+            // If no record exists, create a new one
+            $fileNamesImploded = implode(',', $storedFileNames);
+            Attachment::create([
+                'type_id' => $leadId,
+                'type' => 1,
+                'files' => $fileNamesImploded, // Store imploded string
+            ]);
         }
     }
+
+    return response()->json(['message' => 'Files uploaded successfully.']);
+}
 
    
 }
