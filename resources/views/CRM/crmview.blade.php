@@ -18,10 +18,10 @@
         <a href="#">Reporting</a>
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
-            <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
-            <a href="#">Activities</a>
+            <a href="{{ route('crm.forecasting') }}">Forecast</a>
+            <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+            <a href="{{ route('lead.graph') }}">Leads</a>
+            <a href="{{route('crm.pipeline.graph')}}">Activities</a>
         </div>
     </li>
     <li class="dropdown">

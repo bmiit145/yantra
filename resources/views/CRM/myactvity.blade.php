@@ -2,7 +2,7 @@
 @section('content')
 @vite('resources/css/CRM/addactivity.css')
 @section('navbar_menu')
-    <li class="dropdown">
+ <li class="dropdown">
         <a href="#">Sales</a>
         <div class="dropdown-content">
             <a href="#">My Pipeline</a>
@@ -14,22 +14,21 @@
     </li>
     <li>
         <a href="{{ route('lead.index') }}">Leads</a>
-
     </li>
     <li class="dropdown">
         <a href="#">Reporting</a>
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
-            <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="#">Pipeline</a>
-            <a href="#">Leads</a>
-            <a href="#">Activities</a>
+            <a href="{{ route('crm.forecasting') }}">Forecast</a>
+            <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+            <a href="{{ route('lead.graph') }}">Leads</a>
+            <a href="{{route('crm.pipeline.graph')}}">Activities</a>
         </div>
     </li>
     <li class="dropdown">
         <a href="#">Configuration</a>
         <div class="dropdown-content">
-             <a href="#"><b>Sales Teams</b></a>
+              <a href="#"><b>Sales Teams</b></a>
             <a href="#"><b>Activities</b></a>
             <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
             <a href="#" style="margin-left: 15px;">Activity Plans</a>

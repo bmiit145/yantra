@@ -9,7 +9,7 @@
     <li class="dropdown">
         <a href="#">Sales</a>
         <div class="dropdown-content">
-            <a href="{{ route('crm.index') }}">My Pipeline</a>
+            <a href="#">My Pipeline</a>
             <a href="#">My Activities</a>
             <a href="#">My Quotations</a>
             <a href="#">Teams</a>
@@ -23,10 +23,10 @@
         <a href="#">Reporting</a>
         <div class="dropdown-content">
             <!-- Dropdown content for Reporting -->
-            <a href="{{route('crm.forecasting')}}">Forecast</a>
-            <a href="{{ route('crm.index') }}">Pipeline</a>
-            <a href="{{ route('lead.index') }}">Leads</a>
-            <a href="#">Activities</a>
+            <a href="{{ route('crm.forecasting') }}">Forecast</a>
+            <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+            <a href="{{ route('lead.graph') }}">Leads</a>
+            <a href="{{route('crm.pipeline.graph')}}">Activities</a>
         </div>
     </li>
     <li class="dropdown">
@@ -40,7 +40,6 @@
             <a href="#"><b>Pipeline</b></a>
             <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
             <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
-           
         </div>
     </li>
 @endsection
