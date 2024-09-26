@@ -6,7 +6,10 @@ use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Medium;
 use App\Models\Source;
+use App\Models\Following;
 use App\Models\User;
+use App\Models\Employee;
+use File;
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
 use App\Models\Opportunity;
@@ -17,11 +20,18 @@ use App\Models\Tag;
 use App\Models\Contact;
 use App\Models\LostReason;
 use App\Models\CrmStage;
+use App\Models\send_message;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use ZipArchive;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Services\EncryptionService;
+use Illuminate\Support\Facades\Auth;
+use League\CommonMark\Node\Block\Document;
+use App\Mail\SendMessageMail;
+use Illuminate\Support\Facades\Mail;
 
 class LeadController extends Controller
 {
@@ -149,8 +159,69 @@ class LeadController extends Controller
         $mediums = Medium::orderBy('id', 'DESC')->get();
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
+        $employees = Employee::all();
+        $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
 
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data', 'users', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources'));
+        $followers = Following::where('type_id', $id)
+        ->where('customer_id', '!=' , 'users/'.Auth::user()->id)
+        ->where('type', '1')
+        ->get()
+        ->map(function($follower) {
+            // Parse customer_id to determine if it's for Employee or User
+            $customerParts = explode('/', $follower->customer_id);
+            $entityType = $customerParts[0];
+            $entityId = $customerParts[1];
+    
+            if ($entityType === 'employee') {
+                // Fetch related employee details
+                $employee = Employee::find($entityId);
+                if ($employee) {
+                    $follower->customer = $employee; 
+                }
+            } elseif ($entityType === 'users') {
+                // Fetch related user details
+                $user = User::find($entityId);
+                if ($user) {
+                    $follower->customer = $user; 
+                }
+            }
+    
+            return $follower;
+        });
+
+        // return $followers;
+
+        $authfollowers = Following::where('type_id', $id)
+        ->where('type', '1')
+        ->where('customer_id', 'users/'.Auth::user()->id)
+        ->get()
+        ->map(function($follower1) {
+            // Parse customer_id to determine if it's for Employee or User
+            $customerParts = explode('/', $follower1->customer_id);
+            $entityType = $customerParts[0];
+            $entityId = $customerParts[1];
+    
+            if ($entityType === 'employee') {
+                // Fetch related employee details
+                $employee = Employee::find($entityId);
+                if ($employee) {
+                    $follower1->customer = $employee; 
+                }
+            } elseif ($entityType === 'users') {
+                // Fetch related user details
+                $user = User::find($entityId);
+                if ($user) {
+                    $follower1->customer = $user; 
+                }
+            }
+    
+            return $follower1;
+        });
+
+        $followerscount = $followers->count();
+        $authfollowerscount = $authfollowers->count();
+        $count = $followerscount + $authfollowerscount;
+        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message'));
     }
 
     public function store(Request $request)
@@ -434,6 +505,7 @@ class LeadController extends Controller
             // Create a new activity record
             $activity = new Activity();
             $activity->lead_id = $request->lead_id;
+            $activity->pipeline_id = $request->pipeline_id;
             $activity->activity_type = $request->activity_type;
             $activity->due_date = $request->due_date;
             $activity->summary = $request->summary;
@@ -498,7 +570,7 @@ class LeadController extends Controller
     public function fetchActivities()
     {
         // Fetch activities with the lead title relationship
-        $activities = Activity::with('getLeadTitle')->where('lead_id','!=', null)->where('status', '0')->get();
+        $activities = Activity::with('getLeadTitle')->where('lead_id', '!=', null)->where('status', '0')->get();
 
         // Format activities for FullCalendar
         $events = $activities->map(function ($activity) {
@@ -625,7 +697,7 @@ class LeadController extends Controller
         $tags = $request->tags ?? [];
 
         // Normalize tags to handle "Lost & Archived" as "Lost"
-        $normalizedTags = array_map(function($tag) {
+        $normalizedTags = array_map(function ($tag) {
             return $tag === 'Lost & Archived' ? 'Lost' : $tag;
         }, $tags);
 
@@ -687,28 +759,28 @@ class LeadController extends Controller
             case 'Country':
                 // $query->where('country', $operatesValue, $filterValue);
                 // break;
-                $query->where(function($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getCountry', function($q) use ($operatesValue, $filterValue) {
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                    ->orWhereHas('getAutoCountry', function($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    });
+                        ->orWhereHas('getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
                 });
                 break;
             case 'Zip':
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
-                $query->whereHas('tags', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
             case 'Created by':
                 $createdByName = $filterValue;
-                $user = User::where('name',$createdByName)->first();
-                $query->whereHas('getUser', function($q) use ($operatesValue,$createdByName) {
-                    $q->where('name', $operatesValue,$createdByName);
+                $user = User::where('name', $createdByName)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
+                    $q->where('name', $operatesValue, $createdByName);
                 });
                 break;
             case 'Created on':
@@ -737,13 +809,13 @@ class LeadController extends Controller
                 break;
             case 'Salesperson':
                 $salespersonId = EncryptionService::encrypt($filterValue);
-                $user = User::where('email',$salespersonId)->first();
-                $query->whereHas('getUser', function($q) use ($operatesValue,$salespersonId) {
-                    $q->where('email', $operatesValue,$salespersonId);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
+                    $q->where('email', $operatesValue, $salespersonId);
                 });
                 break;
             case 'Source':
-                $query->whereHas('getSource', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -751,13 +823,13 @@ class LeadController extends Controller
                 $query->where('stage', $operatesValue, $filterValue);
                 break;
             case 'State':
-                $query->where(function($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getState', function($q) use ($operatesValue, $filterValue) {
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                    ->orWhereHas('getAutoState', function($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    });
+                        ->orWhereHas('getAutoState', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
                 });
                 break;
             case 'Street':
@@ -767,7 +839,7 @@ class LeadController extends Controller
                 $query->where('address_1', $operatesValue, $filterValue);
                 break;
             case 'Title':
-                $query->whereHas('getTilte', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('title', $operatesValue, $filterValue);
                 });
                 break;
@@ -778,7 +850,7 @@ class LeadController extends Controller
                 $query->where('website_link', $operatesValue, $filterValue);
                 break;
             case 'Campaign':
-                $query->whereHas('getCampaign', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -804,5 +876,241 @@ class LeadController extends Controller
         ], 200);
     }
 
+
+    // Upload Document Function
+    public function uploadFile(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|max:2048', // Adjust file validation as needed
+            'activity_id' => 'required|integer',
+        ]);
+
+        $activityId = $request->input('activity_id');
+
+        // Check if the file exists in the request
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            
+            // Generate a unique filename
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            
+            // Store the file in the 'uploads/upload_document' directory in storage
+            $path = $file->storeAs('upload_document', $fileName,'public');
+
+            // Update the database
+            $activity = Activity::find($activityId);
+            if ($activity) {
+                $activity->status = 1; // Mark as completed
+                $activity->document = $path; // Save only the file name
+                $activity->save();
+
+                return response()->json(['success' => true, 'message' => 'File uploaded successfully!']);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Activity not found.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'No file uploaded.']);
+    }
+
+    public function deleteDocument(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:activities,id',
+        ]);
+
+        $activity = Activity::find($request->id);
+        if ($activity) {
+            // Specify the path to the document in storage
+            $documentPath = storage_path('app/public/' . $activity->document);
+
+            // Check if the file exists and delete it
+            if (file_exists($documentPath)) {
+                unlink($documentPath); // Delete the file from storage
+            }
+
+            // Set the document field to null and save the activity
+            $activity->document = null;
+            $activity->save();
+
+            return response()->json(['success' => true, 'message' => 'Document deleted successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Activity not found.']);
+    }
+
+
+    public function send_message(Request $request)
+    {
+         
+        $data = new send_message();
+        $data->message = $request->send_message;
+        $data->to_mail = $request->to_mail;
+        $data->type_id = $request->lead_id;
+        $data->type = 'lead';
+        $data->from_mail = auth()->user()->email;
+        
+         $uploadedFiles = []; // Array to hold the file paths
+
+    
+         if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+    
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+    
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+    
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+    
+        $data->save();
+
+
+        // Prepare message data
+        $messageData = $request->send_message; 
+        $recipientEmail = $request->to_mail;
+
+        // Ensure $uploadedFiles is an array
+        $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
+
+        // If $messageData is a string, wrap it in an array with a key
+        if (!is_array($messageData)) {
+            $messageData = ['content' => $messageData]; 
+        }
+
+        // Ensure there is a title
+        $messageData = 'New Message';
+
+        // Send the email
+        Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageData, $files) {
+            // Set recipient and subject
+            $message->to($recipientEmail, $recipientEmail)
+                    ->subject($messageData);
+
+            // Attach files if they exist
+            foreach ($files as $file) {
+                $fullPath = storage_path('app/public/' . $file); // Construct the full path
+                if (file_exists($fullPath)) {
+                    $message->attach($fullPath);
+                } else {
+                    Log::error("File does not exist: " . $fullPath);
+                }
+            }
+        });
+    
+
+        return response()->json(['message' => 'Message sent successfully']);
+    }
+    
+
+    public function deleteImage(Request $request)
+    {
+       
+        $messageId = $request->input('message_id');
+        $imagePath = $request->input('image');
+    
+        // Fetch the record from the database
+        $message = send_message::find($messageId);
+    
+        if (!$message) {
+            return response()->json(['success' => false, 'message' => 'Message not found'], 404);
+        }
+    
+        // Get the current image array
+        $imageArray = json_decode($message->image);
+    
+        if (!$imageArray) {
+            return response()->json(['success' => false, 'message' => 'No images found'], 404);
+        }
+    
+        // Remove the image from storage
+        Storage::disk('public')->delete($imagePath);
+    
+        // Filter out the image that was deleted from the array
+        $updatedImageArray = array_filter($imageArray, function($img) use ($imagePath) {
+            return $img !== $imagePath;
+        });
+    
+        // Save the updated image array back to the database
+        $message->image = json_encode(array_values($updatedImageArray)); // Re-index and encode
+        $message->save();
+    
+        return response()->json(['success' => true]);
+    }
+
+    public function downloadAllImages($id)
+    {
+    
+        $message = send_message::find($id); 
+
+        // Get the images from the 'image' field
+        $images = json_decode($message->image);
+
+        // Create a temporary file for the zip
+        $zipFileName = 'images_' . time() . '.zip';
+        $zipFilePath = storage_path($zipFileName);
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            // Add each image to the zip
+            foreach ($images as $image) {
+                // Get the image path from the 'storage' directory
+                $imagePath = storage_path('app/public/' . $image);
+                if (file_exists($imagePath)) {
+                    $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+                }
+            }
+            $zip->close();
+        }
+
+        // Return the zip file for download
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
+    }
+
+    public function delete_send_message(Request $request)
+    {
+        $message = send_message::find($request->id);
+        $message->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
+
+    public function click_star(Request $request)
+    {
+        $lead = send_message::find($request->id);
+        $lead->is_star = '1';
+        $lead->save();
+
+        return response()->json($lead);
+    }
+
+    public function click_follow(Request $request)
+    {
+     
+        
+        $lead = new Following();
+        if($request->user_id){
+            $lead->customer_id = $request->user_id;
+        }else{
+            $lead->customer_id = 'users/' . Auth::user()->id;
+        }
+        $lead->type_id = $request->id;
+        $lead->message = $request->message;
+        $lead->type = 1;
+        $lead->save();
+        
+        if($request->user_id){
+            return back();
+        }else{
+            return response()->json($lead);
+        }
+    }
+
+   
 }
 

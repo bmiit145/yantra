@@ -2,6 +2,8 @@
 {{--@section('head_new_btn_link', route('crm.show' , ['crm' => 'new']))--}}
 @section('lead', route('crm.pipeline.list'))
 @section('calendar', route('crm.pipeline.calendar'))
+@section('activity', route('crm.pipeline.activity'))
+@section('char_area', route('crm.pipeline.graph'))
 
 @section('navbar_menu')
     <li class="dropdown">

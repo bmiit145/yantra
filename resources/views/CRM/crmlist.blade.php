@@ -5,8 +5,8 @@
 @section('head_new_btn_link', route('crm.pipeline.create'))
 @section('kanban', url('crm'))
 @section('calendar', route('crm.pipeline.calendar'))
-<!-- @section('char_area', route('lead.graph'))
-@section('activity', route('lead.activity')) -->
+@section('activity', route('crm.pipeline.activity'))
+@section('char_area', route('crm.pipeline.graph'))
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
@@ -567,6 +567,14 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     .main_header_wrapper .o_form_button_save {
         display: none;
     }
+
+    .o_priority_star.fa-star {
+        color: #f3cc00; /* Color for filled stars */
+    }
+
+    .o_priority_star.fa-star-o {
+        color: gray; /* Color for empty stars */
+    }
 </style>
 
 <div class="card" style="padding: 1%">
@@ -671,6 +679,17 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
             <tbody id="lead-table-body">
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="15"></th>
+                    <th id="total_expected_revenue"></th>
+                    <th colspan="1"></th>
+                    <th id="total_recurring_mrr"></th>
+                    <th colspan="1"></th>
+                    <th id="total_recurring_revenue"></th>
+                    <th colspan="4"></th>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </div>
@@ -760,7 +779,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
 
             }
-            , {
+                , {
                 data: 'phone'
                 , render: function (data, type, row) {
 
@@ -823,45 +842,57 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             }
                 , {
-                data: 'website_link'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
+                data: 'priority'
+                ,  render: function (data, type, row) {
+                    let priorityStars = '';
+                    const priority = row.priority; // Assuming 'priority' is part of the row data
+
+                    priorityStars += `<div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">`;
+
+                    // Medium priority
+                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'medium' || priority === 'high' || priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>`;
+
+                    // High priority
+                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'high' || priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>`;
+
+                    // Very High priority
+                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>`;
+
+                    priorityStars += `</div>`;
+
+                    return priorityStars;
                 }
             }
-            //     , {
-            //     data: 'contact_name'
-            //     , render: function (data, type, row) {
-            //         if (data) {
-            //             return data;
-            //         } else {
-            //             return '';
-            //         }
-            //     }
-            // }
-            //     , {
-            //     data: 'job_postion'
-            //     , render: function (data, type, row) {
-            //         if (data) {
-            //             return data;
-            //         } else {
-            //             return '';
-            //         }
-            //     }
-            // }
-            //     , {
-            //     data: 'deadline'
-            //     , render: function (data, type, row) {
-            //         if (data) {
-            //             return data;
-            //         } else {
-            //             return '';
-            //         }
-            //     }
-            // }
+                //     , {
+                //     data: 'contact_name'
+                //     , render: function (data, type, row) {
+                //         if (data) {
+                //             return data;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // }
+                //     , {
+                //     data: 'job_postion'
+                //     , render: function (data, type, row) {
+                //         if (data) {
+                //             return data;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // }
+                //     , {
+                //     data: 'deadline'
+                //     , render: function (data, type, row) {
+                //         if (data) {
+                //             return data;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // }
                 , {
                 data: 'get_campaign'
                 , render: function (data, type, row) {
@@ -913,12 +944,20 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             }
                 , {
-                data: 'expected_revenue'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
+                targets: 17, // Adjust index if necessary
+                render: function (data, type, row) {
+                    if (row.recurring_revenue && row.get_recurring_plan && row.get_recurring_plan.months) {
+                        const revenue = parseFloat(row.recurring_revenue); // Total revenue
+                        const months = parseFloat(row.get_recurring_plan.months); // Number of months
+
+                        if (months > 0) { // Check to avoid division by zero
+                            const monthlyValue = (revenue / months).toFixed(2);
+                            return `${monthlyValue}`; // Return the calculated MRR
+                        } else {
+                            return 'Invalid months'; // Handle invalid months case
+                        }
                     } else {
-                        return '';
+                        return ''; // Show nothing if either value is absent
                     }
                 }
             },
@@ -991,7 +1030,54 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 //     }
                 // }
             ]
-            , createdRow: function (row, data, dataIndex) {
+            ,
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+
+                // Calculate total expected revenue over all pages
+                var totalExpectedRevenue = api
+                    .column(15) // 'expected_revenue' column index
+                    .data()
+                    .reduce(function (a, b) {
+                        var x = parseFloat(a) || 0;
+                        var y = parseFloat(b) || 0;
+                        return x + y;
+                    }, 0);
+
+                // Calculate total recurring MRR over all pages
+                var totalRecurringMrr = 0;
+                api.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var data = this.data();
+                    if (data.recurring_revenue && data.get_recurring_plan && data.get_recurring_plan.months) {
+                        const revenue = parseFloat(data.recurring_revenue);
+                        const months = parseFloat(data.get_recurring_plan.months);
+
+                        if (months > 0) {
+                            totalRecurringMrr += (revenue / months);
+                        }
+                    }
+                });
+
+                // Calculate total recurring revenue over all pages
+                var totalRecurringRevenue = api
+                    .column(18) // 'recurring_revenue' column index
+                    .data()
+                    .reduce(function (a, b) {
+                        var x = parseFloat(a) || 0;
+                        var y = parseFloat(b) || 0;
+                        return x + y;
+                    }, 0);
+
+                // Update footer for expected revenue
+                $(api.column(15).footer()).html(totalExpectedRevenue.toFixed(2));
+
+                // Update footer for recurring MRR
+                $(api.column(17).footer()).html(totalRecurringMrr.toFixed(2));
+
+                // Update footer for recurring revenue
+                $(api.column(18).footer()).html(totalRecurringRevenue.toFixed(2));
+            },
+            createdRow: function (row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
             }
 

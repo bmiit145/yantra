@@ -55,6 +55,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pipeline-store',[CRMController::class,'pipelineStore'])->name('crm.pipeline.store');
     Route::get('/customer/{id}', [CRMController::class, 'getCustomerDetails'])->name('getCustomerDetails');
     Route::post('/update-stage', [CRMController::class,'updateStage'])->name('crm.updateStage');
+    Route::post('/add-lost-reason', [CRMController::class, 'addLostReason'])->name('crm.pipeline.addLostReason');
     Route::post('/pipeline/manageLostReasons', [CRMController::class, 'pipelineManageLostReasons'])->name('crm.pipeline.markAsLost');
     Route::post('/pipeline-restore/{id}', [CRMController::class, 'restoreIsLost'])->name('crm.pipeline.restore');;
     // CRM pipeline Activities
@@ -66,7 +67,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-activities', [CRMController::class, 'pipelinefetchActivities'])->name('crm.pipeline.activities.fetch');
     Route::get('/pipeline-activity-detail/{id}', [CRMController::class, 'pipelineactivityDetail'])->name('crm.pipeline.activityDetail');
     Route::get('/pipeline-calendar', [CRMController::class, 'calendar'])->name('crm.pipeline.calendar');
-
+    Route::get('/pipeline-activity' , [CRMController::class, 'pipelineActivity'])->name('crm.pipeline.activity');
+    Route::get('/pipeline-graph', [CRMController::class, 'pipelineGraph'])->name('crm.pipeline.graph');
+    
 
 
 
@@ -161,6 +164,11 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead-filter', [LeadController::class, 'filter'])->name('lead.filter');
     Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
     Route::post('/custom-filter', [LeadController::class, 'customFilter'])->name('lead.custom.filter');
+    Route::post('/lead-send_message', [LeadController::class, 'send_message'])->name('lead.send_message');
+    Route::post('/lead-deleteImage', [LeadController::class, 'deleteImage'])->name('lead.deleteImage');
+    Route::get('/lead-downloadAllImages/{id}', [LeadController::class, 'downloadAllImages'])->name('lead.downloadAllImages');
+    Route::get('/lead-delete_send_message', [LeadController::class, 'delete_send_message'])->name('lead.delete_send_message');
+    Route::get('/lead-click_star', [LeadController::class, 'click_star'])->name('lead.click_star');
 
 
 
@@ -174,6 +182,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/activities/update', [LeadController::class, 'activitiesUpdate'])->name('lead.activitiesUpdate');
     Route::delete('/activities/{id?}', [LeadController::class, 'activitiesDelete'])->name('lead.activitiesDelete');
     Route::post('/update-activity-status', [LeadController::class, 'activitiesUpdateStatus'])->name('lead.activitiesUpdateStatus');
+    Route::post('/upload-file', [LeadController::class, 'uploadFile'])->name('lead.uploadFile');
+    Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
+    Route::post('/lead/click_follow', [LeadController::class, 'click_follow'])->name('lead.click_follow');
+
+    
+    // Star Store Route
+    Route::post('/star-update/{id}', [ActivityController::class, 'startStore'])->name('start-store');
 
 
     // Check Email Or Phone Exists Route

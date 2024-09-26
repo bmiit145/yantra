@@ -155,4 +155,11 @@ class Sale extends Model
     {
         return $this->hasOne(RecurringPlans::class, 'id', 'recurring_plan');
     }
+
+    public function salesPerson()
+    {
+        return $this->hasOne(User::class, 'id', 'sales_person');
+    }
+
+
 }

@@ -21,7 +21,7 @@
                     <hr class="flex-grow-1">
                     <span class="px-3 opacity-75 small text-muted">{{ $date }}</span>
                     <hr class="flex-grow-1">
-                </div>
+                </div
                 @foreach($logGroup as $log)
                     @php
                         $profile_pic = optional($log->user->contact)->image;

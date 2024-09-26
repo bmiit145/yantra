@@ -828,6 +828,7 @@
             ]
             , createdRow: function(row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
+                $(row).css('cursor', 'pointer');
             }
 
 

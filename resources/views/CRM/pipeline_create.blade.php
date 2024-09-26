@@ -1,8 +1,11 @@
 @extends('layout.header')
+@section('head_breadcrumb_title', 'Pipeline')
 @section('head_new_btn_link', route('crm.pipeline.create'))
 @section('lead', route('crm.pipeline.list'))
 @section('kanban', route('crm.index'))
 @section('calendar', route('crm.pipeline.calendar'))
+@section('activity', route('crm.pipeline.activity'))
+@section('char_area', route('crm.pipeline.graph'))
 
 @section('navbar_menu')
 <li class="dropdown">
@@ -46,6 +49,8 @@
 <!-- Select2 CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css"> -->
+<!-- summernote link -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
 <style>
     .buyerlead h3 {
         font-size: 30px;
@@ -361,6 +366,10 @@
     .o_arrow_button+.o_arrow_button {
         border-left: none;
     }
+
+    .selected-star {
+        color: #f3cc00; /* Gold color for the selected star */
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -476,7 +485,7 @@
                                                         style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing
                                                         Note</span>
                                                     <textarea name="" id="closing_notes" cols="30" rows="10"
-                                                        class="form-control"></textarea>
+                                                        class="form-control makeMeSummernote"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-primary mark_as_lost">Mark as
@@ -493,8 +502,8 @@
                                         @foreach ($crmStages as $crmStage)
                                             <button type="button"
                                                 class="btn btn-secondary o_arrow_button 
-                                                                                                                        {{ $crmStage->id == $data->stage_id ? 'o_arrow_button_current green-bg' : '' }} 
-                                                                                                                        {{ !isset($data->stage_id) && $crmStage->title == 'New' ? 'o_arrow_button_current green-bg' : '' }}"
+                                                                                                                                                                                                                        {{ $crmStage->id == $data->stage_id ? 'o_arrow_button_current green-bg' : '' }} 
+                                                                                                                                                                                                                        {{ !isset($data->stage_id) && $crmStage->title == 'New' ? 'o_arrow_button_current green-bg' : '' }}"
                                                 role="radio" data-value="{{ $crmStage->id }}"
                                                 data-title="{{ $crmStage->title }}" onclick="updateStage(this)">
                                                 <span>{{ $crmStage->title ?? '' }}</span>
@@ -506,8 +515,12 @@
                             @endif
 
                             <!-- Hidden field to store selected stage id -->
-                            <input type="hidden" id="selected_stage_id" name="selected_stage_id"
-                                value="{{ $data->stage_id ?? $crmStages->where('title', 'New')->first()->id }}">
+                            @php
+                                $defaultStage = $crmStages->where('title', 'New')->first();
+                                $selectedStageId = $data->stage_id ?? ($defaultStage ? $defaultStage->id : null);
+                            @endphp
+
+                            <input type="hidden" id="selected_stage_id" name="selected_stage_id" value="{{ $selectedStageId }}">
                         </div>
                         <input type="hidden" name="pipeline_id" id="pipeline_id"
                             value="{{ isset($data) ? $data->id : '' }}">
@@ -1228,9 +1241,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="o-mail-ChatterContainer o-mail-Form-chatter o-aside w-print-100">
+                    <div class="o-mail-ChatterContainer o-mail-Form-chatter flex-column o-aside w-print-100 ">
                         <div
-                            class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto o-chatter-disabled">
+                            class="o-mail-Chatter overflow-auto o-chatter-disabled">
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
                                     <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2"
@@ -1280,41 +1293,41 @@
                             @if($activities)
                                                     <div id="activitiesContainer">
                                                         @foreach ($activities as $activity) 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $dueDate = Carbon::parse($activity->due_date);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $tomorrow = $now->copy()->addDay();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $dueDate = Carbon::parse($activity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $tomorrow = $now->copy()->addDay();
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // Calculate the difference in days
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $daysRemaining = $now->diffInDays($dueDate);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $isTomorrow = $dueDate->isSameDay($tomorrow);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    $isToday = $dueDate->isSameDay($now);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // Calculate the difference in days
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $daysRemaining = $now->diffInDays($dueDate);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $isTomorrow = $dueDate->isSameDay($tomorrow);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $isToday = $dueDate->isSameDay($now);
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // Determine the label and styling based on due date
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    if ($isToday) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $label = 'Today:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $labelClass = 'today-label'; // Customize this class as needed
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $iconClass = 'text-bg-warning';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $checkClass = 'text-black';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } elseif ($isTomorrow) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $label = 'Tomorrow:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $labelClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $iconClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $checkClass = 'text-white';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } elseif ($dueDate->isFuture()) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $label = 'Due in ' . $daysRemaining . ' days:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $labelClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $iconClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $checkClass = 'text-white';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } else {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // If the due date is in the past
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $daysOverdue = abs($daysRemaining);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $label = 'Overdue by ' . $daysOverdue . ' days:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $labelClass = 'text-danger'; // Class for overdue, usually red
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $iconClass = 'text-danger'; // Red icon
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $checkClass = 'text-danger'; // Red text
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @endphp
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // Determine the label and styling based on due date
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if ($isToday) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Today:';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'today-label'; // Customize this class as needed
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-bg-warning';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-black';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } elseif ($isTomorrow) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Tomorrow:';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'text-success';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-success';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-white';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } elseif ($dueDate->isFuture()) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Due in ' . $daysRemaining . ' days:';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'text-success';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-success';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-white';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            // If the due date is in the past
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $daysOverdue = abs($daysRemaining);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Overdue by ' . $daysOverdue . ' days:';
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'text-danger'; // Class for overdue, usually red
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-danger'; // Red icon
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-danger'; // Red text
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @endphp
                                                                                     <div class="o-mail-Activity-container">
                                                                                         <div class="o-mail-Activity d-flex py-1 mb-2"
                                                                                             data-activity-id="{{ $activity->id }}">
@@ -1361,6 +1374,15 @@
                                                                                                         data-bs-toggle="modal" data-bs-target="#markDoneModal">
                                                                                                         <i class="fa fa-check"></i> Mark Done
                                                                                                     </button>
+                                                                                                    @if ($activity->activity_type === 'upload_document')
+                                                                                                        <button class="btn btn-link text-action p-0 me-3"
+                                                                                                            onclick="document.getElementById('upload_overdue_file_{{ $activity->id }}').click();">
+                                                                                                            <i class="fa fa-upload"></i> Upload Document
+                                                                                                        </button>
+                                                                                                        <input type="file" class="d-none"
+                                                                                                            id="upload_overdue_file_{{ $activity->id }}" accept="*"
+                                                                                                            onchange="uploadFile('upload_overdue_file_{{ $activity->id }}', {{ $activity->id }})">
+                                                                                                    @endif
                                                                                                     <button type="button"
                                                                                                         class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
                                                                                                         <i class="fa fa-pencil"></i> Edit
@@ -1448,7 +1470,7 @@
                                                                                                                                 <div name="edit_due_date"
                                                                                                                                     class="o_field_widget">
                                                                                                                                     <div class="d-inline-flex w-100"><input
-                                                                                                                                            class="o_input datepicker"
+                                                                                                                                            class="o_input activity-datepicker"
                                                                                                                                             name="due_date"
                                                                                                                                             placeholder="Select Due Date"
                                                                                                                                             style="width: 300px;"
@@ -1511,36 +1533,35 @@
                                                         @endforeach
                                                     </div>
                             @endif
-                            <!-- <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
-                                <hr class="o-discuss-separator flex-grow-1">
-                            </div> -->
                             <div class="o-mail-Chatter-content">
                                 @php
                                     $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
                                 @endphp
 
+
                                 <x-log-display :logs="$logs" />
-                                @if($activitiesDone->count() > 0)
+                                    @if($activitiesDone->count() > 0)
                                         <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                            <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Activities Done</span>
+                                            <hr class="o-discuss-separator flex-grow-1"><span
+                                                class="px-2 smaller text-muted">Activities Done</span>
                                             <hr class="o-discuss-separator flex-grow-1">
-                                            <br>                                    
+                                            <br>
                                         </div>
                                         @foreach ($activitiesDone as $activityDone)                                                            
-                                            <div class="o-mail-Activity-container">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
                                                 <div class="o-mail-Activity d-flex py-1 mb-2">
                                                     <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
                                                         <a role="button">
-                                                        <span
-                                                            class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                            {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}                                                        
-                                                        </span>
+                                                            <span
+                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
+                                                            </span>
                                                         </a>
                                                     </div>
                                                     <div class="flex-grow px-3">
                                                         <div class="o-mail-Activity-info lh-1">
-                                                            <b><span class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
+                                                            <b><span
+                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
                                                             @php
                                                                 $activityTime = Carbon::parse($activityDone->updated_at);
                                                                 $currentTime = Carbon::now();
@@ -1552,11 +1573,13 @@
                                                                 $diffInDays = $activityTime->diffInDays($currentTime);
                                                             @endphp
 
-                                                            <small class="o-mail-Message-date text-muted smaller" title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
+                                                            <small class="o-mail-Message-date text-muted smaller"
+                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
                                                                 @if ($diffInSeconds < 60)
                                                                     now
                                                                 @elseif ($diffInMinutes < 60)
-                                                                    {{ intval($diffInMinutes) }} minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
+                                                                    {{ intval($diffInMinutes) }}
+                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
                                                                 @elseif ($diffInHours < 24)
                                                                     {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
                                                                 @else
@@ -1567,25 +1590,133 @@
                                                         <div class="lh-lg">
                                                             <div class="o-mail-Message-body text-break mb-0 w-100">
                                                                 <p>
-                                                                    <span class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span> done
-                                                                </p>     
-                                                                @if(!empty($activityDone->feedback))                                                       
+                                                                    <span
+                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
+                                                                    done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
+                                                                </p>
+                                                                @if(!empty($activityDone->feedback))
                                                                     <div>
                                                                         <div class="fw-bold">Feedback:</div>
-                                                                            {{$activityDone->feedback ?? ''}}
+                                                                        {{$activityDone->feedback ?? ''}}
                                                                     </div>
                                                                 @endif
-                                                            </div>                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="o-mail-AttachmentList overflow-y-auto d-flex flex-column mt-1">                                                
+                                                @php
+                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
+                                                @endphp
+
+                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
+                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
+                                                        id="document-{{ $activityDone->id }}">
+                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                style="margin-left:60px;width: max-content;" role="menu"
+                                                                title="{{ $activityDone->document }}"
+                                                                aria-label="{{ $activityDone->document }}">
+                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
+                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
+                                                                    
+                                                                    @if($extension === 'pdf')
+                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                    @elseif(in_array($extension, ['doc', 'docx']))
+                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                    @endif
+                                                                </div>
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
+                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
+                                                                    <small class="text-uppercase">{{ $extension }}</small>
+                                                                </div>
+
+                                                                <div class="flex-grow-1"></div>
+                                                                <div
+                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                    </a>
+                                                                    <button
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        title="Delete"
+                                                                        onclick="showDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                @else
+                                                @if($activityDone->document != null)
+                                                    <div class="o-mail-AttachmentList overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                                                                        
+                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
+                                                                <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
+                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
+
+                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        alt="{{ $activityDone->document }}"
+                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
+
+                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
+                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
+                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
+                                                                                onclick="showDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        
+
+                                                    <div class="grid row-gap-0 column-gap-0"></div>
+                                                    </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+
+                                            <!-- Confirmation Modal -->
+                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this document?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                id="confirmDelete">Ok</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endforeach
                                     @endif
-
-
-                            </div>
-                        </div>
+                            </div>                                               
+                        <div>
                     </div>
                 </div>
             </div>
@@ -1666,7 +1797,7 @@
                                     <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                         <div class="o_row o_row_readonly">
                                             <div name="due_date" class="o_field_widget">
-                                                <div class="d-inline-flex w-100"><input class="o_input datepicker"
+                                                <div class="d-inline-flex w-100"><input class="o_input activity-datepicker"
                                                         name="due_date" placeholder="Select Due Date"
                                                         style="width: 300px;" type="text" id="due_date"></div>
                                             </div>
@@ -1702,7 +1833,8 @@
                             </div>
                         </div>
                         <div class="col-md-12 mt-3 logNoteField">
-                            <textarea class="makeMeSummernote" name="log_note" id="log_note" cols="30" rows="10"></textarea>
+                            <textarea class="makeMeSummernote" name="log_note" id="log_note" cols="30"
+                                rows="10"></textarea>
                         </div>
                     </div>
                 </div>
@@ -1715,11 +1847,12 @@
             </form>
         </div>
     </div>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+
+
+
 
 
     @push('scripts')
-        <!-- <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1785,6 +1918,15 @@
                         console.log("Selected date: " + dateText);
                     }
                 }).datepicker();
+
+                $(".activity-datepicker").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    duration: "fast",
+                    onSelect: function(dateText, inst) {
+                        // Optional: Do something when a date is selected
+                        console.log("Selected date: " + dateText);
+                    }
+                }).datepicker("setDate", currentDate);
             });
 
             $(document).ready(function () {
@@ -2260,7 +2402,7 @@
             // Ensure "Start typing" is hidden when typing in new tag input
             newTagInput.on('focus', function () {
                 removeStartTypingOption();
-            });
+            });            
         </script>
 
         <script>
@@ -2332,20 +2474,6 @@
                     }
                 @endif
             });
-        </script>
-
-        <script>
-            // ClassicEditor
-            //     .create(document.querySelector('#description'))
-            //     .catch(error => {
-            //         console.error(error);
-            //     });
-
-            ClassicEditor
-                .create(document.querySelector('#log_note'))
-                .catch(error => {
-                    console.error(error);
-                });
         </script>
         <script>
             $(document).ready(function () {
@@ -2603,7 +2731,7 @@
                         var closing_notes = $('#closing_notes').val();
                         if (newlost) {
                             $.ajax({
-                                url: '{{ route('crm.pipeline.markAsLost') }}',
+                                url: '{{ route('crm.pipeline.addLostReason') }}',
                                 type: 'POST',
                                 data: {
                                     _token: '{{ csrf_token() }}',
@@ -2631,21 +2759,10 @@
                     removeStartTypingOption();
                 });
 
-                let closingNotesEditor; // Store the CKEditor instance
-
-                ClassicEditor
-                    .create(document.querySelector('#closing_notes'))
-                    .then(editor => {
-                        closingNotesEditor = editor; // Save the CKEditor instance
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-
                 $(document).on('click', '.mark_as_lost', function () {
                     var pipeline_id = $('#pipeline_id').val();
                     var lost_reasons = $('#lost_reasons').val();
-                    var closing_notes = closingNotesEditor.getData();
+                    var closing_notes = $('#closing_notes').val();
 
                     $.ajax({
                         url: '{{ route('crm.pipeline.markAsLost') }}',
@@ -2672,30 +2789,34 @@
 
             function restoreLost() {
                 // Assuming you have the record ID available in $data->id
-                const recordId = {{ isset($data) && $data->id }};
+                const recordId = {{ $data->id ?? 'null' }}; // Use null if $data is not set
+
+                if (!recordId) {
+                    alert('Record ID is not available.');
+                    return;
+                }
 
                 // Make an AJAX request to update the is_lost value
-                fetch(`/pipeline-restore/${recordId}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token if you're using Laravel
+                $.ajax({
+                    url: `/pipeline-restore/${recordId}`,
+                    type: 'POST',
+                    data: {
+                        is_lost: 1,
+                        _token: '{{ csrf_token() }}' // Include CSRF token
                     },
-                    body: JSON.stringify({ is_lost: 1 }) // Set is_lost to 1
-                })
-                    .then(response => response.json())
-                    .then(data => {
+                    success: function(data) {
                         if (data.success) {
-                            // Optionally, you can refresh the page or update the UI accordingly
+                            // Optionally, refresh the page or update the UI accordingly
                             location.reload(); // Reload the page
                         } else {
                             alert('Failed to restore the record.');
                         }
-                    })
-                    .catch((error) => {
+                    },
+                    error: function(xhr, status, error) {
                         console.error('Error:', error);
-                        alert('An error occurred while restoring the record.');
-                    });
+                        alert('An error occurred while restoring the record: ' + error.responseText);
+                    }
+                });
             }
 
         </script>
@@ -2750,32 +2871,6 @@
                     }
                 });
 
-                // let editorInstance = null;
-
-                // // Function to initialize CKEditor
-                // function initializeEditor(selector, callback) {
-                //     ClassicEditor
-                //         .create(document.querySelector(selector))
-                //         .then(editor => {
-                //             if (callback) callback(editor);
-                //         })
-                //         .catch(error => {
-                //             console.error('Error initializing CKEditor:', error);
-                //         });
-                // }
-
-                // // Initialize CKEditors
-                // // initializeEditor('log_note');
-
-                // // Initialize CKEditor for the log note with existing content
-                // initializeEditor('.edit_log_note', editor => {
-                //     editorInstance = editor;
-                //     const existingContent = $('#edit_log_note').data('content') || ''; // Default to empty string if no content
-                //     if (existingContent) {
-                //         editorInstance.setData(existingContent);
-                //     }
-                // });
-
                 // Define URLs using Laravel's route helper
                 const baseUrl = "{{ route('crm.pipeline.activitiesEdit', ['id' => '']) }}";
                 const updateUrl = "{{ route('crm.pipeline.activitiesUpdate') }}"; // Assuming this is your update URL
@@ -2803,7 +2898,14 @@
                             $('#edit_due_date').val(response.activity.due_date);
                             $('#edit_summary').val(response.activity.summary);
                             $('#edit_assigned_to').val(response.activity.assigned_to);
-                            $('#edit_log_note').val(response.activity.note);
+                            $('#edit_log_note').summernote({
+                                height: 200,  // Set editor height
+                                focus: true,  // Set focus to editable area after modal shown
+                                tabsize: 2    // Set tab size
+                            });
+
+                            // Set the content of the Summernote editor with the fetched note
+                            $('#edit_log_note').summernote('code', response.activity.note);
 
                             const editModal = new bootstrap.Modal(document.getElementById('editModal'));
                             editModal.show();
@@ -2861,17 +2963,6 @@
                             console.error('Error deleting activity:', xhr.responseText);
                         }
                     });
-                });
-
-                // Clean up CKEditor instance when the modal is hidden
-                $('#editModal').on('hidden.bs.modal', function () {
-                    if (editorInstance) {
-                        editorInstance.destroy().then(() => {
-                            editorInstance = null;
-                        }).catch(error => {
-                            console.error('Error destroying CKEditor instance:', error);
-                        });
-                    }
                 });
 
                 // Reset form when modal is hidden
@@ -2959,30 +3050,30 @@
 
                             // Populate the details
                             detailsDiv.innerHTML = `
-                        <table class="o-mail-Activity-details table table-sm mt-2">
-                            <tbody>
-                                <tr>
-                                    <td class="text-end fw-bolder">Activity type</td>
-                                    <td>${data.activity_type}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end fw-bolder">Created</td>
-                                    <td>${data.created_at} by ${data.email}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end fw-bolder">Assigned to</td>
-                                    <td>${data.get_email}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-end fw-bolder">Due on</td>
-                                    <td>${data.due_date}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="o-mail-Activity-note text-break mt-2">
-                            <p>${data.note ?? ''}</p>
-                        </div>
-                    `;
+                                                            <table class="o-mail-Activity-details table table-sm mt-2">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="text-end fw-bolder">Activity type</td>
+                                                                        <td>${data.activity_type}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-end fw-bolder">Created</td>
+                                                                        <td>${data.created_at} by ${data.email}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-end fw-bolder">Assigned to</td>
+                                                                        <td>${data.get_email}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="text-end fw-bolder">Due on</td>
+                                                                        <td>${data.due_date}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <div class="o-mail-Activity-note text-break mt-2">
+                                                                <p>${data.note ?? ''}</p>
+                                                            </div>
+                                                        `;
 
                             // Show the details div
                             detailsDiv.classList.remove('d-none');
@@ -2993,6 +3084,139 @@
                     detailsDiv.classList.add('d-none');
                 }
             }
+        </script>
+
+        <script>
+            function previewFile(filePath) {
+                // Open PDF in a new tab
+                window.open(filePath, '_blank');
+            }
+
+
+            let documentIdToDelete; // Variable to store the document ID to delete
+
+            // Function to show the confirmation modal
+            function showDeleteConfirmation(id) {
+                documentIdToDelete = id; // Store the ID of the document to delete
+                $('#confirmationModal').modal('show'); // Show the modal
+            }
+
+            // Confirm delete action
+            $('#confirmDelete').on('click', function () {
+                $.ajax({
+                    url: '{{ route('lead.deleteDocument') }}', // Adjust route as necessary
+                    method: 'POST',
+                    data: {
+                        id: documentIdToDelete,
+                        _token: '{{ csrf_token() }}' // Include CSRF token for security
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success('Document deleted successfully!');
+                            // Hide the modal
+                            $('#confirmationModal').modal('hide');
+                            // Remove the document from the UI
+                            $('#document-' + documentIdToDelete).remove(); // Use the unique ID to remove the document
+                        } else {
+                            toastr.error('Failed to delete document.');
+                        }
+                    },
+                    error: function (xhr) {
+                        toastr.error('Error occurred while deleting the document.');
+                    }
+                });
+            });
+
+            window.uploadFile = function (inputId, activityId) {
+                const fileInput = document.getElementById(inputId);
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    alert('Please select a file to upload.');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('activity_id', activityId); // Include the activity ID for database update
+
+                // Add CSRF token for Laravel
+                formData.append('_token', '{{ csrf_token() }}');
+
+                $.ajax({
+                    url: '{{ route('lead.uploadFile') }}',  // Change to your backend endpoint
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload();
+                            // Optionally, update the UI to reflect the new status
+                            toastr.success('File uploaded successfully.');
+                        } else {
+                            toastr.error('Failed to upload the file.');
+                        }
+                    },
+                    error: function (xhr) {
+                        toastr.error('Error occurred while uploading the file: ' + xhr.responseText);
+                    }
+                });
+            };
+        </script>
+
+        <!-- Activity Done Star Store Function -->
+        <script>
+            $(document).ready(function() {
+                $('.toggle-star').each(function() {
+                    const activityId = $(this).data('id');
+                    const icon = $(this).find('i');
+                    
+                    // Check localStorage for the star state
+                    const storedState = localStorage.getItem(`activity_${activityId}_is_star`);
+                    
+                    if (storedState !== null) {
+                        const isStar = storedState === '1';
+                        icon.toggleClass('fa-star', isStar);
+                        icon.toggleClass('fa-star-o', !isStar);
+                        icon.toggleClass('selected-star', isStar); // Gold color for selected star
+                        icon.toggleClass('not-selected', !isStar); // Gray border for unselected star
+                    }
+                });
+
+                $('.toggle-star').on('click', function() {
+                    const icon = $(this).find('i'); // Target the icon for this button
+                    const activityId = $(this).data('id');
+                    const isStar = icon.hasClass('fa-star');
+                    const newIsStar = !isStar ? 1 : 0; // Set to 1 if selected, 0 if unselected
+
+                    // AJAX request to update the database
+                    $.ajax({
+                        url: `/star-update/${activityId}`,
+                        type: 'POST',
+                        data: {
+                            is_star: newIsStar,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                // Toggle star icon and classes for this button only
+                                icon.toggleClass('fa-star fa-star-o');
+                                icon.toggleClass('selected-star', newIsStar === 1);
+                                icon.toggleClass('not-selected', newIsStar === 0);
+                                
+                                // Store the state in localStorage for this activity
+                                localStorage.setItem(`activity_${activityId}_is_star`, newIsStar);
+                            } else {
+                                console.error(data.message);
+                            }
+                        }.bind(this),
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
         </script>
     @endpush
 

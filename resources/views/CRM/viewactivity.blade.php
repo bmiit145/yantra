@@ -1,17 +1,17 @@
 @extends('layout.header')
 @section('content')
-@section('head_breadcrumb_title', 'Leads')
-@section('kanban', route('lead.kanban', ['lead' => 'kanban']))
-@section('calendar', route('lead.calendar', ['lead' => 'calendar']))
-@section('char_area', route('lead.graph'))
-@section('activity', route('lead.activity'))
-{{-- @vite([
+@section('head_breadcrumb_title', 'Pipeline')
+@section('lead', route('crm.pipeline.list'))
+@section('head_new_btn_link', route('crm.pipeline.create'))
+@section('kanban', url('crm'))
+@section('calendar', route('crm.pipeline.calendar'))
+@section('activity', route('crm.pipeline.activity'))
+@section('char_area', route('crm.pipeline.graph'))
+<!-- @section('char_area', route('lead.graph')) -->
+@vite([
 'resources/css/chats.css',
-]) --}}
-@section('head')
-    @vite(['resources/css/chats.css'])
-    
-@endsection
+// 'resources/css/odoo/web.assets_web_print.min.css'
+])
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
@@ -42,6 +42,7 @@
         <a href="#">Sales Teams</a>
     </div>
 </li>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
 
 <style>
     input {
@@ -155,6 +156,13 @@
     .location{
      display: none;
     }
+    .o_priority_star.fa-star {
+        color: #f3cc00; /* Color for filled stars */
+    }
+
+    .o_priority_star.fa-star-o {
+        color: gray; /* Color for empty stars */
+    }
 </style>
 
 @endsection
@@ -186,9 +194,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($activities as $lead_id => $leadActivities)
+                @foreach($activities as $pipeline_id => $pipelineActivities)
                 @php
-                $lead = $leadActivities->first(); // Get the first activity to display lead-related data once
+                $pipeline = $pipelineActivities->first(); // Get the first activity to display lead-related data once
                 @endphp
                 <tr class="o_data_row h-100">
                     <td class="o_activity_record p-2 cursor-pointer">
@@ -202,9 +210,9 @@
                             </div>
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between">
-                                    <div class="d-block text-truncate o_text_block o_text_bold">{{ $lead->product_name }}</div>
+                                    <div class="d-block text-truncate o_text_block o_text_bold">{{ $pipeline->opportunity }}</div>
                                     <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
-                                        <span>₹{{$lead->probability ?? '0.00'}}</span>
+                                        <span>₹{{$pipeline->probability ?? '0.00'}}</span>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">
@@ -216,9 +224,9 @@
                             </div>
                         </div>
                     </td>
-                    <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
+                    <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
                         @php
-                            $emailActivity = $leadActivities->where('activity_type', 'email')->where('status', 0)->sortBy('due_date');
+                            $emailActivity = $pipelineActivities->where('activity_type', 'email')->where('status', 0)->sortBy('due_date');
 
                             // Get current date
                             $now = \Carbon\Carbon::now();
@@ -276,10 +284,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                     <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                        &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
+                                                        &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -304,10 +312,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Today</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -332,10 +340,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -357,9 +365,9 @@
                         @endif
                     </td>
 
-                    <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
+                    <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
                         @php
-                            $callActivity = $leadActivities->where('activity_type', 'call')->where('status', 0)->sortBy('due_date');
+                            $callActivity = $pipelineActivities->where('activity_type', 'call')->where('status', 0)->sortBy('due_date');
 
                             // Get current date
                             $now = \Carbon\Carbon::now();
@@ -417,10 +425,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                     <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                         &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
+                                                         &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -445,10 +453,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Today</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -473,10 +481,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -498,9 +506,9 @@
                         @endif
                     </td>
 
-                    <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
+                    <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
                         @php
-                            $meetingActivity = $leadActivities->where('activity_type', 'meeting')->where('status', 0)->sortBy('due_date');
+                            $meetingActivity = $pipelineActivities->where('activity_type', 'meeting')->where('status', 0)->sortBy('due_date');
 
                             // Get current date
                             $now = \Carbon\Carbon::now();
@@ -558,10 +566,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                     <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                         &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
+                                                         &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -586,10 +594,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Today</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -614,10 +622,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -639,9 +647,9 @@
                         @endif
                     </td>
 
-                    <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
+                    <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
                         @php
-                            $todoActivities = $leadActivities->where('activity_type', 'to-do')->where('status', 0)->sortBy('due_date');
+                            $todoActivities = $pipelineActivities->where('activity_type', 'to-do')->where('status', 0)->sortBy('due_date');
 
                             // Get current date
                             $now = \Carbon\Carbon::now();
@@ -699,10 +707,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                     <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                         &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
+                                                         &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -727,10 +735,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Today</small>
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -752,26 +760,23 @@
                                                 <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
                                             </div>
                                             @foreach($plannedActivities as $value)
-                                            <div class="d-flex align-items-center flex-wrap mx-3">
-                                            <span
+                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                                <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
-                                                <div class="mt-1">
-                                                    @php
-                                                    $dueDate = \Carbon\Carbon::parse($value->due_date);
-                                                    $status = 'Planned';
-                                                    $bgColor = '#28a745';
-                                                    @endphp
-                                                    <small class="text-truncate" style="color: {{ $bgColor }};">
-                                                        {{$lead->getUser->email}} - {{ $status }} - {{ $dueDate->format('d-m-y') }}
-                                                    </small>
-                                                </div>
-                                                <div class="py-2 px-3 d-none planned_feedback_div">
-                                                    <textarea class="form-control" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                    <div class="mt-2">
-                                                        <button type="button" class="btn btn-sm btn-primary mx-2" aria-label="Done"> Done </button>
-                                                        <button type="button" class="btn btn-sm btn-link"> Discard </button>
+                                                    <div class="mt-1 flex-grow-1">
+                                                    &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
+                                                    </div>
+                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
+                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                    <div class="py-2 px-3 d-none" id="planned_feedback_{{ $value->id }}">
+                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
+                                                        <div class="mt-2">
+                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
+                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#planned_feedback_{{ $value->id }}">Discard </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             @endforeach
@@ -784,9 +789,9 @@
                     </td>
 
 
-                    <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
+                    <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
                         @php
-                            $uploadDocumentActivity = $leadActivities->where('activity_type', 'upload_document')->where('status', 0)->sortBy('due_date');
+                            $uploadDocumentActivity = $pipelineActivities->where('activity_type', 'upload_document')->where('status', 0)->sortBy('due_date');
 
                             // Get current date
                             $now = \Carbon\Carbon::now();
@@ -837,87 +842,72 @@
 
                                         <!-- Overdue Section -->
                                         <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                 <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
-                                            </div>
-                                            @foreach($overdueActivities as $value)
-                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                    <span
-                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                    </span>
-                                                    <div class="mt-1 flex-grow-1">
-                                                         &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
-                                                    </div>
-                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                    <div class="py-2 px-3 d-none" id="overdue_feedback_{{ $value->id }}">
-                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                        <div class="mt-2">
-                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#overdue_feedback_{{ $value->id }}">Discard </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                    <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
+                </div>
+                @foreach($overdueActivities as $value)
+                    <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                            {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                        </span>
+                        <div class="mt-1 flex-grow-1">
+                            &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
+                        </div>
+                        <input type="file" class="d-none" id="upload_overdue_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_overdue_file_{{ $value->id }}', {{ $value->id }})">
+                        <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_overdue_file_{{ $value->id }}').click();">
+                            <i class="fa fa-upload"></i>
+                        </button>
+                        <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                    </div>
+                @endforeach
+            </div>
 
-                                        <!-- Today Section -->
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
-                                            </div>
-                                            @foreach($todayActivities as $value)
-                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                <span
-                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                    </span>
-                                                    <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp; <small>{{ $lead->getUser->email }} - Today</small>
-                                                    </div>
-                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                    <div class="py-2 px-3 d-none" id="today_feedback_{{ $value->id }}">
-                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                        <div class="mt-2">
-                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#today_feedback_{{ $value->id }}">Discard </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+            <!-- Today Section -->
+            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                    <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
+                </div>
+                @foreach($todayActivities as $value)
+                    <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                            {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                        </span>
+                        <div class="mt-1 flex-grow-1">
+                            &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
+                        </div>
+                        <input type="file" class="d-none" id="upload_today_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_today_file_{{ $value->id }}', {{ $value->id }})">
+                        <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_today_file_{{ $value->id }}').click();">
+                            <i class="fa fa-upload"></i>
+                        </button>
+                        <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                    </div>
+                @endforeach
+            </div>
 
-                                        <!-- Planned Section -->
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
-                                            </div>
-                                            @foreach($plannedActivities as $value)
-                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                <span
-                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                    </span>
-                                                    <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
-                                                    </div>
-                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                    <div class="py-2 px-3 d-none" id="planned_feedback_{{ $value->id }}">
-                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                        <div class="mt-2">
-                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#planned_feedback_{{ $value->id }}">Discard </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+            <!-- Planned Section -->
+            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                    <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
+                </div>
+                @foreach($plannedActivities as $value)
+                    <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                            {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                        </span>
+                        <div class="mt-1 flex-grow-1">
+                            &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
+                        </div>
+                        <input type="file" class="d-none" id="upload_planned_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_planned_file_{{ $value->id }}', {{ $value->id }})">
+                        <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_planned_file_{{ $value->id }}').click();">
+                            <i class="fa fa-upload"></i>
+                        </button>
+                        <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                    </div>
+                @endforeach
+            </div>
                                     </div>
                                 </div>
                                 <div class="popover-arrow end-auto"></div>
@@ -925,9 +915,9 @@
                         @endif
                     </td>
 
-                    <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
+                    <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
                         @php
-                            $requestSignatureActivity = $leadActivities->where('activity_type', 'request_signature')->where('status', 0)->sortBy('due_date');
+                            $requestSignatureActivity = $pipelineActivities->where('activity_type', 'request_signature')->where('status', 0)->sortBy('due_date');
 
                             // Get current date
                             $now = \Carbon\Carbon::now();
@@ -985,10 +975,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                     <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                         &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
+                                                         &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1013,10 +1003,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                 <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                        &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Today</small>
+                                                        &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1041,10 +1031,10 @@
                                                 <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                     <span
                                                         class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                        {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
                                                     </span>
                                                     <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp; <small>{{ $lead->getUser->email }} - Planned</small>
+                                                    &nbsp;&nbsp; <small>{{ $pipeline->getUser->email }} - Planned</small>
                                                     </div>
                                                     <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                     <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1147,7 +1137,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 mt-3 logNoteField">
-                            <textarea class="form-control" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
+                            <textarea class="form-control makeMeSummernote" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
                         </div>
                     </div>
                 </div>
@@ -1172,33 +1162,53 @@
         <!-- Form or content for scheduling the activity -->
         <form id="scheduleActivityForm">
         <table id="example" class="display nowrap example">
-            <thead>
+        <thead>
                 <tr>
-                    <th>Lead</th>
-                    <th>Email</th>
-                    <th>City</th>
-                    <th>state</th>
-                    <th>Country</th>
-                    <th>Zip</th>
-                    <th>Probability</th>
-                    <th>Company Name</th>
-                    <th>Address 1</th>
-                    <th>Address 2</th>
-                    <th>Website Link</th>
+                    <th>Created On</th>
+                    <th>Opportunity</th>
+                    <th>Customer</th>
                     <th>Contact Name</th>
-                    <th>Job Postion</th>
+                    <th>Email</th>
                     <th>Phone</th>
-                    <th>Mobile</th>
-                    <th>Priority</th>
-                    <th>Title</th>
-                    <th>Tag</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
                     <th>Sales Person</th>
                     <th>Sales Team</th>
+                    <th>Priority</th>
+                    <!-- <th>Activities</th>
+                    <th>Activity By</th> -->
+                    <!-- <th>My Deadline</th> -->
+                    <th>Campaign</th>
+                    <th>Medium</th>
+                    <th>Source</th>
+                    <th>Expected Revenue</th>
+                    <th>Expected Closing</th>
+                    <th>Expected MRR</th>
+                    <th>Recurring Revenues</th>
+                    <th>Recurring Plan</th>
+                    <th>Stage</th>
+                    <th>Probability</th>
+                    <th>Lost Reason</th>
+                    <th>Tags</th>
+                    <th></th>
+
                 </tr>
             </thead>
 
             <tbody id="lead-table-body">
             </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="15"></th>
+                    <th id="total_expected_revenue"></th>
+                    <th colspan="1"></th>
+                    <th id="total_recurring_mrr"></th>
+                    <th colspan="1"></th>
+                    <th id="total_recurring_revenue"></th>
+                    <th colspan="4"></th>
+                </tr>
+            </tfoot>
         </table>
         </form>
       </div>
@@ -1279,7 +1289,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 mt-3 logNoteField">
-                    <textarea name="log_note" id="log_note" cols="30" rows="10"></textarea>
+                    <textarea name="log_note" class="makeMeSummernote" id="log_note" cols="30" rows="10"></textarea>
                 </div>
             </div>
         </div>
@@ -1293,13 +1303,18 @@
   </div>
 </div>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".makeMeSummernote").summernote();
+    });
+</script>
 <script>
     $(document).ready(function() {
         // Function to toggle feedback textarea visibility
@@ -1371,19 +1386,6 @@
                 }
             }).datepicker("setDate", currentDate);
         });
-
-        let editorInstance = null;
-
-        function initializeEditor(selector, callback) {
-            ClassicEditor
-                .create(document.querySelector(selector))
-                .then(editor => {
-                    if (callback) callback(editor);
-                })
-                .catch(error => {
-                    console.error('Error initializing CKEditor:', error);
-                });
-        }
         
         $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function() {
             var activityId = $(this).closest('.hideDiv').data('id');
@@ -1400,15 +1402,14 @@
                     $('#edit_summary').val(data.summary);
                     $('#edit_assigned_to').val(data.assigned_to);
                     
-                    // Initialize CKEditor for log note
-                    if (editorInstance) {
-                        editorInstance.setData(data.note || '');
-                    } else {
-                        initializeEditor('#edit_log_note', editor => {
-                            editorInstance = editor;
-                            editor.setData(data.note || '');
-                        });
-                    }
+                    $('#edit_log_note').summernote({
+                        height: 200,  // Set editor height
+                        focus: true,  // Set focus to editable area after modal shown
+                        tabsize: 2    // Set tab size
+                    });
+
+                    // Set the content of the Summernote editor with the fetched note
+                    $('#edit_log_note').summernote('code', data.note);
 
                     // Show the modal
                     $('#editModal').modal('show');
@@ -1470,12 +1471,12 @@
                     var plannedCount = parseInt($('b:contains("Planned")').text().match(/\d+/)[0]); // Count in Planned
 
                     var remainingActivities = overdueCount + todayCount + plannedCount;
-                    alert(remainingActivities)
 
                     // If all activities are deleted, reload the page
                     if (remainingActivities === 0) {
                         location.reload(); // Reload the page
                     }
+                    location.reload();
                 },
                 error: function(xhr) {
                     console.error(xhr.responseText);
@@ -1483,6 +1484,41 @@
                 }
             });
         }
+
+
+        //Upload Document 
+        window.uploadFile = function(inputId, activityId) {
+            const fileInput = document.getElementById(inputId);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('activity_id', activityId); // Include the activity ID for database update
+
+            $.ajax({
+                url: '{{ route('lead.uploadFile') }}',  // Change to your backend endpoint
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                        // Optionally, update the UI to reflect the new status
+                    } else {
+                        toastr.error('Failed to upload the file.');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Error occurred while uploading the file.');
+                }
+            });
+        };
     });
 
 
@@ -1518,19 +1554,13 @@
             }
         });
 
-        ClassicEditor
-        .create(document.querySelector('#log_note'))
-        .catch(error => {
-            console.error(error);
-        });
-
         $('#scheduleActivityModal').on('shown.bs.modal', function () {
             var selectedLeadId = null;
             var table = $('#example').DataTable({
             processing: true
             , serverSide: true
             , ajax: {
-                url: '{{ route('lead.get') }}'
+                url: '{{ route('crm.pipeline.list.data') }}'
                 , type: "POST"
                 , data: function(d) {
                     d.search = {
@@ -1544,213 +1574,303 @@
             ]
             , pageLength: 10
             , aoColumns: [{
-                    data: 'product_name'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'email'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'city'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'get_state'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.name;
-                        }
-                        if (row && row.get_auto_state) {
+                data: 'created_at',
+                render: function (data, type, row) {
+                    if (data) {
+                        // Create a new Date object
+                        var date = new Date(data);
 
-                            return row.get_auto_state.name;
-                        }
+                        // Format the date and time
+                        var formattedDate = date.toLocaleDateString('en-GB'); // Adjust locale as needed
+                        var formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // Adjust locale and options as needed
+
+                        return formattedDate + ' ' + formattedTime;
+                    } else {
                         return '';
                     }
                 }
+            }
                 , {
-                    data: 'get_country'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.name;
-                        }
-                        if (row && row.get_auto_country) {
-
-                            return row.get_auto_country.name;
-                        }
+                data: 'opportunity'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
                         return '';
                     }
+                }
+            }
+                , {
+                data: 'contact'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
+                    }
+                }
+            }
+                , {
+                data: 'contact_name'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    }
+                    return '';
+                }
+            }
+                , {
+                data: 'email'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    }
+                    return '';
+                }
 
-                }
+            }
                 , {
-                    data: 'zip'
-                    , render: function(data, type, row) {
+                data: 'phone'
+                , render: function (data, type, row) {
 
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
                     }
                 }
+            },
+            {
+                data: 'city'
+                , render: function (data, type, row) {
+
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            }
                 , {
-                    data: 'probability'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'get_state'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'company_name'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'get_country'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'address_1'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'user'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.email;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'address_2'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'sales'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'website_link'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
+                data: 'priority'
+                ,  render: function (data, type, row) {
+                    let priorityStars = '';
+                    const priority = row.priority; // Assuming 'priority' is part of the row data
+
+                    priorityStars += `<div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">`;
+
+                    // Medium priority
+                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'medium' || priority === 'high' || priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>`;
+
+                    // High priority
+                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'high' || priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>`;
+
+                    // Very High priority
+                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>`;
+
+                    priorityStars += `</div>`;
+
+                    return priorityStars;
                 }
+            }
+                //     , {
+                //     data: 'contact_name'
+                //     , render: function (data, type, row) {
+                //         if (data) {
+                //             return data;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // }
+                //     , {
+                //     data: 'job_postion'
+                //     , render: function (data, type, row) {
+                //         if (data) {
+                //             return data;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // }
+                //     , {
+                //     data: 'deadline'
+                //     , render: function (data, type, row) {
+                //         if (data) {
+                //             return data;
+                //         } else {
+                //             return '';
+                //         }
+                //     }
+                // }
                 , {
-                    data: 'contact_name'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'get_campaign'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'job_postion'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'get_medium'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'phone'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'get_source'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.name;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'mobile'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'expected_revenue'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'priority'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+                data: 'deadline'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
                     }
                 }
+            }
                 , {
-                    data: 'get_tilte'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.title;
+                targets: 17, // Adjust index if necessary
+                render: function (data, type, row) {
+                    if (row.recurring_revenue && row.get_recurring_plan && row.get_recurring_plan.months) {
+                        const revenue = parseFloat(row.recurring_revenue); // Total revenue
+                        const months = parseFloat(row.get_recurring_plan.months); // Number of months
+
+                        if (months > 0) { // Check to avoid division by zero
+                            const monthlyValue = (revenue / months).toFixed(2);
+                            return `${monthlyValue}`; // Return the calculated MRR
                         } else {
-                            return '';
+                            return 'Invalid months'; // Handle invalid months case
                         }
+                    } else {
+                        return ''; // Show nothing if either value is absent
                     }
                 }
-                , {
-                    data: 'tag'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+            },
+            {
+                data: 'recurring_revenue'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
                     }
                 }
-                , {
-                    data: 'get_user'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.email;
-                        } else {
-                            return '';
-                        }
+            },
+            {
+                data: 'get_recurring_plan'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data.plan_name;
+                    } else {
+                        return '';
                     }
                 }
-                , {
-                    data: 'sales_team'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
+            },
+            {
+                data: 'stage_id'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
                     }
                 }
+            },
+            {
+                data: 'probability'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: 'loslost_reasont'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            },
+            {
+                data: 'tag'
+                , render: function (data, type, row) {
+                    if (data) {
+                        return data;
+                    } else {
+                        return '';
+                    }
+                }
+            }
                 // Uncomment and modify the following column if needed
                 // {
                 //     data: 'id',
@@ -1760,7 +1880,54 @@
                 //     }
                 // }
             ]
-            , createdRow: function(row, data, dataIndex) {
+            ,
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+
+                // Calculate total expected revenue over all pages
+                var totalExpectedRevenue = api
+                    .column(15) // 'expected_revenue' column index
+                    .data()
+                    .reduce(function (a, b) {
+                        var x = parseFloat(a) || 0;
+                        var y = parseFloat(b) || 0;
+                        return x + y;
+                    }, 0);
+
+                // Calculate total recurring MRR over all pages
+                var totalRecurringMrr = 0;
+                api.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    var data = this.data();
+                    if (data.recurring_revenue && data.get_recurring_plan && data.get_recurring_plan.months) {
+                        const revenue = parseFloat(data.recurring_revenue);
+                        const months = parseFloat(data.get_recurring_plan.months);
+
+                        if (months > 0) {
+                            totalRecurringMrr += (revenue / months);
+                        }
+                    }
+                });
+
+                // Calculate total recurring revenue over all pages
+                var totalRecurringRevenue = api
+                    .column(18) // 'recurring_revenue' column index
+                    .data()
+                    .reduce(function (a, b) {
+                        var x = parseFloat(a) || 0;
+                        var y = parseFloat(b) || 0;
+                        return x + y;
+                    }, 0);
+
+                // Update footer for expected revenue
+                $(api.column(15).footer()).html(totalExpectedRevenue.toFixed(2));
+
+                // Update footer for recurring MRR
+                $(api.column(17).footer()).html(totalRecurringMrr.toFixed(2));
+
+                // Update footer for recurring revenue
+                $(api.column(18).footer()).html(totalRecurringRevenue.toFixed(2));
+            },
+            createdRow: function (row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
             }
         });
@@ -1779,7 +1946,7 @@
 
         // Append the selected lead ID to the form data
         var formData = $(this).serializeArray();
-        formData.push({ name: 'lead_id', value: selectedLeadId });
+        formData.push({ name: 'pipeline_id', value: selectedLeadId });
 
         $.ajax({
             url: '{{ route('lead.scheduleActivityStore') }}', // Replace with your route to handle activity addition
