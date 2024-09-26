@@ -311,7 +311,6 @@
 <div class="o_action_manager">
     <div class="o_xxl_form_view h-100 o_form_view o_crm_form_view o_lead_opportunity_form o_view_controller o_action">
         <div class="o_form_view_container">
-
             <div class="o_content">
                 <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
                     <div class="o_form_sheet_bg">
@@ -379,7 +378,12 @@
                                 <h1>
                                     <div name="name" class="o_field_widget">
                                         <div style="height: 45px;">
-                                            <textarea class="o_input" id="name_0" style="width: 1000px" value="{{ isset($data) ? $data->product_name : '' }}" placeholder="e.g. Product Pricing" rows="1" spellcheck="false" style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;">{{ isset($data) ? $data->product_name : '' }}</textarea>
+                                            <textarea class="o_input" 
+                                            id="name_0" style="width: 1000px" 
+                                            value="{{ isset($data) ? $data->product_name : '' }}" 
+                                            placeholder="e.g. Product Pricing" rows="1" spellcheck="false" 
+                                            style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;">
+                                            {{ isset($data) ? $data->product_name : '' }}</textarea>
                                         </div>
                                     </div>
                                 </h1>
@@ -584,7 +588,6 @@
                                                                                 {{ $user->email ?? '' }}
                                                                             </option>
                                                                             @endforeach
-
                                                                         </select>
                                                                     </div>
                                                                 <span class="o_dropdown_button"></span>
@@ -1283,6 +1286,7 @@
         </div>
     </div>
 </div>
+
 <div class="o-main-components-container">
     <div class="o-discuss-CallInvitations position-absolute top-0 end-0 d-flex flex-column p-2"></div>
     <div class="o-mail-ChatHub">
