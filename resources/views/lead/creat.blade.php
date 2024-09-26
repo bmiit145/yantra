@@ -242,6 +242,12 @@
     .o-mail-AttachmentList {
         max-width: 60%;
     }
+    .crmright_head_main__1{
+        display:none;
+
+
+        
+    }
 </style>
 <style>
     .select2-container--default .select2-selection--single {
@@ -994,10 +1000,10 @@
                                     <i class="fa fa-caret-down"></i>
                                 </button>
                             </div>
-                                                <div class="o-mail-Composer d-grid flex-shrink-0 pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
-                                                    <div class="o-mail-Composer-sidebarMain flex-shrink-0" >
+                                                <div class="o-mail-Composer  pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
+                                                    {{-- <div class="o-mail-Composer-sidebarMain flex-shrink-0" >
                                                         <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                    </div>
+                                                    </div> --}}
                                                     <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
                                                         <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
                                                             <div class="position-relative flex-grow-1">
@@ -2866,7 +2872,7 @@
             }
         });
 
-       $('.send_messag_by_email').on('click', function(event){
+        $('.send_messag_by_email').on('click', function(event){
             var send_message = $('#send_message').val(); 
             var image_uplode = $('.image_uplode')[0].files; // Files are objects
             var lead_id = $('#lead_id').val();
@@ -2885,6 +2891,9 @@
             for (var i = 0; i < image_uplode.length; i++) {
                 formData.append('image_uplode[]', image_uplode[i]); // Multiple files are added as an array
             }
+
+            $('.show1').hide();
+            $('.show2').hide();
 
             $.ajax({
                 url: '{{ route('lead.send_message') }}',
@@ -3017,8 +3026,8 @@
 
 <script>
    $('.send_message_btn').on('click', function() {
-        $('.show1').css('display','block');
-        $('.show2').css('display','block'); 
+        $('.show1').toggle();
+        $('.show2').toggle(); 
   });
 
 </script>
