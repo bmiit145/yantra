@@ -76,7 +76,7 @@ Route::middleware(['auth'])->group(function () {
     // sale
     Route::post('sale/setPriority' , [CRMController::class, 'setPriority'])->name('sale.setPriority');
     Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
-    Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');
+    Route::post('sale/setStage' , [CRMController::class, 'setStage'])->name('sale.setStage');     
 
 
     Route::get('activity' , [ActivityController::class, 'index'])->name('lead.activity');
@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('orders/new' , [SalesController::class, 'create'])->name('orders.create');
     Route::get('products' , [SalesController::class, 'product_index'])->name('product.index');
     Route::get('products/new' , [SalesController::class, 'product_create'])->name('product.create');
+    Route::post('products-store' , [SalesController::class, 'product_store'])->name('product.store');
     Route::get('pricelists' , [SalesController::class, 'Pricelists_index'])->name('pricelists.index');
     Route::get('pricelists/new' , [SalesController::class, 'Pricelists_create'])->name('pricelists.create');
 

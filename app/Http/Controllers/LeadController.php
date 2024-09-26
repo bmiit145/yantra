@@ -968,7 +968,6 @@ class LeadController extends Controller
 
     public function send_message(Request $request)
     {
-         
         $data = new send_message();
         $data->message = $request->send_message;
         $data->to_mail = $request->to_mail;
@@ -976,10 +975,9 @@ class LeadController extends Controller
         $data->type = 'lead';
         $data->from_mail = auth()->user()->email;
         
-         $uploadedFiles = []; // Array to hold the file paths
-
+        $uploadedFiles = []; // Array to hold the file paths
     
-         if ($request->hasFile('image_uplode')) {
+        if ($request->hasFile('image_uplode')) {
             foreach ($request->file('image_uplode') as $file) {
                 // Get the original file name
                 $fileName = time() . '_' . $file->getClientOriginalName();
@@ -995,43 +993,52 @@ class LeadController extends Controller
         }
     
         $data->save();
-
-
+    
         // Prepare message data
         $messageData = $request->send_message; 
         $recipientEmail = $request->to_mail;
-
-        // Ensure $uploadedFiles is an array
+    
+        // Return JSON response immediately
+        response()->json(['message' => 'Message sent successfully'])->send();
+    
+        // Defer the email sending until after the response
+        $this->send_message_by_mail($uploadedFiles, $messageData, $recipientEmail);
+        return null;
+    }
+    
+    public function send_message_by_mail($uploadedFiles, $messageData, $recipientEmail)
+    {
         $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
-
+    
         // If $messageData is a string, wrap it in an array with a key
         if (!is_array($messageData)) {
             $messageData = ['content' => $messageData]; 
         }
-
-        // Ensure there is a title
-        $messageData = 'New Message';
-
-        // Send the email
-        Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageData, $files) {
-            // Set recipient and subject
-            $message->to($recipientEmail, $recipientEmail)
-                    ->subject($messageData);
-
-            // Attach files if they exist
-            foreach ($files as $file) {
-                $fullPath = storage_path('app/public/' . $file); // Construct the full path
-                if (file_exists($fullPath)) {
-                    $message->attach($fullPath);
-                } else {
-                    Log::error("File does not exist: " . $fullPath);
-                }
-            }
-        });
     
-
-        return response()->json(['message' => 'Message sent successfully']);
+        // Set a default message title
+        $messageTitle = 'New Message';
+    
+        // Send the email after the response has been sent
+        app()->terminating(function() use ($recipientEmail, $messageTitle, $files, $messageData) {
+            Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageTitle, $files) {
+                // Set recipient and subject
+                $message->to($recipientEmail)
+                        ->subject($messageTitle);
+    
+                // Attach files if they exist
+                foreach ($files as $file) {
+                    $fullPath = storage_path('app/public/' . $file); // Construct the full path
+                    if (file_exists($fullPath)) {
+                        $message->attach($fullPath);
+                    } else {
+                        Log::error("File does not exist: " . $fullPath);
+                    }
+                }
+            });
+        });
     }
+    
+    
     
 
     public function deleteImage(Request $request)

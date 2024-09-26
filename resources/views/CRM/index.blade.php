@@ -49,7 +49,6 @@
 @section('head')
 @vite([
     'resources/css/crm_2.css',
-//    'resources/css/odoo/web.assets_web_print.min.css'
     ])
 @endsection
 
