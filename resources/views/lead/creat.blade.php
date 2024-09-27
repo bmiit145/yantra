@@ -6,6 +6,9 @@
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
+@section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
+@section('redirect_button', route('lead.index'))
+@section('redirect_name' , 'Lead'))
 
 @section('navbar_menu')
  <li class="dropdown">
@@ -373,10 +376,12 @@
                 <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
-                            <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
+                            <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">    
                                 <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary " name="511" type="action"><span>Convert to
                                         Opportunity</span></button>
+                                        @if(isset($data) && $data->is_lost == 1)
                                         <button data-hotkey="l" data-id="{{isset($data) ? $data->id : ''}}" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary lead_lost_btn" name="510" type="action" data-tooltip="Mark as lost" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Lost</span></button>
+
                                         @if($count > 1)
                                             <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                                                 <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
@@ -385,6 +390,11 @@
                                                 </button>
                                             </a>
                                         @endif
+                                        @endif
+                                        @if(isset($data) && $data->is_lost == 2)
+                                        <button data-hotkey="x"  invisible="probability > 0 or active" class="btn btn-secondary restore_lead" data-id="{{isset($data) ? $data->id : ''}}" name="toggle_active" type="object"><span>Restore</span></button>
+                                        @endif
+                                      
                                             <!-- Modal -->
                                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-md">
@@ -431,6 +441,7 @@
                                 </div>
                             </div>
                         @endif
+                        
                   
                             <div class="oe_title">
                                 <h1>
