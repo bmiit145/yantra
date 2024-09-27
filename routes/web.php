@@ -190,6 +190,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/invite-followers', [LeadController::class, 'invite_followers'])->name('lead.invite_followers');
     Route::post('/lead/remove_follower', [LeadController::class, 'removeFollower'])->name('lead.remove_follower');
     Route::post('/attachments/add', [LeadController::class, 'attachmentsAdd'])->name('lead.attachmentsAdd');
+    Route::delete('/attachments/delete-file', [LeadController::class, 'attachmentsDeleteFile'])->name('lead.attachmentsDeleteFile');
+
 
 
     

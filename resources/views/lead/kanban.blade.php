@@ -2,6 +2,7 @@
 @section('content')
 @section('head_breadcrumb_title', 'Leads')
 @section('head_new_btn_link', route('lead.create'))
+@section('lead', route('lead.index'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))

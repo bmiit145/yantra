@@ -1,7 +1,7 @@
 @extends('layout.header')
 @section('content')
 @section('head_breadcrumb_title', 'Leads')
-@section('head_new_btn_link', route('lead.create'))
+@section('lead', route('lead.index'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
@@ -120,6 +120,12 @@
     .btn.red {
         background: #e74c3c;
         color: #fff;
+    }
+    .new_btn_info{
+     display: none;
+    }
+    .o_form_button_save{
+     display: none;
     }
 </style>
 
