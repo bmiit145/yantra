@@ -375,6 +375,9 @@
     .selected-star {
         color: #f3cc00; /* Gold color for the selected star */
     }
+    .crm_head_centerside{
+        display: none;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])

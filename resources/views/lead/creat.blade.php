@@ -1,8 +1,5 @@
 @extends('layout.header')
-@section('head_new_btn_link', route('lead.create'))
-@section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
-@section('redirect_name', 'Leads')
-@section('redirect_button', route('lead.index'))
+@section('head_new_btn_link', route('crm.show', ['crm' => 'new']))
 @section('head_new_btn_link', route('lead.create'))
 @section('lead', route('lead.index'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
@@ -67,6 +64,9 @@
 
 
 <style>
+    .crm_head_centerside{
+        display: none;
+    }
     .buyerlead h3 {
         font-size: 30px;
         margin: 0 0 30px;
@@ -370,13 +370,9 @@
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
                             <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
-                                        @if(isset($data) && $data->is_lost == 1)
-                                             <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary " name="511" type="action"><span>Convert to
+                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary " name="511" type="action"><span>Convert to
                                         Opportunity</span></button>
                                         <button data-hotkey="l" data-id="{{isset($data) ? $data->id : ''}}" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary lead_lost_btn" name="510" type="action" data-tooltip="Mark as lost" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Lost</span></button>
-                                        @else
-                                        <button data-hotkey="x" data-id="{{isset($data) ? $data->id : ''}}" invisible="probability > 0 or active" class="btn btn-secondary restore_lead" name="toggle_active" type="object"><span>Restore</span></button>
-                                        @endif
                                         @if($count > 1)
                                             <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                                                 <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
@@ -387,37 +383,37 @@
                                         @endif
                                             <!-- Modal -->
                                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-md">
-                                                <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
-                                                                <div class="resonse_select_hide">
-                                                                    <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
-                                                                        <option value=""></option>
-                                                                        @foreach ($lost_reasons as $reason)
-                                                                        <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
-                                                                            {{ $reason->name }}</option>
-                                                                        @endforeach
-                                                                        <option value="add_new_reson">Start typing...
-                                                                        </option>
-                                                                    </select>
-                                                                </div>
-                                                                <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
-                                                    
-                                                        <br>
-                                                        <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
-                                                        <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                </div>
-                                                </div>
+                                        <div class="modal-dialog modal-dialog-centered modal-md">
+                                            <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
+                                            <div class="modal-body">
+                                                <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
+                                                            <div class="resonse_select_hide">
+                                                                <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
+                                                                    <option value=""></option>
+                                                                    @foreach ($lost_reasons as $reason)
+                                                                    <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
+                                                                        {{ $reason->name }}</option>
+                                                                    @endforeach
+                                                                    <option value="add_new_reson">Start typing...
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
+                                                
+                                                    <br>
+                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
+                                                    <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            </div>
+                                            </div>
+                                        </div>
                                         </div>
                                         
                             </div>                            
@@ -2899,64 +2895,12 @@
 
 </script>
 <script>
-$(document).ready(function () {
-    $('.makeMeSummernote').summernote({
-        height: 300, // Set editor height
-        callbacks: {
-            onImageUpload: function(files) {
-                // Handle image upload if needed
-                var editor = $(this);
-                var file = files[0];
-                var reader = new FileReader();
-                
-                reader.onloadend = function() {
-                    editor.summernote('insertImage', reader.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
+  $(document).ready(function () {
+     $(".makeMeSummernote").summernote();
     });
-
-    // Enable dragging of images within the editor
-    $(document).on('mousedown', '.note-editable img', function(e) {
-        $(this).attr('draggable', true); // Enable drag
+  $(document).ready(function () {
+     $("#send_notification").summernote();
     });
-
-    // Handle image dragging
-    $(document).on('dragstart', '.note-editable img', function(e) {
-        e.originalEvent.dataTransfer.setData('text/html', this.outerHTML); // Set the dragging data
-        $(this).addClass('dragging'); // Mark the image being dragged
-    });
-
-    $(document).on('dragover', '.note-editable', function(e) {
-        e.preventDefault(); // Allow dropping inside the editor
-    });
-
-    // Handle image drop
-    $(document).on('drop', '.note-editable', function(e) {
-        e.preventDefault();
-        
-        var draggedImageHTML = e.originalEvent.dataTransfer.getData('text/html');
-        var range = document.caretRangeFromPoint(e.originalEvent.clientX, e.originalEvent.clientY);
-        
-        // Get the dragged image element and remove it from its original position
-        var draggedImage = $('.note-editable .dragging');
-        draggedImage.removeClass('dragging');
-        draggedImage.remove(); 
-        
-        // Insert the image at the new cursor position
-        if (range) {
-            var selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-            document.execCommand('insertHTML', false, draggedImageHTML);
-        }
-    });
-});
-
-$(document).ready(function () {
-        $("#send_notification").summernote();
-});
 </script>
 
 <script>
@@ -3522,7 +3466,7 @@ $(document).ready(function () {
         
     });
 
-$('.send_message_star').on('click', function(){
+    $('.send_message_star').on('click', function() {
     var $this = $(this); // Store the clicked element
     var id = $this.data('id');
     var isStarred = $this.data('starred'); // Get the current star status
@@ -3546,28 +3490,6 @@ $('.send_message_star').on('click', function(){
                 $this.find('i').removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred');
                 $this.data('starred', 1); // Update data attribute
             }
-        },
-        error: function(xhr, status, error) {
-            toastr.error('Something went wrong!');
-        }
-    });
-});
-$('.restore_lead').on('click', function(){
-    var id = $(this).data('id');
-    
-    $.ajax({
-        url: '{{ route('lead.restore_lead') }}',
-        type: 'post',
-        data: {
-            _token: '{{ csrf_token() }}',
-            id: id,
-        },
-        success: function(response) {
-
-            // Change the icon class after successful AJAX call
-        location.reload();
-            
-           
         },
         error: function(xhr, status, error) {
             toastr.error('Something went wrong!');
@@ -3715,7 +3637,6 @@ $(document).ready(function() {
             }
         });
     });
-    
 
     let fileToDelete = '';
     let leadIdToDelete = ''; // New variable for lead ID
