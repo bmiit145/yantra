@@ -1252,6 +1252,15 @@ public function attachmentsAdd(Request $request)
     return response()->json(['message' => 'Files uploaded successfully.']);
 }
 
+public function restore_lead(Request $request)
+{
+    $lead = generate_lead::where('id', $request->id)->update(['is_lost' => 1]);
+
+
+    return response()->json($lead);
+
+}
+
    
 }
 

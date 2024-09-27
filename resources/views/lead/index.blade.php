@@ -486,6 +486,9 @@
     .location{
         display:none
     }
+    .head_breadcrumb_info{
+        display:none
+    }
 
 </style>
 
@@ -500,13 +503,13 @@
                 <label><input type="checkbox" data-column="1" checked> Email</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="2"> City</label>
+                <label><input type="checkbox" data-column="2" checked> City</label>
             </div>
             <div class="dropdown-checkbox">
                 <label><input type="checkbox" data-column="3"> State</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="4"> Country</label>
+                <label><input type="checkbox" data-column="4" checked> Country</label>
             </div>
             <div class="dropdown-checkbox">
                 <label><input type="checkbox" data-column="5"> Zip</label>
@@ -548,10 +551,10 @@
                 <label><input type="checkbox" data-column="17"> Tag</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="18"> Sales Person</label>
+                <label><input type="checkbox" data-column="18" checked> Sales Person</label>
             </div>
             <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="19"> Sales Team</label>
+                <label><input type="checkbox" data-column="19" checked> Sales Team</label>
             </div>
         </div>
         <table id="example" class="display nowrap example">
@@ -824,14 +827,6 @@
                         }
                     }
                 }
-                // Uncomment and modify the following column if needed
-                // {
-                //     data: 'id',
-                //     width: "20%",
-                //     render: function(data, type, row) {
-                //         return `<a href="${row.id}">View</a>`;
-                //     }
-                // }
             ]
             , createdRow: function(row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
@@ -857,52 +852,89 @@
         });
 
         // Restore column visibility from local storage
-        function restoreColumnVisibility() {
-            var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
-            if (visibility) {
-                table.columns().every(function() {
-                    var column = this;
-                    var index = column.index();
-                    var isVisible = visibility[index] !== undefined ? visibility[index] : true;
-                    column.visible(isVisible);
-                    $('.dropdown-menu input[data-column="' + index + '"]').prop('checked', isVisible);
-                });
-            }
-        }
+           function saveColumnVisibility() {
+        var visibility = {};
+        table.columns().every(function() {
+            var column = this;
+            var index = column.index();
+            visibility[index] = column.visible();
+        });
+        localStorage.setItem('columnVisibility', JSON.stringify(visibility));
+    }
 
-        // Save column visibility to local storage
-        function saveColumnVisibility() {
-            var visibility = {};
+    // Restore column visibility from localStorage
+    function restoreColumnVisibility() {
+        var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
+        if (visibility) {
             table.columns().every(function() {
                 var column = this;
                 var index = column.index();
-                visibility[index] = column.visible();
+
+                // Check if the column exists and visibility is defined
+                if (visibility.hasOwnProperty(index)) {
+                    var isVisible = visibility[index];
+
+                    // Ensure the column exists before setting visibility
+                    if (typeof column !== 'undefined') {
+                        column.visible(isVisible);
+
+                        // Update the corresponding checkbox based on the visibility
+                        $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
+                    }
+                }
             });
-            localStorage.setItem('columnVisibility', JSON.stringify(visibility));
+        } else {
+            // If no visibility settings in localStorage, set default visibility
+                    table.column(0).visible(true); 
+                    table.column(1).visible(true);
+                    table.column(3).visible(false);
+                    table.column(4).visible(true);
+                    table.column(5).visible(false);
+                    table.column(6).visible(false);
+                    table.column(7).visible(false);
+                    table.column(8).visible(false);
+                    table.column(9).visible(false);
+                    table.column(10).visible(false);
+                    table.column(11).visible(false);
+                    table.column(12).visible(false);
+                    table.column(13).visible(false);
+                    table.column(14).visible(false);
+                    table.column(15).visible(false);
+                    table.column(16).visible(false);
+                    table.column(17).visible(false);
+                    table.column(18).visible(true);
+                    table.column(19).visible(true);
+              
         }
+    }
 
-        // Handle column visibility based on checkbox status
-        $('.dropdown-menu input[type="checkbox"]').on('change', function() {
-            var column = table.column($(this).data('column'));
-            column.visible(this.checked);
+    // Handle column visibility based on checkbox status
+    $('.dropdown-menu input[type="checkbox"]').on('change', function() {
+        var columnIndex = $(this).data('column');
+        var column = table.column(columnIndex);
+
+        // Ensure the column exists before trying to set visibility
+        if (typeof column !== 'undefined') {
+            column.visible(this.checked); // Show or hide the column based on the checkbox state
             saveColumnVisibility(); // Save visibility to local storage
-        });
+        }
+    });
 
-        // Set default visibility for columns based on initial checkbox state
-        restoreColumnVisibility();
+    // Restore visibility states on page load
+    restoreColumnVisibility();
 
-        // Handle dropdown menu display
-        $(document).on('click', '.dropdown-btn', function(event) {
-            event.stopPropagation(); // Prevent click event from propagating to the document
-            $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
-            $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
-        });
+    // Handle dropdown menu display
+    $(document).on('click', '.dropdown-btn', function(event) {
+        event.stopPropagation(); // Prevent click event from propagating to the document
+        $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
+        $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
+    });
 
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.dropdown-menu').length) {
-                $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
-            }
-        });
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('.dropdown-menu').length) {
+            $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
+        }
+    });
 
         // Remove all tags
         $(document).on('click', '.remove-tag', function() {

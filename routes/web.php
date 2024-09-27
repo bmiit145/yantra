@@ -171,6 +171,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-downloadAllImages/{id}', [LeadController::class, 'downloadAllImages'])->name('lead.downloadAllImages');
     Route::get('/lead-delete_send_message', [LeadController::class, 'delete_send_message'])->name('lead.delete_send_message');
     Route::get('/lead-click_star', [LeadController::class, 'click_star'])->name('lead.click_star');
+    Route::post('/lead-restore_lead', [LeadController::class, 'restore_lead'])->name('lead.restore_lead');
 
 
 

@@ -207,7 +207,7 @@
                     <div id="myCard" class="card"
                         style="z-index:50;top:50px; right:60px;display: none; position: absolute; background: white; border: 1px solid #ddd; padding: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                         <div class="o-mail-ActivityGroup list-group-item list-group-item-action d-flex p-2 cursor-pointer"
-                            data-model_name="crm.lead"><img alt="Activity" src="{{asset('images/CRM.png')}}" height="42" width="42">
+                            data-model_name="crm.lead"><img alt="Activity" src="{{asset('images/CRM.png')}}" h`eight="42" width="42">
                             <div class="flex-grow-1 overflow-hidden">
                                 <div class="d-flex px-2" name="activityTitle">Lead/Opportunity</div>
                                 <div class="d-flex"><span class="btn btn-link py-0 px-2 text-truncate" style="color:#017e84;">{{ $lateCount }} Late
@@ -240,24 +240,36 @@
             <a class="head_new_btn" href="@yield('head_new_btn_link', '#')">New</a>
         </div>
         <div class="head_breadcrumb_info">
-            <p class="head_breadcrumb_title">@yield('head_breadcrumb_title')</p>
-            <a href="#" class="seeting"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 1920 1920"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                    <g id="SVGRepo_iconCarrier">
-                        <path
-                            d="M1703.534 960c0-41.788-3.84-84.48-11.633-127.172l210.184-182.174-199.454-340.856-265.186 88.433c-66.974-55.567-143.323-99.389-223.85-128.415L1158.932 0h-397.78L706.49 269.704c-81.43 29.138-156.423 72.282-223.962 128.414l-265.073-88.32L18 650.654l210.184 182.174C220.39 875.52 216.55 918.212 216.55 960s3.84 84.48 11.633 127.172L18 1269.346l199.454 340.856 265.186-88.433c66.974 55.567 143.322 99.389 223.85 128.415L761.152 1920h397.779l54.663-269.704c81.318-29.138 156.424-72.282 223.963-128.414l265.073 88.433 199.454-340.856-210.184-182.174c7.793-42.805 11.633-85.497 11.633-127.285m-743.492 395.294c-217.976 0-395.294-177.318-395.294-395.294 0-217.976 177.318-395.294 395.294-395.294 217.977 0 395.294 177.318 395.294 395.294 0 217.976-177.317 395.294-395.294 395.294"
-                            fill-rule="evenodd"></path>
-                    </g>
-                </svg></a>
+            {{-- <p class="head_breadcrumb_title">@yield('head_breadcrumb_title', 'sabsdhd')</p> --}}
+            <div class="o_breadcrumb d-flex flex-row flex-md-column align-self-stretch justify-content-between min-w-0">
+                <ol class="breadcrumb flex-nowrap text-nowrap lh-sm">
+                    <li class="breadcrumb-item d-inline-flex min-w-0 o_back_button" data-hotkey="b" style="position: relative;">
+                        <a class="fw-bold text-truncate" href="@yield('redirect_button', '#')" data-tooltip="Back to &quot;Leads&quot;" title="">@yield('redirect_name')</a>
+                    </li>
+                </ol>
+                <div class="d-flex gap-1 text-truncate">
+                    <div class="o_last_breadcrumb_item active d-flex gap-2 align-items-center min-w-0 lh-sm">
+                            <span class="min-w-0 text-truncate">@yield('head_breadcrumb_title', 'sabsdhd')</span>
+                    </div>
+                    <div class="o_control_panel_breadcrumbs_actions d-inline-flex d-print-none ">
+                            <div class="o_cp_action_menus d-flex align-items-center pe-2 gap-1">
+                                    <div class="lh-1">
+                                        <button class="d-print-none btn p-0 ms-1 lh-sm border-0 o-dropdown dropdown-toggle dropdown seeting" data-hotkey="u" data-tooltip="Actions" aria-expanded="false" style="position: relative;" title=""><i class="fa fa-cog"></i>
+                                        </button>
+                                         <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', "#")"
+                                                    id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually"
+                                                    aria-label="Save manually" title="Save Button">
+                                                    <i class="fa fa-cloud-upload fa-fw"></i>
+                                        </button>
+                                    </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+          
         </div>
 
-        <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', "#")"
-            id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually"
-            aria-label="Save manually" title="Save Button">
-            <i class="fa fa-cloud-upload fa-fw"></i>
-        </button>
+       
 
         @yield('header_left_side_extra')
         @endsection
