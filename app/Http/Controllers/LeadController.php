@@ -13,6 +13,7 @@ use App\Models\Employee;
 use File;
 use Illuminate\Http\Request;
 use App\Models\generate_lead;
+use App\Models\send_log_notes;
 use App\Models\Opportunity;
 use App\Models\PersonTitle;
 use App\Models\Country;
@@ -162,6 +163,7 @@ class LeadController extends Controller
         $lost_reasons = LostReason::all();
         $employees = Contact::all();
         $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
+        $log_notes = send_log_notes::where('type_id', $id)->where('type', 'lead')->get();
 
         $followers = Following::where('type_id', $id)
         ->where('customer_id', '!=' , 'users/'.Auth::user()->id)
@@ -254,7 +256,7 @@ class LeadController extends Controller
             }
         } else {
         }
-        return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
+        return view('lead.creat', compact('titles', 'countrys', 'tags','log_notes', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
     }
 
     public function store(Request $request)
@@ -1291,6 +1293,87 @@ public function attachmentsDeleteFile(Request $request)
     return response()->json(['success' => false, 'message' => 'Attachment not found.'], 404);
 }
 
+public function log_notes(Request $request)
+{
+    $data = new send_log_notes();
+    $data->message = $request->send_message;
+    $data->type_id = $request->lead_id;
+    $data->type = 'lead';
+    
+    $uploadedFiles = []; // Array to hold the file paths
+
+    if ($request->hasFile('image_uplode')) {
+        foreach ($request->file('image_uplode') as $file) {
+            // Get the original file name
+            $fileName = time() . '_' . $file->getClientOriginalName();
+
+            // Store the file in the 'public/uploads' directory
+            $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+
+            $uploadedFiles[] = $filePath; // Store the path
+        }
+
+        // Convert the array to a JSON string
+        $data->image = json_encode($uploadedFiles);
+    }
+
+    $data->save();
+    return response()->json(['message' => 'Notes Add deleted successfully.']);
+
+   
+}
+public function delete_send_message_notes(Request $request)
+{
+    $message = send_log_notes::find($request->id);
+    $message->delete();
+
+    return response()->json(['message' => 'Message deleted successfully']);
+}
+
+public function click_star_notes(Request $request)
+{
+$lead = send_log_notes::find($request->id);
+
+// Toggle the is_star status
+if ($request->is_star == '1') {
+    $lead->is_start = '0'; // Unstar
+} else {
+    $lead->is_start = '1'; // Star
+}
+
+$lead->save();
+
+return response()->json($lead);
+}
+
+public function downloadAllImagessend_message($id)
+{
+
+    $message = send_log_notes::find($id); 
+
+    // Get the images from the 'image' field
+    $images = json_decode($message->image);
+
+    // Create a temporary file for the zip
+    $zipFileName = 'images_' . time() . '.zip';
+    $zipFilePath = storage_path($zipFileName);
+
+    $zip = new ZipArchive;
+    if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+        // Add each image to the zip
+        foreach ($images as $image) {
+            // Get the image path from the 'storage' directory
+            $imagePath = storage_path('app/public/' . $image);
+            if (file_exists($imagePath)) {
+                $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+            }
+        }
+        $zip->close();
+    }
+
+    // Return the zip file for download
+    return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
+}
    
 }
 

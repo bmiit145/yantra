@@ -172,6 +172,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-delete_send_message', [LeadController::class, 'delete_send_message'])->name('lead.delete_send_message');
     Route::get('/lead-click_star', [LeadController::class, 'click_star'])->name('lead.click_star');
     Route::post('/lead-restore_lead', [LeadController::class, 'restore_lead'])->name('lead.restore_lead');
+    Route::post('/lead-log_notes', [LeadController::class, 'log_notes'])->name('lead.log_notes');
+    Route::get('/lead-delete_send_message_notes', [LeadController::class, 'delete_send_message_notes'])->name('lead.delete_send_message_notes');
+    Route::get('/lead-click_star_notes', [LeadController::class, 'click_star_notes'])->name('lead.click_star_notes');
+    Route::get('/lead-downloadAllImagessend_message', [LeadController::class, 'downloadAllImagessend_message'])->name('lead.downloadAllImagessend_message');
 
 
 
