@@ -230,22 +230,29 @@ class LeadController extends Controller
         $authfollowerscount = $authfollowers->count();
         $count = $followerscount + $authfollowerscount;
 
-        $attachment = Attachment::where('type_id', $data->id)->first();
-
+        $attachment = null;
         $fileCount = ''; // Initialize variable
-
-        if ($attachment) {
-            $fileArray = explode(',', $attachment->files);
-            $fileCount = count($fileArray);
+        
+        if ($data) { // Check if $data is not null
+            $attachment = Attachment::where('type_id', $data->id)->first();
+            
+            if ($attachment) {
+                $fileArray = explode(',', $attachment->files);
+                $fileCount = count($fileArray);
+            }
+        } else {
         }
-
-        $attachmentFiles = Attachment::where('type_id', $data->id)->get();
 
         $allFiles = []; // Initialize an array to hold file details
 
-        foreach ($attachmentFiles as $attachmentFile) {
-            $fileArray = explode(',', $attachmentFile->files);
-            $allFiles = array_merge($allFiles, $fileArray); // Merge all files into a single array
+        if ($data) { // Check if $data is not null
+            $attachmentFiles = Attachment::where('type_id', $data->id)->get();
+
+            foreach ($attachmentFiles as $attachmentFile) {
+                $fileArray = explode(',', $attachmentFile->files);
+                $allFiles = array_merge($allFiles, $fileArray); // Merge all files into a single array
+            }
+        } else {
         }
         return view('lead.creat', compact('titles', 'countrys', 'tags', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
     }
@@ -1114,35 +1121,20 @@ class LeadController extends Controller
     }
 
     public function click_star(Request $request)
-    {
-        $lead = send_message::find($request->id);
-        $lead->is_star = '1';
-        $lead->save();
-
-        return response()->json($lead);
+{
+    $lead = send_message::find($request->id);
+    
+    // Toggle the is_star status
+    if ($request->is_star == '1') {
+        $lead->is_star = '0'; // Unstar
+    } else {
+        $lead->is_star = '1'; // Star
     }
+    
+    $lead->save();
 
-    // public function click_follow(Request $request)
-    // {
-     
-        
-    //     $lead = new Following();
-    //     if($request->user_id){
-    //         $lead->customer_id = $request->user_id;
-    //     }else{
-    //         $lead->customer_id = 'users/' . Auth::user()->id;
-    //     }
-    //     $lead->type_id = $request->id;
-    //     $lead->message = $request->message;
-    //     $lead->type = 1;
-    //     $lead->save();
-        
-    //     if($request->user_id){
-    //         return back();
-    //     }else{
-    //         return response()->json($lead);
-    //     }
-    // }
+    return response()->json($lead);
+}
 
     public function click_follow(Request $request)
 {
@@ -1258,7 +1250,45 @@ public function restore_lead(Request $request)
 
 
     return response()->json($lead);
+}
 
+public function attachmentsDeleteFile(Request $request)
+{
+    $leadId = $request->input('lead_id'); // Get lead ID from request
+    $fileNameToDelete = $request->input('file'); // Get file name from request
+
+    // Find the attachment record by lead ID
+    $attachment = Attachment::where('type_id', $leadId)->first();
+
+    if ($attachment) {
+        // Get the existing file names
+        $existingFiles = explode(',', $attachment->files);
+
+        // Remove the specified file
+        $updatedFiles = array_filter($existingFiles, function($file) use ($fileNameToDelete) {
+            return $file !== $fileNameToDelete;
+        });
+
+        // Delete the file from storage
+        $filePath = 'uploads/attachment/' . $fileNameToDelete;
+        if (Storage::disk('public')->exists($filePath)) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // Check if there are no files left
+        if (empty($updatedFiles)) {
+            // If no files left, delete the entire record
+            $attachment->delete();
+        } else {
+            // Update the attachment record
+            $attachment->files = implode(',', $updatedFiles);
+            $attachment->save();
+        }
+
+        return response()->json(['success' => true, 'message' => 'File deleted successfully.']);
+    }
+
+    return response()->json(['success' => false, 'message' => 'Attachment not found.'], 404);
 }
 
    

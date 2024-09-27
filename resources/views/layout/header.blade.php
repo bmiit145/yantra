@@ -187,6 +187,12 @@
                                 $futureCount++;
                             }
                         }
+
+                        $allActivityCount = Activity::where('status', '0')
+                            ->whereHas('getLead', function ($query) {
+                                $query->where('is_lost', '1');
+                            })
+                            ->count();                            
                     @endphp
 
                     <li id="myTrigger">
@@ -197,8 +203,8 @@
                                 <path
                                     d="M678.4 691.2l-60.8 60.8-179.2-176V243.2h86.4v294.4l153.6 153.6z m288-169.6c0 249.6-201.6 454.4-454.4 454.4S57.6 774.4 57.6 521.6C57.6 272 262.4 70.4 512 67.2c249.6 3.2 454.4 204.8 454.4 454.4z m-86.4 0C880 320 713.6 156.8 512 156.8S144 320 144 521.6c0 201.6 163.2 368 368 368 201.6 0 368-163.2 368-368z" />
                             </svg>
-                            @if ($todayCount > 0)
-                                <span class="o-mail-ActivityMenu-counter badge rounded-pill" style="color:white;">{{ $todayCount }}</span>
+                            @if ($allActivityCount > 0)
+                                <span class="o-mail-ActivityMenu-counter badge rounded-pill" style="color:white;">{{ $allActivityCount }}</span>
                             @endif
                         </a>
                     </li>

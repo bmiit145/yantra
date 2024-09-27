@@ -7,10 +7,23 @@
     <div class="crm_head_centerside">
         @yield('header_centerside')
         <form>
-        <input type="text" id="search-input" name="search" placeholder="Search..">
-        <ul class="search_menu_wapper" style="display: none;" id="search-dropdown">
-            @yield('search_div')
-        </ul>
+        <!-- <input type="text" id="search-input" name="search" placeholder="Search.."> -->
+        <div class="o_cp_searchview d-flex input-group" role="search">
+    <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1 border-end-0" role="search" aria-autocomplete="list">
+        <button class="d-print-none btn border-0 p-0" role="button" aria-label="Search..." title="Search...">
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+        <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1">
+            <input type="text" class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0" id="search-input" accesskey="Q" placeholder="Search..." name="search" role="searchbox">
+        </div>
+    </div>
+    <button type="button" class="o_searchview_dropdown_toggler d-print-none btn btn-outline-secondary o-dropdown-caret rounded-start-0 dropdown-toggle" title="Toggle Search Panel" aria-expanded="false">
+        <i class="fa fa-caret-down" id="dropdown-arrow"></i> <!-- Only one arrow here -->
+    </button>
+</div>
+<ul class="search_menu_wapper" style="display: none;" id="search-dropdown">
+    @yield('search_div')
+</ul>
             <!-- <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
                                                  id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                                  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
@@ -47,7 +60,7 @@
         @yield('header_rightside')
         <div class="crmright_head_inner">
             <ul class="crmright_head_main crmright_head_main__1">                
-                <li><a href="@yield('lead')"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
+                <li class="list"><a href="@yield('lead')"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
                                      version="1.1" preserveAspectRatio="xMidYMid meet"
                                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>

@@ -1,6 +1,7 @@
 @extends('layout.header')
 @section('content')
 @section('head_breadcrumb_title', 'Leads')
+@section('lead', route('lead.index'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
@@ -160,6 +161,12 @@
         line-height: 40px;
     }
     .location{
+     display: none;
+    }
+    .new_btn_info{
+     display: none;
+    }
+    .o_form_button_save{
      display: none;
     }
 </style>
@@ -844,92 +851,77 @@
 
                                         <!-- Overdue Section -->
                                         <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                 <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
-                                            </div>
-                                            @foreach($overdueActivities as $value)
-                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                    <span
-                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                    </span>
-                                                    <div class="mt-1 flex-grow-1">
-                                                         &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
-                                                    </div>
-                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                    <div class="py-2 px-3 d-none" id="overdue_feedback_{{ $value->id }}">
-                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                        <div class="mt-2">
-                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#overdue_feedback_{{ $value->id }}">Discard </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-
-                                        <!-- Today Section -->
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
-                                            </div>
-                                            @foreach($todayActivities as $value)
-                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                <span
-                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                    </span>
-                                                    <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp; <small>{{ $lead->getUser->email }} - Today</small>
-                                                    </div>
-                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                    <div class="py-2 px-3 d-none" id="today_feedback_{{ $value->id }}">
-                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                        <div class="mt-2">
-                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#today_feedback_{{ $value->id }}">Discard </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-
-                                        <!-- Planned Section -->
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
-                                            </div>
-                                            @foreach($plannedActivities as $value)
-                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                <span
-                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                    </span>
-                                                    <div class="mt-1 flex-grow-1">
-                                                    &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
-                                                    </div>
-                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                    <div class="py-2 px-3 d-none" id="planned_feedback_{{ $value->id }}">
-                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                        <div class="mt-2">
-                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#planned_feedback_{{ $value->id }}">Discard </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                    <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                        <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
                                     </div>
+                                    @foreach($overdueActivities as $value)
+                                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                            </span>
+                                            <div class="mt-1 flex-grow-1">
+                                                &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Overdue</small>
+                                            </div>
+                                            <input type="file" class="d-none" id="upload_overdue_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_overdue_file_{{ $value->id }}', {{ $value->id }})">
+                                            <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_overdue_file_{{ $value->id }}').click();">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                            <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="popover-arrow end-auto"></div>
-                            </div>
-                        @endif
+
+                                <!-- Today Section -->
+                                <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                    <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                        <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
+                                    </div>
+                                    @foreach($todayActivities as $value)
+                                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                            </span>
+                                            <div class="mt-1 flex-grow-1">
+                                                &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Today</small>
+                                            </div>
+                                            <input type="file" class="d-none" id="upload_today_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_today_file_{{ $value->id }}', {{ $value->id }})">
+                                            <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_today_file_{{ $value->id }}').click();">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                            <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- Planned Section -->
+                                <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                    <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                        <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
+                                    </div>
+                                    @foreach($plannedActivities as $value)
+                                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                            </span>
+                                            <div class="mt-1 flex-grow-1">
+                                                &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
+                                            </div>
+                                            <input type="file" class="d-none" id="upload_planned_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_planned_file_{{ $value->id }}', {{ $value->id }})">
+                                            <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_planned_file_{{ $value->id }}').click();">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                            <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="popover-arrow end-auto"></div>
+                                                </div>
+                                            @endif
                     </td>
 
                     <td class="o_activity_summary_cell" data-id="{{$lead->lead_id}}" data-activity_type="to-do">
@@ -1490,6 +1482,40 @@
                 }
             });
         }
+
+        //Upload Document 
+        window.uploadFile = function(inputId, activityId) {
+            const fileInput = document.getElementById(inputId);
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('activity_id', activityId); // Include the activity ID for database update
+
+            $.ajax({
+                url: '{{ route('lead.uploadFile') }}',  // Change to your backend endpoint
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        location.reload();
+                        // Optionally, update the UI to reflect the new status
+                    } else {
+                        toastr.error('Failed to upload the file.');
+                    }
+                },
+                error: function(xhr) {
+                    toastr.error('Error occurred while uploading the file.');
+                }
+            });
+        };
     });
 
 

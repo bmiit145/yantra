@@ -3,6 +3,12 @@
 @section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
 @section('redirect_name', 'Leads')
 @section('redirect_button', route('lead.index'))
+@section('head_new_btn_link', route('lead.create'))
+@section('lead', route('lead.index'))
+@section('kanban', route('lead.kanban', ['lead' => 'kanban']))
+@section('calendar', route('lead.calendar', ['lead' => 'calendar']))
+@section('char_area', route('lead.graph'))
+@section('activity', route('lead.activity'))
 
 @section('navbar_menu')
  <li class="dropdown">
@@ -20,7 +26,7 @@
     </li>
     <li class="dropdown">
         <a href="#">Reporting</a>
-        <div class="dropdown-content">
+        <div class="dropdown-content">  
             <!-- Dropdown content for Reporting -->
             <a href="{{ route('crm.forecasting') }}">Forecast</a>
             <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
@@ -260,6 +266,9 @@
     .image-container{
         gap:5px;
     }
+    .location{
+        display: none;
+    }
 </style>
 <style>
     .select2-container--default .select2-selection--single {
@@ -332,6 +341,9 @@
     .o-mail-ChatterContainer.o-mail-Form-chatter.o-aside.w-print-100 {
         width: 30%;
         max-width: 30%;
+    }
+    .selected-star {
+        color: #f3cc00; /* Gold color for the selected star */
     }
 </style>
 
@@ -900,16 +912,36 @@
                         <div class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto o-chatter-disabled">
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
-                                    <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
-                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i> <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button>
+                                    @else
+                                        <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m" disabled> Send message </button>
+                                    @endif
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
+                                    @else
+                                        <button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m" disabled> Log note </button>
+                                    @endif                                    
+                                    <div class="flex-grow-1 d-flex">
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button>
+                                    @else
+                                        <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal" disabled><span>Activities</span></button>
+                                    @endif                                        
+                                        <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i> <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
                                         <i class="fa fa-paperclip fa-lg me-1"></i>
                                         <sup id="fileCount">{{$fileCount ?? ''}}</sup>
                                     </button>
-                                    <!-- <input type="file" id="fileInput" multiple style="display:none;"></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*"> -->
                                         <div class="o-mail-Followers d-flex me-1">
-                                            <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
-                                                <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
-                                            </button>
+                                            @if(isset($data) && $data->id != null)
+                                                <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
+                                                    <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                                </button>
+                                            @else
+                                                <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false" disabled>
+                                                    <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                                </button>
+                                            @endif                                              
 
                                             <!-- Dropdown Menu -->
                                             <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1537.12px;width: 300px;">
@@ -996,11 +1028,19 @@
                                             </div>
                                             </div>
                                             </div>
-                                            <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}">
-                                                <div class="position-relative">
-                                                    <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
-                                                </div>
-                                            </button>
+                                            @if(isset($data) && $data->id != null)
+                                                <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}">
+                                                    <div class="position-relative">
+                                                        <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                    </div>
+                                                </button>
+                                            @else
+                                                <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}" disabled>
+                                                    <div class="position-relative">
+                                                        <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                    </div>
+                                                </button>
+                                            @endif                                            
                                     </div>
                                 </div>
                             </div>
@@ -1080,12 +1120,15 @@
                                                                     </div>
                                                                         <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
                                                                         @if($value->is_star == 1)
-                                                                          <a class="px-1 rounded-0 send_message_star" data-id="{{$value->id}}" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star o-mail-Message-starred"></i></a>
+                                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                                            </a>
                                                                         @else
-                                                                          <a class="px-1 rounded-0 send_message_star" data-id="{{$value->id}}" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></a>
+                                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                                            </a>
                                                                         @endif
                                                                           <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
-                                                                          <a class="px-1 rounded-0" title="Edit" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-pencil"></i></a>
                                                                       <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
                                                                 </div>
                                                                 <div class="position-relative d-flex">
@@ -1222,6 +1265,15 @@
                                                     <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3" data-bs-toggle="modal" data-bs-target="#markDoneModal">
                                                         <i class="fa fa-check"></i> Mark Done
                                                     </button>
+                                                    @if ($activity->activity_type === 'upload_document')
+                                                        <button class="btn btn-link text-action p-0 me-3"
+                                                            onclick="document.getElementById('upload_overdue_file_{{ $activity->id }}').click();">
+                                                            <i class="fa fa-upload"></i> Upload Document
+                                                        </button>
+                                                        <input type="file" class="d-none"
+                                                            id="upload_overdue_file_{{ $activity->id }}" accept="*"
+                                                            onchange="uploadFile('upload_overdue_file_{{ $activity->id }}', {{ $activity->id }})">
+                                                    @endif
                                                     <button type="button" class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
                                                         <i class="fa fa-pencil"></i> Edit
                                                     </button>
@@ -1323,7 +1375,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12 mt-3 logNoteField">
-                                                            <textarea class="form-control edit_log_note" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
+                                                            <textarea class="form-control makeMeSummernote" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1338,6 +1390,135 @@
                                 @endforeach
                             </div>
                             @endif
+
+                            <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
+                                        <div class="d-flex align-items-center">
+                                            <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
+                                            <hr class="flex-grow-1">
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                                @php
+                                                    $images = [];
+                                                    $documents = [];
+                                                @endphp
+
+                                                @foreach ($allFiles as $file)
+                                                    @php
+                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                        // Categorize files into images and documents
+                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                            $documents[] = $file;
+                                                        } else {
+                                                            $images[] = $file; // Add all other files to images
+                                                        }
+                                                    @endphp
+                                                @endforeach
+
+                                                <!-- Display Images -->
+                                                @if(count($images) > 0)
+                                                <div class="image-container d-flex flex-wrap mb-2">
+                                                @foreach ($images as $file)
+                                                    <div id="image-{{ $file }}" class="o-mail-AttachmentImage position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                        tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                            src="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                            alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+
+                                                        <div class="position-absolute top-0 start-0 p-2">
+                                                            <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                            class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -3px; position: absolute;"
+                                                            download title="Download">
+                                                                <i class="fa fa-download" role="img" style="font-size: 10px;margin-left: -5px;position: absolute;" aria-label="Download"></i>
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="position-absolute bottom-0 start-0 p-2">
+                                                            <button class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -15px; position: absolute;"
+                                                                    title="Delete"
+                                                                    onclick="showDeleteConfirmation('{{ $file }}', '{{ $data->id }}')">
+                                                                <i class="fa fa-trash" style="font-size: 10px;margin-left: -5px;margin-top: -5px;position: absolute;" role="img" aria-label="Delete"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                                </div>
+                                                @endif
+
+                                                <!-- Display Documents -->
+                                                @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column documnet-file">
+                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="showDeleteConfirmation('{{ $file }}','{{ $data->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                            <span style="display:contents">
+                                            <button class="btn btn-link" type="button" id="openFileUpload">
+                                                <i class="fa fa-plus-square"></i> Attach files
+                                            </button>
+                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                            </span>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this file?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
                             <!-- <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                 <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
                                 <hr class="o-discuss-separator flex-grow-1">
@@ -1351,24 +1532,26 @@
                                     <x-log-display :logs="$logs" />
                                     @if($activitiesDone->count() > 0)
                                         <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                            <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Activities Done</span>
+                                            <hr class="o-discuss-separator flex-grow-1"><span
+                                                class="px-2 smaller text-muted">Activities Done</span>
                                             <hr class="o-discuss-separator flex-grow-1">
-                                            <br>                                    
+                                            <br>
                                         </div>
                                         @foreach ($activitiesDone as $activityDone)                                                            
-                                            <div class="o-mail-Activity-container">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
                                                 <div class="o-mail-Activity d-flex py-1 mb-2">
                                                     <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
                                                         <a role="button">
-                                                        <span
-                                                            class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                            {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}                                                        
-                                                        </span>
+                                                            <span
+                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
+                                                            </span>
                                                         </a>
                                                     </div>
                                                     <div class="flex-grow px-3">
                                                         <div class="o-mail-Activity-info lh-1">
-                                                            <b><span class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
+                                                            <b><span
+                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
                                                             @php
                                                                 $activityTime = Carbon::parse($activityDone->updated_at);
                                                                 $currentTime = Carbon::now();
@@ -1380,11 +1563,13 @@
                                                                 $diffInDays = $activityTime->diffInDays($currentTime);
                                                             @endphp
 
-                                                            <small class="o-mail-Message-date text-muted smaller" title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
+                                                            <small class="o-mail-Message-date text-muted smaller"
+                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
                                                                 @if ($diffInSeconds < 60)
                                                                     now
                                                                 @elseif ($diffInMinutes < 60)
-                                                                    {{ intval($diffInMinutes) }} minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
+                                                                    {{ intval($diffInMinutes) }}
+                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
                                                                 @elseif ($diffInHours < 24)
                                                                     {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
                                                                 @else
@@ -1395,216 +1580,317 @@
                                                         <div class="lh-lg">
                                                             <div class="o-mail-Message-body text-break mb-0 w-100">
                                                                 <p>
-                                                                    <span class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span> done
-                                                                </p>     
-                                                                @if(!empty($activityDone->feedback))                                                       
+                                                                    <span
+                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
+                                                                    done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
+                                                                </p>
+                                                                @if(!empty($activityDone->feedback))
                                                                     <div>
                                                                         <div class="fw-bold">Feedback:</div>
-                                                                            {{$activityDone->feedback ?? ''}}
+                                                                        {{$activityDone->feedback ?? ''}}
                                                                     </div>
                                                                 @endif
-                                                            </div>                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
+                                                @php
+                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
+                                                @endphp
+
+                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
+                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
+                                                        id="document-{{ $activityDone->id }}">
+                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                style="margin-left:60px;width: max-content;" role="menu"
+                                                                title="{{ $activityDone->document }}"
+                                                                aria-label="{{ $activityDone->document }}">
+                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
+                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
+                                                                    
+                                                                    @if($extension === 'pdf')
+                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                    @elseif(in_array($extension, ['doc', 'docx']))
+                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                    @endif
+                                                                </div>
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
+                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
+                                                                    <small class="text-uppercase">{{ $extension }}</small>
+                                                                </div>
+
+                                                                <div class="flex-grow-1"></div>
+                                                                <div
+                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                    </a>
+                                                                    <button
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        title="Delete"
+                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                @else
+                                                @if($activityDone->document != null)
+                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                                                                        
+                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
+                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
+                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
+
+                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        alt="{{ $activityDone->document }}"
+                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
+
+                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
+                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
+                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
+                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        
+
+                                                    <div class="grid row-gap-0 column-gap-0"></div>
+                                                    </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+
+                                            <!-- Confirmation Modal -->
+                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this document?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                id="confirmDelete">Ok</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endforeach
-                                    @endif        
-                                    
-                                    <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
-                                    <div class="d-flex align-items-center">
-                                        <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
-                                        <hr class="flex-grow-1">
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                                @php
-                                                    $images = [];
-                                                    $documents = [];
-                                                @endphp
-
-                                                @foreach ($allFiles as $file)
-                                                    @php
-                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-
-                                                        // Categorize files into images and documents
-                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
-                                                            $documents[] = $file;
-                                                        } else {
-                                                            $images[] = $file; // Add all other files to images
-                                                        }
-                                                    @endphp
-                                                @endforeach
-
-                                                <!-- Display Images -->
-                                                @if(count($images) > 0)
-                                                    <div class="image-container d-flex flex-wrap mb-2">
-                                                        @foreach ($images as $file)
-                                                            <div class="o-mail-AttachmentImage"
-                                                                tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
-                                                                
-                                                                <img class="img img-fluid my-0 mx-auto o-viewable rounded"
-                                                                    src="{{ asset('storage/uploads/attachment/' . $file) }}"
-                                                                    alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-
-                                                <!-- Display Documents -->
-                                                @if(count($documents) > 0)
-                                                    <div class="document-container d-flex flex-wrap mb-2">
-                                                        @foreach ($documents as $file)
-                                                            @php
-                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                                                            @endphp
-                                                            <div class="delete_document" id="document-{{ $file }}">
-                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
-                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
-                                                                    
-                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
-                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
-                                                                        @if($extension === 'pdf')
-                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
-                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
-                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
-                                                                        @elseif(in_array($extension, ['doc', 'docx']))
-                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
-                                                                        @endif
-                                                                    </div>
-                                                                    
-                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
-                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
-                                                                        <div class="text-truncate">{{ $file }}</div>
-                                                                        <small class="text-uppercase">{{ $extension }}</small>
-                                                                    </div>
-
-                                                                    <div class="flex-grow-1"></div>
-                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
-                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
-                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
-                                                                        download title="Download">
-                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
-                                                                        </a>
-                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
-                                                                                title="Delete"
-                                                                                onclick="showDeleteConfirmation('{{ $file }}')">
-                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-                                            <div class="grid row-gap-0 column-gap-0"></div>
-                                            <span style="display:contents">
-                                            <button class="btn btn-link" type="button" id="openFileUpload">
-                                                <i class="fa fa-plus-square"></i> Attach files
-                                            </button>
-                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
-                                            </span>
-                                    </div>
-                                </div>
-
+                                    @endif  
+                                                                        
                                 @endif
                                 @if(isset($data->lead_type) && $data->lead_type == 2)
-                                
-                                <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
-                                    <div class="d-flex align-items-center">
-                                        <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
-                                        <hr class="flex-grow-1">
-                                    </div>
-                                    <div class="d-flex flex-column">
+
+
+                                @php
+                                    $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
+                                    @endphp
+
+                                    <x-log-display :logs="$logs" />
+                                    @if($activitiesDone->count() > 0)
+                                        <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                            <hr class="o-discuss-separator flex-grow-1"><span
+                                                class="px-2 smaller text-muted">Activities Done</span>
+                                            <hr class="o-discuss-separator flex-grow-1">
+                                            <br>
+                                        </div>
+                                        @foreach ($activitiesDone as $activityDone)                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
+                                                <div class="o-mail-Activity d-flex py-1 mb-2">
+                                                    <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
+                                                        <a role="button">
+                                                            <span
+                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="flex-grow px-3">
+                                                        <div class="o-mail-Activity-info lh-1">
+                                                            <b><span
+                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
+                                                            @php
+                                                                $activityTime = Carbon::parse($activityDone->updated_at);
+                                                                $currentTime = Carbon::now();
+
+                                                                // Calculate time differences
+                                                                $diffInSeconds = $activityTime->diffInSeconds($currentTime);
+                                                                $diffInMinutes = $activityTime->diffInMinutes($currentTime);
+                                                                $diffInHours = $activityTime->diffInHours($currentTime);
+                                                                $diffInDays = $activityTime->diffInDays($currentTime);
+                                                            @endphp
+
+                                                            <small class="o-mail-Message-date text-muted smaller"
+                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
+                                                                @if ($diffInSeconds < 60)
+                                                                    now
+                                                                @elseif ($diffInMinutes < 60)
+                                                                    {{ intval($diffInMinutes) }}
+                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
+                                                                @elseif ($diffInHours < 24)
+                                                                    {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
+                                                                @else
+                                                                    {{ intval($diffInDays) }} day{{ $diffInDays > 1 ? 's' : '' }} ago
+                                                                @endif
+                                                            </small>
+                                                        </div>
+                                                        <div class="lh-lg">
+                                                            <div class="o-mail-Message-body text-break mb-0 w-100">
+                                                                <p>
+                                                                    <span
+                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
+                                                                    done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
+                                                                </p>
+                                                                @if(!empty($activityDone->feedback))
+                                                                    <div>
+                                                                        <div class="fw-bold">Feedback:</div>
+                                                                        {{$activityDone->feedback ?? ''}}
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
                                                 @php
-                                                    $images = [];
-                                                    $documents = [];
+                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
                                                 @endphp
 
-                                                @foreach ($allFiles as $file)
-                                                    @php
-                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-
-                                                        // Categorize files into images and documents
-                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
-                                                            $documents[] = $file;
-                                                        } else {
-                                                            $images[] = $file; // Add all other files to images
-                                                        }
-                                                    @endphp
-                                                @endforeach
-
-                                                <!-- Display Images -->
-                                                @if(count($images) > 0)
-                                                    <div class="image-container d-flex flex-wrap mb-2">
-                                                        @foreach ($images as $file)
-                                                            <div class="o-mail-AttachmentImage"
-                                                                tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
-                                                                
-                                                                <img class="img img-fluid my-0 mx-auto o-viewable rounded"
-                                                                    src="{{ asset('storage/uploads/attachment/' . $file) }}"
-                                                                    alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-
-                                                <!-- Display Documents -->
-                                                @if(count($documents) > 0)
-                                                    <div class="document-container d-flex flex-wrap mb-2">
-                                                        @foreach ($documents as $file)
-                                                            @php
-                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                                                            @endphp
-                                                            <div class="delete_document" id="document-{{ $file }}">
-                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
-                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
+                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
+                                                        id="document-{{ $activityDone->id }}">
+                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                style="margin-left:60px;width: max-content;" role="menu"
+                                                                title="{{ $activityDone->document }}"
+                                                                aria-label="{{ $activityDone->document }}">
+                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
+                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
                                                                     
-                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
-                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
-                                                                        @if($extension === 'pdf')
-                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
-                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
-                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
-                                                                        @elseif(in_array($extension, ['doc', 'docx']))
-                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
-                                                                        @endif
-                                                                    </div>
-                                                                    
-                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
-                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
-                                                                        <div class="text-truncate">{{ $file }}</div>
-                                                                        <small class="text-uppercase">{{ $extension }}</small>
-                                                                    </div>
+                                                                    @if($extension === 'pdf')
+                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                    @elseif(in_array($extension, ['doc', 'docx']))
+                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                    @endif
+                                                                </div>
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
+                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
+                                                                    <small class="text-uppercase">{{ $extension }}</small>
+                                                                </div>
 
-                                                                    <div class="flex-grow-1"></div>
-                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
-                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                <div class="flex-grow-1"></div>
+                                                                <div
+                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
                                                                         class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
                                                                         download title="Download">
-                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
-                                                                        </a>
-                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
-                                                                                title="Delete"
-                                                                                onclick="showDeleteConfirmation('{{ $file }}')">
+                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                    </a>
+                                                                    <button
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        title="Delete"
+                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
                                                                         <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                @else
+                                                @if($activityDone->document != null)
+                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                                                                        
+                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
+                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
+                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
+
+                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        alt="{{ $activityDone->document }}"
+                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
+
+                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
+                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
+                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
+                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                            <i class="fa fa-trash"></i>
                                                                         </button>
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        @endforeach
+                                                        
+
+                                                    <div class="grid row-gap-0 column-gap-0"></div>
                                                     </div>
+                                                    @endif
                                                 @endif
-                                            <div class="grid row-gap-0 column-gap-0"></div>
-                                            <span style="display:contents">
-                                            <button class="btn btn-link" type="button" id="openFileUpload">
-                                                <i class="fa fa-plus-square"></i> Attach files
-                                            </button>
-                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
-                                            </span>
-                                    </div>
-                                </div>
-                                <br>
-                              
+                                            </div>
+
+                                            <!-- Confirmation Modal -->
+                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this document?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                id="confirmDelete">Ok</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @endif      
+                                    <br>                                                                                      
                                 <div class="main-lead-details">
                                     <div class="lead-details">
                                         <div class="lead-box">
@@ -1779,7 +2065,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 mt-3 logNoteField">
-                    <textarea name="log_note" id="log_note" cols="30" rows="10"></textarea>
+                    <textarea class="makeMeSummernote" name="log_note" id="log_note" cols="30" rows="10"></textarea>
                 </div>
             </div>
         </div>
@@ -2599,7 +2885,8 @@
                     success: function(response) {
                         toastr.success(response.message);
                         setTimeout(function() {
-                            window.location.href = "{{ route('lead.index') }}";
+                            location.reload();
+                            // window.location.href = "{{ route('lead.index') }}";
                         }, 2000);
                     },
                     error: function(xhr, status, error) {
@@ -2671,16 +2958,6 @@ $(document).ready(function () {
         $("#send_notification").summernote();
 });
 </script>
-<script>
-  
-
-        ClassicEditor
-        .create(document.querySelector('#log_note'))
-        .catch(error => {
-            console.error(error);
-        });
-    
-</script>
 
 <script>
     $(document).ready(function() {       
@@ -2747,18 +3024,6 @@ $(document).ready(function () {
                 });
         }
 
-        // Initialize CKEditors
-        // initializeEditor('log_note');
-
-        // Initialize CKEditor for the log note with existing content
-        initializeEditor('.edit_log_note', editor => {
-            editorInstance = editor;
-            const existingContent = $('#edit_log_note').data('content') || ''; // Default to empty string if no content
-            if (existingContent) {
-                editorInstance.setData(existingContent);
-            }
-        });
-
         // Define URLs using Laravel's route helper
         const deleteUrl = "{{ route('lead.activitiesDelete', ['id' => '']) }}";
         const baseUrl = "{{ route('lead.activitiesEdit', ['id' => '']) }}";
@@ -2787,21 +3052,14 @@ $(document).ready(function () {
                     $('#edit_summary').val(response.activity.summary);
                     $('#edit_assigned_to').val(response.activity.assigned_to);
 
-                    const logNoteElement = document.querySelector('.edit_log_note');
-                    if (logNoteElement) {
-                        if (editorInstance) {
-                            const noteContent = response.activity.note || ''; // Default to empty string if no note
-                            editorInstance.setData(noteContent);
-                        } else {
-                            initializeEditor('.edit_log_note', editor => {
-                                editorInstance = editor;
-                                const noteContent = response.activity.note || ''; // Default to empty string if no note
-                                editorInstance.setData(noteContent);
+                    $('#edit_log_note').summernote({
+                                height: 200,  // Set editor height
+                                focus: true,  // Set focus to editable area after modal shown
+                                tabsize: 2    // Set tab size
                             });
-                        }
-                    } else {
-                        console.error('CKEditor element not found.');
-                    }
+
+                            // Set the content of the Summernote editor with the fetched note
+                            $('#edit_log_note').summernote('code', response.activity.note);
 
                     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
                     editModal.show();
@@ -2817,14 +3075,11 @@ $(document).ready(function () {
             e.preventDefault();
 
             const formData = $(this).serializeArray();
-            const editorData = editorInstance ? editorInstance.getData() : '';
 
             const formObject = {};
             formData.forEach(field => {
                 formObject[field.name] = field.value;
             });
-
-            formObject.log_note = editorData;
 
             $.ajax({
                 url: updateUrl,
@@ -3270,21 +3525,27 @@ $(document).ready(function () {
 $('.send_message_star').on('click', function(){
     var $this = $(this); // Store the clicked element
     var id = $this.data('id');
-    
+    var isStarred = $this.data('starred'); // Get the current star status
+
     $.ajax({
         url: '{{ route('lead.click_star') }}',
         type: 'get',
         data: {
             _token: '{{ csrf_token() }}',
             id: id,
+            is_star: isStarred // Send current star status
         },
         success: function(response) {
-
-            // Change the icon class after successful AJAX call
-            var icon = $this.find('i'); // Find the icon element inside the anchor
-            icon.removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred'); // Change the class to the desired one
-            
-           
+            // Toggle the star status
+            if (isStarred == 1) {
+                // If it was starred, unstar it
+                $this.find('i').removeClass('fa-star o-mail-Message-starred').addClass('fa-star-o');
+                $this.data('starred', 0); // Update data attribute
+            } else {
+                // If it was not starred, star it
+                $this.find('i').removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred');
+                $this.data('starred', 1); // Update data attribute
+            }
         },
         error: function(xhr, status, error) {
             toastr.error('Something went wrong!');
@@ -3446,7 +3707,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                alert(response.message);
+                location.reload();
                 $('#fileCount').text(response.newFileCount); // Update file count
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -3455,9 +3716,203 @@ $(document).ready(function() {
         });
     });
     
+
+    let fileToDelete = '';
+    let leadIdToDelete = ''; // New variable for lead ID
+
+    window.showDeleteConfirmation = function(fileName, leadId, type) {
+        fileToDelete = fileName; // Store the file name to delete
+        leadIdToDelete = leadId; // Store the lead ID
+        const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+        modal.show();
+
+        document.getElementById('confirmDeleteButton').onclick = function() {
+            deleteFile(fileName, leadIdToDelete, type); // Pass lead ID to deleteFile
+            modal.hide();
+        };
+    };
+
+    function deleteFile(fileName, leadId) {
+    $.ajax({
+        url: '/attachments/delete-file', // Your delete endpoint
+        method: 'DELETE',
+        data: { file: fileName, lead_id: leadId },
+        success: function(response) {
+            console.log("Response received:", response);
+            console.log("File to delete:", fileName);
+            
+            if (response.success) {
+                // Remove the corresponding elements from the UI
+                $(`#image-${fileName}`).remove(); // Remove the image element
+                $(`#document-${fileName}`).remove(); // Remove the document element if applicable
+                
+                // Check if the attachment box is empty
+                if ($('.o-mail-AttachmentImage').length === 0 && $('.delete_document').length === 0) {
+                    // If there are no files left, hide the attachment box or perform any other action
+                    $('#attachmentBox').hide(); // Example action: Hide the attachment box
+                }
+                location.reload();
+            } else {
+                console.log("Failed to delete file:", response.message);
+                alert(response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error occurred during deletion:", error);
+            alert('An error occurred while trying to delete the file.');
+        }
+    });
+}
+
+$('img[data-enlargable]').addClass('img-enlargable').click(function(){
+    var src = $(this).attr('src');
+    $('<div>').css({
+        background: 'RGBA(0,0,0,.5) url('+src+') no-repeat center',
+        backgroundSize: 'contain',
+        width:'100%', height:'100%',
+        position:'fixed',
+        zIndex:'10000',
+        top:'0', left:'0',
+        cursor: 'zoom-out'
+    }).click(function(){
+        $(this).remove();
+    }).appendTo('body');
+});
 });
 </script>
 
+<script>
+    function previewFile(filePath) {
+        // Open PDF in a new tab
+        window.open(filePath, '_blank');
+    }
+
+
+    let documentIdToDelete; // Variable to store the document ID to delete
+
+    // Function to show the confirmation modal
+    function activityDoneShowDeleteConfirmation(id) {
+        documentIdToDelete = id; // Store the ID of the document to delete
+        $('#confirmationModal').modal('show'); // Show the modal
+    }
+
+    // Confirm delete action
+    $('#confirmDelete').on('click', function () {
+        $.ajax({
+            url: '{{ route('lead.deleteDocument') }}', // Adjust route as necessary
+            method: 'POST',
+            data: {
+                id: documentIdToDelete,
+                _token: '{{ csrf_token() }}' // Include CSRF token for security
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success('Document deleted successfully!');
+                    // Hide the modal
+                    $('#confirmationModal').modal('hide');
+                    // Remove the document from the UI
+                    $('#document-' + documentIdToDelete).remove(); // Use the unique ID to remove the document
+                } else {
+                    toastr.error('Failed to delete document.');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Error occurred while deleting the document.');
+            }
+        });
+    });
+
+    window.uploadFile = function (inputId, activityId) {
+        const fileInput = document.getElementById(inputId);
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('Please select a file to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('activity_id', activityId); // Include the activity ID for database update
+
+        // Add CSRF token for Laravel
+        formData.append('_token', '{{ csrf_token() }}');
+
+        $.ajax({
+            url: '{{ route('lead.uploadFile') }}',  // Change to your backend endpoint
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    location.reload();
+                    // Optionally, update the UI to reflect the new status
+                    toastr.success('File uploaded successfully.');
+                } else {
+                    toastr.error('Failed to upload the file.');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Error occurred while uploading the file: ' + xhr.responseText);
+            }
+        });
+    };
+</script>
+
+<!-- Activity Done Star Store Function -->
+<script>
+            $(document).ready(function() {
+                $('.toggle-star').each(function() {
+                    const activityId = $(this).data('id');
+                    const icon = $(this).find('i');
+                    
+                    // Check localStorage for the star state
+                    const storedState = localStorage.getItem(`activity_${activityId}_is_star`);
+                    
+                    if (storedState !== null) {
+                        const isStar = storedState === '1';
+                        icon.toggleClass('fa-star', isStar);
+                        icon.toggleClass('fa-star-o', !isStar);
+                        icon.toggleClass('selected-star', isStar); // Gold color for selected star
+                        icon.toggleClass('not-selected', !isStar); // Gray border for unselected star
+                    }
+                });
+
+                $('.toggle-star').on('click', function() {
+                    const icon = $(this).find('i'); // Target the icon for this button
+                    const activityId = $(this).data('id');
+                    const isStar = icon.hasClass('fa-star');
+                    const newIsStar = !isStar ? 1 : 0; // Set to 1 if selected, 0 if unselected
+
+                    // AJAX request to update the database
+                    $.ajax({
+                        url: `/star-update/${activityId}`,
+                        type: 'POST',
+                        data: {
+                            is_star: newIsStar,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                // Toggle star icon and classes for this button only
+                                icon.toggleClass('fa-star fa-star-o');
+                                icon.toggleClass('selected-star', newIsStar === 1);
+                                icon.toggleClass('not-selected', newIsStar === 0);
+                                
+                                // Store the state in localStorage for this activity
+                                localStorage.setItem(`activity_${activityId}_is_star`, newIsStar);
+                            } else {
+                                console.error(data.message);
+                            }
+                        }.bind(this),
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
+        </script>
 
 
 @endpush

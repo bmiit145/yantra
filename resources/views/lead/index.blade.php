@@ -2,6 +2,7 @@
 @section('content')
 @section('head_breadcrumb_title', 'Leads')
 @section('head_new_btn_link', route('lead.create'))
+@section('lead', route('lead.index'))
 @section('kanban', route('lead.kanban', ['lead' => 'kanban']))
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
@@ -2104,7 +2105,39 @@
 
 </script>
 
+<script>
+ $(document).ready(function() {
+    // Toggle dropdown on arrow click
+    $('.o_searchview_dropdown_toggler').click(function(event) {
+        event.stopPropagation(); // Prevent click event from bubbling up
+        const dropdown = $('#search-dropdown');
+        const isExpanded = $(this).attr('aria-expanded') === 'true';
+        
+        // Toggle the dropdown visibility
+        dropdown.toggle(); 
+        $(this).attr('aria-expanded', !isExpanded);
+        
+        // Change the arrow direction
+        $('#dropdown-arrow').toggleClass('fa-caret-down fa-caret-up', !isExpanded);
+    });
 
+    // Open dropdown when clicking on search input
+    $('#search-input').on('focus', function() {
+        $('#search-dropdown').show(); // Show dropdown on focus
+        $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+        $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change arrow direction
+    });
+
+    // Close dropdown when clicking outside
+    $(document).click(function(event) {
+        if (!$(event.target).closest('.o_cp_searchview').length) {
+            $('#search-dropdown').hide();
+            $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false');
+            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Reset arrow direction
+        }
+    });
+});
+</script>
 
 
 @endsection

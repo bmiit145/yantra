@@ -849,77 +849,77 @@
 
                                         <!-- Overdue Section -->
                                         <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                    <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
-                </div>
-                @foreach($overdueActivities as $value)
-                    <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                            {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                        </span>
-                        <div class="mt-1 flex-grow-1">
-                            &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
-                        </div>
-                        <input type="file" class="d-none" id="upload_overdue_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_overdue_file_{{ $value->id }}', {{ $value->id }})">
-                        <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_overdue_file_{{ $value->id }}').click();">
-                            <i class="fa fa-upload"></i>
-                        </button>
-                        <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Today Section -->
-            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                    <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
-                </div>
-                @foreach($todayActivities as $value)
-                    <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                            {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                        </span>
-                        <div class="mt-1 flex-grow-1">
-                            &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
-                        </div>
-                        <input type="file" class="d-none" id="upload_today_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_today_file_{{ $value->id }}', {{ $value->id }})">
-                        <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_today_file_{{ $value->id }}').click();">
-                            <i class="fa fa-upload"></i>
-                        </button>
-                        <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                    </div>
-                @endforeach
-            </div>
-
-            <!-- Planned Section -->
-            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                    <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
-                </div>
-                @foreach($plannedActivities as $value)
-                    <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                            {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                        </span>
-                        <div class="mt-1 flex-grow-1">
-                            &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
-                        </div>
-                        <input type="file" class="d-none" id="upload_planned_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_planned_file_{{ $value->id }}', {{ $value->id }})">
-                        <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_planned_file_{{ $value->id }}').click();">
-                            <i class="fa fa-upload"></i>
-                        </button>
-                        <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                    </div>
-                @endforeach
-            </div>
+                                    <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                        <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
                                     </div>
+                                    @foreach($overdueActivities as $value)
+                                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                            </span>
+                                            <div class="mt-1 flex-grow-1">
+                                                &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Overdue</small>
+                                            </div>
+                                            <input type="file" class="d-none" id="upload_overdue_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_overdue_file_{{ $value->id }}', {{ $value->id }})">
+                                            <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_overdue_file_{{ $value->id }}').click();">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                            <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="popover-arrow end-auto"></div>
-                            </div>
-                        @endif
+
+                                <!-- Today Section -->
+                                <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                    <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                        <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
+                                    </div>
+                                    @foreach($todayActivities as $value)
+                                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                            </span>
+                                            <div class="mt-1 flex-grow-1">
+                                                &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Today</small>
+                                            </div>
+                                            <input type="file" class="d-none" id="upload_today_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_today_file_{{ $value->id }}', {{ $value->id }})">
+                                            <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_today_file_{{ $value->id }}').click();">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                            <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <!-- Planned Section -->
+                                <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                    <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                        <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
+                                    </div>
+                                    @foreach($plannedActivities as $value)
+                                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                {{ strtoupper($pipeline->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                            </span>
+                                            <div class="mt-1 flex-grow-1">
+                                                &nbsp;&nbsp;<small>{{ $pipeline->getUser->email }} - Planned</small>
+                                            </div>
+                                            <input type="file" class="d-none" id="upload_planned_file_{{ $value->id }}" accept="*" onchange="uploadFile('upload_planned_file_{{ $value->id }}', {{ $value->id }})">
+                                            <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link" onclick="document.getElementById('upload_planned_file_{{ $value->id }}').click();">
+                                                <i class="fa fa-upload"></i>
+                                            </button>
+                                            <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                            <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="popover-arrow end-auto"></div>
+                                                </div>
+                                            @endif
                     </td>
 
                     <td class="o_activity_summary_cell" data-id="{{$pipeline->pipeline_id}}" data-activity_type="to-do">
