@@ -1,5 +1,5 @@
 @extends('layout.header')
-@section('head_new_btn_link', route('crm.show', ['crm' => 'new']))
+@section('head_new_btn_link', route('lead.create'))
 @section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
 @section('redirect_name', 'Leads')
 @section('redirect_button', route('lead.index'))
