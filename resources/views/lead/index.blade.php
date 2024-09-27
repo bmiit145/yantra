@@ -364,10 +364,10 @@
         display: none;
         position: absolute;
         background-color: #f9f9f9;
-        min-width: 691px;
+        min-width: 623px;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
-        padding: 10px;
+        padding: 0px;
         top: auto;
     }
 
@@ -490,6 +490,9 @@
     .head_breadcrumb_info{
         display:none
     }
+    .dropdown-toggle::after{
+        content: none!important;
+    }
 
 </style>
 
@@ -581,10 +584,8 @@
                     <th>Tag</th>
                     <th>Sales Person</th>
                     <th>Sales Team</th>
-
                 </tr>
             </thead>
-
             <tbody id="lead-table-body">
             </tbody>
         </table>
@@ -606,6 +607,7 @@
         var table = $('#example').DataTable({
             processing: true
             , serverSide: true
+            ,searching:false
             , ajax: {
                 url: '{{ route('lead.get') }}'
                 , type: "POST"
@@ -827,7 +829,7 @@
                             return '';
                         }
                     }
-                }
+                },
             ]
             , createdRow: function(row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
@@ -2107,36 +2109,40 @@
 
 <script>
  $(document).ready(function() {
-    // Toggle dropdown on arrow click
-    $('.o_searchview_dropdown_toggler').click(function(event) {
-        event.stopPropagation(); // Prevent click event from bubbling up
-        const dropdown = $('#search-dropdown');
-        const isExpanded = $(this).attr('aria-expanded') === 'true';
-        
-        // Toggle the dropdown visibility
-        dropdown.toggle(); 
-        $(this).attr('aria-expanded', !isExpanded);
-        
-        // Change the arrow direction
-        $('#dropdown-arrow').toggleClass('fa-caret-down fa-caret-up', !isExpanded);
-    });
-
-    // Open dropdown when clicking on search input
-    $('#search-input').on('focus', function() {
-        $('#search-dropdown').show(); // Show dropdown on focus
-        $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
-        $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change arrow direction
-    });
-
-    // Close dropdown when clicking outside
-    $(document).click(function(event) {
-        if (!$(event.target).closest('.o_cp_searchview').length) {
-            $('#search-dropdown').hide();
-            $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false');
-            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Reset arrow direction
-        }
-    });
-});
+      // Toggle dropdown on arrow click
+      $('.o_searchview_dropdown_toggler').click(function(event) {
+          event.stopPropagation(); // Prevent click event from bubbling up
+          const dropdown = $('#search-dropdown');
+          const isExpanded = $(this).attr('aria-expanded') === 'true';
+          
+          // Toggle the dropdown visibility
+          dropdown.toggle(); 
+          $(this).attr('aria-expanded', !isExpanded);
+          
+          // Change the arrow direction
+          if (isExpanded) {
+              $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
+          } else {
+              $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+          }
+      });
+  
+      // Open dropdown when clicking on search input
+      $('#search-input').on('focus', function() {
+          $('#search-dropdown').show(); // Show dropdown on focus
+          $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+          $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+      });
+  
+      // Close dropdown when clicking outside
+      $(document).click(function(event) {
+          if (!$(event.target).closest('.o_cp_searchview').length) {
+              $('#search-dropdown').hide();
+              $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false');
+              $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Reset to down arrow
+          }
+      });
+  });
 </script>
 
 

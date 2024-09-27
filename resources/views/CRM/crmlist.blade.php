@@ -439,10 +439,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         display: none;
         position: absolute;
         background-color: #f9f9f9;
-        min-width: 691px;
+        min-width: 623px;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
-        padding: 10px;
+        padding: 0px;
         top: auto;
     }
 
@@ -575,6 +575,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
     .o_priority_star.fa-star-o {
         color: gray; /* Color for empty stars */
+    }
+    .dropdown-toggle::after{
+        content: none!important;
     }
 </style>
 
@@ -710,6 +713,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         var table = $('#example').DataTable({
             processing: true
             , serverSide: true
+            ,searching:false
             , ajax: {
                 url: '{{ route('crm.pipeline.list.data') }}'
                 , type: "POST"
@@ -1205,7 +1209,67 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 </script>
 
+<script>
+    $(document).ready(function() {
+        // Show the dropdown when the input field is clicked
+        $('#search-input').on('click', function() {
+            $('#search-dropdown').show();
+        });
 
+        // Add selected value to the input field and hide the dropdown
+        $(document).on('click', '#search-dropdown .o-dropdown-item', function() {
+            // var selectedValue = $(this).text().trim();
+            // $('#search-input').val(selectedValue);
+            $('#search-dropdown').hide();
+        });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+                $('#search-dropdown').hide();
+            }
+        });
+    });
+
+</script>
+
+<script>
+ $(document).ready(function() {
+      // Toggle dropdown on arrow click
+      $('.o_searchview_dropdown_toggler').click(function(event) {
+          event.stopPropagation(); // Prevent click event from bubbling up
+          const dropdown = $('#search-dropdown');
+          const isExpanded = $(this).attr('aria-expanded') === 'true';
+          
+          // Toggle the dropdown visibility
+          dropdown.toggle(); 
+          $(this).attr('aria-expanded', !isExpanded);
+          
+          // Change the arrow direction
+          if (isExpanded) {
+              $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
+          } else {
+              $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+          }
+      });
+  
+      // Open dropdown when clicking on search input
+      $('#search-input').on('focus', function() {
+          $('#search-dropdown').show(); // Show dropdown on focus
+          $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+          $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+      });
+  
+      // Close dropdown when clicking outside
+      $(document).click(function(event) {
+          if (!$(event.target).closest('.o_cp_searchview').length) {
+              $('#search-dropdown').hide();
+              $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false');
+              $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Reset to down arrow
+          }
+      });
+  });
+</script>
 
 
 @endsection
