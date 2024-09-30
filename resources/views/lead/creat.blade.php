@@ -352,6 +352,11 @@
     .selected-star {
         color: #f3cc00; /* Gold color for the selected star */
     }
+    .send-message-image{
+        height: auto !important;
+        width: 175px !important;
+        max-height: 300px !important;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -1140,166 +1145,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="image_show2" style="display: flex;">
-                                                </div>
-                                                 
-                                            @if($send_message)
-                                               @foreach($send_message as $value)
-                                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
-                                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
-                                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                                </div>
-                                                            </div>
-                                                            <div class="w-100 o-min-width-0">
-                                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
-                                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
-                                                                        <strong class="me-1">{{$value->from_mail}}</strong>
-                                                                    </span>
-                                                                    <div class="mx-1">
-                                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
-                                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
-                                                                        </span>
-                                                                    </div>
-                                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
-                                                                        @if($value->is_star == 1)
-                                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
-                                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
-                                                                            </a>
-                                                                        @else
-                                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
-                                                                                <i class="fa fa-lg fa-star-o"></i>
-                                                                            </a>
-                                                                        @endif
-                                                                          <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
-                                                                      <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
-                                                                </div>
-                                                                <div class="position-relative d-flex">
-                                                                    <div class="o-mail-Message-content o-min-width-0">
-                                                                        <div class="o-mail-Message-textContent position-relative d-flex">
-                                                                            <div class="position-relative overflow-x-auto d-inline-block">
-                                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
-                                                                                </div>
-                                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value->message}}</p>
-                                                                                </div>
-                                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
-                                                                                <div class="d-flex rounded-1 overflow-hidden">
-                                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
-                                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
-                                                                                        <div class="d-flex rounded-0">
-                                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
-                                                                                        </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                      
-
-                                                                        <div class="o-mail-AttachmentList">
-                                                                            <div class="o-mail-AttachmentList-mas" role="menu">
-                                                                              @if (!is_null($value->image) && !empty(json_decode($value->image)))
-                                                                                @foreach (json_decode($value->image) as $image)
-                                                                                    <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1" style="" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
-                                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
-                                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
-                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
-                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            @endif
-                                                                            </div>
-                                                                            <div class="grid row-gap-0 column-gap-0"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                            @if($log_notes)
-                                               @foreach($log_notes as $value2)
-                                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
-                                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
-                                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                                </div>
-                                                            </div>
-                                                            <div class="w-100 o-min-width-0">
-                                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
-                                                                    {{-- <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
-                                                                        <strong class="me-1">{{$value->from_mail}}</strong>
-                                                                    </span> --}}
-                                                                    <div class="mx-1">
-                                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
-                                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
-                                                                        </span>
-                                                                    </div>
-                                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value2->created_at}}">{{ $value2->created_at->diffForHumans() }}</small>
-                                                                        @if($value2->is_start == 1)
-                                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
-                                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
-                                                                            </a>
-                                                                        @else
-                                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
-                                                                                <i class="fa fa-lg fa-star-o"></i>
-                                                                            </a>
-                                                                        @endif
-                                                                          <a class="px-1 rounded-0 send_message_delete1" data-id="{{$value2->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
-                                                                      <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages1({{ $value2->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
-                                                                </div>
-                                                                <div class="position-relative d-flex">
-                                                                    <div class="o-mail-Message-content o-min-width-0">
-                                                                        <div class="o-mail-Message-textContent position-relative d-flex">
-                                                                            <div class="position-relative overflow-x-auto d-inline-block">
-                                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
-                                                                                </div>
-                                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value2->message}}</p>
-                                                                                </div>
-                                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
-                                                                                <div class="d-flex rounded-1 overflow-hidden">
-                                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
-                                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
-                                                                                        <div class="d-flex rounded-0">
-                                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
-                                                                                        </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                      
-
-                                                                        <div class="o-mail-AttachmentList">
-                                                                            <div class="o-mail-AttachmentList-mas" role="menu">
-                                                                              @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
-                                                                                @foreach (json_decode($value2->image) as $image)
-                                                                                    <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1 send_message_image"  tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
-                                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
-                                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
-                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
-                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            @endif
-                                                                            </div>
-                                                                            <div class="grid row-gap-0 column-gap-0"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            @endif
+                                                </div>                                                                                            
                             @if($activitiesCount > 0)
-                                <div class="d-flex pt-2 cursor-pointer fw-bolder" id="toggleHeader">
+                                <div class="d-flex pt-2 cursor-pointer fw-bolder planned_activities" id="toggleHeader">
                                     <hr class="flex-grow-1 fs-3">
                                     <div class="d-flex align-items-center px-3">
                                         <i class="fa fa-fw fa-caret-down" id="toggleIcon"></i> Planned Activities 
@@ -1418,6 +1266,7 @@
                                                     <textarea class="form-control" rows="4" placeholder="Write Feedback"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
+                                                    <button type="button" id="doneAndScheduleButton" class="btn btn-primary">Done & Schedule Next</button>
                                                     <button type="button" id="saveChangesButton" class="btn btn-primary">Done</button>
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">discard</button>
                                                 </div>
@@ -1542,7 +1391,7 @@
                                                 @foreach ($images as $file)
                                                     <div id="image-{{ $file }}" class="o-mail-AttachmentImage position-relative flex-shrink-0 mw-100 mb-1 me-1"
                                                         tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
-                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                        <img data-enlargable class="img img-fluid my-0 mx-auto o-viewable rounded"
                                                             src="{{ asset('storage/uploads/attachment/' . $file) }}"
                                                             alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
 
@@ -1624,7 +1473,7 @@
 
                                 <!-- Delete Confirmation Modal -->
                                 <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
@@ -1644,6 +1493,181 @@
                                 <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
                                 <hr class="o-discuss-separator flex-grow-1">
                             </div> -->
+
+                            @if($send_message)
+                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Send Message</span>
+                                <hr class="o-discuss-separator flex-grow-1">
+                            </div>
+                                @foreach($send_message as $value)
+                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
+                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
+                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                </div>
+                                            </div>
+                                            <div class="w-100 o-min-width-0">
+                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
+                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value->from_mail}}</strong>
+                                                    </span>
+                                                    <div class="mx-1">
+                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
+                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                        </span>
+                                                    </div>
+                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
+                                                        @if($value->is_star == 1)
+                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                            </a>
+                                                        @else
+                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                            </a>
+                                                        @endif
+                                                            <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
+                                                            @if (!is_null($value->image) && !empty(json_decode($value->image)))
+                                                                <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
+                                                            @endif
+                                                </div>
+                                                <div class="position-relative d-flex">
+                                                    <div class="o-mail-Message-content o-min-width-0">
+                                                        <div class="o-mail-Message-textContent position-relative d-flex">
+                                                            <div class="position-relative overflow-x-auto d-inline-block">
+                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
+                                                                </div>
+                                                                <!-- <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value->message}}</p>
+                                                                </div> -->
+                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3">
+                                                                    <p><?php echo nl2br(htmlspecialchars($value->message)); ?></p>
+                                                                </div>
+                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
+                                                                <div class="d-flex rounded-1 overflow-hidden">
+                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
+                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div class="o-mail-AttachmentList">
+                                                            <div class="o-mail-AttachmentList-mas" role="menu">
+                                                                @if (!is_null($value->image) && !empty(json_decode($value->image)))
+                                                                @foreach (json_decode($value->image) as $image)
+                                                                    <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1 send_message_image"  tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
+                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
+                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
+                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
+                                                            </div>
+                                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                            @if($log_notes)
+                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Log Note</span>
+                                <hr class="o-discuss-separator flex-grow-1">
+                            </div>
+                                @foreach($log_notes as $value2)
+                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
+                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
+                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                </div>
+                                            </div>
+                                            <div class="w-100 o-min-width-0">
+                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
+                                                    {{-- <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value->from_mail}}</strong>
+                                                    </span> --}}
+                                                    <div class="mx-1">
+                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
+                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                        </span>
+                                                    </div>
+                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value2->created_at}}">{{ $value2->created_at->diffForHumans() }}</small>
+                                                        @if($value2->is_start == 1)
+                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                            </a>
+                                                        @else
+                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                            </a>
+                                                        @endif                                                        
+                                                            <a class="px-1 rounded-0 send_message_delete1" data-id="{{$value2->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
+                                                            @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
+                                                                <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages1({{ $value2->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
+                                                            @endif
+                                                </div>
+                                                <div class="position-relative d-flex">
+                                                    <div class="o-mail-Message-content o-min-width-0">
+                                                        <div class="o-mail-Message-textContent position-relative d-flex">
+                                                            <div class="position-relative overflow-x-auto d-inline-block">
+                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
+                                                                </div>
+                                                                <!-- <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value2->message}}</p>
+                                                                </div> -->
+                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3">
+                                                                    <p><?php echo nl2br(htmlspecialchars($value2->message)); ?></p>
+                                                                </div>
+                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
+                                                                <div class="d-flex rounded-1 overflow-hidden">
+                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
+                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+
+                                                        <div class="o-mail-AttachmentList">
+                                                            <div class="o-mail-AttachmentList-mas" role="menu">
+                                                                @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
+                                                                @foreach (json_decode($value2->image) as $image)
+                                                                    <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1 send_message_image"  tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
+                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
+                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
+                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            @endif
+                                                            </div>
+                                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             <div class="o-mail-Chatter-content">
                                 @if(isset($data) && $data->lead_type == 1)
                                     @php
@@ -2191,9 +2215,9 @@
             </div>
         </div>
         <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-            <button type="submit" class="btn btn-primary">Schedule</button>
-            <!-- <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
-            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button> -->
+            <button type="submit" class="btn btn-primary" id="schedule">Schedule</button>
+            <button type="submit" class="btn btn-secondary" id="schedule_and_mark_done">Schedule & Mark as Done</button>
+            <button type="submit" class="btn btn-secondary" id="done_and_schedule_next">Done & Schedule Next</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
     </form>
@@ -3030,17 +3054,20 @@
 
 <script>
     $(document).ready(function() {       
-
-        $('#scheduleForm').on('submit', function(e) {
+        
+        $('#schedule').on('click', function(e) {
             e.preventDefault(); // Prevent the default form submission
+            let action = 'schedule'; // Set the action for the "Schedule" button
+
+            // Perform AJAX request
             $.ajax({
-                url: $(this).attr('action'),
+                url: $('#scheduleForm').attr('action'), // Use the form's action
                 method: 'POST',
-                data: $(this).serialize(),
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
                 success: function(response) {
                     toastr.success(response.message);
                     $('#activitiesAddModal').modal('hide'); // Hide the modal
-                    location.reload();
+                    location.reload(); // Reload the page
                 },
                 error: function(xhr) {
                     // Handle any errors
@@ -3048,6 +3075,55 @@
                 }
             });
         });
+
+        $('#schedule_and_mark_done').on('click', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'done'; // Set the action for the "Schedule & Mark as Done" button
+
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#activitiesAddModal').modal('hide'); // Hide the modal
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
+        });
+
+        $('#done_and_schedule_next').on('click', function(e) {
+        e.preventDefault(); // Prevent the default form submission
+        let action = 'next'; // Set the action for the "Done & Schedule Next" button
+
+        // Perform AJAX request
+        $.ajax({
+            url: $('#scheduleForm').attr('action'), // Use the form's action
+            method: 'POST',
+            data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+            success: function(response) {
+                toastr.success(response.message);
+                // Store a flag in localStorage to indicate the modal should reopen
+                localStorage.setItem('reopenModal', 'true');
+                location.reload(); // Reload the page
+            },
+            error: function(xhr) {
+                // Handle any errors
+                alert('An error occurred while scheduling the activity.');
+            }
+        });
+    });
+
+    // Check localStorage on page load to reopen the modal if needed
+    if (localStorage.getItem('reopenModal') === 'true') {
+        $('#activitiesAddModal').modal('show'); // Show the modal
+        localStorage.removeItem('reopenModal'); // Clear the flag
+    }
     });
 </script>
 
@@ -3229,6 +3305,36 @@
                         // Close the modal
                         $('#markDoneModal').modal('hide');
                         location.reload();
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        $('#doneAndScheduleButton').click(function() {
+            // Same AJAX logic as above
+            var activityId = $('#markDoneModal').data('activity-id');
+            var feedback = $('#markDoneModal textarea').val();
+            
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: activityId,
+                    status: 1,
+                    feedback: feedback
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Open the modal for scheduling next activity
+                        $('div[data-activity-id="' + activityId + '"]').remove();
+                        $('#markDoneModal').modal('hide');
+                        $('#activitiesAddModal').modal('show'); // Open the scheduling modal
                     } else {
                         alert('Failed to mark activity as done.');
                     }

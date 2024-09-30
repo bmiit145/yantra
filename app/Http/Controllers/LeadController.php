@@ -162,8 +162,8 @@ class LeadController extends Controller
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
         $employees = Contact::all();
-        $send_message = send_message::where('type_id', $id)->where('type', 'lead')->get();
-        $log_notes = send_log_notes::where('type_id', $id)->where('type', 'lead')->get();
+        $send_message = send_message::orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
+        $log_notes = send_log_notes::orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
 
         $followers = Following::where('type_id', $id)
         ->where('customer_id', '!=' , 'users/'.Auth::user()->id)
@@ -535,19 +535,47 @@ class LeadController extends Controller
 
 
     public function scheduleActivityStore(Request $request)
-    {
+    {                
         try {
             // Create a new activity record
             $activity = new Activity();
-            $activity->lead_id = $request->lead_id;
-            $activity->pipeline_id = $request->pipeline_id;
-            $activity->activity_type = $request->activity_type;
-            $activity->due_date = $request->due_date;
-            $activity->summary = $request->summary;
-            $activity->assigned_to = $request->assigned_to;
-            $activity->note = $request->log_note;
-            $activity->status = '0';
-            $activity->save();
+            if($request->action == 'schedule')            
+            {
+                $activity->lead_id = $request->lead_id;
+                $activity->pipeline_id = $request->pipeline_id;
+                $activity->activity_type = $request->activity_type;
+                $activity->due_date = $request->due_date;
+                $activity->summary = $request->summary;
+                $activity->assigned_to = $request->assigned_to;
+                $activity->note = $request->log_note;
+                $activity->status = '0';
+                $activity->save();
+            }
+            else if($request->action == 'done')
+            {
+                $activity->lead_id = $request->lead_id;
+                $activity->pipeline_id = $request->pipeline_id;
+                $activity->activity_type = $request->activity_type;
+                $activity->due_date = $request->due_date;
+                $activity->summary = $request->summary;
+                $activity->assigned_to = $request->assigned_to;
+                $activity->note = $request->log_note;
+                $activity->status = '1';
+                $activity->save();
+            }
+
+            else if($request->action == 'next')
+            {
+                $activity->lead_id = $request->lead_id;
+                $activity->pipeline_id = $request->pipeline_id;
+                $activity->activity_type = $request->activity_type;
+                $activity->due_date = $request->due_date;
+                $activity->summary = $request->summary;
+                $activity->assigned_to = $request->assigned_to;
+                $activity->note = $request->log_note;
+                $activity->status = '1';
+                $activity->save();
+            }
 
             // Redirect or return a response
             // return redirect()->back()->with('message', 'Activity scheduled successfully.');
