@@ -6,6 +6,9 @@
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
+@section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
+@section('redirect_button', route('lead.index'))
+@section('redirect_name' , 'Lead')
 
 
 @section('navbar_menu')
@@ -384,6 +387,7 @@
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
                             <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
+                            @if(isset($data) && $data->is_lost == 1)
                                 <button invisible="type == 'opportunity' or not active" data-hotkey="v" data-id="{{isset($data) ? $data->id : ''}}" class="btn btn-primary convert_to_opportunity" name="511" type="action"><span>Convert to
                                         Opportunity</span></button>
                                         
@@ -395,6 +399,10 @@
                                                     <span>{{ $count ?? '' }}</span>
                                                 </button>
                                             </a>
+                                        @endif
+                                        @endif
+                                        @if(isset($data) && $data->is_lost == 2)
+                                        <button data-hotkey="x"  invisible="probability > 0 or active" class="btn btn-secondary restore_lead" data-id="{{isset($data) ? $data->id : ''}}" name="toggle_active" type="object"><span>Restore</span></button>
                                         @endif
                                             <!-- Modal -->
                                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
