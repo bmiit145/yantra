@@ -21,6 +21,7 @@ use App\Models\State;
 use App\Models\Tag;
 use App\Models\Contact;
 use App\Models\LostReason;
+use App\Models\SaleTeam;
 use App\Models\CrmStage;
 use App\Models\send_message;
 use Illuminate\Support\Facades\Http;
@@ -256,7 +257,9 @@ class LeadController extends Controller
             }
         } else {
         }
-        return view('lead.creat', compact('titles', 'countrys', 'tags','log_notes', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
+        $sales_teams = SaleTeam::all();
+     
+        return view('lead.creat', compact('titles', 'countrys','sales_teams', 'tags','log_notes', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
     }
 
     public function store(Request $request)

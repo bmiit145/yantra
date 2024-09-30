@@ -170,9 +170,72 @@
                     </div>
                     <div class="clearfix"></div>
                 </div>
-                <div class="o_dropdown_kanban bg-transparent position-absolute end-0"><button
-                        class="btn o-no-caret rounded-0 o-dropdown dropdown-toggle dropdown" title="Dropdown menu"
-                        aria-expanded="false"><span class="fa fa-ellipsis-v"></span></button></div>
+                <style>
+                .o_dropdown_kanban {
+    position: relative;
+}
+
+.custom-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 4px;
+    width: 150px;
+    z-index: 1000;
+}
+
+.dropdown-item {
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f1f1f1;
+}
+
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.color-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+                </style>
+                <div class="o_dropdown_kanban bg-transparent position-absolute end-0">
+                    <button class="btn o-no-caret rounded-0 o-dropdown dropdown-toggle dropdown" title="Dropdown menu" aria-expanded="false">
+                        <span class="fa fa-ellipsis-v"></span>
+                    </button>
+
+                    <div class="dropdown-menu custom-dropdown" style="display:none;">
+                        <div class="dropdown-item">Edit</div>
+                        <div class="dropdown-item">Delete</div>
+                        <div class="dropdown-divider"></div>
+                        <div class="color-options">
+                            <span class="color-box" style="background-color:#FFEBEE;"></span>
+                            <span class="color-box" style="background-color:#FFCDD2;"></span>
+                            <span class="color-box" style="background-color:#FFCC80;"></span>
+                            <span class="color-box" style="background-color:#FFE082;"></span>
+                            <span class="color-box" style="background-color:#BBDEFB;"></span>
+                            <span class="color-box" style="background-color:#80DEEA;"></span>
+                            <span class="color-box" style="background-color:#B39DDB;"></span>
+                            <span class="color-box" style="background-color:#F48FB1;"></span>
+                            <span class="color-box" style="background-color:#81C784;"></span>
+                            <span class="color-box" style="background-color:#F06292;"></span>
+                            <span class="color-box" style="background-color:#64B5F6;"></span>
+                            <span class="color-box" style="background-color:#FF4081;"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
             @endforeach
 
@@ -490,48 +553,7 @@
         });
 
 
-        // for  o_kanban_record sorting
-        {{--$(".o_kanban_group").sortable({--}}
-        {{--    handle: ".oe_kanban_global_click ",--}}
-        {{--    revert: true,--}}
-        {{--    // classes: {--}}
-        {{--    //     "ui-sortable-placeholder": "o_kanban_group_placeholder",--}}
-        {{--    //     "ui-sortable-helper": "o_dragged shadow",--}}
-        {{--    // },--}}
-        {{--    // placeholder: "o_kanban_group_placeholder",--}}
-        {{--    // forcePlaceholderSize: true,--}}
-        {{--    start: function(event, ui) {--}}
-        {{--        ui.placeholder.height(ui.item.height());--}}
-        {{--    },--}}
-        {{--    update: function(event, ui) {--}}
-        {{--        var sales = [];--}}
-        {{--        $(ui.item).closest('.o_kanban_group').find('.o_kanban_record').each(function(index, element) {--}}
-        {{--            var sale_id = $(element).data('id');--}}
-        {{--            sales.push({--}}
-        {{--                id: sale_id,--}}
-        {{--                sequence: index,--}}
-        {{--            });--}}
-        {{--        });--}}
-
-        {{--        console.log(sales);--}}
-
-        {{--        $.ajax({--}}
-        {{--            type: 'POST',--}}
-        {{--            url: "{{ route('crm.updateSaleSequence') }}",--}}
-        {{--            data: {--}}
-        {{--                sales : sales--}}
-        {{--            },--}}
-        {{--            success: function(response) {--}}
-        {{--                toastr.success("Sale Updated");--}}
-        {{--                // location.reload();--}}
-        {{--            },--}}
-        {{--            error: function(err) {--}}
-        {{--                console.log(err);--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    }--}}
-        {{--});--}}
-
+        
 
 
         // submit form by ajax onm o-kanban-button-new
@@ -592,106 +614,7 @@
 
     });
 
-{{--    $(document).ready(function() {--}}
-{{--        var insideCard = $(document).find(".o_kanban_record");--}}
-{{--        makeDropableInsideCard(insideCard);--}}
 
-{{--        function makeDropableInsideCard(insideCard) {--}}
-{{--            insideCard.draggable({--}}
-{{--                connectToSortable: ".o_kanban_group",--}}
-{{--                revert: "invalid",--}}
-{{--                cursor: "move",--}}
-{{--                helper: "original",--}}
-{{--                start: function(event, ui) {--}}
-{{--                    ui.helper.addClass("o_dragged");--}}
-{{--                    ui.helper.width($(this).width());--}}
-{{--                    ui.helper.height($(this).height());--}}
-{{--                    $(this).data('originalElement', $(this));--}}
-{{--                },--}}
-{{--                stop: function(event, ui) {--}}
-{{--                    $(this).removeClass("o_dragged");--}}
-{{--                }--}}
-{{--            });--}}
-{{--        }--}}
-
-{{--        // Make kanban groups sortable and droppable--}}
-{{--        $(".o_kanban_group").sortable({--}}
-{{--            connectWith: ".o_kanban_group",--}}
-{{--            handle: ".oe_kanban_global_click",--}}
-{{--            revert: true,--}}
-{{--            classes: {--}}
-{{--                "ui-sortable-placeholder": "o_kanban_group_placeholder",--}}
-{{--                "ui-sortable-helper": "o_dragged shadow",--}}
-{{--            },--}}
-{{--            animation: 0,--}}
-{{--            start: function(event, ui) {--}}
-{{--                ui.placeholder.height(ui.item.height());--}}
-{{--            },--}}
-{{--            update: function(event, ui) {--}}
-{{--                ui.item.attr('style', '');--}}
-{{--                var sales = [];--}}
-{{--                $(ui.item).closest('.o_kanban_group').find('.o_kanban_record').each(function(index, element) {--}}
-{{--                    var sale_id = $(element).data('id');--}}
-{{--                    sales.push({--}}
-{{--                        id: sale_id,--}}
-{{--                        sequence: index,--}}
-{{--                    });--}}
-{{--                });--}}
-
-{{--                console.log(sales);--}}
-
-{{--                // Update the sequence in the database via AJAX--}}
-{{--                $.ajax({--}}
-{{--                    type: 'POST',--}}
-{{--                    url: "{{ route('crm.updateSaleSequence') }}",--}}
-{{--                    data: {--}}
-{{--                        sales: sales--}}
-{{--                    },--}}
-{{--                    success: function(response) {--}}
-{{--                        toastr.success("Sale Updated");--}}
-{{--                    },--}}
-{{--                    error: function(err) {--}}
-{{--                        console.log(err);--}}
-{{--                    }--}}
-{{--                });--}}
-{{--            },--}}
-{{--            receive: function(event, ui) {--}}
-{{--                var originalRecord = ui.item.data('originalElement');--}}
-{{--                var droppedRecord = ui.item.clone().removeClass("o_dragged");--}}
-{{--                droppedRecord.attr('style', '');--}}
-
-{{--                // originalRecord.remove();--}}
-{{--                // ui.helper.remove();--}}
-
-{{--                // Reinitialize draggable on the newly added element--}}
-{{--                // makeDropableInsideCard(droppedRecord);--}}
-
-{{--                // Update stage in database via AJAX--}}
-{{--                var sale_id = droppedRecord.data('id');--}}
-{{--                var stage_id = $(this).data('id');--}}
-{{--                $.ajax({--}}
-{{--                    type: 'POST',--}}
-{{--                    url: "{{ route('sale.setStage') }}",--}}
-{{--                    data: {--}}
-{{--                        id: sale_id,--}}
-{{--                        stage_id: stage_id,--}}
-{{--                    },--}}
-{{--                    success: function(response) {--}}
-{{--                        toastr.success("Stage Updated");--}}
-{{--                    },--}}
-{{--                    error: function(err) {--}}
-{{--                        console.log(err);--}}
-{{--                    }--}}
-{{--                });--}}
-{{--            }--}}
-{{--        }).droppable({--}}
-{{--            accept: ".o_kanban_record",--}}
-{{--            hoverClass: "o_kanban_hover",--}}
-{{--            classes: {--}}
-{{--                "ui-droppable-hover": "o_kanban_hover"--}}
-{{--            }--}}
-{{--        });--}}
-{{--    });--}}
 
 </script>
  <script>
@@ -762,83 +685,7 @@
 
     });
 </script>
-<!-- Auto Select -->
-    <script>
-        {{--$(document).ready(function() {--}}
-        {{--    // Event listener for the input field--}}
-        {{--    $(document).on('input', '#partner_id_0' ,  function() {--}}
-        {{--        var query = $(this).val();--}}
-
-        {{--        // Check if the query is not empty--}}
-        {{--        if (query.length > 0) {--}}
-        {{--            // Example AJAX request to get suggestions (replace with your actual endpoint)--}}
-        {{--            $.ajax({--}}
-        {{--                url: '{{ route('contact.suggestions') }}',  // Your API endpoint to get suggestions--}}
-        {{--                type: 'GET',--}}
-        {{--                data: { query: query },--}}
-        {{--                success: function(data) {--}}
-        {{--                    var dropdownMenu = $('.o-autocomplete--dropdown-menu');--}}
-        {{--                    dropdownMenu.empty();--}}
-
-        {{--                    if (data.length > 0) {--}}
-        {{--                        data.forEach(function(item) {--}}
-        {{--                            // Append each item to the dropdown menu--}}
-        {{--                            dropdownMenu.append('<li class="dropdown-item" data-id="' + item.id + '">' + item.name + '</li>');--}}
-        {{--                        });--}}
-        {{--                        dropdownMenu.show();--}}
-        {{--                    }--}}
-        {{--                    // else {--}}
-        {{--                    //     dropdownMenu.hide(); // Hide the dropdown menu if no results--}}
-        {{--                    // }--}}
-
-        {{--                    // Add the "Create" and "Create and edit..." options--}}
-        {{--                    dropdownMenu.append('<li class="o-autocomplete--dropdown-item create-option"><a role="option" href="#" class="dropdown-item">Create "' + query + '"</a></li>');--}}
-        {{--                    dropdownMenu.append('<li class="o-autocomplete--dropdown-item create-edit-option"><a role="option" href="#" class="dropdown-item">Create and edit...</a></li>');--}}
-
-        {{--                }--}}
-        {{--            });--}}
-        {{--        } else {--}}
-        {{--            $('.o-autocomplete--dropdown-menu').hide(); // Hide dropdown if input is empty--}}
-        {{--        }--}}
-        {{--    });--}}
-
-        {{--    // Event listener for selecting an item--}}
-        {{--    $(document).on('click', '.o-autocomplete--dropdown-menu .o-autocomplete--dropdown-item', function(e) {--}}
-        {{--        // var selectedText = $(this).text();--}}
-        {{--        // var selectedId = $(this).data('id');--}}
-        {{--        //--}}
-        {{--        // // Set the input field value to the selected item--}}
-        {{--        // $('#partner_id_0').val(selectedText);--}}
-        {{--        //--}}
-        {{--        // // You might want to do something with the selected ID here--}}
-        {{--        //--}}
-        {{--        // // Hide the dropdown menu after selection--}}
-        {{--        // $('.o-autocomplete--dropdown-menu').hide();--}}
-
-
-        {{--        e.preventDefault();--}}
-        {{--        var selectedText = $(this).text();--}}
-
-        {{--        if ($(this).hasClass('create-option')) {--}}
-        {{--            // Handle the "Create" option--}}
-        {{--            alert('Create new: ' + selectedText);--}}
-        {{--            // You can add your logic here for creating a new entry--}}
-        {{--        } else if ($(this).hasClass('create-edit-option')) {--}}
-        {{--            // Handle the "Create and edit..." option--}}
-        {{--            alert('Create and edit: ' + selectedText);--}}
-        {{--            // You can add your logic here for creating and editing a new entry--}}
-        {{--        } else {--}}
-        {{--            // Handle the selection of a suggested item--}}
-        {{--            var selectedId = $(this).data('id');--}}
-        {{--            $('#partner_id_0').val(selectedText);--}}
-
-        {{--            // You might want to do something with the selected ID here--}}
-        {{--        }--}}
-
-        {{--        $('.o-autocomplete--dropdown-menu').hide();--}}
-        {{--    });--}}
-        {{--});--}}
-    </script>
+    
 <script>
     // contact-card click event by jquery
     $(document).on('click', '.sale-card', function () {
@@ -847,6 +694,25 @@
             window.location.href = '/pipeline-create/' + id; // Adjust the URL to your edit page
         }
     });
+
+    $(document).ready(function() {
+    $('.o_dropdown_kanban button').on('click', function(e) {
+        e.stopPropagation();
+        // Toggle the dropdown
+        var dropdownMenu = $(this).siblings('.custom-dropdown');
+        dropdownMenu.toggle();
+    });
+
+    // Close the dropdown when clicking outside
+    $(document).on('click', function() {
+        $('.custom-dropdown').hide();
+    });
+
+    // Prevent closing the dropdown when clicking inside it
+    $('.custom-dropdown').on('click', function(e) {
+        e.stopPropagation();
+    });
+});
 </script>
 @endpush
 

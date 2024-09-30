@@ -369,9 +369,9 @@ ul.navbar_menu_wapper li a {
     line-height: 1.2;
 }
 
-ul.navbar_menu_wapper li a:hover {
+/* ul.navbar_menu_wapper li a:hover {
     color: #00A5A8;
-}
+} */
 .crmcenter_header {
     padding: 0 20px;
 }
