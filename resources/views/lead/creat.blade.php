@@ -8,7 +8,7 @@
 @section('activity', route('lead.activity'))
 @section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
 @section('redirect_button', route('lead.index'))
-@section('redirect_name' , 'Lead'))
+@section('redirect_name' , 'Lead')
 
 @section('navbar_menu')
  <li class="dropdown">
