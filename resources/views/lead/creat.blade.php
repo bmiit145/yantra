@@ -6,9 +6,7 @@
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
-@section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
-@section('redirect_button', route('lead.index'))
-@section('redirect_name' , 'Lead')
+
 
 @section('navbar_menu')
  <li class="dropdown">
@@ -352,6 +350,9 @@
     .selected-star {
         color: #f3cc00; /* Gold color for the selected star */
     }
+    .o_field_widget {
+    width: 100%;
+}
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -376,12 +377,11 @@
                 <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
-                            <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">    
-                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary " name="511" type="action"><span>Convert to
+                            <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
+                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" data-id="{{isset($data) ? $data->id : ''}}" class="btn btn-primary convert_to_opportunity" name="511" type="action"><span>Convert to
                                         Opportunity</span></button>
-                                        @if(isset($data) && $data->is_lost == 1)
+                                        
                                         <button data-hotkey="l" data-id="{{isset($data) ? $data->id : ''}}" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary lead_lost_btn" name="510" type="action" data-tooltip="Mark as lost" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Lost</span></button>
-
                                         @if($count > 1)
                                             <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                                                 <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
@@ -390,45 +390,174 @@
                                                 </button>
                                             </a>
                                         @endif
-                                        @endif
-                                        @if(isset($data) && $data->is_lost == 2)
-                                        <button data-hotkey="x"  invisible="probability > 0 or active" class="btn btn-secondary restore_lead" data-id="{{isset($data) ? $data->id : ''}}" name="toggle_active" type="object"><span>Restore</span></button>
-                                        @endif
-                                      
                                             <!-- Modal -->
                                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-md">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="modal-dialog modal-dialog-centered modal-md">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
+                                                                <div class="resonse_select_hide">
+                                                                    <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
+                                                                        <option value=""></option>
+                                                                        @foreach ($lost_reasons as $reason)
+                                                                        <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
+                                                                            {{ $reason->name }}</option>
+                                                                        @endforeach
+                                                                        <option value="add_new_reson">Start typing...
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
+                                                    
+                                                        <br>
+                                                        <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
+                                                        <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                </div>
+                                                </div>
                                             </div>
-                                            <div class="modal-body">
-                                                <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
-                                                            <div class="resonse_select_hide">
-                                                                <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
-                                                                    <option value=""></option>
-                                                                    @foreach ($lost_reasons as $reason)
-                                                                    <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
-                                                                        {{ $reason->name }}</option>
-                                                                    @endforeach
-                                                                    <option value="add_new_reson">Start typing...
-                                                                    </option>
-                                                                </select>
+                                        </div>
+
+                                            
+                                                {{-- ---- convertopportunityModal ------- --}}
+                                        <div class="modal fade" id="convertopportunityModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-md">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Convert to opportunity</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="o_inner_group grid">
+                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                    <label class="o_form_label" for="name_0">Conversion Action</label>
+                                                                </div>
+                                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                    <div name="name" class="o_field_widget o_field_radio">
+                                                                        <div role="radiogroup" class="o_vertical" aria-label="Conversion Action">
+                                                                            <div class="form-check o_radio_item" aria-atomic="true">
+                                                                                <input type="radio" class="form-check-input o_radio_input" name="radio_field_4" data-value="convert" data-index="0" id="radio_field_4_convert">
+                                                                                    <label class="form-check-label o_form_label" for="radio_field_4_convert">Convert to opportunity</label>
+                                                                            </div>
+                                                                            <div class="form-check o_radio_item" aria-atomic="true">
+                                                                                <input type="radio" class="form-check-input o_radio_input" name="radio_field_4" data-value="merge" data-index="1" id="radio_field_4_merge">
+                                                                                <label class="form-check-label o_form_label" for="radio_field_4_merge">Merge with existing opportunities</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
-                                                
-                                                    <br>
-                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
-                                                    <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            </div>
+                                                        </div>
+                                                        <div class="o_inner_group grid">
+                                                            <div class="g-col-sm-2">
+                                                                <div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Assign this opportunity to</div>
+                                                            </div>
+                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                    <label class="o_form_label" for="user_id_0">Salesperson</label>
+                                                                </div>
+                                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                    <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
+                                                                        <div class="d-flex align-items-center gap-1" data-tooltip="info@yantradesign.co.in">
+                                                                            {{-- <span class="o_avatar o_m2o_avatar"><img class="rounded" src="/web/image/res.users/2/avatar_128"></span> --}}
+                                                                            <div class="o_field_many2one_selection"><div class="o_input_dropdown">
+                                                                                <div class="o-autocomplete dropdown">
+                                                                                    <select type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="user_id_0" placeholder="" aria-expanded="false">
+                                                                                        @foreach($users as $user)
+                                                                                            <option value="{{$user->id}}">{{$user->name}}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                              
+                                                                            </div>
+                                                                            <button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
+                                                                        </div>
+                                                                        <div class="o_field_many2one_extra"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label" for="team_id_0">Sales Team</label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                <div name="team_id" class="o_field_widget o_field_many2one">
+                                                                    <div class="o_field_many2one_selection">
+                                                                        <div class="o_input_dropdown">
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="team_id_0" placeholder="" aria-expanded="false">
+                                                                                   
+                                                                                    @foreach($sales_teams as $team)
+                                                                                        <option value="{{$team->id}}">{{$team->name}}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                       
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="o_field_many2one_extra"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                        <div class="o_group row align-items-start">
+                                                            <div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Customer</div>
+                                                            <div name="action" class="o_field_widget o_field_radio">
+                                                                <div role="radiogroup" class="o_vertical" aria-label="Related Customer">
+                                                                    <div class="form-check o_radio_item" aria-atomic="true">
+                                                                        <input type="radio" class="form-check-input o_radio_input" name="radio_field_5" data-value="create" data-index="0" id="radio_field_5_create">
+                                                                        <label class="form-check-label o_form_label" for="radio_field_5_create">Create a new customer</label>
+                                                                    </div>
+                                                                    <div class="form-check o_radio_item" aria-atomic="true">
+                                                                        <input type="radio" class="form-check-input o_radio_input" name="radio_field_5" data-value="exist" data-index="1" id="radio_field_5_exist">
+                                                                        <label class="form-check-label o_form_label" for="radio_field_5_exist">Link to an existing customer</label>
+                                                                    </div>
+                                                                    <div class="form-check o_radio_item" aria-atomic="true">
+                                                                        <input type="radio" class="form-check-input o_radio_input" name="radio_field_5" data-value="nothing" data-index="2" id="radio_field_5_nothing">
+                                                                        <label class="form-check-label o_form_label" for="radio_field_5_nothing">Do not link to a customer</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="o_inner_group grid">
+                                                                <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                    <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                        <label class="o_form_label" for="partner_id_0">Customer</label>
+                                                                    </div>
+                                                                    <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                        <div name="partner_id" class="o_field_widget o_required_modifier o_field_res_partner_many2one">
+                                                                            <div class="o_field_many2one_selection">
+                                                                                <div class="o_input_dropdown">
+                                                                                    <div class="o-autocomplete dropdown">
+                                                                                        <input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
+                                                                                    </div>
+                                                                                    <span class="o_dropdown_button"></span>
+                                                                                </div>
+                                                                                    <button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
+                                                                            </div>
+                                                                            <div class="o_field_many2one_extra"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary">Create Opportunity</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        </div>
+                                        
                                         
                             </div>                            
                         </div>
@@ -441,18 +570,15 @@
                                 </div>
                             </div>
                         @endif
-                        
                   
                             <div class="oe_title">
                                 <h1>
                                     <div name="name" class="o_field_widget">
-                                        <div style="height: 45px;">
-                                            <textarea class="o_input" 
-                                            id="name_0" style="width: 1000px" 
-                                            value="{{ isset($data) ? $data->product_name : '' }}" 
-                                            placeholder="e.g. Product Pricing" rows="1" spellcheck="false" 
-                                            style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;">
-                                            {{ isset($data) ? $data->product_name : '' }}</textarea>
+                                        <div style="height: 45px;"> 
+                                            <textarea class="o_input o_field_translate" id="name_0"
+                                                                      placeholder="e.g. Cheese Burger" rows="1"
+                                                                      style="w-100 height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 5px; text-align: left;"
+                                                                      spellcheck="true">{{ isset($data) ? $data->product_name : '' }}</textarea>
                                         </div>
                                     </div>
                                 </h1>
@@ -792,7 +918,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <div class="campaign_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="campaign_id_0" style="width: 150px;">
-                                                                                <option value="">Selecte Campaign</option>
+                                                                                <option value=""></option>
                                                                                 
                                                                                 @foreach ($campaigns as $campaign)
                                                                                     <option value="{{ $campaign->id }}" @if (isset($data->campaign_id) && $campaign->id == $data->campaign_id) selected @endif>
@@ -821,7 +947,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <div class="medium_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="medium_id_0" style="width: 150px;">
-                                                                                <option value="">Selecte Medium</option>
+                                                                                <option value=""> </option>
                                                                                 @foreach ($mediums as $medium)
                                                                                     <option value="{{ $medium->id }}" @if (isset($data->medium_id) && $medium->id == $data->medium_id) selected @endif>
                                                                                         {{ $medium->name }}
@@ -849,7 +975,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <div class="source_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="source_id_0" style="width: 150px;">
-                                                                                <option value="">Selecte Source</option>
+                                                                                <option value=""> </option>
                                                                                 @foreach ($sources as $source)
                                                                                     <option value="{{ $source->id }}" @if (isset($data->source_id) && $source->id == $data->source_id) selected @endif>
                                                                                         {{ $source->name }}
@@ -2207,6 +2333,8 @@
 
 
 
+
+
 @push('scripts')
 <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -2237,16 +2365,13 @@
 </script>
 <script>
     $("#title_0").select2({
-        placeholder: "Select Title"
-        , allowClear: true
+        placeholder: "Select Title",
     });
     $("#country_id_0").select2({
         placeholder: "Select country"
-        , allowClear: true
     });
     $("#state_id_0").select2({
         placeholder: "Select state"
-        , allowClear: true
     });
     $("#tag_ids_1").select2({
         placeholder: "Select tag"
@@ -2254,21 +2379,9 @@
     });
     $("#sales_person").select2({
         placeholder: "Salesperson"
-        , allowClear: true
     });
 
-    $("#campaign_id_0").select2({
-        allowClear: true
-    });
-
-    $("#medium_id_0").select2({
-        allowClear: true
-    });
-
-    $("#source_id_0").select2({
-        allowClear: true
-    });
-
+  
     $(function() {
         var currentDate = new Date();
 
@@ -4119,6 +4232,14 @@ $('img[data-enlargable]').addClass('img-enlargable').click(function(){
                 });
             });
         </script>
+
+        <!-- Activity Done Star Store Function -->
+<script>
+  $('.convert_to_opportunity').on('click', function(){
+     console.log('clicked');
+     $('#convertopportunityModal').modal('show');
+  });
+</script>
 
 
 @endpush
