@@ -7,23 +7,28 @@
     <div class="crm_head_centerside">
         @yield('header_centerside')
         <form>
-        <!-- <input type="text" id="search-input" name="search" placeholder="Search.."> -->
-        <div class="o_cp_searchview d-flex input-group" role="search">
-            <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1 border-end-0" role="search" aria-autocomplete="list">
-                <button class="d-print-none btn border-0 p-0" role="button" aria-label="Search..." title="Search...">
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                </button>
-                <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1">
-                    <input type="text" class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0" id="search-input" accesskey="Q" placeholder="Search..." name="search" role="searchbox">
+            <!-- <input type="text" id="search-input" name="search" placeholder="Search.."> -->
+            <div class="o_cp_searchview d-flex input-group" role="search">
+                <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1 border-end-0"
+                    role="search" aria-autocomplete="list">
+                    <button class="d-print-none btn border-0 p-0" role="button" aria-label="Search..."
+                        title="Search...">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                    <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1">
+                        <input type="text" class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0"
+                            id="search-input" accesskey="Q" placeholder="Search..." name="search" role="searchbox">
+                    </div>
                 </div>
+                <button type="button"
+                    class="o_searchview_dropdown_toggler d-print-none btn btn-outline-secondary o-dropdown-caret rounded-start-0 dropdown-toggle"
+                    title="Toggle Search Panel" aria-expanded="false">
+                    <i class="fa fa-caret-down" id="dropdown-arrow"></i> <!-- Only one arrow here -->
+                </button>
             </div>
-            <button type="button" class="o_searchview_dropdown_toggler d-print-none btn btn-outline-secondary o-dropdown-caret rounded-start-0 dropdown-toggle" title="Toggle Search Panel" aria-expanded="false">
-                <i class="fa fa-caret-down" id="dropdown-arrow"></i> <!-- Only one arrow here -->
-            </button>
-        </div>
-        <ul class="search_menu_wapper" style="display: none;" id="search-dropdown">
-            @yield('search_div')
-        </ul>
+            <ul class="search_menu_wapper" style="display: none;" id="search-dropdown">
+                @yield('search_div')
+            </ul>
             <!-- <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
                                                  id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                                  xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
@@ -59,36 +64,36 @@
     <div class="crm_head_rightside">
         @yield('header_rightside')
         <div class="crmright_head_inner">
-            <ul class="crmright_head_main crmright_head_main__1">                
-                <li class="list"><a href="@yield('lead')"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
-                                     version="1.1" preserveAspectRatio="xMidYMid meet"
-                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <ul class="crmright_head_main crmright_head_main__1">
+                <li class="list"><a href="@yield('lead')"><svg fill="#000000" width="64px" height="64px"
+                            viewBox="0 0 36 36" version="1.1" preserveAspectRatio="xMidYMid meet"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
                                 <title>view-list-line</title>
-                                <rect class="clr-i-outline clr-i-outline-path-1" x="2" y="8" width="2"
-                                      height="2"></rect>
+                                <rect class="clr-i-outline clr-i-outline-path-1" x="2" y="8" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-2"
-                                      d="M7,10H31a1,1,0,0,0,0-2H7a1,1,0,0,0,0,2Z"></path>
-                                <rect class="clr-i-outline clr-i-outline-path-3" x="2" y="14" width="2"
-                                      height="2"></rect>
+                                    d="M7,10H31a1,1,0,0,0,0-2H7a1,1,0,0,0,0,2Z"></path>
+                                <rect class="clr-i-outline clr-i-outline-path-3" x="2" y="14" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-4"
-                                      d="M31,14H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
-                                <rect class="clr-i-outline clr-i-outline-path-5" x="2" y="20" width="2"
-                                      height="2"></rect>
+                                    d="M31,14H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
+                                <rect class="clr-i-outline clr-i-outline-path-5" x="2" y="20" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-6"
-                                      d="M31,20H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
-                                <rect class="clr-i-outline clr-i-outline-path-7" x="2" y="26" width="2"
-                                      height="2"></rect>
+                                    d="M31,20H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
+                                <rect class="clr-i-outline clr-i-outline-path-7" x="2" y="26" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-8"
-                                      d="M31,26H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
+                                    d="M31,26H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
                                 <rect x="0" y="0" width="36" height="36" fill-opacity="0"></rect>
                             </g>
                         </svg></a></li>
-                        <li><a href="@yield('kanban')"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                <li><a href="@yield('kanban')"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
@@ -103,11 +108,10 @@
                                     fill="#000000"></path>
                             </g>
                         </svg></a></li>
-                <li class="calendar" ><a href="@yield('calendar')"><svg fill="#000000" height="64px" width="64px" version="1.1"
-                                     id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 289.48 289.48"
-                                     xml:space="preserve">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <li class="calendar"><a href="@yield('calendar')"><svg fill="#000000" height="64px" width="64px"
+                            version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 289.48 289.48" xml:space="preserve">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
@@ -145,9 +149,9 @@
                                     </g>
                                 </g>
                             </g>
-                                </svg></a></li>
-                <li class="pivot" ><a href="#"><svg width="64px" height="64px" viewBox="0 0 32 32"
-                                     xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                        </svg></a></li>
+                <li class="pivot"><a href="#"><svg width="64px" height="64px" viewBox="0 0 32 32"
+                            xmlns="http://www.w3.org/2000/svg" fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
@@ -160,8 +164,8 @@
                                 </g>
                             </g>
                         </svg></a></li>
-                <li class="graph" ><a href="@yield('char_area')"><svg width="64px" height="64px" viewBox="0 0 48 48"
-                                     xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                <li class="graph"><a href="@yield('char_area')"><svg width="64px" height="64px" viewBox="0 0 48 48"
+                            xmlns="http://www.w3.org/2000/svg" fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
@@ -180,43 +184,43 @@
                                 </g>
                             </g>
                         </svg></a></li>
-                <li class="location"><a href="#" ><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                <li class="location"><a href="#"><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
                                 <path
                                     d="M12 21C15.5 17.4 19 14.1764 19 10.2C19 6.22355 15.866 3 12 3C8.13401 3 5 6.22355 5 10.2C5 14.1764 8.5 17.4 12 21Z"
-                                    stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                                 <path
                                     d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
-                                    stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </g>
                         </svg></a></li>
-                <li class="activity"><a href="@yield('activity')" ><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                <li class="activity"><a href="@yield('activity')"><svg width="64px" height="64px" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
-                             <title>chart-area</title>
+                                <title>chart-area</title>
                                 <path
                                     d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-                                    stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                    stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                                 <path d="M12 6V12" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round"></path>
-                                <path d="M16.24 16.24L12 12" stroke="#000000" stroke-width="1.5"
-                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                                    stroke-linejoin="round"></path>
+                                <path d="M16.24 16.24L12 12" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
                             </g>
                         </svg></a></li>
             </ul>
             <ul class="crmright_head_main crmright_head_main__2">
                 <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 15 15" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                            xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
@@ -232,39 +236,38 @@
                             </g>
                         </svg><span class="crmright_mob_head_title">Kanban</span></a></li>
 
-                <li><a href="#"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36"
-                                     version="1.1" preserveAspectRatio="xMidYMid meet"
-                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <li><a href="#"><svg fill="#000000" width="64px" height="64px" viewBox="0 0 36 36" version="1.1"
+                            preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
                                 <title>view-list-line</title>
-                                <rect class="clr-i-outline clr-i-outline-path-1" x="2" y="8" width="2"
-                                      height="2"></rect>
+                                <rect class="clr-i-outline clr-i-outline-path-1" x="2" y="8" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-2"
-                                      d="M7,10H31a1,1,0,0,0,0-2H7a1,1,0,0,0,0,2Z"></path>
-                                <rect class="clr-i-outline clr-i-outline-path-3" x="2" y="14" width="2"
-                                      height="2"></rect>
+                                    d="M7,10H31a1,1,0,0,0,0-2H7a1,1,0,0,0,0,2Z"></path>
+                                <rect class="clr-i-outline clr-i-outline-path-3" x="2" y="14" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-4"
-                                      d="M31,14H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
-                                <rect class="clr-i-outline clr-i-outline-path-5" x="2" y="20" width="2"
-                                      height="2"></rect>
+                                    d="M31,14H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
+                                <rect class="clr-i-outline clr-i-outline-path-5" x="2" y="20" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-6"
-                                      d="M31,20H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
-                                <rect class="clr-i-outline clr-i-outline-path-7" x="2" y="26" width="2"
-                                      height="2"></rect>
+                                    d="M31,20H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
+                                <rect class="clr-i-outline clr-i-outline-path-7" x="2" y="26" width="2" height="2">
+                                </rect>
                                 <path class="clr-i-outline clr-i-outline-path-8"
-                                      d="M31,26H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
+                                    d="M31,26H7a1,1,0,0,0,0,2H31a1,1,0,0,0,0-2Z"></path>
                                 <rect x="0" y="0" width="36" height="36" fill-opacity="0"></rect>
                             </g>
                         </svg><span class="crmright_mob_head_title">List</span></a></li>
 
-                <li><a href="#"><svg fill="#000000" height="64px" width="64px" version="1.1"
-                                     id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                                     xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 289.48 289.48"
-                                     xml:space="preserve">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <li><a href="#"><svg fill="#000000" height="64px" width="64px" version="1.1" id="Layer_1"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 289.48 289.48" xml:space="preserve">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
@@ -302,10 +305,10 @@
                                     </g>
                                 </g>
                             </g>
-                                </svg><span class="crmright_mob_head_title">Calendar</span></a></li>
+                        </svg><span class="crmright_mob_head_title">Calendar</span></a></li>
 
-                <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 32 32"
-                                     xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"
+                            fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
@@ -319,8 +322,8 @@
                             </g>
                         </svg><span class="crmright_mob_head_title">Pivot</span></a></li>
 
-                <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 48 48"
-                                     xmlns="http://www.w3.org/2000/svg" fill="#000000">
+                <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"
+                            fill="#000000">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
@@ -341,40 +344,43 @@
                         </svg><span class="crmright_mob_head_title">Graph</span></a></li>
 
                 <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                            xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
                                 <path
                                     d="M12 21C15.5 17.4 19 14.1764 19 10.2C19 6.22355 15.866 3 12 3C8.13401 3 5 6.22355 5 10.2C5 14.1764 8.5 17.4 12 21Z"
-                                    stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                                 <path
                                     d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"
-                                    stroke="#000000" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                    stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                             </g>
                         </svg><span class="crmright_mob_head_title">Map</span></a></li>
 
                 <li><a href="#"><svg width="64px" height="64px" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
+                            xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                             </g>
                             <g id="SVGRepo_iconCarrier">
                                 <path
                                     d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z"
-                                    stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                                    stroke-linejoin="round"></path>
+                                    stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                </path>
                                 <path d="M12 6V12" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
-                                      stroke-linejoin="round"></path>
-                                <path d="M16.24 16.24L12 12" stroke="#000000" stroke-width="1.5"
-                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                                    stroke-linejoin="round"></path>
+                                <path d="M16.24 16.24L12 12" stroke="#000000" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"></path>
                             </g>
                         </svg><span class="crmright_mob_head_title">Activity</span></a></li>
             </ul>
         </div>
     </div>
 
+</div>
+<div>
+    @yield('menu_bar')
 </div>

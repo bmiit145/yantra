@@ -262,10 +262,15 @@
                                     <div class="lh-1">
                                         <button class="d-print-none btn p-0 ms-1 lh-sm border-0 o-dropdown dropdown-toggle dropdown seeting" data-hotkey="u" data-tooltip="Actions" aria-expanded="false" style="position: relative;" title=""><i class="fa fa-cog"></i>
                                         </button>
-                                         <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', "#")"
+                                         <button style="display: none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', "#")"
                                                     id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually"
                                                     aria-label="Save manually" title="Save Button">
                                                     <i class="fa fa-cloud-upload fa-fw"></i>
+                                        </button>
+                                        <button style="display:none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', "#")"
+                                                    id="@yield('header_discard_btn_id', 'main_discard_btn')" data-hotkey="s" data-tooltip="Discard all changes"
+                                                    aria-label="Discard all changes" title="Discard all changes">
+                                                    <i class="fa fa-times"></i>
                                         </button>
                                     </div>
                             </div>

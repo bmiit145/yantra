@@ -44,7 +44,253 @@
             <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
         </div>
     </li>
+
+    <!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- jQuery (required for Bootstrap JS components) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></style>
 @endsection
+
+@section('search_div')
+<div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu-search mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
+    role="menu" style="position: absolute; top: 0; left: 0;">
+    <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
+            <input type="hidden" id="filter" name="filter" value="">
+
+            <h5 class="o_dropdown_title d-inline">Filters</h5>
+        </div>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span
+                class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span
+                class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
+        <div class="dropdown-divider" role="separator"></div>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
+                style="display:none;">✔</span>Lost & Archived</span>
+        <div class="dropdown-divider" role="separator"></div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate"
+                style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false"
+                id="creationDateBtn1">
+                Creation Date
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="creationDateDropdown1"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <?php   
+                        // Get the current date
+$currentMonth = date('F '); // e.g., September 2024
+$lastMonth = date('F ', strtotime('-1 month')); // Last month
+$twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
+$threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
+                    ?>
+                <?php
+// Get the current year
+$currentYear = date('Y'); // e.g., 2024
+$lastYear = date('Y', strtotime('-1 year')); // Last year
+$twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
+                    ?>
+                <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $currentMonth; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastMonth; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q4</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q3</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q2</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q1</span>
+                <hr>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $currentYear; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastYear; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
+            </div>
+        </div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0"
+                aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
+                Closed Date
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="closeDateDropdown1"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_2 closed_time">
+                    <span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentMonth; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastMonth; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q4</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q3</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q2</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q1</span>
+                <hr>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $currentYear; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastYear; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
+            </div>
+        </div>
+        <div class="dropdown-divider" role="separator"></div><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false">Late Activities</span><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox"
+            tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
+        <div class="dropdown-divider" role="separator"></div>
+        <!-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
+        <div role="separator" class="dropdown-divider"></div> -->
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
+            tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
+    </div>
+    <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
+            <h5 class="o_dropdown_title d-inline">Group By</h5>
+        </div>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Salesperson</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Sales Team</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>City</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Country</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Campaign</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Medium</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Source</span>
+        <div class="dropdown-divider" role="separator">
+        </div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate"
+                style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false"
+                id="creationDateBtn">
+                Creation Date
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="creationDateDropdown"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span> <span
+                        class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Day</span>
+            </div>
+        </div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
+                aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
+                Closed Date
+                <span class="arrow-icon">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="closeDateDropdown"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Day</span>
+            </div>
+        </div>
+
+        {{-- <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
+                aria-expanded="false">Closed Date</button>
+        </div> --}}
+        <div class="dropdown-divider" role="separator"></div>
+        {{-- <div class="o_accordion position-relative"><button
+                class="o_menu_item o_accordion_toggle dropdown-item o-navigable  text-truncate" tabindex="0"
+                aria-expanded="false">Properties</button></div> --}}
+        <div role="separator" class="dropdown-divider"></div>
+        <select class="o_add_custom_group_menu o_menu_item dropdown-item">
+            <option value="" disabled="true" selected="true" hidden="true">Add Custom Group</option>
+            <option value="Active">Active</option>
+            <option value="campaign_id">Campaign</option>
+            <option value="city">City</option>
+            <option value="date_closed">Closed Date</option>
+            <option value="company_id">Company</option>
+            <option value="partner_name">Company Name</option>
+            <option value="contact_name">Contact Name</option>
+            <option value="date_conversion">Conversion Date</option>
+            <option value="country_id">Country</option>
+            <option value="create_uid">Created by</option>
+            <option value="create_date">Created on</option>
+            <option value="partner_id">Customer</option>
+            <option value="email_from">Email</option>
+            <option value="lost_reason_id">Lost Reason</option>
+            <option value="medium_id">Medium</option>
+            <option value="mobile">Mobile</option>
+            <option value="name">Opportunity</option>
+            <option value="phone">Phone</option>
+            <option value="priority">Priority</option>
+            <option value="referred">Referred By</option>
+            <option value="team_id">Sales Team</option>
+            <option value="user_id">Salesperson</option>
+            <option value="source_id">Source</option>
+            <option value="stage_id">Stage</option>
+            <option value="state_id">State</option>
+            <option value="street">Street</option>
+            <option value="street2">Street2</option>
+            <option value="tag_ids">Tags</option>
+            <option value="title">Title</option>
+            <option value="type">Type</option>
+            <option value="website">Website</option>
+            <option value="zip">Zip</option>
+        </select>
+    </div>
+    <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-favourite fa fa-star"></i>
+            <h5 class="o_dropdown_title d-inline">Favorites</h5>
+        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected"
+            role="menuitemcheckbox" tabindex="0" aria-checked="true"><span
+                class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1"
+                    title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
+        <div role="separator" class="dropdown-divider"></div>
+        <div class="o_accordion position-relative"><button
+                class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate"
+                tabindex="0" aria-expanded="false">Save current search</button></div>
+    </div>
+</div>
+@endsection
+
 @vite([
     'resources/css/crm_2.css',
     //    'resources/css/odoo/web.assets_web_print.min.css'
@@ -152,6 +398,110 @@
     }
     .location{
      display: none;
+    }
+
+
+    .dropdown-menu-search {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 623px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        padding: 0px;
+        top: auto;
+    }
+
+    .dropdown-menu-search a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .dropdown-menu-search a:hover {
+        background-color: #ddd;
+    }
+
+    .dropdown-active .dropdown-menu-search {
+        display: block;
+    }
+
+    .dropdown-checkbox {
+        margin-bottom: 10px;
+    }
+
+    .dropdown-checkbox label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .dropdown-checkbox input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    .arrow-icon {
+        display: inline-block;
+        transition: transform 0.3s ease;
+        /* Smooth transition */
+    }
+
+    .rotate {
+        transform: rotate(180deg);
+        /* Rotate the arrow */
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #E0E0E0;
+        border-radius: 22px;
+        margin-right: 12px;
+        font-size: 14px;
+        top: 5px;
+        left: 5px;
+    }
+
+    .tag1 {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #E0E0E0;
+        border-radius: 22px;
+        margin-right: 12px;
+        font-size: 14px;
+        top: 5px;
+        left: 5px;
+    }
+
+    .tag5 {
+        display: inline-block;
+        padding: 5px 10px;
+        background-color: #E0E0E0;
+        border-radius: 22px;
+        margin-right: 12px;
+        font-size: 14px;
+        top: 5px;
+        left: 5px;
+    }
+
+    .remove-tag {
+        margin-left: 5px;
+        cursor: pointer;
+    }
+
+    .tag-input-container {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        border: 1px solid #CED4DA;
+        border-radius: 4px;
+        padding: 5px;
+        background-color: #F1F1F1;
+    }
+    .dropdown-toggle::after{
+        content: none!important;
     }
 </style>
 
@@ -350,4 +700,47 @@
         });
 
     </script>
+
+<script>
+ $(document).ready(function() {
+    // Toggle dropdown on arrow click
+    $('.o_searchview_dropdown_toggler').click(function(event) {
+        event.stopPropagation(); // Prevent click event from bubbling up
+        const dropdown = $('#search-dropdown');
+        const isExpanded = $(this).attr('aria-expanded') === 'true';
+        
+        // Toggle the dropdown visibility
+        dropdown.toggle(); 
+        $(this).attr('aria-expanded', !isExpanded);
+        
+        // Change the arrow direction
+        if (isExpanded) {
+            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
+        } else {
+            $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+        }
+    });
+
+    // Open dropdown when clicking on search input
+    $('#search-input').on('focus', function() {
+        $('#search-dropdown').show(); // Show dropdown on focus
+        $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+        $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+    });
+
+    // Keep the dropdown open when clicking inside
+    $('#search-input, #search-dropdown').click(function(event) {
+        event.stopPropagation(); // Prevent closing when clicking inside the dropdown or input
+    });
+
+    // Close dropdown when clicking outside
+    $(document).click(function(event) {
+        if (!$(event.target).closest('.o_cp_searchview').length) {
+            $('#search-dropdown').hide();
+            $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false');
+            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Reset to down arrow
+        }
+    });
+});
+</script>
 @endpush

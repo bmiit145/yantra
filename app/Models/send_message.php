@@ -9,4 +9,9 @@ class send_message extends Model
 {
     use HasFactory;
     protected $fillable = ['to_mail', 'from_mail', 'message', 'image', 'type_id', 'type','is_star'];
+
+    public function user()
+    {
+        return $this->hasOne(User::class,'id','created_by');
+    }
 }
