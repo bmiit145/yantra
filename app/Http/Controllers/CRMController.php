@@ -33,7 +33,11 @@ class CRMController extends Controller
     {
         $data = Opportunity::all();
         $pipeline = Pipeline::all();
-        return view('CRM.index', compact('data', 'pipeline'));
+        $crmStages = CrmStage::with('sales.Activities')->orderBy('seq_no', 'desc')->get();
+        
+
+     
+        return view('CRM.index', compact('data', 'pipeline', 'crmStages'));
     }
 
     public function store(Request $request)
@@ -92,6 +96,7 @@ class CRMController extends Controller
         $data->probability = $request->probability ?? null;
         $data->deadline = $request->deadline ?? null;
         $data->internal_notes = $request->internal_notes ?? null;
+        $data->sales_person = auth()->user()->id;
         $data->save();
 
         if ($request->contact_id != null) {
@@ -727,6 +732,34 @@ private function getUserColor($userId)
 
     return $colors[$index];
 }
+
+    public function setColor(Request $request)
+    {
+        $sale = Sale::find($request->sale_id);
+        if ($sale) {
+            $sale->is_side_colour = $request->color; // Update color
+            $sale->save();  // Save the change
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false], 404);
+    }
+
+    public function pipelineDelete(Request $request)
+    {
+        $sale = Sale::find($request->sale_id);
+        if ($sale) {
+            $sale->delete();
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false], 404);
+    }
+
+
+
+
 
 
 }

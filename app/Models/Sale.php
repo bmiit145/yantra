@@ -44,6 +44,7 @@ class Sale extends Model
         'recurring_revenue',
         'recurring_plan',
         'is_lost',
+        'is_side_colour'
 
     ];
 
@@ -157,6 +158,23 @@ class Sale extends Model
     }
 
     public function salesPerson()
+    {
+        return $this->hasOne(User::class, 'id', 'sales_person');
+    }
+
+    public function tags()
+    {
+        $tagIds = explode(',', $this->tag); 
+        return Tag::whereIn('id', $tagIds)->get();
+        
+    }
+
+    public function Activities()
+    {
+        return $this->hasMany(Activity::class, 'pipeline_id', 'id');
+    }
+
+    public function getUser()
     {
         return $this->hasOne(User::class, 'id', 'sales_person');
     }
