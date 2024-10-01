@@ -586,7 +586,22 @@
                     <th>Sales Team</th>
                 </tr>
             </thead>
-            <tbody id="lead-table-body">
+            <tbody id="lead-table-body"> 
+                 @forEach($leads as $lead)
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    @endforeach
             </tbody>
         </table>
     </div>
@@ -604,240 +619,10 @@
 <script>
     $(document).ready(function() {
         // Initialize DataTable with server-side processing
-        var table = $('#example').DataTable({
-            processing: true
-            , serverSide: true
-            ,searching:false
-            , ajax: {
-                url: '{{ route('lead.get') }}'
-                , type: "POST"
-                , data: function(d) {
-                    d.search = {
-                        value: $('#example_filter input').val()
-                    };
-                    d.filter = $('#filter').val();
-                }
-            }
-            , order: [
-                [1, 'DESC']
-            ]
-            , pageLength: 10
-            , aoColumns: [{
-                    data: 'product_name'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'email'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'city'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'get_state'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.name;
-                        }
-                        if (row && row.get_auto_state) {
+           
+       var table =   $('#example').DataTable();
+    
 
-                            return row.get_auto_state.name;
-                        }
-                        return '';
-                    }
-                }
-                , {
-                    data: 'get_country'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.name;
-                        }
-                        if (row && row.get_auto_country) {
-
-                            return row.get_auto_country.name;
-                        }
-                        return '';
-                    }
-
-                }
-                , {
-                    data: 'zip'
-                    , render: function(data, type, row) {
-
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'probability'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'company_name'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'address_1'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'address_2'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'website_link'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'contact_name'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'job_postion'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'phone'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'mobile'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'priority'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'get_tilte'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.title;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'tag'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'get_user'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data.email;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'sales_team'
-                    , render: function(data, type, row) {
-                        if (data) {
-                            return data;
-                        } else {
-                            return '';
-                        }
-                    }
-                },
-            ]
-            , createdRow: function(row, data, dataIndex) {
-                $(row).attr('data-id', data.id);
-                $(row).css('cursor', 'pointer');
-            }
-
-
-        });
 
         // Handle row click event
         $('#example tbody').on('click', 'tr', function() {

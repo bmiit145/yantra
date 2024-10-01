@@ -41,9 +41,9 @@ class LeadController extends Controller
     public function index($id = null)
     {
         // $data = generate_lead::with('tags')->get();
-        // $datas = generate_lead::with('tags')->get();
+        $data = generate_lead::all();
 
-        // // Filter out leads with unique product_name while preserving the first occurrence
+        // Filter out leads with unique product_name while preserving the first occurrence
         // $data = $datas->groupBy('product_name')->map(function ($group) {
         //     return $group->first();
         // });
@@ -58,7 +58,7 @@ class LeadController extends Controller
         $States = State::all();
         $PersonTitle = PersonTitle::all();
         $Campaigns = Campaign::all();
-        return view('lead.index', compact('Countrs', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns'));
+        return view('lead.index', compact('Countrs', 'data', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns'));
     }
 
     public function getLeads(Request $request)

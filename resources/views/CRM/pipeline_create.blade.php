@@ -532,7 +532,7 @@
                         </div>
                         <input type="hidden" name="pipeline_id" id="pipeline_id"
                             value="{{ isset($data) ? $data->id : '' }}">
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                             <!-- Ribbon Section -->
                             <div id="wonRibbon"
                                 class="o_widget o_widget_web_ribbon {{ isset($checkIsWon) && $checkIsWon->title == 'Won' ? '' : 'd-none' }}">
@@ -3225,6 +3225,128 @@
                     });
                 });
             });
+        </script>
+        <script>
+                $(document).ready(function() {
+    const form = $('#myForm');
+    const saveButton = $('#main_save_btn');
+    const discardButton = $('#main_discard_btn');
+
+    // Initialize default values for inputs
+    const inputs = form.find('input, select, textarea');
+    inputs.each(function() {
+        if ($(this).is(':checkbox') || $(this).is(':radio')) {
+            $(this).data('defaultChecked', $(this).is(':checked'));
+        } else {
+            $(this).data('defaultValue', $(this).val());
+        }
+    });
+
+    // Function to check for changes
+    function checkChanges() {
+        let hasChanged = false;
+
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                    hasChanged = true;
+                }
+            } else if ($(this).is('select')) {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            } else {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            }
+        });
+
+        saveButton.toggle(hasChanged);
+        discardButton.toggle(hasChanged);
+    }
+
+    // Event listeners for input and change events
+    form.on('input change', checkChanges);
+
+    // Initialize datepicker and handle date change
+    $(".datepicker").datepicker({
+        dateFormat: "yy-mm-dd",
+        duration: "fast",
+        onSelect: function (dateText, inst) {
+            $(this).val(dateText).trigger('change'); // Trigger change event after date selection
+        }
+    });
+
+    // Handle paste and drop events on the textarea
+    $('textarea#description').on('paste', function(event) {
+        const clipboardData = event.originalEvent.clipboardData;
+        const items = clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image pasted!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when pasting
+    });
+
+    // Handle drop event
+    $('textarea#description').on('drop', function(event) {
+        event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+        const dataTransfer = event.originalEvent.dataTransfer;
+        const items = dataTransfer.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image dropped!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when dropping
+    });
+
+    // Handle star selection for priority
+    $('.o_priority_star').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+
+        // Remove 'fa-star' class from all stars and add 'fa-star-o'
+        $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+        // Add 'fa-star' class to the selected star and all stars before it
+        $(this).addClass('fa-star');
+        $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+        // Update the default value for change detection
+        inputs.each(function() {
+            if ($(this).attr('data-value') === selectedValue) {
+                $(this).data('defaultValue', selectedValue); // Update default value for change detection
+            }
+        });
+
+        checkChanges(); // Check for changes after updating the priority
+    });
+
+    discardButton.on('click', function() {
+        location.reload();
+    });
+
+    // Select2 initialization
+    $('.o-autocomplete--input').select2();
+
+    // Reset button visibility on form load
+    saveButton.hide();
+    discardButton.hide();
+});
+
         </script>
     @endpush
 
