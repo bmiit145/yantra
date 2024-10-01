@@ -164,7 +164,7 @@ class LeadController extends Controller
         $lost_reasons = LostReason::all();
         $employees = Contact::all();
         $send_message = send_message::orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
-        $log_notes = send_log_notes::orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
+        $log_notes = send_log_notes::with('user')->orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
 
         $followers = Following::where('type_id', $id)
         ->where('customer_id', '!=' , 'users/'.Auth::user()->id)
@@ -1013,6 +1013,7 @@ class LeadController extends Controller
         $data->to_mail = $request->to_mail;
         $data->type_id = $request->lead_id;
         $data->type = 'lead';
+        $data->created_by = Auth::user()->id;
         $data->from_mail = auth()->user()->email;
         
         $uploadedFiles = []; // Array to hold the file paths
@@ -1089,6 +1090,41 @@ class LeadController extends Controller
     
         // Fetch the record from the database
         $message = send_message::find($messageId);
+    
+        if (!$message) {
+            return response()->json(['success' => false, 'message' => 'Message not found'], 404);
+        }
+    
+        // Get the current image array
+        $imageArray = json_decode($message->image);
+    
+        if (!$imageArray) {
+            return response()->json(['success' => false, 'message' => 'No images found'], 404);
+        }
+    
+        // Remove the image from storage
+        Storage::disk('public')->delete($imagePath);
+    
+        // Filter out the image that was deleted from the array
+        $updatedImageArray = array_filter($imageArray, function($img) use ($imagePath) {
+            return $img !== $imagePath;
+        });
+    
+        // Save the updated image array back to the database
+        $message->image = json_encode(array_values($updatedImageArray)); // Re-index and encode
+        $message->save();
+    
+        return response()->json(['success' => true]);
+    }
+
+    public function deleteImage1(Request $request)
+    {
+       
+        $messageId = $request->input('message_id');
+        $imagePath = $request->input('image');
+    
+        // Fetch the record from the database
+        $message = send_log_notes::find($messageId);
     
         if (!$message) {
             return response()->json(['success' => false, 'message' => 'Message not found'], 404);
@@ -1330,6 +1366,7 @@ public function log_notes(Request $request)
     $data->message = $request->send_message;
     $data->type_id = $request->lead_id;
     $data->type = 'lead';
+    $data->created_by = Auth::user()->id;
     
     $uploadedFiles = []; // Array to hold the file paths
 

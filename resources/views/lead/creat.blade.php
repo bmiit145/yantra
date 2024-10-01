@@ -50,6 +50,23 @@
     </li>
 @endsection
 
+@section('menu_bar')
+<div class="o_control_panel_navigation flex-wrap flex-md-nowrap justify-content-end gap-1 gap-xl-3 order-1 order-lg-2 flex-grow-1">
+    <div class="o_cp_pager text-nowrap" role="search">
+        <nav class="o_pager d-flex gap-2 h-100" aria-label="Pager" style="margin-top: -27px;float: right;">
+            <span class="o_pager_counter align-self-center">
+                <span class="o_pager_value d-inline-block border-bottom border-transparent mb-n1">0</span>
+                <span>/</span>
+                <span class="o_pager_limit">0</span>
+            </span>
+            <span class="btn-group d-print-none" aria-atomic="true">
+                <button type="button" class="btn btn-secondary o_pager_previous px-2 rounded-start" aria-label="Previous" data-tooltip="Previous" tabindex="-1" data-hotkey="p" title=""><i class="fa-solid fa-chevron-left"></i></button>
+                <button type="button" class="btn btn-secondary o_pager_next px-2 rounded-end" aria-label="Next" data-tooltip="Next" tabindex="-1" data-hotkey="n" title=""><i class="fa-solid fa-chevron-right"></i></button>
+            </span>
+        </nav>
+    </div>
+</div>
+@endsection
 
 @section('head')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -258,7 +275,7 @@
         padding: 0 10px;
     }
     .o-mail-AttachmentList {
-        max-width: 60%;
+        max-width: 90%;
     }
     .document-container.d-flex.flex-wrap.mb-2 {
         gap:13px;
@@ -277,6 +294,10 @@
         width: 35%;
     height: 35%;
     }
+    .o_input::placeholder{
+        font-weight: 200;
+    }
+    
 </style>
 <style>
     .select2-container--default .select2-selection--single {
@@ -354,13 +375,35 @@
         color: #f3cc00; /* Gold color for the selected star */
     }
     .o_field_widget {
-    width: 100%;
-}
+        width: 100%;
+    }
     
     .send-message-image{
         height: auto !important;
         width: 175px !important;
         max-height: 300px !important;
+    }
+
+    .image-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Adjust the spacing as needed */
+    }
+
+    .image-item {
+        flex: 1 0 calc(20% - 10px); /* 5 images per row with spacing */
+        position: relative;
+    }
+
+    .image-overlay {
+        transition: opacity 0.3s;
+    }
+
+    .image-item:hover .image-overlay {
+        opacity: 1; /* Show overlay on hover */
+    }
+    .crm_head_rightside{
+        display: none;
     }
 </style>
 
@@ -429,7 +472,7 @@
                                                     
                                                         <br>
                                                         <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
-                                                        <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
+                                                        <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control makeMeSummernote"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
@@ -553,7 +596,7 @@
                                                                                     <div class="o-autocomplete dropdown">
                                                                                         <input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
                                                                                     </div>
-                                                                                    <span class="o_dropdown_button"></span>
+                                                                                    <!-- <span class="o_dropdown_button"></span> -->
                                                                                 </div>
                                                                                     <button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
                                                                             </div>
@@ -576,7 +619,7 @@
                             </div>                            
                         </div>
                         <input type="hidden" name="lead_id" id="lead_id" value="{{ isset($data) ? $data->id : '' }}">
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                         @if(isset($data) && $data->is_lost == 2)
                             <div class="o_widget o_widget_web_ribbon">
                                 <div class="ribbon ribbon-top-right">
@@ -587,13 +630,18 @@
                   
                             <div class="oe_title">
                                 <h1>
-                                    <div name="name" class="o_field_widget">
+                                    <!-- <div name="name" class="o_field_widget text-break">
                                         <div style="height: 45px;"> 
                                             <textarea class="o_input o_field_translate" id="name_0"
                                                                       placeholder="e.g. Cheese Burger" rows="1"
-                                                                      style="w-100 height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 5px; text-align: left;"
+                                                                      style="height: 85px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;"
                                                                       spellcheck="true">{{ isset($data) ? $data->product_name : '' }}</textarea>
                                         </div>
+                                    </div> -->
+                                    <div name="name" class="o_field_widget o_required_modifier text-break">
+                                        <div style="height: 30px;"><textarea class="o_input" id="name_0" placeholder="e.g. Product Pricing" rows="1"
+                                                spellcheck="true"
+                                                style="height: 60px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;overflow: hidden;">{{ isset($data) ? $data->product_name : '' }}</textarea></div>
                                     </div>
                                 </h1>
                                 <h2 class="row g-0 pb-3 pb-sm-4">
@@ -634,21 +682,24 @@
                                                 <div name="street" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street_0" type="text" autocomplete="off" value="{{ $address }}" placeholder="Street..."></div>
                                                 <div name="street2" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street2_0" value="{{ isset($data) ? $data->address_2 : '' }}" type="text" autocomplete="off" placeholder="Street 2...">
                                                 </div>
-                                                <div name="city" class="o_field_widget o_field_char o_address_city"><input class="o_input" id="city_0" type="text" value="{{ isset($data) ? $data->city : '' }}" autocomplete="off" placeholder="City"></div>
-                                                <div name="zip" class="o_field_widget o_field_char o_address_zip">
-
-                                                    <input class="o_input" value="{{ $zip }}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
-                                                </div>
-                                                <div name="state_id" class="o_field_widget o_field_many2one o_address_state">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown">
-                                                                <select class="o-autocomplete--input o_input" id="state_id_0" style="width: 150px;">
-                                                                </select>
+                                                <div style="display: flex; gap: 10px;margin-bottom: -23px;">
+                                                    <div name="city" class="o_field_widget o_field_char o_address_city">
+                                                        <input class="o_input" id="city_0" type="text" value="{{ isset($data) ? $data->city : '' }}" autocomplete="off" placeholder="City">
+                                                    </div>
+                                                    <div name="zip" class="o_field_widget o_field_char o_address_zip">
+                                                        <input class="o_input" value="{{ $zip }}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
+                                                    </div>
+                                                    <div name="state_id" class="o_field_widget o_field_many2one o_address_state">
+                                                        <div class="o_field_many2one_selection">
+                                                            <div class="o_input_dropdown">
+                                                                <div class="o-autocomplete dropdown">
+                                                                    <select class="o-autocomplete--input o_input" id="state_id_0" style="width: 150px;">
+                                                                    </select>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        <div class="o_field_many2one_extra"></div>
                                                     </div>
-                                                    <div class="o_field_many2one_extra"></div>
                                                 </div>
                                                 <div name="country" class="o_field_widget o_field_many2one">
                                                     <div class="o_field_many2one_selection">
@@ -783,9 +834,10 @@
                                                 <div name="user_id"
                                                     class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
                                                     <div class="d-flex align-items-center gap-1"
-                                                        data-tooltip="info@yantradesign.co.in"><span
+                                                        data-tooltip="info@yantradesign.co.in">
+                                                        <!-- <span
                                                             class="o_avatar o_m2o_avatar"><img class="rounded"
-                                                                src="/web/image/res.users/2/avatar_128"></span>
+                                                                src="/web/image/res.users/2/avatar_128"></span> -->
                                                         <div class="o_field_many2one_selection">
                                                             <div class="o_input_dropdown">
                                                                 <div class="o-autocomplete dropdown">
@@ -799,12 +851,7 @@
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
-                                                                <span class="o_dropdown_button"></span>
-                                                            </div><button type="button"
-                                                                class="btn btn-link text-action oi o_external_button oi-arrow-right"
-                                                                tabindex="-1" draggable="false"
-                                                                aria-label="Internal link"
-                                                                data-tooltip="Internal link"></button>
+                                                            </div>
                                                         </div>
                                                         <div class="o_field_many2one_extra"></div>
                                                     </div>
@@ -826,7 +873,8 @@
                                                                     autocomplete="off" role="combobox" value="Sales" readonly
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
                                                                     id="team_id_0" placeholder="" aria-expanded="false">
-                                                            </div><span class="o_dropdown_button"></span>
+                                                            </div>
+                                                            <!-- <span class="o_dropdown_button"></span> -->
                                                         </div>
                                                     </div>
                                                     <div class="o_field_many2one_extra"></div>
@@ -1079,7 +1127,9 @@
                                     @else
                                         <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal" disabled><span>Activities</span></button>
                                     @endif                                        
-                                        <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i> <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
+                                        <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span>
+                                        <!-- <button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i>  -->
+                                        <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
                                         <i class="fa fa-paperclip fa-lg me-1"></i>
                                         <sup id="fileCount">{{$fileCount ?? ''}}</sup>
                                     </button>
@@ -1417,7 +1467,7 @@
                                                     <h5 class="modal-title" id="editModalLabel">Edit Activity</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <form id="editForm" action="" method="POST">
+                                                <fo id="editForm" action="" method="POST">
                                                 <input type="hidden" id="edit_activity_id" name="id">
                                                 <div class="modal-body">
                                                     <div class="row col-md-12">
@@ -1629,7 +1679,7 @@
                                 <hr class="o-discuss-separator flex-grow-1">
                             </div> -->
 
-                            @if($send_message)
+                            @if(!empty($send_message) && count($send_message) > 0)
                             <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                 <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Send Message</span>
                                 <hr class="o-discuss-separator flex-grow-1">
@@ -1638,11 +1688,28 @@
                                     <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
                                         <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                             <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
-                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                </div>
+                                            @php
+                                                    $user = $value->user;
+                                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+                                                    $colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+                                                    if ($user) {
+                                                        $colorIndex = crc32($user->email) % count($colors);
+                                                        $bgColor = $colors[$colorIndex];
+                                                    } else {
+                                                        $bgColor = '#F0F0F0';
+                                                    }
+                                                @endphp
+                                                @if(optional($user)->profile)
+                                                    <!-- If profile image exists -->
+                                                    <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                @else
+                                                    <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                    <div class="activity-avatar-initials rounded d-flex align-items-center justify-content-center" data-id="{{$value->id}}" style="background-color: {{ $bgColor }};">
+                                                        <span>{{ $initial }}</span>
+                                                    </div>
+                                                @endif
                                             </div>
-                                            <div class="w-100 o-min-width-0">
+                                            <div class="w-100 o-min-width-0" style="margin-left: 10px;">
                                                 <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
                                                     <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
                                                         <strong class="me-1">{{$value->from_mail}}</strong>
@@ -1691,22 +1758,25 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        
                                                         <div class="o-mail-AttachmentList">
                                                             <div class="o-mail-AttachmentList-mas" role="menu">
                                                                 @if (!is_null($value->image) && !empty(json_decode($value->image)))
-                                                                @foreach (json_decode($value->image) as $image)
-                                                                    <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1 send_message_image"  tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
-                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
-                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
-                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
-                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
-                                                                        </div>
+                                                                    <div class="image-grid">
+                                                                        @foreach (json_decode($value->image) as $image)
+                                                                            <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                                <img data-message  class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
                                                                     </div>
-                                                                @endforeach
-                                                            @endif
+                                                                @endif
                                                             </div>
-                                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                                            <div class="grid row-gap-0 column-gap-0">
+                                                                <!-- Additional content goes here -->
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1715,7 +1785,7 @@
                                     </div>
                                 @endforeach
                             @endif
-                            @if($log_notes)
+                            @if(!empty($log_notes) && count($log_notes) > 0)
                             <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                 <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Log Note</span>
                                 <hr class="o-discuss-separator flex-grow-1">
@@ -1724,15 +1794,36 @@
                                     <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
                                         <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
                                             <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
-                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                </div>
+                                            @php
+                                                    $user = $value2->user;
+                                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+                                                    $colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+                                                    if ($user) {
+                                                        $colorIndex = crc32($user->email) % count($colors);
+                                                        $bgColor = $colors[$colorIndex];
+                                                    } else {
+                                                        $bgColor = '#F0F0F0';
+                                                    }
+                                                @endphp
+                                                @if(optional($user)->profile)
+                                                    <!-- If profile image exists -->
+                                                    <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                @else
+                                                    <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                    <div class="activity-avatar-initials rounded d-flex align-items-center justify-content-center" data-id="{{$value2->id}}" style="background-color: {{ $bgColor }};">
+                                                        <span>{{ $initial }}</span>
+                                                    </div>
+                                                @endif
+                                                <!-- <span
+                                                    class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                    {{ strtoupper($value2->user->name[0] ?? strtoupper($value2->user[0] ?? '')) }}
+                                                </span> -->
                                             </div>
-                                            <div class="w-100 o-min-width-0">
+                                            <div class="w-100 o-min-width-0" style="margin-left: 10px;">
                                                 <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
-                                                    {{-- <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
-                                                        <strong class="me-1">{{$value->from_mail}}</strong>
-                                                    </span> --}}
+                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value2->user->email ?? ''}}</strong>
+                                                    </span>
                                                     <div class="mx-1">
                                                         <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
                                                                 <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
@@ -1782,18 +1873,22 @@
                                                         <div class="o-mail-AttachmentList">
                                                             <div class="o-mail-AttachmentList-mas" role="menu">
                                                                 @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
-                                                                @foreach (json_decode($value2->image) as $image)
-                                                                    <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1 send_message_image"  tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
-                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
-                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
-                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
-                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
-                                                                        </div>
+                                                                    <div class="image-grid">
+                                                                        @foreach (json_decode($value2->image) as $image)
+                                                                            <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                                <img class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage1('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
                                                                     </div>
-                                                                @endforeach
-                                                            @endif
+                                                                @endif
                                                             </div>
-                                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                                            <div class="grid row-gap-0 column-gap-0">
+                                                                <!-- Additional content goes here -->
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3560,19 +3655,19 @@
 
         let closingNotesEditor; // Store the CKEditor instance
 
-        ClassicEditor
-            .create(document.querySelector('#closing_notes'))
-            .then(editor => {
-                closingNotesEditor = editor; // Save the CKEditor instance
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        // ClassicEditor
+        //     .create(document.querySelector('#closing_notes'))
+        //     .then(editor => {
+        //         closingNotesEditor = editor; // Save the CKEditor instance
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
 
         $(document).on('click', '.mark_as_lost', function() {
             var lead_id = $('#lead_id').val();
             var lost_reasons = $('#lost_reasons').val();
-               var closing_notes = closingNotesEditor.getData();
+            var closing_notes = $('#closing_notes').val();
             
             $.ajax({
                 url: '{{ route('leads.markAsLost') }}',
@@ -3837,6 +3932,29 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    function deleteImage1(imagePath, messageId) {
+        if (confirm('Are you sure you want to delete this image?')) {
+            // Send AJAX request to delete the image
+            fetch('/lead-deleteImage1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                body: JSON.stringify({ image: imagePath, message_id: messageId }) // Pass message_id along with image path
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to see the changes
+                } else {
+                    alert('Failed to delete the image.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
     }
 </script>
 <script>
@@ -4213,6 +4331,24 @@ $('img[data-enlargable]').addClass('img-enlargable').click(function(){
     }).appendTo('body');
 });
 });
+
+$(document).ready(function() {
+    $('img[data-message]').addClass('img-message').click(function() {
+        alert('fggfg');  // This should trigger on click
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.5) url(' + src + ') no-repeat center',
+            backgroundSize: 'contain',
+            width: '100%', height: '100%',
+            position: 'fixed',
+            zIndex: '10000',
+            top: '0', left: '0',
+            cursor: 'zoom-out'
+        }).click(function() {
+            $(this).remove();
+        }).appendTo('body');
+    });
+});
 </script>
 
 <script>
@@ -4354,6 +4490,160 @@ $('img[data-enlargable]').addClass('img-enlargable').click(function(){
      console.log('clicked');
      $('#convertopportunityModal').modal('show');
   });
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    const textarea = document.getElementById("send_message");
+    const fileInput = document.querySelector('.image_uplode');
+    const sendButton = document.querySelector('.send_messag_by_email');
+
+    function updateSendButtonState() {
+        // Enable send button if textarea has text or if files are selected
+        const hasText = textarea.value.trim() !== '';
+        const hasFiles = fileInput.files.length > 0;
+        sendButton.disabled = !(hasText || hasFiles);
+    }
+
+    textarea.addEventListener('input', updateSendButtonState);
+    fileInput.addEventListener('change', updateSendButtonState);
+
+    // Initialize button state on page load
+    updateSendButtonState();
+});
+
+    // Log Note Send button
+document.addEventListener("DOMContentLoaded", function() {
+    const textarea = document.getElementById("send_message1");
+    const fileInput = document.querySelector('.image_uplode_2');
+    const sendButton = document.querySelector('.store_log_notes');
+
+    function updateSendButtonState() {
+        // Enable send button if textarea has text or if files are selected
+        const hasText = textarea.value.trim() !== '';
+        const hasFiles = fileInput.files.length > 0;
+        sendButton.disabled = !(hasText || hasFiles);
+    }
+
+    textarea.addEventListener('input', updateSendButtonState);
+    fileInput.addEventListener('change', updateSendButtonState);
+
+    // Initialize button state on page load
+    updateSendButtonState();
+});
+
+$(document).ready(function() {
+    const form = $('#myForm');
+    const saveButton = $('#main_save_btn');
+    const discardButton = $('#main_discard_btn');
+
+    // Initialize default values for inputs
+    const inputs = form.find('input, select, textarea');
+    inputs.each(function() {
+        if ($(this).is(':checkbox') || $(this).is(':radio')) {
+            $(this).data('defaultChecked', $(this).is(':checked'));
+        } else {
+            $(this).data('defaultValue', $(this).val());
+        }
+    });
+
+    // Function to check for changes
+    function checkChanges() {
+        let hasChanged = false;
+
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                    hasChanged = true;
+                }
+            } else if ($(this).is('select')) {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            } else {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            }
+        });
+
+        saveButton.toggle(hasChanged);
+        discardButton.toggle(hasChanged);
+    }
+
+    // Event listeners for input and change events
+    form.on('input change', checkChanges);
+
+    // Handle paste and drop events on the textarea
+    $('textarea#description').on('paste', function(event) {
+        const clipboardData = event.originalEvent.clipboardData;
+        const items = clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image pasted!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when pasting
+    });
+
+    // Handle drop event
+    $('textarea#description').on('drop', function(event) {
+        event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+        const dataTransfer = event.originalEvent.dataTransfer;
+        const items = dataTransfer.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image dropped!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when dropping
+    });
+
+    // Handle star selection for priority
+    $('.o_priority_star').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+
+        // Remove 'fa-star' class from all stars and add 'fa-star-o'
+        $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+        // Add 'fa-star' class to the selected star and all stars before it
+        $(this).addClass('fa-star');
+        $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+        // Update the default value for change detection
+        inputs.each(function() {
+            if ($(this).attr('data-value') === selectedValue) {
+                $(this).data('defaultValue', selectedValue); // Update default value for change detection
+            }
+        });
+
+        checkChanges(); // Check for changes after updating the priority
+    });
+
+    discardButton.on('click', function() {
+        location.reload();
+    });
+
+    // Select2 initialization
+    $('.o-autocomplete--input').select2();
+
+    // Reset button visibility on form load
+    saveButton.hide();
+    discardButton.hide();
+});
+
 </script>
 
 
