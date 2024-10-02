@@ -52,6 +52,10 @@
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
+
 @endsection
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3" role="menu" style="position: absolute; top: 0; left: 0;">
@@ -367,8 +371,9 @@
         min-width: 623px;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
-        padding: 0px;
         top: auto;
+        right:0;
+        left:auto;
     }
 
     .dropdown-menu a {
@@ -378,7 +383,33 @@
         display: block;
         cursor: pointer;
     }
-
+    tbody#lead-table-body tr:hover {
+        background-color: #fafafa !important;
+    }
+      tbody#lead-table-body tr:hover td {
+        background-color: #fafafa !important;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #11111147;
+        border-top: 1px solid #11111147;
+        background: #f1f1f1;
+    }
+    .dataTables_length label {
+        display: flex;
+        gap: 10px;
+        margin: 0 !important;
+    }
+    .dataTables_wrapper .dataTables_length select {
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid #2222;
+    }
+    table.dataTable tbody tr,
+    table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+    table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1  {
+        background-color: #ffffff !important;
+    }
     .dropdown-menu a:hover {
         background-color: #ddd;
     }
@@ -496,72 +527,11 @@
 
 </style>
 
+
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
-        <button class="dropdown-btn">Show/Hide Columns</button>
-        <div class="hide-show-dropdown-menu dropdown-menu">
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="0" checked> Lead</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="1" checked> Email</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="2" checked> City</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="3"> State</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="4" checked> Country</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="5"> Zip</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="6"> Probability</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="7"> Company Name</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="8"> Address 1</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="9"> Address 2</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="10"> Website Link</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="11"> Contact Name</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="12"> Job Postion</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="13"> Phone</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="14"> Mobile</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="15"> Priority</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="16"> Title</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="17"> Tag</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="18" checked> Sales Person</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="19" checked> Sales Team</label>
-            </div>
-        </div>
-        <table id="example" class="display nowrap example">
+      
+        <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th>Lead</th>
@@ -583,56 +553,122 @@
                     <th>Title</th>
                     <th>Tag</th>
                     <th>Sales Person</th>
-                    <th>Sales Team</th>
+                    <th>Sales Team   
+                    </th>
+                    <th style="width:35px !important"><a class="dropdown-btn"><i class="fa fa-list"></i></a>
+                                <div class="hide-show-dropdown-menu dropdown-menu">
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="0" checked> Lead</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="1" checked> Email</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="2" checked> City</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="3"> State</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="4" checked> Country</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="5"> Zip</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="6"> Probability</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="7"> Company Name</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="8"> Address 1</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="9"> Address 2</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="10"> Website Link</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="11"> Contact Name</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="12"> Job Postion</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="13"> Phone</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="14"> Mobile</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="15"> Priority</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="16"> Title</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="17"> Tag</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="18" checked> Sales Person</label>
+                                    </div>
+                                    <div class="dropdown-checkbox">
+                                        <label><input type="checkbox" data-column="19" checked> Sales Team</label>
+                                    </div>
+                                </div></th>
                 </tr>
             </thead>
             <tbody id="lead-table-body"> 
-                 @forEach($data as $lead)
-                    <tr>
-                    <td>{{$lead->product_name ?? ''}}</td>
-                    <td>{{$lead->email ?? ''}}</td>
-                    <td>{{$lead->city ?? ''}}</td>
-                    <td>
-                        @if(isset($lead->state))
-                            {{ $lead->getState->name ?? $lead->getAutoState->name ?? '' }}
-                        @endif
-                    </td>
-                    <td>
-                        @if(isset($lead->country))
-                            {{ $lead->getCountry->name ?? $lead->getAutoCountry->name ?? '' }}
-                        @endif
-                    </td>
-                    <td>{{$lead->zip ?? ''}}</td>
-                    <td>{{$lead->probability ?? ''}}</td>
-                    <td>{{$lead->company_name ?? ''}}</td>
-                    <td>{{$lead->address_1 ?? ''}}</td>
-                    <td>{{$lead->address_2 ?? ''}}</td>
-                    <td>{{$lead->website_link ?? ''}}</td>
-                    <td>{{$lead->contact_name ?? ''}}</td>
-                    <td>{{$lead->job_position ?? ''}}</td>
-                    <td>{{$lead->phone ?? ''}}</td>
-                    <td>{{$lead->mobile ?? ''}}</td>
-                    <td>{{$lead->priority ?? ''}}</td>
-                    <td>
-                        @if(isset($lead->title))
-                            {{ $lead->getTilte->title  ?? '' }}
-                        @endif
-                    </td>
-                    <td>
-                        @foreach($lead->tags() as $tag)
-                            <span class="badge badge-primary" style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
-                        @endforeach
-                    </td>
-                    <td>
-                        @if(isset($lead->sales_person))
-                            {{ $lead->getUser->email  ?? '' }}
-                        @endif
-                    </td>
-                    <td>{{$lead->sales_team ?? ''}}</td>
+                @forEach($data as $lead)
+                    <tr data-id="{{$lead->id}}">
+                        <td>{{$lead->product_name ?? ''}}</td>
+                        <td>{{$lead->email ?? ''}}</td>
+                        <td>{{$lead->city ?? ''}}</td>
+                        <td>
+                            @if(isset($lead->state))
+                                {{ $lead->getState->name ?? $lead->getAutoState->name ?? '' }}
+                            @endif
+                        </td>
+                        <td>
+                            @if(isset($lead->country))
+                                {{ $lead->getCountry->name ?? $lead->getAutoCountry->name ?? '' }}
+                            @endif
+                        </td>
+                        <td>{{$lead->zip ?? ''}}</td>
+                        <td>{{$lead->probability ?? ''}}</td>
+                        <td>{{$lead->company_name ?? ''}}</td>
+                        <td>{{$lead->address_1 ?? ''}}</td>
+                        <td>{{$lead->address_2 ?? ''}}</td>
+                        <td>{{$lead->website_link ?? ''}}</td>
+                        <td>{{$lead->contact_name ?? ''}}</td>
+                        <td>{{$lead->job_position ?? ''}}</td>
+                        <td>{{$lead->phone ?? ''}}</td>
+                        <td>{{$lead->mobile ?? ''}}</td>
+                        <td>{{$lead->priority ?? ''}}</td>
+                        <td>
+                            @if(isset($lead->title))
+                                {{ $lead->getTilte->title  ?? '' }}
+                            @endif
+                        </td>
+                        <td>
+                            @foreach($lead->tags() as $tag)
+                                <span class="badge badge-primary" style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
+                            @endforeach
+                        </td>
+                        <td>
+                            @if(isset($lead->sales_person))
+                                {{ $lead->getUser->email  ?? '' }}
+                            @endif
+                        </td>
+                        <td>{{$lead->sales_team ?? ''}}</td>
+                        <td></td>
                     </tr>
-                    @endforeach
+                @endforeach
             </tbody>
         </table>
+   
     </div>
 </div>
 
@@ -640,34 +676,47 @@
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+{{-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
+
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
 
 <script>
     $(document).ready(function() {
-        // Initialize DataTable with server-side processing
-           
-       var table =   $('#example').DataTable();
-    
+    var table = $('#example').DataTable( {
+        "pageLength": 25,
+        searching: false,
+         "lengthChange": false,
+        "sDom": 'Rlfrtip',
+        "oColReorder": {
+            "bAddFixed":true
+        },
 
-
-        // Handle row click event
-        $('#example tbody').on('click', 'tr', function() {
+    });
+     $('#example tbody').on('click', 'tr', function() {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
             if (id) {
                 window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
             }
         });
-
         // Handle filter click event
         $('.o_menu_item').on('click', function() {
             var filter = $(this).attr('id'); // Get the filter ID
             $('#filter').val(filter); // Set the filter value
             table.ajax.reload(); // Reload the DataTable with new filter
         });
-
         // Restore column visibility from local storage
            function saveColumnVisibility() {
         var visibility = {};
@@ -678,7 +727,6 @@
         });
         localStorage.setItem('columnVisibility', JSON.stringify(visibility));
     }
-
     // Restore column visibility from localStorage
     function restoreColumnVisibility() {
         var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
@@ -686,15 +734,12 @@
             table.columns().every(function() {
                 var column = this;
                 var index = column.index();
-
                 // Check if the column exists and visibility is defined
                 if (visibility.hasOwnProperty(index)) {
                     var isVisible = visibility[index];
-
                     // Ensure the column exists before setting visibility
                     if (typeof column !== 'undefined') {
                         column.visible(isVisible);
-
                         // Update the corresponding checkbox based on the visibility
                         $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
                     }
@@ -702,7 +747,7 @@
             });
         } else {
             // If no visibility settings in localStorage, set default visibility
-                    table.column(0).visible(true); 
+                    table.column(0).visible(true);
                     table.column(1).visible(true);
                     table.column(3).visible(false);
                     table.column(4).visible(true);
@@ -721,38 +766,31 @@
                     table.column(17).visible(false);
                     table.column(18).visible(true);
                     table.column(19).visible(true);
-              
         }
     }
-
     // Handle column visibility based on checkbox status
     $('.dropdown-menu input[type="checkbox"]').on('change', function() {
         var columnIndex = $(this).data('column');
         var column = table.column(columnIndex);
-
         // Ensure the column exists before trying to set visibility
         if (typeof column !== 'undefined') {
             column.visible(this.checked); // Show or hide the column based on the checkbox state
             saveColumnVisibility(); // Save visibility to local storage
         }
     });
-
     // Restore visibility states on page load
     restoreColumnVisibility();
-
     // Handle dropdown menu display
     $(document).on('click', '.dropdown-btn', function(event) {
         event.stopPropagation(); // Prevent click event from propagating to the document
         $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
         $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
     });
-
     $(document).on('click', function(event) {
         if (!$(event.target).closest('.dropdown-menu').length) {
             $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
         }
     });
-
         // Remove all tags
         $(document).on('click', '.remove-tag', function() {
             $('.tag').remove();
@@ -761,12 +799,10 @@
             $('#filter').val(''); // Clear the filter value
             table.ajax.reload();
         });
-
         $(document).on('click', '.custom-filter-remove', function() {
             $('#search-input').val('').attr('placeholder', 'Search...');
             table.ajax.reload();
         });
-
         // CSRF token setup for AJAX requests
         $.ajaxSetup({
             headers: {
@@ -775,8 +811,8 @@
         });
     });
 
-</script>
 
+</script>
 
 <script>
     $(document).ready(function() {
