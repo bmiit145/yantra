@@ -1046,6 +1046,66 @@
     });
 
 </script>
+
+<script>
+    $(document).ready(function() {
+        function toggleFeedback(targetDiv) {
+            $(targetDiv).toggleClass('d-none');
+        }
+
+        // Handling "Mark as Done" for all activities
+        $('.o-mail-ActivityListPopoverItem-markAsDone').on('click', function(event) {
+            event.stopPropagation(); // Prevent click from closing the popover
+            var targetDiv = $(this).data('target');
+            toggleFeedback(targetDiv);
+        });
+
+        $('.feedback-textarea').on('click', function(event) {
+            event.stopPropagation(); // Prevent click from closing the popover
+        });
+
+        // Feedback submission
+        $('.feedback-submit').on('click', function() {
+            var feedbackText = $(this).closest('.py-2').find('textarea').val();
+            var activityId = $(this).data('id');
+            var countElement = $(this).closest('.o-mail-ActivityListPopoverItem').find('b'); // Locate the count element
+            var status = countElement.text().split(' ')[0]; // Get the current status (Overdue, Today, Planned)
+
+            submitFeedback(feedbackText, activityId, $(this), countElement, status);
+        });
+
+        function submitFeedback(feedbackText, activityId, button, countElement, status) {
+            $.ajax({
+                url: '{{ route('lead.submit.feedback') }}',
+                method: 'POST',
+                data: {
+                    feedback: feedbackText,
+                    activity_id: activityId,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                    location.reload();
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    toastr.error('An error occurred. Please try again.');
+                }
+            });
+        }
+
+        // Handle discard button to hide the feedback textarea
+        $('.feedback-discard').on('click', function() {
+            var targetDiv = $(this).data('target');
+            $(targetDiv).addClass('d-none');
+        });
+        
+        $(document).on('click', '.o-mail-ActivityListPopoverItem-editbtn', function(e) {
+    e.stopPropagation(); // Stop the event from bubbling up
+    console.log('Button clicked!');
+});
+    });
+</script>
 @endpush
 
 @push('head_scripts')

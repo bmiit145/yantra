@@ -587,19 +587,48 @@
                 </tr>
             </thead>
             <tbody id="lead-table-body"> 
-                 @forEach($leads as $lead)
+                 @forEach($data as $lead)
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <td>{{$lead->product_name ?? ''}}</td>
+                    <td>{{$lead->email ?? ''}}</td>
+                    <td>{{$lead->city ?? ''}}</td>
+                    <td>
+                        @if(isset($lead->state))
+                            {{ $lead->getState->name ?? $lead->getAutoState->name ?? '' }}
+                        @endif
+                    </td>
+                    <td>
+                        @if(isset($lead->country))
+                            {{ $lead->getCountry->name ?? $lead->getAutoCountry->name ?? '' }}
+                        @endif
+                    </td>
+                    <td>{{$lead->zip ?? ''}}</td>
+                    <td>{{$lead->probability ?? ''}}</td>
+                    <td>{{$lead->company_name ?? ''}}</td>
+                    <td>{{$lead->address_1 ?? ''}}</td>
+                    <td>{{$lead->address_2 ?? ''}}</td>
+                    <td>{{$lead->website_link ?? ''}}</td>
+                    <td>{{$lead->contact_name ?? ''}}</td>
+                    <td>{{$lead->job_position ?? ''}}</td>
+                    <td>{{$lead->phone ?? ''}}</td>
+                    <td>{{$lead->mobile ?? ''}}</td>
+                    <td>{{$lead->priority ?? ''}}</td>
+                    <td>
+                        @if(isset($lead->title))
+                            {{ $lead->getTilte->title  ?? '' }}
+                        @endif
+                    </td>
+                    <td>
+                        @foreach($lead->tags() as $tag)
+                            <span class="badge badge-primary" style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
+                        @endforeach
+                    </td>
+                    <td>
+                        @if(isset($lead->sales_person))
+                            {{ $lead->getUser->email  ?? '' }}
+                        @endif
+                    </td>
+                    <td>{{$lead->sales_team ?? ''}}</td>
                     </tr>
                     @endforeach
             </tbody>

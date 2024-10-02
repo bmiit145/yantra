@@ -171,7 +171,7 @@ class Sale extends Model
 
     public function Activities()
     {
-        return $this->hasMany(Activity::class, 'pipeline_id', 'id');
+        return $this->hasMany(Activity::class, 'pipeline_id', 'id')->where('status','0');
     }
 
     public function getUser()

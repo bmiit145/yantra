@@ -709,9 +709,10 @@
                                             <div name="user_id"
                                                 class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
                                                 <div class="d-flex align-items-center gap-1"
-                                                    data-tooltip="info@yantradesign.co.in"><span
+                                                    data-tooltip="info@yantradesign.co.in">
+                                                    <!-- <span
                                                         class="o_avatar o_m2o_avatar"><img class="rounded"
-                                                            src="/web/image/res.users/2/avatar_128"></span>
+                                                            src="/web/image/res.users/2/avatar_128"></span> -->
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete dropdown">
@@ -745,11 +746,14 @@
                                     <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                         <div class="o_lead_opportunity_form_inline_fields">
                                             <div name="date_deadline" class="o_field_widget o_field_date oe_inline">
-                                                <div class="d-flex gap-2 align-items-center"><input type="text"
+                                                <div class="d-flex gap-2 align-items-center">
+                                                    <!-- <input type="text"
                                                         class="o_input cursor-pointer text-primary datepicker"
                                                         autocomplete="off" id="date_deadline_0"
                                                         data-field="date_deadline"
-                                                        value="{{isset($data) ? $data->deadline : ''}}"></div>
+                                                        value="{{isset($data) ? $data->deadline : ''}}"> -->
+                                                        <input type="tel" class="o_input cursor-pointer text-primary datepicker date_deadline_0" autocomplete="off" id="date_deadline_0" data-field="date_deadline" value="{{isset($data) ? $data->deadline : ''}}">
+                                                </div>
                                             </div>
                                             <div name="priority"
                                                 class="o_field_widget o_field_priority oe_inline align-top">
@@ -1918,14 +1922,14 @@
             $(function () {
                 var currentDate = new Date();
 
-                $(".datepicker").datepicker({
-                    dateFormat: "yy-mm-dd",
-                    duration: "fast",
-                    onSelect: function (dateText, inst) {
-                        // Optional: Do something when a date is selected
-                        console.log("Selected date: " + dateText);
-                    }
-                }).datepicker();
+                // $(".datepicker").datepicker({
+                //     dateFormat: "yy-mm-dd",
+                //     duration: "fast",
+                //     onSelect: function (dateText, inst) {
+                //         // Optional: Do something when a date is selected
+                //         console.log("Selected date: " + dateText);
+                //     }
+                // }).datepicker();
 
                 $(".activity-datepicker").datepicker({
                     dateFormat: "yy-mm-dd",
@@ -3226,11 +3230,25 @@
                 });
             });
         </script>
-        <script>
-                $(document).ready(function() {
+    <script>
+                    
+
+        $(document).ready(function() {
     const form = $('#myForm');
     const saveButton = $('#main_save_btn');
     const discardButton = $('#main_discard_btn');
+
+    var currentDate = new Date();
+
+            $(".datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                duration: "fast",
+                onSelect: function (dateText, inst) {
+                    // Optional: Do something when a date is selected
+                    console.log("dffdf: " + dateText);
+                    checkChanges();
+                }
+            }).datepicker();
 
     // Initialize default values for inputs
     const inputs = form.find('input, select, textarea');
@@ -3268,15 +3286,6 @@
 
     // Event listeners for input and change events
     form.on('input change', checkChanges);
-
-    // Initialize datepicker and handle date change
-    $(".datepicker").datepicker({
-        dateFormat: "yy-mm-dd",
-        duration: "fast",
-        onSelect: function (dateText, inst) {
-            $(this).val(dateText).trigger('change'); // Trigger change event after date selection
-        }
-    });
 
     // Handle paste and drop events on the textarea
     $('textarea#description').on('paste', function(event) {
@@ -3347,7 +3356,7 @@
     discardButton.hide();
 });
 
-        </script>
+    </script>
     @endpush
 
     @endsection
