@@ -8,42 +8,42 @@
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
 @section('navbar_menu')
-  <li class="dropdown">
-        <a href="#">Sales</a>
-        <div class="dropdown-content">
-            <a href="#">My Pipeline</a>
-            <a href="#">My Activities</a>
-            <a href="#">My Quotations</a>
-            <a href="#">Teams</a>
-            <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
-        </div>
-    </li>
-    <li>
-        <a href="{{ route('lead.index') }}">Leads</a>
-    </li>
-    <li class="dropdown">
-        <a href="#">Reporting</a>
-        <div class="dropdown-content">
-            <!-- Dropdown content for Reporting -->
-            <a href="{{ route('crm.forecasting') }}">Forecast</a>
-            <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
-            <a href="{{ route('lead.graph') }}">Leads</a>
-            <a href="{{route('crm.pipeline.graph')}}">Activities</a>
-        </div>
-    </li>
-    <li class="dropdown">
-        <a href="#">Configuration</a>
-        <div class="dropdown-content">
-              <a href="#"><b>Sales Teams</b></a>
-            <a href="#"><b>Activities</b></a>
-            <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
-            <a href="#" style="margin-left: 15px;">Activity Plans</a>
-            <a href="{{route('configuration.recurring_index')}}"><b>Recurring Plans</b></a>
-            <a href="#"><b>Pipeline</b></a>
-            <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
-            <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
-        </div>
-    </li>
+<li class="dropdown">
+    <a href="#">Sales</a>
+    <div class="dropdown-content">
+        <a href="#">My Pipeline</a>
+        <a href="#">My Activities</a>
+        <a href="#">My Quotations</a>
+        <a href="#">Teams</a>
+        <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
+    </div>
+</li>
+<li>
+    <a href="{{ route('lead.index') }}">Leads</a>
+</li>
+<li class="dropdown">
+    <a href="#">Reporting</a>
+    <div class="dropdown-content">
+        <!-- Dropdown content for Reporting -->
+        <a href="{{ route('crm.forecasting') }}">Forecast</a>
+        <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+        <a href="{{ route('lead.graph') }}">Leads</a>
+        <a href="{{route('crm.pipeline.graph')}}">Activities</a>
+    </div>
+</li>
+<li class="dropdown">
+    <a href="#">Configuration</a>
+    <div class="dropdown-content">
+        <a href="#"><b>Sales Teams</b></a>
+        <a href="#"><b>Activities</b></a>
+        <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
+        <a href="#" style="margin-left: 15px;">Activity Plans</a>
+        <a href="{{route('configuration.recurring_index')}}"><b>Recurring Plans</b></a>
+        <a href="#"><b>Pipeline</b></a>
+        <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
+        <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
+    </div>
+</li>
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -54,115 +54,183 @@
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
 
 @endsection
 @section('search_div')
-<div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3" role="menu" style="position: absolute; top: 0; left: 0;">
+<div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
+    role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2   fa fa-filter"></i>
             <input type="hidden" id="filter" name="filter" value="">
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span
+                class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span
+                class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
         <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark" style="display:none;">✔</span>Lost & Archived</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
+                style="display:none;">✔</span>Lost & Archived</span>
         <div class="dropdown-divider" role="separator"></div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false" id="creationDateBtn1">
+            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate"
+                style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false"
+                id="creationDateBtn1">
                 Creation Date
                 <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
-            <div class="o_dropdown_content" id="creationDateDropdown1" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+            <div class="o_dropdown_content" id="creationDateDropdown1"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <?php   
                         // Get the current date
-                        $currentMonth = date('F '); // e.g., September 2024
-                        $lastMonth = date('F ', strtotime('-1 month')); // Last month
-                        $twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
-                        $threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
+$currentMonth = date('F '); // e.g., September 2024
+$lastMonth = date('F ', strtotime('-1 month')); // Last month
+$twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
+$threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
                     ?>
                 <?php
-                        // Get the current year
-                        $currentYear = date('Y'); // e.g., 2024
-                        $lastYear = date('Y', strtotime('-1 year')); // Last year
-                        $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
+// Get the current year
+$currentYear = date('Y'); // e.g., 2024
+$lastYear = date('Y', strtotime('-1 year')); // Last year
+$twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     ?>
-                <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentMonth; ?></span>
-                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastMonth; ?></span>
-                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
-                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q4</span>
-                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q3</span>
-                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q2</span>
-                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark" style="display:none;">✔</span>Q1</span>
+                <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $currentMonth; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastMonth; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q4</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q3</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q2</span>
+                <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q1</span>
                 <hr>
-                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentYear; ?></span>
-                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastYear; ?></span>
-                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $currentYear; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastYear; ?></span>
+                <span class="o-dropdown-item_2 creation_time creation_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
             </div>
         </div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
+            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0"
+                aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
                 Closed Date
                 <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
-            <div class="o_dropdown_content" id="closeDateDropdown1" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+            <div class="o_dropdown_content" id="closeDateDropdown1"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="o-dropdown-item_2 closed_time">
                     <span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentMonth; ?></span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastMonth; ?></span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q4</span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q3</span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q2</span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span>Q1</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastMonth; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoMonthsAgo; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q4</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q3</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q2</span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span>Q1</span>
                 <hr>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $currentYear; ?></span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $lastYear; ?></span>
-                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark" style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $currentYear; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $lastYear; ?></span>
+                <span class="o-dropdown-item_2 closed_time"><span class="float-end checkmark"
+                        style="display:none;">✔</span><?php echo $twoYearsAgo; ?></span>
             </div>
         </div>
-        <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
+        <div class="dropdown-divider" role="separator"></div><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false">Late Activities</span><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox"
+            tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
         <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
+            tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-action fa fa-layer-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
         </div>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Salesperson</span>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Sales Team</span>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>City</span>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Country</span>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Campaign</span>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Medium</span>
-        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Source</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Salesperson</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Sales Team</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>City</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Country</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Campaign</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Medium</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Source</span>
         <div class="dropdown-divider" role="separator">
         </div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false" id="creationDateBtn">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate"
+                style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false"
+                id="creationDateBtn">
                 Creation Date
                 <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
-            <div class="o_dropdown_content" id="creationDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span> <span class="float-end checkmark" style="display:none;">✔</span>Year</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Month</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Week</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Day</span>
+            <div class="o_dropdown_content" id="creationDateDropdown"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span> <span
+                        class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
+                aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
                 Closed Date
                 <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
-            <div class="o_dropdown_content" id="closeDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Year</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Month</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Week</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Day</span>
+            <div class="o_dropdown_content" id="closeDateDropdown"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
         <div role="separator" class="dropdown-divider"></div>
@@ -205,16 +273,22 @@
     <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
         <div class="px-3 fs-5 mb-2"><i class="me-2 text-favourite fa fa-star"></i>
             <h5 class="o_dropdown_title d-inline">Favorites</h5>
-        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected" role="menuitemcheckbox" tabindex="0" aria-checked="true"><span class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1" title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
+        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected"
+            role="menuitemcheckbox" tabindex="0" aria-checked="true"><span
+                class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1"
+                    title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
         <div role="separator" class="dropdown-divider"></div>
-        <div class="o_accordion position-relative"><button class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">Save current search</button></div>
+        <div class="o_accordion position-relative"><button
+                class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate"
+                tabindex="0" aria-expanded="false">Save current search</button></div>
     </div>
 </div>
 @endsection
 
 <!-- Modal -->
-<div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="customFilterModalLabel" aria-hidden="true">
-    <div class="modal-dialog  modal-lg">
+<div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-labelledby="customFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="customFilterModalLabel">Add Custom Filter</h5>
@@ -285,8 +359,10 @@
                 </form>
             </div>
             <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                <button type="submit" style="background-color: #714B67;border-color: #714B67;" class="btn btn-primary add_filter">Add</button>
-                <button type="button" style="background-color: #e7e9ed;border-color: #e7e9ed;color: #374151;" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" style="background-color: #714B67;border-color: #714B67;"
+                    class="btn btn-primary add_filter">Add</button>
+                <button type="button" style="background-color: #e7e9ed;border-color: #e7e9ed;color: #374151;"
+                    class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
@@ -339,6 +415,7 @@
         border-radius: 5px;
         position: relative;
     }
+
     .hide-show-dropdown-menu {
         display: none;
         position: absolute;
@@ -351,6 +428,7 @@
         left: 0;
         /* Align with the button */
     }
+
     .dropdown-menu {
         display: none;
         position: fixed;
@@ -359,9 +437,10 @@
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
         top: auto;
-        right:0;
-        left:auto;
+        right: 0;
+        left: auto;
     }
+
     .dropdown-menu a {
         color: black;
         padding: 12px 16px;
@@ -369,71 +448,91 @@
         display: block;
         cursor: pointer;
     }
+
     tbody#lead-table-body tr:hover {
         background-color: #FAFAFA !important;
     }
-      tbody#lead-table-body tr:hover td {
+
+    tbody#lead-table-body tr:hover td {
         background-color: #FAFAFA !important;
     }
-    table.dataTable thead th, table.dataTable thead td {
+
+    table.dataTable thead th,
+    table.dataTable thead td {
         padding: 10px 18px;
         border-bottom: 1px solid #11111147;
         border-top: 1px solid #11111147;
         background: #F1F1F1;
     }
+
     .dataTables_length label {
         display: flex;
         gap: 10px;
         margin: 0 !important;
     }
+
     .dataTables_wrapper .dataTables_length select {
         text-align: center;
         border-radius: 5px;
         border: 1px solid #2222;
     }
+
     table.dataTable tbody tr,
-    table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
-    table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1  {
+    table.dataTable.display tbody tr.odd>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+    table.dataTable.display tbody tr.even>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
         background-color: #FFFFFF !important;
     }
+
     .dropdown-menu a:hover {
         background-color: #ddd;
     }
+
     .dropdown-active .dropdown-menu {
         display: block;
     }
+
     .dropdown-checkbox {
         margin-bottom: 10px;
     }
+
     .dropdown-checkbox label {
         display: flex;
         align-items: center;
         cursor: pointer;
     }
+
     .dropdown-checkbox input[type="checkbox"] {
         margin-right: 5px;
     }
+
     .arrow-icon {
         display: inline-block;
         transition: transform 0.3s ease;
         /* Smooth transition */
     }
+
     .rotate {
         transform: rotate(180deg);
         /* Rotate the arrow */
     }
+
     .o_searchview {
         gap: 10px;
     }
-    .tag, .tag1 {
+
+    .tag,
+    .tag1 {
         display: inline-block;
         padding: 0px 10px 0px 0;
         background-color: #E0E0E0;
         border-radius: 8px;
         font-size: 14px;
         margin: 5px 0;
-        position:relative;
+        position: relative;
     }
+
     .tag5 {
         display: inline-block;
         padding: 5px 10px;
@@ -444,10 +543,13 @@
         top: 5px;
         left: 5px;
     }
-    .remove-tag,span.remove-lost-tag {
+
+    .remove-tag,
+    span.remove-lost-tag {
         font-size: 22px;
         line-height: 0;
     }
+
     .tag-input-container {
         display: flex;
         align-items: center;
@@ -457,6 +559,7 @@
         padding: 5px;
         background-color: #F1F1F1;
     }
+
     .creation_time {
         display: block;
         width: 100%;
@@ -469,6 +572,7 @@
         background-color: transparent;
         border: 0;
     }
+
     .closed_time {
         display: block;
         width: 100%;
@@ -481,18 +585,23 @@
         background-color: transparent;
         border: 0;
     }
-    .location{
-        display:none
+
+    .location {
+        display: none
     }
-    .head_breadcrumb_info{
-        display:none
+
+    .head_breadcrumb_info {
+        display: none
     }
-    .dropdown-toggle::after{
-        content: none!important;
+
+    .dropdown-toggle::after {
+        content: none !important;
     }
+
     span.setting_icon i {
         color: #fff;
     }
+
     span.setting_icon {
         padding: 3px;
         background: #714B67;
@@ -502,26 +611,34 @@
         width: 27px;
         height: 27px;
         text-align: center;
-        position:absolute;
+        position: absolute;
     }
+
     span.setting_icon.setting_icon_hover {
         display: none;
     }
+
     a.setting-icon:hover span {
         display: block;
     }
+
     span.tag-item {
         line-height: 1.9;
     }
+
     a.setting-icon {
         padding-right: 35px;
+    }
+
+    .o_accordion_toggle::after {
+        display: none;
     }
 </style>
 
 
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
-      
+
         <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
@@ -544,75 +661,75 @@
                     <th>Title</th>
                     <th>Tag</th>
                     <th>Sales Person</th>
-                    <th>Sales Team   
+                    <th>Sales Team
                     </th>
                     <th style="width:35px !important"><a class="dropdown-btn"><i class="fa fa-list"></i></a>
-                                <div class="hide-show-dropdown-menu dropdown-menu">
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="0" checked> Lead</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="1" checked> Email</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="2" checked> City</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="3"> State</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="4" checked> Country</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="5"> Zip</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="6"> Probability</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="7"> Company Name</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="8"> Address 1</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="9"> Address 2</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="10"> Website Link</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="11"> Contact Name</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="12"> Job Postion</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="13"> Phone</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="14"> Mobile</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="15"> Priority</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="16"> Title</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="17"> Tag</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="18" checked> Sales Person</label>
-                                    </div>
-                                    <div class="dropdown-checkbox">
-                                        <label><input type="checkbox" data-column="19" checked> Sales Team</label>
-                                    </div>
-                                </div>
-                            </th>
+                        <div class="hide-show-dropdown-menu dropdown-menu">
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="0" checked> Lead</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="1" checked> Email</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="2" checked> City</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="3"> State</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="4" checked> Country</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="5"> Zip</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="6"> Probability</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="7"> Company Name</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="8"> Address 1</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="9"> Address 2</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="10"> Website Link</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="11"> Contact Name</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="12"> Job Postion</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="13"> Phone</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="14"> Mobile</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="15"> Priority</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="16"> Title</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="17"> Tag</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="18" checked> Sales Person</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="19" checked> Sales Team</label>
+                            </div>
+                        </div>
+                    </th>
                 </tr>
             </thead>
-            <tbody id="lead-table-body"> 
+            <tbody id="lead-table-body">
                 @forEach($data as $lead)
                     <tr data-id="{{$lead->id}}">
                         <td>{{$lead->product_name ?? ''}}</td>
@@ -641,17 +758,18 @@
                         <td>{{$lead->priority ?? ''}}</td>
                         <td>
                             @if(isset($lead->title))
-                                {{ $lead->getTilte->title  ?? '' }}
+                                {{ $lead->getTilte->title ?? '' }}
                             @endif
                         </td>
                         <td>
                             @foreach($lead->tags() as $tag)
-                                <span class="badge badge-primary" style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
+                                <span class="badge badge-primary"
+                                    style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
                             @endforeach
                         </td>
                         <td>
                             @if(isset($lead->sales_person))
-                                {{ $lead->getUser->email  ?? '' }}
+                                {{ $lead->getUser->email ?? '' }}
                             @endif
                         </td>
                         <td>{{$lead->sales_team ?? ''}}</td>
@@ -660,15 +778,15 @@
                 @endforeach
             </tbody>
         </table>
-   
+
     </div>
 </div>
 
 
 
 
-
-{{-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+{{--
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -676,63 +794,60 @@
 
 <!-- jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables JS -->
-<script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 <!-- Bootstrap JS -->
 <script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
-{{-- <script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
+{{--
+<script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
 
 <script>
-$(document).ready(function() {
-    var table = $('#example').DataTable( {
-        "pageLength": 25,
-        searching: true,
-        "lengthChange": false,
-        "sDom": 'Rlfrtip',
-        "oColReorder": {
-            "bAddFixed":true
-        },
-        columnDefs: [
-            { orderable: false, targets: -1 } // Disable sorting for the last column
-        ],
-
-    });
-
-
-
-    $('#example tbody').on('click', 'tr', function() {
-        var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-        if (id) {
-            window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
-        }
-    });
-    // Handle filter click event
-    {{-- $('.o_menu_item').on('click', function() {
-        var filter = $(this).attr('id'); // Get the filter ID
-        $('#filter').val(filter); // Set the filter value
-        table.ajax.reload(); // Reload the DataTable with new filter
-    }); --}}
-    function filterData(selectedTags) {
-        $.ajax({
-            url: '{{route('lead.activities')}}', // Your endpoint for fetching leads
-            method: 'GET',
-            data: {
-                tags: selectedTags
-                // Include other parameters if needed
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            "pageLength": 25,
+            searching: false,
+            "lengthChange": false,
+            "sDom": 'Rlfrtip',
+            "oColReorder": {
+                "bAddFixed": true
             },
-            success: function(response) {
-                var $tableBody = $('#lead-table-body');
+            columnDefs: [
+                { orderable: false, targets: -1 } // Disable sorting for the last column
+            ],
 
-                // Clear existing table data
-                $tableBody.empty();
+        });
 
-                // Check if response contains data
-            
+
+
+        $('#example tbody').on('click', 'tr', function () {
+            var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+            if (id) {
+                window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+            }
+        });
+        function filterData(selectedTags) {
+            $.ajax({
+                url: '{{route('lead.activities')}}', // Your endpoint for fetching leads
+                method: 'GET',
+                data: {
+                    tags: selectedTags
+                    // Include other parameters if needed
+                },
+                success: function (response) {
+                    var $tableBody = $('#lead-table-body');
+
+                    // Clear existing table data
+                    $tableBody.empty();
+
+                    // Check if response contains data
+
                     // Loop through the response and create table rows
-                    response.data.forEach(function(item) {
+                    response.data.forEach(function (item) {
 
                         var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
 
@@ -764,418 +879,435 @@ $(document).ready(function() {
                     });
 
                     // Attach click event handler to rows
-                    $('#lead-table-body .lead-row').on('click', function() {
+                    $('#lead-table-body .lead-row').on('click', function () {
                         var leadId = $(this).data('id');
                         window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
                     });
 
                     // Apply the column visibility settings
-                    table.columns().every(function() {
+                    table.columns().every(function () {
                         var column = this;
                         var index = column.index();
                         var isVisible = column.visible();
                         column.visible(isVisible);
                     });
 
-               
-            },
-            error: function() {
-                console.error('Failed to fetch data');
-            }
-        });
-    }
+
+                },
+                error: function () {
+                    console.error('Failed to fetch data');
+                }
+            });
+        }
 
 
-    // Restore column visibility from local storage
-    function saveColumnVisibility() {
-        var visibility = {};
-        table.columns().every(function() {
-            var column = this;
-            var index = column.index();
-            visibility[index] = column.visible();
-        });
-        localStorage.setItem('columnVisibility', JSON.stringify(visibility));
-    }
-
-    function restoreColumnVisibility() {
-        var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
-        if (visibility) {
-            table.columns().every(function() {
+        // Restore column visibility from local storage
+        function saveColumnVisibility() {
+            var visibility = {};
+            table.columns().every(function () {
                 var column = this;
                 var index = column.index();
-                // Check if the column exists and visibility is defined
-                if (visibility.hasOwnProperty(index)) {
-                    var isVisible = visibility[index];
-                    // Ensure the column exists before setting visibility
-                    if (typeof column !== 'undefined') {
-                        column.visible(isVisible);
-                        // Update the corresponding checkbox based on the visibility
-                        $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
+                visibility[index] = column.visible();
+            });
+            localStorage.setItem('columnVisibility', JSON.stringify(visibility));
+        }
+
+        function restoreColumnVisibility() {
+            var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
+            if (visibility) {
+                table.columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    // Check if the column exists and visibility is defined
+                    if (visibility.hasOwnProperty(index)) {
+                        var isVisible = visibility[index];
+                        // Ensure the column exists before setting visibility
+                        if (typeof column !== 'undefined') {
+                            column.visible(isVisible);
+                            // Update the corresponding checkbox based on the visibility
+                            $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
+                        }
                     }
-                }
-            });
-        } else {
-            // If no visibility settings in localStorage, set default visibility
-                    table.column(0).visible(true);
-                    table.column(1).visible(true);
-                    table.column(3).visible(false);
-                    table.column(4).visible(true);
-                    table.column(5).visible(false);
-                    table.column(6).visible(false);
-                    table.column(7).visible(false);
-                    table.column(8).visible(false);
-                    table.column(9).visible(false);
-                    table.column(10).visible(false);
-                    table.column(11).visible(false);
-                    table.column(12).visible(false);
-                    table.column(13).visible(false);
-                    table.column(14).visible(false);
-                    table.column(15).visible(false);
-                    table.column(16).visible(false);
-                    table.column(17).visible(false);
-                    table.column(18).visible(true);
-                    table.column(19).visible(true);
-                    table.column(20).visible(true);
-        }
-    }
-
-    $('.dropdown-menu input[type="checkbox"]').on('change', function() {
-        var columnIndex = $(this).data('column');
-        var column = table.column(columnIndex);
-        // Ensure the column exists before trying to set visibility
-        if (typeof column !== 'undefined') {
-            column.visible(this.checked); // Show or hide the column based on the checkbox state
-            saveColumnVisibility(); // Save visibility to local storage
-        }
-    });
-
-    restoreColumnVisibility();
-
-    $(document).on('click', '.dropdown-btn', function(event) {
-        event.stopPropagation(); 
-        $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); 
-        $(this).next('.dropdown-menu').toggle(); 
-    });
-
-
-
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('.dropdown-menu').length) {
-            $('.dropdown-menu').hide(); 
-        }
-    });
-        
-    // $(document).on('click', '.remove-tag', function() {
-    //     $('.tag').remove();
-    //     $('.checkmark').hide();
-    //     $('#search-input').val('').attr('placeholder', 'Search...');
-    //     $('#filter').val(''); // Clear the filter value
-    //     table.ajax.reload();
-    // });
-    $(document).on('click', '.custom-filter-remove', function() {
-        $('#search-input').val('').attr('placeholder', 'Search...');
-        table.ajax.reload();
-    });
-        // CSRF token setup for AJAX requests
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-    
-
-
-    $(document).ready(function() {
-        // Initialize the Bootstrap modal
-        var customFilterModal = new bootstrap.Modal(document.getElementById('customFilterModal'));
-
-        // Handle the click event on the "Add Custom Filter" button
-        $('.o_add_custom_filter').on('click', function() {
-            customFilterModal.show();
-        });
-
-
-        // Handle form submission with AJAX
-        $('#saveFilterBtn').on('click', function() {
-            var filterName = $('#filterName').val();
-
-            $.ajax({
-                url: '/path/to/your/api/endpoint', // Replace with your API endpoint
-                type: 'POST'
-                , data: {
-                    filterName: filterName
-                }
-                , success: function(response) {
-                    // Handle success, e.g., show a success message or update UI
-                    console.log('Filter saved successfully:', response);
-                    customFilterModal.hide();
-                }
-                , error: function(xhr, status, error) {
-                    // Handle error, e.g., show an error message
-                    console.error('Error saving filter:', error);
-                }
-            });
-        });
-
-        // Function to add a new rule row
-        function addNewRule() {
-            var template = $('#ruleTemplate').html();
-            $('#rulesContainer').append(template);
-        }
-
-        // Click handler for "New Rule" link
-        $('#addNewRule').on('click', function(event) {
-            event.preventDefault();
-            addNewRule();
-        });
-
-        // Click handler for "fa-plus" button in rule rows
-        $(document).on('click', '.add-new-rule', function(event) {
-            event.preventDefault();
-            addNewRule();
-        });
-
-        // Click handler for "Delete node" button
-        $(document).on('click', '.delete-rule', function(event) {
-            event.preventDefault();
-            // Ensure that at least one rule remains
-            if ($('#rulesContainer .rule-row')) {
-                $(this).closest('.rule-row').remove();
+                });
             } else {
-                // Add a new rule when all are deleted
-                $('#rulesContainer').empty(); // Clear container
-                addNewRule(); // Add one new rule
+                // If no visibility settings in localStorage, set default visibility
+                table.column(0).visible(true);
+                table.column(1).visible(true);
+                table.column(3).visible(false);
+                table.column(4).visible(true);
+                table.column(5).visible(false);
+                table.column(6).visible(false);
+                table.column(7).visible(false);
+                table.column(8).visible(false);
+                table.column(9).visible(false);
+                table.column(10).visible(false);
+                table.column(11).visible(false);
+                table.column(12).visible(false);
+                table.column(13).visible(false);
+                table.column(14).visible(false);
+                table.column(15).visible(false);
+                table.column(16).visible(false);
+                table.column(17).visible(false);
+                table.column(18).visible(true);
+                table.column(19).visible(true);
+                table.column(20).visible(true);
+            }
+        }
+
+        $('.dropdown-menu input[type="checkbox"]').on('change', function () {
+            var columnIndex = $(this).data('column');
+            var column = table.column(columnIndex);
+            // Ensure the column exists before trying to set visibility
+            if (typeof column !== 'undefined') {
+                column.visible(this.checked); // Show or hide the column based on the checkbox state
+                saveColumnVisibility(); // Save visibility to local storage
             }
         });
 
-    });
+        restoreColumnVisibility();
+
+        $(document).on('click', '.dropdown-btn', function (event) {
+            event.stopPropagation();
+            $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide();
+            $(this).next('.dropdown-menu').toggle();
+        });
 
 
-    $(document).on('click', '.activities', function(e) {
-        e.stopPropagation();
-        var $item = $(this);
 
-        // Clone the item, remove the checkmark span and get the trimmed text
-        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-        handleTagSelection2(selectedValue, $item);
-    });
-    
-    function handleTagSelection2(selectedValue, $item = null) {
-        
-      
-        var $tag = $('.tag');
-        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.dropdown-menu').length) {
+                $('.dropdown-menu').hide();
+            }
+        });
 
-        if ($tagItem.length > 0) {
-            // If the tag already exists, remove it            
-            $tagItem.remove();
-            updateTagSeparators2();
+        // $(document).on('click', '.remove-tag', function() {
+        //     $('.tag').remove();
+        //     $('.checkmark').hide();
+        //     $('#search-input').val('').attr('placeholder', 'Search...');
+        //     $('#filter').val(''); // Clear the filter value
+        //     table.ajax.reload();
+        // });
+        $(document).on('click', '.custom-filter-remove', function () {
+            $('#search-input').val('').attr('placeholder', 'Search...');
+            table.ajax.reload();
+        });
+        // CSRF token setup for AJAX requests
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-            // If no tags left, remove the container and reset the input
-            if ($tag.children().length === 0) {
+
+
+        $(document).ready(function () {
+            // Initialize the Bootstrap modal
+            var customFilterModal = new bootstrap.Modal(document.getElementById('customFilterModal'));
+
+            // Handle the click event on the "Add Custom Filter" button
+            $('.o_add_custom_filter').on('click', function () {
+                customFilterModal.show();
+            });
+
+
+            // Handle form submission with AJAX
+            $('#saveFilterBtn').on('click', function () {
+                var filterName = $('#filterName').val();
+
+                $.ajax({
+                    url: '/path/to/your/api/endpoint', // Replace with your API endpoint
+                    type: 'POST'
+                    , data: {
+                        filterName: filterName
+                    }
+                    , success: function (response) {
+                        // Handle success, e.g., show a success message or update UI
+                        console.log('Filter saved successfully:', response);
+                        customFilterModal.hide();
+                    }
+                    , error: function (xhr, status, error) {
+                        // Handle error, e.g., show an error message
+                        console.error('Error saving filter:', error);
+                    }
+                });
+            });
+
+            // Function to add a new rule row
+            function addNewRule() {
+                var template = $('#ruleTemplate').html();
+                $('#rulesContainer').append(template);
+            }
+
+            // Click handler for "New Rule" link
+            $('#addNewRule').on('click', function (event) {
+                event.preventDefault();
+                addNewRule();
+            });
+
+            // Click handler for "fa-plus" button in rule rows
+            $(document).on('click', '.add-new-rule', function (event) {
+                event.preventDefault();
+                addNewRule();
+            });
+
+            // Click handler for "Delete node" button
+            $(document).on('click', '.delete-rule', function (event) {
+                event.preventDefault();
+                // Ensure that at least one rule remains
+                if ($('#rulesContainer .rule-row')) {
+                    $(this).closest('.rule-row').remove();
+                } else {
+                    // Add a new rule when all are deleted
+                    $('#rulesContainer').empty(); // Clear container
+                    addNewRule(); // Add one new rule
+                }
+            });
+
+        });
+
+
+        $(document).on('click', '.activities', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
+
+            // Clone the item, remove the checkmark span and get the trimmed text
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection2(selectedValue, $item);
+        });
+
+        function handleTagSelection2(selectedValue, $item = null) {
+
+
+            var $tag = $('.tag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // If the tag already exists, remove it            
+                $tagItem.remove();
+                updateTagSeparators2();
+
+                // If no tags left, remove the container and reset the input
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide the checkmark if it's being deselected
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                // If the tag does not exist, add it
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                // Check if a tag container exists, if not, create one
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(' & ' + newTagHtml);
+                }
+
+                updateTagSeparators2();
+
+                // Show the checkmark on the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Collect selected tags
+            updateFilterTags();
+        }
+
+        // Function to clear all group-by tags
+        function clearTagsByType(type) {
+            console.log(selectedTags);
+
+            var $tag = $('.' + type + '-tag');
+            if ($tag.length > 0) {
                 $tag.remove();
                 $('#search-input').val('').attr('placeholder', 'Search...');
             }
+        }
 
-            // Hide the checkmark if it's being deselected
-            if ($item) {
-                $item.find('.checkmark').hide();
+        function updateTagSeparators2() {
+            var $tag = $('.tag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton2();
+        }
+
+
+        function updateRemoveTagButton2() {
+            var $tag = $('.tag');
+            // Ensure the icon appears only once at the beginning
+            if ($tag.find('.fa-list').length === 0) {
+                $tag.prepend('<a href="#" class="setting-icon">' +
+                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
             }
-        } else {
-            // If the tag does not exist, add it
-            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-            
-            // Check if a tag container exists, if not, create one
-            if ($tag.length === 0) {
-                $('#search-input').before('<span class="tag">'  + newTagHtml + '</span>');
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-tag').length === 0) {
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                }
             } else {
-                $tag.append(' & ' + newTagHtml);
+                $('.remove-tag').remove();
+                $('.icon_tag').remove();
             }
-
-            updateTagSeparators2();
-
-            // Show the checkmark on the selected item
-            if ($item) {
-                $item.find('.checkmark').show();
-            }
-
-            // Reset input and placeholder
-            $('#search-input').val('');
-            $('#search-input').attr('placeholder', '');
         }
 
-        // Collect selected tags
-        updateFilterTags();
-    }
+        $(document).on('click', '.lost_span', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
 
-    // Function to clear all group-by tags
-    function clearTagsByType(type) {
-        console.log(selectedTags);
-        
-        var $tag = $('.' + type + '-tag');
-        if ($tag.length > 0) {
-            $tag.remove();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-        }
-    }
+            // Get the text of the clicked "Lost" span
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
 
-    function updateTagSeparators2() {
-        var $tag = $('.tag');
-        var $tagItems = $tag.find('.tag-item');
-        var html = '';
-        $tagItems.each(function(index) {
-            html += $(this).prop('outerHTML');
-            if (index < $tagItems.length - 1) {
-                html += ' & ';
-            }
+            handleTagSelection3(selectedValue, $item);
         });
-        $tag.html(html);
-        updateRemoveTagButton2();
-    }
 
+        function handleTagSelection3(selectedValue, $item = null) {
+            var $tag = $('.tag1');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
-    function updateRemoveTagButton2() {
-        var $tag = $('.tag');
-        // Ensure the icon appears only once at the beginning
-        if ($tag.find('.fa-list').length === 0) {
-            $tag.prepend('<a href="#" class="setting-icon">' +
-            '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-            '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
-            '</a>'
-        );
-        }
-        if ($tag.find('.tag-item').length > 0) {
-            if ($('.remove-tag').length === 0) {
-                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+            if ($tagItem.length > 0) {
+                // Remove existing tag
+                $tagItem.remove();
+                updateTagSeparators3();
+
+                // Remove the tag container if no more tags
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide checkmark in case of deselection
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+
+            } else {
+                if ($tag.length === 0) {
+                    // Add both the setting icon and tag container together
+                    $('#search-input').before(
+                        '<div class="tag1">' +
+                        '<a href="#" class="setting-icon">' +
+                        '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                        '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                        '</a>' +
+                        '<span class="tag-item" data-value="' + selectedValue + '">' +
+                        selectedValue +
+                        '<span class="remove-lost-tag" style="cursor:pointer">×</span>' +
+                        '</span>' +
+                        '</div>'
+                    );
+                } else {
+                    // Add new tag with close button
+                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' +
+                        selectedValue +
+                        '<span class="remove-lost-tag" style="cursor:pointer">×</span></span>';
+                    $tag.append(newTagHtml);
+                }
+
+                // Show the checkmark for the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
             }
-        } else {
-            $('.remove-tag').remove();
-            $('.icon_tag').remove();
+
+            // Update selected tags and send to server
+            updateFilterTags();
         }
-    }
 
-    $(document).on('click', '.lost_span', function(e) {
-        e.stopPropagation();
-        var $item = $(this);
+        function updateTagSeparators3() {
+            var $tag = $('.tag1');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton3();
+        }
 
-        // Get the text of the clicked "Lost" span
-        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
 
-        handleTagSelection3(selectedValue, $item);
-    });
+        function updateRemoveTagButton3() {
+            var $tag = $('.tag1');
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-lost-tag').length === 0) {
+                    $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-lost-tag').remove();
+            }
+        }
 
-    function handleTagSelection3(selectedValue, $item = null) {
-        var $tag = $('.tag1');
-        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+        // Function to update filters after tag removal
+        function updateFilterTags() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
 
-        if ($tagItem.length > 0) {
-            // Remove existing tag
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+        // Remove tag and preserve "Lost" tag filter
+        $(document).on('click', '.remove-lost-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
             $tagItem.remove();
+            $('.tag1').remove(); // Only remove the container if it's empty
             updateTagSeparators3();
 
-            // Remove the tag container if no more tags
-            if ($tag.children().length === 0) {
-                $tag.remove();
-                $('#search-input').val('').attr('placeholder', 'Search...');
-            }
+            // Reapply filters after removing "Lost" tag
+            updateFilterTags();
 
-            // Hide checkmark in case of deselection
-            if ($item) {
-                $item.find('.checkmark').hide();
-            }
-
-        } else {        
-            // Add new tag with filter icon and close button
-            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag" style="cursor:pointer">×</span></span>';
-
-            // If no tags exist, create the tag container
-            if ($tag.length === 0) {
-                $('#search-input').before('<span class="tag1">' + newTagHtml + '</span>');
-            } else {
-                $tag.append(newTagHtml);
-            }
-
-            // Show the checkmark for the selected item
-            if ($item) {
-                $item.find('.checkmark').show();
-            }
-
-            // Reset input and placeholder
-            $('#search-input').val('');
-            $('#search-input').attr('placeholder', '');
-        }
-
-        // Update selected tags and send to server
-        updateFilterTags();
-    }
-
-    function updateTagSeparators3() {
-        var $tag = $('.tag1');
-        var $tagItems = $tag.find('.tag-item');
-        var html = '';
-        $tagItems.each(function(index) {
-            html += $(this).prop('outerHTML');
-            if (index < $tagItems.length - 1) {
-                html += ' & ';
-            }
-        });
-        $tag.html(html);
-        updateRemoveTagButton3();
-    }
-
-
-    function updateRemoveTagButton3() {
-        var $tag = $('.tag1');
-        if ($tag.find('.tag-item').length > 0) {
-            if ($('.remove-lost-tag').length === 0) {
-                $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
-            }
-        } else {
-            $('.remove-lost-tag').remove();
-        }
-    }
-
-    // Function to update filters after tag removal
-    function updateFilterTags() {
-        let selectedTags = [];
-        $('.tag-item').each(function() {
-            selectedTags.push($(this).data('value'));
+            // Remove checkmark from the dropdown
+            $('.lost_span:contains("Lost")').find('.checkmark').hide();
         });
 
-        // Send selected tags to the server for filtering
-        filterData(selectedTags);
-    }
+        $(document).on('click', '.remove-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            $('.tag').remove(); // Only remove the container if it's empty
+            updateTagSeparators3();
 
-    // Remove tag and preserve "Lost" tag filter
-    $(document).on('click', '.remove-lost-tag', function() {
-        var $tagItem = $(this).parent('.tag-item');
-        $tagItem.remove();
-        $('.tag1').remove(); // Only remove the container if it's empty
-        updateTagSeparators3();
 
-        // Reapply filters after removing "Lost" tag
-        updateFilterTags();
+            // Reapply filters after removing "Lost" tag
+            updateFilterTags();
 
-        // Remove checkmark from the dropdown
-        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+            // Remove checkmark from the dropdown
+            $('.activities .checkmark').hide();
+        });
+
+
+
     });
 
-    $(document).on('click', '.remove-tag', function() {
-        var $tagItem = $(this).parent('.tag-item');
-        $tagItem.remove();
-        $('.tag').remove(); // Only remove the container if it's empty
-        updateTagSeparators3();
-
-
-        // Reapply filters after removing "Lost" tag
-        updateFilterTags();
-
-        // Remove checkmark from the dropdown
-        $('.activities .checkmark').hide();
-    });
-
-
-
+    $(document).on('click', '.setting-icon', function(e) {
+    e.preventDefault();
+    $('#customFilterModal').modal('show'); // Open the modal
 });
 
 </script>
@@ -1184,9 +1316,9 @@ $(document).ready(function() {
 
 {{-- ----------------------------- Group by ------------------------------ --}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Handle item selection from dropdown
-        $(document).on('click', '.o-dropdown-item_1', function(e) {
+        $(document).on('click', '.o-dropdown-item_1', function (e) {
             e.stopPropagation();
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
@@ -1194,7 +1326,7 @@ $(document).ready(function() {
         });
 
         // Listen to changes in the select dropdown
-        $('.o_add_custom_group_menu').on('change', function(e) {
+        $('.o_add_custom_group_menu').on('change', function (e) {
             var selectedValue = $(this).find('option:selected').text().trim();
             handleTagSelection(selectedValue);
             $(this).val(''); // Reset the select after selecting an option
@@ -1221,7 +1353,7 @@ $(document).ready(function() {
                 }
 
                 let selectedTags = [];
-                $('.tag-item').each(function() {
+                $('.tag-item').each(function () {
                     selectedTags.push($(this).data('value'));
                 });
 
@@ -1250,7 +1382,7 @@ $(document).ready(function() {
 
                 // Collect selected tags
                 let selectedTags = [];
-                $('.tag-item').each(function() {
+                $('.tag-item').each(function () {
                     selectedTags.push($(this).data('value'));
                 });
                 filter(selectedTags);
@@ -1260,12 +1392,12 @@ $(document).ready(function() {
         }
 
 
-        $(document).on('click', '.o_add_custom_group_menu', function() {
+        $(document).on('click', '.o_add_custom_group_menu', function () {
             let selectedTags = [];
 
             // Check if there are any tags in the '.tag-item'
             if ($('.tag-item').length > 0) {
-                $('.tag-item').each(function() {
+                $('.tag-item').each(function () {
                     selectedTags.push($(this).data('value'));
                 });
             }
@@ -1283,7 +1415,7 @@ $(document).ready(function() {
             var $tag = $('.tag');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
-            $tagItems.each(function(index) {
+            $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
                 if (index < $tagItems.length - 1) {
                     html += ' > ';
@@ -1307,7 +1439,7 @@ $(document).ready(function() {
         }
 
         // Remove all tags
-        $(document).on('click', '.remove-tag', function() {
+        $(document).on('click', '.remove-tag', function () {
             $('.tag').remove();
             $('.o-dropdown-item .checkmark').hide();
             $('#search-input').val('').attr('placeholder', 'Search...');
@@ -1315,12 +1447,12 @@ $(document).ready(function() {
         });
 
         // Hide dropdown when clicking outside
-        $(document).on('click', function(e) {
+        $(document).on('click', function (e) {
             if (!$(e.target).closest('#search-input, #search-dropdown').length) {
                 $('#search-dropdown').hide();
             }
         });
-        
+
 
         // Send selected tags to the server and process response
         function filter(selectedTags) {
@@ -1330,7 +1462,7 @@ $(document).ready(function() {
                 , data: {
                     selectedTags: JSON.stringify(selectedTags)
                 }
-                , success: function(response) {
+                , success: function (response) {
                     console.log('Response:', response);
 
                     var tableBody = $('#lead-table-body');
@@ -1339,7 +1471,7 @@ $(document).ready(function() {
                     var leads = response.data;
 
                     function renderGroup(groupLeads, level) {
-                        $.each(groupLeads, function(groupKey, groupValue) {
+                        $.each(groupLeads, function (groupKey, groupValue) {
                             var groupRow = `
                             <tr class="group-header" data-level="${level}" style="cursor:pointer;">
                                 <td colspan="20" style="padding-left:${level * 20}px;">
@@ -1350,7 +1482,7 @@ $(document).ready(function() {
                             tableBody.append(groupRow);
 
                             if ($.isArray(groupValue)) {
-                                $.each(groupValue, function(index, lead) {
+                                $.each(groupValue, function (index, lead) {
                                     var leadRow = `
                                     <tr class="lead-row" data-id="${lead.id}" data-level="${level + 1}" style="display:none;">
                                         <td title="${lead.product_name}">${lead.product_name ?? ''}</td>
@@ -1386,7 +1518,7 @@ $(document).ready(function() {
                     renderGroup(leads, 0);
 
                     // Toggle visibility of nested groups
-                    $('.group-header').on('click', function() {
+                    $('.group-header').on('click', function () {
                         var level = $(this).data('level');
                         var nextRow = $(this).next();
                         while (nextRow.length && nextRow.data('level') > level) {
@@ -1395,13 +1527,13 @@ $(document).ready(function() {
                         }
                     });
                 }
-                , error: function(xhr, status, error) {
+                , error: function (xhr, status, error) {
                     console.error('Error applying filter:', error);
                 }
             });
         }
 
-        $(document).on('click', '.lead-row', function() {
+        $(document).on('click', '.lead-row', function () {
             var leadId = $(this).data('id');
             if (leadId) {
                 window.location.href = '/lead-add/' + leadId;
@@ -1415,9 +1547,9 @@ $(document).ready(function() {
 </script>
 {{-- ---------------- time ------------------- --}}
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Handle item selection from dropdown
-        $(document).on('click', '.o-dropdown-item_2', function(e) {
+        $(document).on('click', '.o-dropdown-item_2', function (e) {
             e.stopPropagation();
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
@@ -1526,7 +1658,7 @@ $(document).ready(function() {
         }
 
         // Remove individual tags when clicked
-        $(document).on('click', '.creation-date-tag, .closed-date-tag', function() {
+        $(document).on('click', '.creation-date-tag, .closed-date-tag', function () {
             var $tag = $(this).closest('.tag3');
             var type = $(this).hasClass('creation-date-tag') ? 'Creation Date' : 'Closed Date';
             var selectedValue = $(this).text().trim();
@@ -1534,7 +1666,7 @@ $(document).ready(function() {
         });
 
         // Remove all tags when the close button is clicked
-        $(document).on('click', '.remove-tag', function() {
+        $(document).on('click', '.remove-tag', function () {
             $('.tag3').remove();
             $('.o-dropdown-item_2 .checkmark').hide();
             $('#search-input').val('').attr('placeholder', 'Search...');
@@ -1546,11 +1678,11 @@ $(document).ready(function() {
 
 
 <script>
-    $(document).ready(function() {
-        $('#customer_filter_select').on('change', function() {
+    $(document).ready(function () {
+        $('#customer_filter_select').on('change', function () {
             var selectedValue = $(this).val();
             var filterInput = $('.customer_filter_input');
-            
+
             // Clear the previous filter input
             filterInput.empty();
 
@@ -1631,7 +1763,7 @@ $(document).ready(function() {
             }
         });
 
-        $('.add_filter').on('click', function(event) {
+        $('.add_filter').on('click', function (event) {
             event.preventDefault();
             var filterType = $('#customer_filter_select').val();
             var filterValue = $('#customer_filter_input_value').val();
@@ -1651,7 +1783,7 @@ $(document).ready(function() {
                 url: '{{route('lead.custom.filter')}}',
                 type: 'POST',
                 data: data,
-                success: function(response) {
+                success: function (response) {
                     var $tableBody = $('#lead-table-body');
 
                     // Clear existing table data
@@ -1660,7 +1792,7 @@ $(document).ready(function() {
                     // Check if response contains data
                     if (response.success && response.data && response.data.length > 0) {
                         // Loop through the response and create table rows
-                        response.data.forEach(function(item) {
+                        response.data.forEach(function (item) {
                             var rowHtml = `
                                 <tr class="lead-row" data-id="${item.id}">
                                     <td>${item.product_name || ''}</td>
@@ -1693,7 +1825,7 @@ $(document).ready(function() {
                         });
 
                         // Attach click event handler to rows
-                        $('#lead-table-body .lead-row').on('click', function() {
+                        $('#lead-table-body .lead-row').on('click', function () {
                             var leadId = $(this).data('id');
                             window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
                         });
@@ -1702,7 +1834,7 @@ $(document).ready(function() {
                         $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
@@ -1711,7 +1843,7 @@ $(document).ready(function() {
         });
 
         function handleTagSelection(filterType, operatesValue, filterValue) {
-            var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue; 
+            var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
             var $tag = $('.tag5');
             var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
@@ -1722,7 +1854,7 @@ $(document).ready(function() {
                 if ($tag.children().length === 0) {
                     $tag.remove();
                     $('#search-input').val('').attr('placeholder', 'Search...');
-                } 
+                }
             } else {
                 var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
                 if ($tag.length === 0) {
@@ -1740,7 +1872,7 @@ $(document).ready(function() {
             var $tag = $('.tag5');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
-            $tagItems.each(function(index) {
+            $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
                 if (index < $tagItems.length - 1) {
                     html += ' & ';
@@ -1761,7 +1893,7 @@ $(document).ready(function() {
             }
         }
 
-        $(document).on('click', '.custom-filter-remove', function() {
+        $(document).on('click', '.custom-filter-remove', function () {
             var valueToRemove = $(this).closest('.tag-item').data('value');
             $(this).closest('.tag-item').remove();
             if ($('.tag5').children().length === 0) {
@@ -1776,7 +1908,7 @@ $(document).ready(function() {
 
 
 <script>
-    $(document).on('click', '.lead-row', function() {
+    $(document).on('click', '.lead-row', function () {
         var leadId = $(this).data('id');
         window.location.href = "{{ route('lead.create') }}/" + leadId;
     });
@@ -1787,18 +1919,19 @@ $(document).ready(function() {
             , type: "POST"
             , data: {
                 _token: "{{ csrf_token() }}"
-            , }
-            , success: function(response) {
+                ,
+            }
+            , success: function (response) {
                 console.log('Lead stored successfully.', response);
             }
-            , error: function(error) {
+            , error: function (error) {
                 console.error('Error storing lead:', error);
             }
         });
     }
 
     // Auto-refresh every 2 minutes
-    setInterval(function() {
+    setInterval(function () {
         console.log('Attempting to store lead...');
         storeLead();
     }, 2 * 60 * 1000);
@@ -1807,7 +1940,7 @@ $(document).ready(function() {
 </script>
 
 <script>
-     $(document).ready(function () {
+    $(document).ready(function () {
         // Show the dropdown when the input field is clicked
         $('#search-input').on('click', function () {
             $('#search-dropdown').show();
