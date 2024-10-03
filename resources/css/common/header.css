@@ -426,7 +426,7 @@ p.head_breadcrumb_title {
     border: 1px solid #979797;
     border-radius: 4px;
     font-size: 16px;
-    padding: 7px 20px 7px 40px;
+    padding: 7px 20px 7px 0px;
 }
 .heade_search_icon {
     display: inline-block;
@@ -566,6 +566,9 @@ img.r_card_logo {
 }
 p.stage_new_info span {
     display: inline-flex;
+}
+.o_searchview.form-control.d-print-contents.d-flex.align-items-center.py-1.border-end-0{
+    height: auto;
 }
 /*================ responsive-css ====================== */
 
