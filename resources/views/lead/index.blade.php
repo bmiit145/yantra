@@ -60,7 +60,7 @@
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3" role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2   fa fa-filter"></i>
             <input type="hidden" id="filter" name="filter" value="">
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
@@ -73,7 +73,7 @@
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false" id="creationDateBtn1">
                 Creation Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown1" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <?php   
@@ -105,7 +105,7 @@
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
                 Closed Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown1" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="o-dropdown-item_2 closed_time">
@@ -124,12 +124,10 @@
         </div>
         <div class="dropdown-divider" role="separator"></div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Late Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox" tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
         <div class="dropdown-divider" role="separator"></div>
-        <!-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
-        <div role="separator" class="dropdown-divider"></div> -->
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem" tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action fa fa-layer-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
         </div>
         <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark" style="display:none;">✔</span>Salesperson</span>
@@ -144,7 +142,7 @@
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false" id="creationDateBtn">
                 Creation Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Creation Date:</span> <span class="float-end checkmark" style="display:none;">✔</span>Year</span>
@@ -157,7 +155,7 @@
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0" aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
                 Closed Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown" style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Year</span>
@@ -167,15 +165,6 @@
                 <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
-
-        {{-- <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
-                aria-expanded="false">Closed Date</button>
-        </div> --}}
-        <div class="dropdown-divider" role="separator"></div>
-        {{-- <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable  text-truncate"
-                tabindex="0" aria-expanded="false">Properties</button></div> --}}
         <div role="separator" class="dropdown-divider"></div>
         <select class="o_add_custom_group_menu o_menu_item dropdown-item">
             <option value="" disabled="true" selected="true" hidden="true">Add Custom Group</option>
@@ -343,18 +332,17 @@
 
 <style>
     .dropdown-btn {
-        background-color: #f1f1f1;
+        background-color: #F1F1F1;
         border: none;
         cursor: pointer;
         padding: 10px;
         border-radius: 5px;
         position: relative;
     }
-
     .hide-show-dropdown-menu {
         display: none;
         position: absolute;
-        background-color: #f9f9f9;
+        background-color: #F9F9F9;
         min-width: auto !important;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 999;
@@ -363,11 +351,10 @@
         left: 0;
         /* Align with the button */
     }
-
     .dropdown-menu {
         display: none;
         position: fixed;
-        background-color: #f9f9f9;
+        background-color: #F9F9F9;
         min-width: 623px;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
@@ -375,7 +362,6 @@
         right:0;
         left:auto;
     }
-
     .dropdown-menu a {
         color: black;
         padding: 12px 16px;
@@ -384,16 +370,16 @@
         cursor: pointer;
     }
     tbody#lead-table-body tr:hover {
-        background-color: #fafafa !important;
+        background-color: #FAFAFA !important;
     }
       tbody#lead-table-body tr:hover td {
-        background-color: #fafafa !important;
+        background-color: #FAFAFA !important;
     }
     table.dataTable thead th, table.dataTable thead td {
         padding: 10px 18px;
         border-bottom: 1px solid #11111147;
         border-top: 1px solid #11111147;
-        background: #f1f1f1;
+        background: #F1F1F1;
     }
     .dataTables_length label {
         display: flex;
@@ -408,49 +394,46 @@
     table.dataTable tbody tr,
     table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
     table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1  {
-        background-color: #ffffff !important;
+        background-color: #FFFFFF !important;
     }
     .dropdown-menu a:hover {
         background-color: #ddd;
     }
-
     .dropdown-active .dropdown-menu {
         display: block;
     }
-
     .dropdown-checkbox {
         margin-bottom: 10px;
     }
-
     .dropdown-checkbox label {
         display: flex;
         align-items: center;
         cursor: pointer;
     }
-
     .dropdown-checkbox input[type="checkbox"] {
         margin-right: 5px;
     }
-
     .arrow-icon {
         display: inline-block;
         transition: transform 0.3s ease;
         /* Smooth transition */
     }
-
     .rotate {
         transform: rotate(180deg);
         /* Rotate the arrow */
     }
-
-    .tag,.tag1 {
-    display: inline-block;
-    padding: 3px 10px;
-    background-color: #E0E0E0;
-    border-radius: 8px;
-    font-size: 14px;
-    margin: 5px 0;
-}
+    .o_searchview {
+        gap: 10px;
+    }
+    .tag, .tag1 {
+        display: inline-block;
+        padding: 0px 10px 0px 0;
+        background-color: #E0E0E0;
+        border-radius: 8px;
+        font-size: 14px;
+        margin: 5px 0;
+        position:relative;
+    }
     .tag5 {
         display: inline-block;
         padding: 5px 10px;
@@ -461,12 +444,10 @@
         top: 5px;
         left: 5px;
     }
-
     .remove-tag,span.remove-lost-tag {
         font-size: 22px;
         line-height: 0;
     }
-
     .tag-input-container {
         display: flex;
         align-items: center;
@@ -476,7 +457,6 @@
         padding: 5px;
         background-color: #F1F1F1;
     }
-
     .creation_time {
         display: block;
         width: 100%;
@@ -489,7 +469,6 @@
         background-color: transparent;
         border: 0;
     }
-
     .closed_time {
         display: block;
         width: 100%;
@@ -511,7 +490,32 @@
     .dropdown-toggle::after{
         content: none!important;
     }
-
+    span.setting_icon i {
+        color: #fff;
+    }
+    span.setting_icon {
+        padding: 3px;
+        background: #714B67;
+        border-radius: 5px;
+        display: inline-block;
+        margin-right: 5px;
+        width: 27px;
+        height: 27px;
+        text-align: center;
+        position:absolute;
+    }
+    span.setting_icon.setting_icon_hover {
+        display: none;
+    }
+    a.setting-icon:hover span {
+        display: block;
+    }
+    span.tag-item {
+        line-height: 1.9;
+    }
+    a.setting-icon {
+        padding-right: 35px;
+    }
 </style>
 
 
@@ -691,6 +695,9 @@ $(document).ready(function() {
         "oColReorder": {
             "bAddFixed":true
         },
+        columnDefs: [
+            { orderable: false, targets: -1 } // Disable sorting for the last column
+        ],
 
     });
 
@@ -858,13 +865,13 @@ $(document).ready(function() {
         }
     });
         
-    $(document).on('click', '.remove-tag', function() {
-        $('.tag').remove();
-        $('.checkmark').hide();
-        $('#search-input').val('').attr('placeholder', 'Search...');
-        $('#filter').val(''); // Clear the filter value
-        table.ajax.reload();
-    });
+    // $(document).on('click', '.remove-tag', function() {
+    //     $('.tag').remove();
+    //     $('.checkmark').hide();
+    //     $('#search-input').val('').attr('placeholder', 'Search...');
+    //     $('#filter').val(''); // Clear the filter value
+    //     table.ajax.reload();
+    // });
     $(document).on('click', '.custom-filter-remove', function() {
         $('#search-input').val('').attr('placeholder', 'Search...');
         table.ajax.reload();
@@ -1029,12 +1036,21 @@ $(document).ready(function() {
 
     function updateRemoveTagButton2() {
         var $tag = $('.tag');
+        // Ensure the icon appears only once at the beginning
+        if ($tag.find('.fa-list').length === 0) {
+            $tag.prepend('<a href="#" class="setting-icon">' +
+            '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+            '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+            '</a>'
+        );
+        }
         if ($tag.find('.tag-item').length > 0) {
             if ($('.remove-tag').length === 0) {
                 $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
             }
         } else {
             $('.remove-tag').remove();
+            $('.icon_tag').remove();
         }
     }
 
@@ -1070,7 +1086,7 @@ $(document).ready(function() {
 
         } else {        
             // Add new tag with filter icon and close button
-            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag">×</span></span>';
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag" style="cursor:pointer">×</span></span>';
 
             // If no tags exist, create the tag container
             if ($tag.length === 0) {
@@ -1304,149 +1320,7 @@ $(document).ready(function() {
                 $('#search-dropdown').hide();
             }
         });
-
-        $('#creationDateBtn').on('click', function(event) {
-            event.preventDefault();
-
-            // Toggle the dropdown visibility
-            $('#creationDateDropdown').slideToggle();
-
-            // Toggle the arrow rotation
-            $(this).find('.arrow-icon').toggleClass('rotate');
-
-            let selectedTags = [];
-            if ($('.tag-item').length > 0) {
-                $('.tag-item').each(function() {
-                    selectedTags.push($(this).data('value'));
-                });
-            }
-
-            // If selectedTags is not empty, call the filter function
-            if (selectedTags.length > 0) {
-                filter(selectedTags);
-            } else {
-                console.log('No tags selected');
-            }
-
-            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
-            $('.o_dropdown_content').not('#creationDateDropdown').slideUp();
-            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
-        });
-
-        // Optional: Close the dropdown if clicking outside of it
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.o_accordion').length) {
-                $('#creationDateDropdown').slideUp();
-                $('.o_menu_item .arrow-icon').removeClass('rotate');
-            }
-        });
-        $('#closeDateBtn').on('click', function(event) {
-            event.preventDefault();
-
-            // Toggle the dropdown visibility
-            $('#closeDateDropdown').slideToggle();
-
-            // Toggle the arrow rotation
-            $(this).find('.arrow-icon').toggleClass('rotate');
-
-            let selectedTags = [];
-            if ($('.tag-item').length > 0) {
-                $('.tag-item').each(function() {
-                    selectedTags.push($(this).data('value'));
-                });
-            }
-
-            // If selectedTags is not empty, call the filter function
-            if (selectedTags.length > 0) {
-                filter(selectedTags);
-            } else {
-                console.log('No tags selected');
-            }
-
-            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
-            $('.o_dropdown_content').not('#closeDateDropdown').slideUp();
-            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
-        });
-
-        // Optional: Close the dropdown if clicking outside of it
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.o_accordion').length) {
-                $('#closeDateDropdown').slideUp();
-                $('.o_menu_item .arrow-icon').removeClass('rotate');
-            }
-        });
-
-        //---------------------- second ---------------
-        $('#creationDateBtn1').on('click', function(event) {
-            event.preventDefault();
-
-            // Toggle the dropdown visibility
-            $('#creationDateDropdown1').slideToggle();
-
-            // Toggle the arrow rotation
-            $(this).find('.arrow-icon').toggleClass('rotate');
-
-            {{-- let selectedTags = [];
-            if ($('.tag-item').length > 0) {
-                $('.tag-item').each(function() {
-                    selectedTags.push($(this).data('value'));
-                });
-            }
-
-            // If selectedTags is not empty, call the filter function
-            if (selectedTags.length > 0) {
-                filter(selectedTags);
-            } else {
-                console.log('No tags selected');
-            } --}}
-
-            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
-            $('.o_dropdown_content').not('#creationDateDropdown1').slideUp();
-            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
-        });
-
-        // Optional: Close the dropdown if clicking outside of it
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.o_accordion').length) {
-                $('#creationDateDropdown1').slideUp();
-                $('.o_menu_item .arrow-icon').removeClass('rotate');
-            }
-        });
-        $('#closeDateBtn1').on('click', function(event) {
-            event.preventDefault();
-
-            // Toggle the dropdown visibility
-            $('#closeDateDropdown1').slideToggle();
-
-            // Toggle the arrow rotation
-            $(this).find('.arrow-icon').toggleClass('rotate');
-
-            let selectedTags = [];
-            if ($('.tag-item').length > 0) {
-                $('.tag-item').each(function() {
-                    selectedTags.push($(this).data('value'));
-                });
-            }
-
-            // If selectedTags is not empty, call the filter function
-            if (selectedTags.length > 0) {
-                filter(selectedTags);
-            } else {
-                console.log('No tags selected');
-            }
-
-            // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
-            $('.o_dropdown_content').not('#closeDateDropdown1').slideUp();
-            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
-        });
-
-        // Optional: Close the dropdown if clicking outside of it
-        $(document).on('click', function(event) {
-            if (!$(event.target).closest('.o_accordion').length) {
-                $('#closeDateDropdown1').slideUp();
-                $('.o_menu_item .arrow-icon').removeClass('rotate');
-            }
-        });
+        
 
         // Send selected tags to the server and process response
         function filter(selectedTags) {
@@ -1931,66 +1805,96 @@ $(document).ready(function() {
     storeLead();
 
 </script>
+
 <script>
-    $(document).ready(function() {
+     $(document).ready(function () {
         // Show the dropdown when the input field is clicked
-        $('#search-input').on('click', function() {
+        $('#search-input').on('click', function () {
             $('#search-dropdown').show();
+            $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+            $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
         });
 
         // Add selected value to the input field and hide the dropdown
-        $(document).on('click', '#search-dropdown .o-dropdown-item', function() {
-            // var selectedValue = $(this).text().trim();
-            // $('#search-input').val(selectedValue);
+        $(document).on('click', '#search-dropdown .o-dropdown-item', function () {
             $('#search-dropdown').hide();
+            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change back to down arrow
         });
 
         // Hide dropdown when clicking outside
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown, .o_searchview_dropdown_toggler').length) {
                 $('#search-dropdown').hide();
+                $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change back to down arrow
+                $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false'); // Update aria-expanded
+            }
+        });
+
+        // Toggle dropdown on arrow click
+        $('.o_searchview_dropdown_toggler').click(function (event) {
+            event.stopPropagation(); // Prevent click event from bubbling up
+            const dropdown = $('#search-dropdown');
+            const isExpanded = $(this).attr('aria-expanded') === 'true';
+
+            // Toggle the dropdown visibility
+            dropdown.toggle();
+            $(this).attr('aria-expanded', !isExpanded);
+
+            // Change the arrow direction
+            if (isExpanded) {
+                $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
+            } else {
+                $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+            }
+        });
+
+        // Toggle Creation Date Dropdown
+        $('#creationDateBtn, #creationDateBtn1').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#creationDateDropdown1' : '#creationDateDropdown';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns, except creation date dropdown
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Toggle Closed Date Dropdown
+        $('#closeDateBtn, #closeDateBtn1').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#closeDateDropdown1' : '#closeDateDropdown';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Toggle Conversion Date &  Expected Date Dropdown
+        $('#conversionBtn, #expectedBtn').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#conversionDate' : '#cxpectedClosing';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Close dropdowns if clicking outside of the dropdowns
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.o_accordion, .o_dropdown_container').length) {
+                $('.o_dropdown_content').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
             }
         });
     });
-
-</script>
-
-<script>
- $(document).ready(function() {
-      // Toggle dropdown on arrow click
-      $('.o_searchview_dropdown_toggler').click(function(event) {
-          event.stopPropagation(); // Prevent click event from bubbling up
-          const dropdown = $('#search-dropdown');
-          const isExpanded = $(this).attr('aria-expanded') === 'true';
-          
-          // Toggle the dropdown visibility
-          dropdown.toggle(); 
-          $(this).attr('aria-expanded', !isExpanded);
-          
-          // Change the arrow direction
-          if (isExpanded) {
-              $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
-          } else {
-              $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
-          }
-      });
-  
-      // Open dropdown when clicking on search input
-      $('#search-input').on('focus', function() {
-          $('#search-dropdown').show(); // Show dropdown on focus
-          $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
-          $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
-      });
-  
-      // Close dropdown when clicking outside
-      $(document).click(function(event) {
-          if (!$(event.target).closest('.o_cp_searchview').length) {
-              $('#search-dropdown').hide();
-              $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false');
-              $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Reset to down arrow
-          }
-      });
-  });
 </script>
 
 
