@@ -1153,7 +1153,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var $tag = $('.tag');
             // Ensure the icon appears only once at the beginning
             if ($tag.find('.fa-list').length === 0) {
-                $tag.prepend('<a href="#" class="setting-icon">' +
+                $tag.prepend('<a href="#" class="setting-icon icon_tag">' +
                     '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
                     '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                     '</a>'
