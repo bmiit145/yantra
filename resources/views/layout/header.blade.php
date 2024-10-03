@@ -162,6 +162,9 @@
                             ->whereHas('getLead', function ($query) {
                                 $query->where('is_lost', '1');
                             })
+                            ->orWhereHas('getPipeline', function ($query) {
+                                    $query->where('is_lost', '1');
+                                })
                             ->get(); // Execute the query to get results
 
                         $now = Carbon::now()->startOfDay(); // Current day
@@ -189,10 +192,17 @@
                         }
 
                         $allActivityCount = Activity::where('status', '0')
-                            ->whereHas('getLead', function ($query) {
-                                $query->where('is_lost', '1');
-                            })
-                            ->count();                            
+                                ->whereHas('getLead', function ($query) {
+                                    $query->where('is_lost', '1');
+                                })
+                                ->orWhereHas('getPipeline', function ($query) {
+                                    $query->where('is_lost', '1');
+                                })
+                                ->where(function ($query) {
+                                    $query->where('due_date', '<', now()->startOfDay())  // Overdue
+                                        ->orWhere('due_date', now()->format('Y-m-d')); // Due today
+                                })
+                                ->count();                          
                     @endphp
 
                     <li id="myTrigger">
@@ -216,15 +226,34 @@
                             data-model_name="crm.lead"><img alt="Activity" src="{{asset('images/CRM.png')}}" h`eight="42" width="42">
                             <div class="flex-grow-1 overflow-hidden">
                                 <div class="d-flex px-2" name="activityTitle">Lead/Opportunity</div>
-                                <div class="d-flex"><span class="btn btn-link py-0 px-2 text-truncate" style="color:#017e84;">{{ $lateCount }} Late
-                                    </span><span class="btn btcolornk py-0 px-2 text-truncate" style="color:#017e84;">{{ $todayCount }} Today </span><span
-                                        class="flex-grow-1"></span><span class="btn btn-link py-0 px-2 text-truncate" style="color:#017e84;">{{ $futureCount }}
-                                        Future </span></div>
+                                <div class="d-flex">
+                                    <!-- <span class="btn btn-link py-0 px-2 text-truncate" style="color:#017e84;">{{ $lateCount }} Late</span> -->
+                                    <span class="btn btn-link py-0 px-2 text-truncate" id="filterLate" style="color:#017e84;">{{ $lateCount }} Late</span>
+                                    <span class="btn btcolornk py-0 px-2 text-truncate"  id="filterToday" style="color:#017e84;">{{ $todayCount }} Today </span>
+                                    <span class="flex-grow-1"></span>
+                                    <span class="btn btn-link py-0 px-2 text-truncate" id="filterFuture" style="color:#017e84;">{{ $futureCount }}Future </span></div>
                             </div>
                         </div>
                         <a href="{{route('lead.allActivities')}}" style="color:black !important;" class="list-group-item list-group-item-action p-2 border-0 text-primary text-center"> View all activities </a>
                         <a href="#" style="color:black !important;" class="o_sys_documents_request list-group-item list-group-item-action p-2 border-0 text-primary text-center"> Request a Document </a>
                     </div>
+                    <script>
+                        $(document).ready(function () {
+                            $('#filterLate').on('click', function () {
+                                window.location.href = "{{ route('lead.allActivities') }}?filterType=late";
+                            });
+
+                            // Event handler for the Today filter
+                            $('#filterToday').on('click', function () {
+                                window.location.href = "{{ route('lead.allActivities') }}?filterType=today";
+                            });
+
+                            // Event handler for the Future filter
+                            $('#filterFuture').on('click', function () {
+                                window.location.href = "{{ route('lead.allActivities') }}?filterType=future";
+                            });
+                        });
+                    </script>
                     <li><a href="#"><svg xmlns="http://www.w3.org/2000/svg"
                                 style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
                                 version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" x="0"
@@ -234,7 +263,7 @@
                                     <path
                                         d="M349.899 313.5v-.3c-7.5-7.8-15.599-15.601-25.199-23.101 65.4-20.7 101.999-70.499 101.999-140.4 0-62.999-33.3-116.1-84.6-135.901C317.501 4.499 280.299 0 228.099 0H35.5v512h124.2V309.899c36.711 0 34.854 5.895 47.999 20.101 15.312 16.735 67.089 98.459 120.901 182h147.9c-60.864-101.473-104.654-174.391-126.601-198.5zM159.7 111.299c26.206-.084 92.305-.437 104.099 1.201 23.701 4.2 35.7 18.6 35.7 43.2 0 21.599-9 36.299-26.1 42.299-19.349 6.912-86.441 4.801-113.699 4.801z"
                                         fill="#00a5a8" opacity="1" data-original="#000000" class=""></path>
-                                </g>
+                                </g>c
                             </svg></a></li>
                 </ul>
             </div>

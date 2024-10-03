@@ -267,13 +267,13 @@
                 class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
         <div class="dropdown-divider" role="separator"></div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"  id="filterOverdue"><span class="float-end checkmark"
                 style="display:none;">✔</span>Overdue</span>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterToday"><span class="float-end checkmark"
                 style="display:none;">✔</span>Today</span>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterFuture"><span class="float-end checkmark"
                 style="display:none;">✔</span>Future</span>
         <div class="dropdown-divider" role="separator"></div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate done" role="menuitemcheckbox"
@@ -461,6 +461,8 @@
 <script>
     $(document).ready(function () {
         // Initialize DataTable with server-side processing
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterType = urlParams.get('filterType') || '';
         var table = $('#example').DataTable({
             processing: true
             , serverSide: true,
@@ -472,7 +474,8 @@
                     d.search = {
                         value: $('#example_filter input').val()
                     };
-                    d.filter = $('#filter').val();
+                    // d.filter = $('#filter').val();
+                    d.filterType = filterType;
                 }
             }
             , order: [
@@ -481,14 +484,18 @@
             , pageLength: 10
             , aoColumns: [
                 {
-                    data: 'get_lead'
-                    , render: function (data, type, row) {
-                        if (data) {
-                            return data.product_name;
-                        } else {
-                            return '';
+                    data: 'get_lead',
+                        render: function (data, type, row) {
+                            if (data && data.product_name) {
+                                return data.product_name;
+                            } 
+                            else if (row.get_pipeline && row.get_pipeline.opportunity) {
+                                return row.get_pipeline.opportunity;
+                            } 
+                            else {
+                                return '';
+                            }
                         }
-                    }
                 }
                 , {
                     data: 'activity_type',
@@ -583,7 +590,7 @@
             }
 
 
-        });
+        });        
 
         $('#example').on('click', '.mark-done', function () {
             var id = $(this).data('id');
@@ -1350,7 +1357,7 @@
                             if (selectedTags.includes('Done') && item.status == '1') {
                                 var rowHtml = `
                                 <tr class="lead-row" data-id="${item.id}">
-                                    <td>${item.get_lead.product_name || ''}</td>
+                                    <td>${item.get_lead.product_name || item.get_pipeline.opportunity ||''}</td>
                                     <td>${item.activity_type || ''}</td>
                                     <td>${item.get_user.email || ''}</td>
                                     <td>${item.summary || ''}</td>
@@ -1363,7 +1370,7 @@
                             } else if (!selectedTags.includes('Done') && item.status != '1') {
                                 var rowHtml = `
                                 <tr class="lead-row">
-                                    <td>${item.get_lead.product_name || ''}</td>
+                                    <td>${item.get_lead.product_name || item.get_pipeline.opportunity || ''}</td>
                                     <td>${item.activity_type || ''}</td>
                                     <td>${item.get_user.email || ''}</td>
                                     <td>${item.summary || ''}</td>
@@ -1393,6 +1400,50 @@
             });
         }
     });
+
+    $(document).ready(function () {
+    // Get filterType from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterType = urlParams.get('filterType') || '';
+
+    // Pre-select the filter based on the filterType and set the search input value
+    if (filterType) {
+        switch (filterType) {
+            case 'late':
+                $('#filterOverdue').addClass('selected'); // Add the selected class
+                $('#filterOverdue .checkmark').show(); // Show checkmark
+                $('#searchInput').val('Late'); // Set the input value
+                break;
+            case 'today':
+                $('#filterToday').addClass('selected');
+                $('#filterToday .checkmark').show();
+                $('#searchInput').val('Today'); // Set the input value
+                break;
+            case 'future':
+                $('#filterFuture').addClass('selected');
+                $('#filterFuture .checkmark').show();
+                $('#searchInput').val('Future'); // Set the input value
+                break;
+        }
+    }
+
+    // Click event handlers for filters
+    $('.activities').on('click', function () {
+        const filterValue = $(this).text().trim().toLowerCase(); // Get filter text
+        const filterTypeMap = {
+            "overdue": "late",
+            "today": "today",
+            "future": "future"
+        };
+
+        // Redirect to the same route with the selected filter
+        if (filterTypeMap[filterValue]) {
+            window.location.href = "{{ route('lead.allActivities') }}?filterType=" + filterTypeMap[filterValue];
+        }
+    });
+
+    // Other initialization code for your table, etc.
+});
 </script>
 
 

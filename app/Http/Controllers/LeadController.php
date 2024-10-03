@@ -595,7 +595,7 @@ class LeadController extends Controller
     }
 
     public function activitiesUpdate(Request $request)
-    {
+    {        
         $data = $request->all();
 
         // Find the activity by ID and update it

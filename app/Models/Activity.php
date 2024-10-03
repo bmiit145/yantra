@@ -47,4 +47,9 @@ class Activity extends Model
     {
         return $this->hasOne(User::class, 'id', 'assigned_to');
     }
+
+    public function getPipeline()
+    {
+        return $this->hasOne(Sale::class, 'id', 'pipeline_id');
+    }
 }

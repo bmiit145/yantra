@@ -1467,7 +1467,7 @@
                                                     <h5 class="modal-title" id="editModalLabel">Edit Activity</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <fo id="editForm" action="" method="POST">
+                                                <form id="editForm" action="" method="POST">
                                                 <input type="hidden" id="edit_activity_id" name="id">
                                                 <div class="modal-body">
                                                     <div class="row col-md-12">
@@ -3170,6 +3170,7 @@
             var source_id_0 = $('#source_id_0').val();
             var referred_0 = $('#referred_0').val();
             var internal_notes = $('#description').val();
+            var partner_name_0 = $('#partner_name_0').val();
            
 
             // Validate fields
@@ -3242,7 +3243,8 @@
                         medium_id_0: medium_id_0,
                         source_id_0: source_id_0,
                         referred_0: referred_0,
-                        internal_notes : internal_notes
+                        internal_notes : internal_notes,
+                        partner_name_0 : partner_name_0
                     },
                     success: function(response) {
                         toastr.success(response.message);
@@ -3434,6 +3436,8 @@
 
         // Handle form submission
         $('#editForm').on('submit', function(e) {
+            console.log('jjjjjjjjjjj');;
+            
             e.preventDefault();
 
             const formData = $(this).serializeArray();
@@ -3491,7 +3495,7 @@
 
         // Reset form when modal is hidden
         $('#editModal').on('hidden.bs.modal', function() {
-            $('#editForm')[0].reset();
+            $('#editForm')[0].reset(); // Reset the form
             // Additional logic to reset other elements or states if necessary
         });
 

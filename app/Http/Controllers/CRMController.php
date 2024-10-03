@@ -216,7 +216,8 @@ class CRMController extends Controller
 
     public function pipelineList()
     {
-        return view('CRM.crmlist');
+        $data = Sale::all();
+        return view('CRM.crmlist',compact('data'));
     }
 
     public function pipelineListData(Request $request)

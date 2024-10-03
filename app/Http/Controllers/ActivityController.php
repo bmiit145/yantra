@@ -54,8 +54,13 @@ class ActivityController extends Controller
 
         // Build Query
         $query = Activity::where('status', '0')
-            ->whereHas('getLead', function ($query) {
-                $query->where('is_lost', '1');
+            ->where(function ($query) {
+                $query->whereHas('getLead', function ($query) {
+                    $query->where('is_lost', '1');
+                })
+                ->orWhereHas('getPipeline', function ($query) {
+                    $query->where('is_lost', '1');
+                });
             });
 
         // Determine Order By Column
@@ -80,6 +85,25 @@ class ActivityController extends Controller
         }
         $query = $query->orderBy($orderByName, $orderBy);
 
+        $currentDate = date("Y-m-d");
+         // Apply filter based on filterType
+         if (isset($request->filterType)) {
+            switch ($request->filterType) {
+                case 'today':
+                    // Only includes today's activities
+                    $query->whereDate('due_date', $currentDate);
+                    break;
+                case 'late':
+                    // Only includes activities due before today (i.e., overdue)
+                    $query->where('due_date', '<', $currentDate);
+                    break;
+                case 'future':
+                    // Activities due after today
+                    $query->where('due_date', '>', $currentDate);
+                    break;
+            }
+        }
+
         // Get Total Records
         $recordsTotal = $query->count();
 
@@ -87,7 +111,7 @@ class ActivityController extends Controller
         $recordsFiltered = $recordsTotal; // Will be updated after applying search
 
         // Get Paginated Results
-        $activity = $query->with('getLead', 'getUser')->skip($skip)->take($pageLength)->get();
+        $activity = $query->with('getLead', 'getUser','getPipeline')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -140,7 +164,7 @@ class ActivityController extends Controller
     }
 
     public function activityFilter(Request $request)
-    {
+    {        
         // Get all tags from the request
         $tags = $request->tags ?? [];
 
@@ -154,6 +178,7 @@ class ActivityController extends Controller
 
         // Start building the query
         $leadsQuery = Activity::query();
+        dd($leadsQuery);
 
         // Apply status filters
         $leadsQuery->where(function ($query) use ($includeOverdue, $includeToday, $includeFuture, $includeDone) {
@@ -172,7 +197,7 @@ class ActivityController extends Controller
 
             if ($includeFuture) {
                 $query->orWhere(function ($query) {
-                    $query->where('status', '0')->where('due_date', '>', now());
+                    $query->where('status', '0')->where('due_date', '>', now()->format('Y-m-d'));
                 });
             }
 

@@ -1021,7 +1021,12 @@
             });
         });
     });
+
+</script>
+
+<script>
     $(document).ready(function() {
+
         $('.activityButton').on('click', function(e) {
             e.preventDefault(); // Prevent any default action
             
@@ -1043,12 +1048,7 @@
                 $('.activityPopover').addClass('d-none'); // Hide all popovers if clicked outside
             }
         });
-    });
 
-</script>
-
-<script>
-    $(document).ready(function() {
         function toggleFeedback(targetDiv) {
             $(targetDiv).toggleClass('d-none');
         }
@@ -1099,11 +1099,13 @@
             var targetDiv = $(this).data('target');
             $(targetDiv).addClass('d-none');
         });
-        
-        $(document).on('click', '.o-mail-ActivityListPopoverItem-editbtn', function(e) {
-    e.stopPropagation(); // Stop the event from bubbling up
-    console.log('Button clicked!');
-});
+
+        $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function(event) {
+            event.stopPropagation(); // Prevent click from closing the popover
+            var activityId = $(this).closest('[data-id]').data('id'); // Get the ID from the parent
+            console.log('Edit activity ID:', activityId);
+            // Here you could open a modal or an edit form for this activity
+        });
     });
 </script>
 @endpush
