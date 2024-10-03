@@ -443,27 +443,14 @@
         /* Rotate the arrow */
     }
 
-    .tag {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
-
-    .tag1 {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
+    .tag,.tag1 {
+    display: inline-block;
+    padding: 3px 10px;
+    background-color: #E0E0E0;
+    border-radius: 8px;
+    font-size: 14px;
+    margin: 5px 0;
+}
     .tag5 {
         display: inline-block;
         padding: 5px 10px;
@@ -475,9 +462,9 @@
         left: 5px;
     }
 
-    .remove-tag {
-        margin-left: 5px;
-        cursor: pointer;
+    .remove-tag,span.remove-lost-tag {
+        font-size: 22px;
+        line-height: 0;
     }
 
     .tag-input-container {
@@ -617,7 +604,8 @@
                                     <div class="dropdown-checkbox">
                                         <label><input type="checkbox" data-column="19" checked> Sales Team</label>
                                     </div>
-                                </div></th>
+                                </div>
+                            </th>
                 </tr>
             </thead>
             <tbody id="lead-table-body"> 
@@ -694,31 +682,105 @@
 {{-- <script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
 
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
     var table = $('#example').DataTable( {
         "pageLength": 25,
-        searching: false,
-         "lengthChange": false,
+        searching: true,
+        "lengthChange": false,
         "sDom": 'Rlfrtip',
         "oColReorder": {
             "bAddFixed":true
         },
 
     });
-     $('#example tbody').on('click', 'tr', function() {
-            var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-            if (id) {
-                window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+
+
+
+    $('#example tbody').on('click', 'tr', function() {
+        var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+        if (id) {
+            window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+        }
+    });
+    // Handle filter click event
+    {{-- $('.o_menu_item').on('click', function() {
+        var filter = $(this).attr('id'); // Get the filter ID
+        $('#filter').val(filter); // Set the filter value
+        table.ajax.reload(); // Reload the DataTable with new filter
+    }); --}}
+    function filterData(selectedTags) {
+        $.ajax({
+            url: '{{route('lead.activities')}}', // Your endpoint for fetching leads
+            method: 'GET',
+            data: {
+                tags: selectedTags
+                // Include other parameters if needed
+            },
+            success: function(response) {
+                var $tableBody = $('#lead-table-body');
+
+                // Clear existing table data
+                $tableBody.empty();
+
+                // Check if response contains data
+            
+                    // Loop through the response and create table rows
+                    response.data.forEach(function(item) {
+
+                        var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                        // Append data only for the visible columns
+                        if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
+                        if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                        if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                        if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
+                        if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
+                        if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
+                        if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                        if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
+                        if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
+                        if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
+                        if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
+                        if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                        if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
+                        if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                        if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
+                        if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                        if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
+                        if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
+                        if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
+                        if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                        if (table.column(20).visible()) rowHtml += `<td></td>`;
+
+                        rowHtml += `</tr>`;
+                        $tableBody.append(rowHtml);
+                    });
+
+                    // Attach click event handler to rows
+                    $('#lead-table-body .lead-row').on('click', function() {
+                        var leadId = $(this).data('id');
+                        window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                    });
+
+                    // Apply the column visibility settings
+                    table.columns().every(function() {
+                        var column = this;
+                        var index = column.index();
+                        var isVisible = column.visible();
+                        column.visible(isVisible);
+                    });
+
+               
+            },
+            error: function() {
+                console.error('Failed to fetch data');
             }
         });
-        // Handle filter click event
-        $('.o_menu_item').on('click', function() {
-            var filter = $(this).attr('id'); // Get the filter ID
-            $('#filter').val(filter); // Set the filter value
-            table.ajax.reload(); // Reload the DataTable with new filter
-        });
-        // Restore column visibility from local storage
-           function saveColumnVisibility() {
+    }
+
+
+    // Restore column visibility from local storage
+    function saveColumnVisibility() {
         var visibility = {};
         table.columns().every(function() {
             var column = this;
@@ -727,7 +789,7 @@
         });
         localStorage.setItem('columnVisibility', JSON.stringify(visibility));
     }
-    // Restore column visibility from localStorage
+
     function restoreColumnVisibility() {
         var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
         if (visibility) {
@@ -766,9 +828,10 @@
                     table.column(17).visible(false);
                     table.column(18).visible(true);
                     table.column(19).visible(true);
+                    table.column(20).visible(true);
         }
     }
-    // Handle column visibility based on checkbox status
+
     $('.dropdown-menu input[type="checkbox"]').on('change', function() {
         var columnIndex = $(this).data('column');
         var column = table.column(columnIndex);
@@ -778,43 +841,43 @@
             saveColumnVisibility(); // Save visibility to local storage
         }
     });
-    // Restore visibility states on page load
+
     restoreColumnVisibility();
-    // Handle dropdown menu display
+
     $(document).on('click', '.dropdown-btn', function(event) {
-        event.stopPropagation(); // Prevent click event from propagating to the document
-        $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
-        $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
+        event.stopPropagation(); 
+        $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); 
+        $(this).next('.dropdown-menu').toggle(); 
     });
+
+
+
     $(document).on('click', function(event) {
         if (!$(event.target).closest('.dropdown-menu').length) {
-            $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
+            $('.dropdown-menu').hide(); 
         }
     });
-        // Remove all tags
-        $(document).on('click', '.remove-tag', function() {
-            $('.tag').remove();
-            $('.checkmark').hide();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-            $('#filter').val(''); // Clear the filter value
-            table.ajax.reload();
-        });
-        $(document).on('click', '.custom-filter-remove', function() {
-            $('#search-input').val('').attr('placeholder', 'Search...');
-            table.ajax.reload();
-        });
-        // CSRF token setup for AJAX requests
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        
+    $(document).on('click', '.remove-tag', function() {
+        $('.tag').remove();
+        $('.checkmark').hide();
+        $('#search-input').val('').attr('placeholder', 'Search...');
+        $('#filter').val(''); // Clear the filter value
+        table.ajax.reload();
     });
+    $(document).on('click', '.custom-filter-remove', function() {
+        $('#search-input').val('').attr('placeholder', 'Search...');
+        table.ajax.reload();
+    });
+        // CSRF token setup for AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
 
 
-</script>
-
-<script>
     $(document).ready(function() {
         // Initialize the Bootstrap modal
         var customFilterModal = new bootstrap.Modal(document.getElementById('customFilterModal'));
@@ -880,11 +943,7 @@
 
     });
 
-</script>
 
-{{-- ------------------ lost_span & activities  --------------------- --}}
-
-<script>
     $(document).on('click', '.activities', function(e) {
         e.stopPropagation();
         var $item = $(this);
@@ -896,6 +955,7 @@
     
     function handleTagSelection2(selectedValue, $item = null) {
         
+      
         var $tag = $('.tag');
         var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
@@ -920,7 +980,7 @@
             
             // Check if a tag container exists, if not, create one
             if ($tag.length === 0) {
-                $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
+                $('#search-input').before('<span class="tag">'  + newTagHtml + '</span>');
             } else {
                 $tag.append(' & ' + newTagHtml);
             }
@@ -1098,71 +1158,9 @@
         $('.activities .checkmark').hide();
     });
 
-    function filterData(selectedTags) {
-        $.ajax({
-            url: '{{route('lead.activities')}}', // Your endpoint for fetching leads
-            method: 'GET'
-            , data: {
-                tags: selectedTags
-                // Include other parameters if needed
-            }
-            , success: function(response) {
-                var $tableBody = $('#lead-table-body');
 
-                // Clear existing table data
-                $tableBody.empty();
 
-                // Check if response contains data
-                if (response.success && response.data && response.data.length > 0) {
-                    // Loop through the response and create table rows
-                    response.data.forEach(function(item) {
-                        var rowHtml = `
-                            <tr class="lead-row" data-id="${item.id}">
-                                <td>${item.product_name || ''}</td>
-                                <td>${item.email || ''}</td>
-                                <td>${item.city || ''}</td>
-                                <td>
-                                    ${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}
-                                </td>
-                                <td>
-                                    ${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}
-                                </td>
-                                <td>${item.zip || ''}</td>
-                                <td>${item.probability || ''}</td>
-                                <td>${item.company_name || ''}</td>
-                                <td>${item.address_1 || ''}</td>
-                                <td>${item.address_2 || ''}</td>
-                                <td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>
-                                <td>${item.contact_name || ''}</td>
-                                <td>${item.job_position || ''}</td>
-                                <td>${item.phone || ''}</td>
-                                <td>${item.mobile || ''}</td>
-                                <td>${item.priority || ''}</td>
-                                <td>${item.title ? (item.get_tilte?.title || '') : ''}</td>
-                                <td>${item.tag || ''}</td>
-                                <td>${item.get_user?.email || ''}</td>
-                                <td>${item.sales_team || ''}</td>
-                            </tr>
-                        `;
-                        $tableBody.append(rowHtml);
-                    });
-
-                     // Attach click event handler to rows
-                    $('#lead-table-body .lead-row').on('click', function() {
-                        var leadId = $(this).data('id');
-                        window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
-                    });
-                } else {
-                    // If no data, show a message or keep it empty
-                    $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
-                }
-            }
-            , error: function() {
-                // Handle errors here
-                console.error('Failed to fetch data');
-            }
-        });
-    }
+});
 
 </script>
 
@@ -1388,7 +1386,7 @@
             // Toggle the arrow rotation
             $(this).find('.arrow-icon').toggleClass('rotate');
 
-            let selectedTags = [];
+            {{-- let selectedTags = [];
             if ($('.tag-item').length > 0) {
                 $('.tag-item').each(function() {
                     selectedTags.push($(this).data('value'));
@@ -1400,7 +1398,7 @@
                 filter(selectedTags);
             } else {
                 console.log('No tags selected');
-            }
+            } --}}
 
             // Close other dropdowns and reset arrows (optional, if there are multiple accordions)
             $('.o_dropdown_content').not('#creationDateDropdown1').slideUp();
