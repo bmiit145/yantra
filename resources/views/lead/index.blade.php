@@ -301,6 +301,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             <span>Match</span><span class="px-1">any</span><span>of the following rules:</span>
                         </div>
                         <div id="rulesContainer" class="mt-2">
+                            <input type="hidden"  id="span_id">
                             <!-- Initial rule row -->
                             <div class="rule-row mt-2 row">
                                 <div class="col-md-3">
@@ -523,7 +524,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     }
 
     .tag,
-    .tag1 {
+    .tag1 , .tag5{
         display: inline-block;
         padding: 0px 10px 0px 0;
         background-color: #E0E0E0;
@@ -533,19 +534,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         position: relative;
     }
 
-    .tag5 {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
 
     .remove-tag,
-    span.remove-lost-tag {
+    span.remove-lost-tag,.custom-filter-remove {
         font-size: 22px;
         line-height: 0;
     }
@@ -1101,8 +1092,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
 
                 // Check if a tag container exists, if not, create one
+                var index = 0;
                 if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
+                    $('#search-input').before('<span class="tag" data-span_id="' + (index++) + '" >' + newTagHtml + '</span>');
                 } else {
                     $tag.append(' & ' + newTagHtml);
                 }
@@ -1151,11 +1143,13 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function updateRemoveTagButton2() {
             var $tag = $('.tag');
+            var index = 0;
             // Ensure the icon appears only once at the beginning
-            if ($tag.find('.fa-list').length === 0) {
-                $tag.prepend('<a href="#" class="setting-icon icon_tag">' +
-                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+          if ($tag.find('.fa-list').length === 0) {
+            var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '""  class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  data-span_id="' + currentIndex + '""  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                     '</a>'
                 );
             }
@@ -1201,12 +1195,15 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
             } else {
                 if ($tag.length === 0) {
+                    var index = 0;
                     // Add both the setting icon and tag container together
+            var currentIndex = index++;
+
                     $('#search-input').before(
                         '<div class="tag1">' +
-                        '<a href="#" class="setting-icon">' +
+                        '<a href="#" data-span_id="' + currentIndex + '"" class="setting-icon">' +
                         '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                        '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                        '<span  class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
                         '</a>' +
                         '<span class="tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
@@ -1306,9 +1303,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     });
 
     $(document).on('click', '.setting-icon', function(e) {
-    e.preventDefault();
-    $('#customFilterModal').modal('show'); // Open the modal
-});
+        e.preventDefault();
+        var id = $(this).data('span_id');
+        console.log(id, 'span_id');
+        $('#span_id').val(id); 
+        $('#customFilterModal').modal('show'); 
+    });
 
 </script>
 
@@ -1365,9 +1365,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
             } else {
                 // Add selected value
+                var index = 0;  
                 var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
                 if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
+                    $('#search-input').before('<span class="tag" data-span_id="' + (index++) + '" >' + newTagHtml + '</span>');
                 } else {
                     $tag.append(' > ' + newTagHtml);
                 }
@@ -1768,8 +1769,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var filterType = $('#customer_filter_select').val();
             var filterValue = $('#customer_filter_input_value').val();
             var operatesValue = $('#customer_filter_operates').val();
+            var span_id = $('#span_id').val();
 
-            handleTagSelection(filterType, operatesValue, filterValue);
+            handleTagSelection(filterType, operatesValue, filterValue, span_id);
 
             // Prepare data to send
             var data = {
@@ -1842,31 +1844,40 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $('#customFilterModal').modal('hide');
         });
 
-        function handleTagSelection(filterType, operatesValue, filterValue) {
-            var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
-            var $tag = $('.tag5');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+       function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
+        var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
+        var $tag = $('.tag5');
+        var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
-            if ($tagItem.length > 0) {
-                $tagItem.remove();
-                updateTagSeparators();
+        // Find the setting-icon tag with the specific span_id and remove it
+        var $iconTag = $('span.tag[data-span_id="' + span_id + '"]');
 
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-            } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
-                } else {
-                    $tag.html(newTagHtml); // Overwrite with new tag
-                }
-                $('#search-input').val('').attr('placeholder', '');
-            }
-
+        if ($tagItem.length > 0) {
+            $tagItem.remove();
             updateTagSeparators();
+
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+        } else {
+            var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
+            if ($tag.length === 0) {
+                $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
+            } else {
+                $tag.html(newTagHtml); // Overwrite with new tag
+            }
+            $('#search-input').val('').attr('placeholder', '');
         }
+
+        // Remove the setting-icon tag using the span_id
+        if ($iconTag.length > 0) {
+            $iconTag.remove(); // This removes the <a> tag with the matching span_id
+        }
+
+        updateTagSeparators();
+    }
+
 
         function updateTagSeparators() {
             var $tag = $('.tag5');
@@ -1884,12 +1895,22 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function updateRemoveTagButton() {
             var $tag = $('.tag5');
+            var index = 0;
+            if ($tag.find('.fa-list').length === 0) {
+            var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '""  class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  data-span_id="' + currentIndex + '""  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }   
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.custom-filter-remove').length === 0) {
                     $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
                 }
             } else {
                 $('.custom-filter-remove').remove();
+                $('.icon_tag').remove();
             }
         }
 
