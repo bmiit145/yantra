@@ -41,7 +41,7 @@ class LeadController extends Controller
     public function index($id = null)
     {
         // $data = generate_lead::with('tags')->get();
-        $data = generate_lead::all();
+        $data = generate_lead::orderBy('id','DESC')->where('is_lost' ,'1')->get();
 
         // Filter out leads with unique product_name while preserving the first occurrence
         // $data = $datas->groupBy('product_name')->map(function ($group) {
@@ -137,6 +137,20 @@ class LeadController extends Controller
         $countrys = Country::all();
         $tags = Tag::where('tage_type', 2)->get();
         $data = generate_lead::find($id);
+        $allData = generate_lead::where('product_name', $data->product_name)->count();
+        // $getAllLeads = generate_lead::all(); // Use all() instead of get() for better readability
+
+        // // Initialize an array to hold similar leads for each product
+        // $similarLeadsCollection = [];
+
+        // // Step 2: Loop through each lead to find similar leads
+        // foreach ($getAllLeads as $lead) {
+        //     if (isset($lead->product_name)) {
+        //         $similarLeads = generate_lead::where('product_name', $lead->product_name)->count();
+        //         $similarLeadsCollection[$lead->product_name] = $similarLeads;
+        //     }
+        // }
+        // dd($similarLeadsCollection);
         $users = User::orderBy('id', 'DESC')->get();
         if ($data && isset($data->product_name)) {
             $count = generate_lead::where('product_name', $data->product_name)->count();
@@ -259,7 +273,7 @@ class LeadController extends Controller
         }
         $sales_teams = SaleTeam::all();
      
-        return view('lead.creat', compact('titles', 'countrys','sales_teams', 'tags','log_notes', 'data','authfollowers','followers','count','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
+        return view('lead.creat', compact('titles', 'countrys','sales_teams', 'tags','log_notes', 'data','authfollowers','followers','allData','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
     }
 
     public function store(Request $request)
@@ -759,6 +773,7 @@ class LeadController extends Controller
 
     public function activities(Request $request)
     {
+        // dd($request->all());
         // Get all tags from the request
         $tags = $request->tags ?? [];
 
@@ -771,6 +786,11 @@ class LeadController extends Controller
         $includeMyActivities = in_array('My Activities', $normalizedTags);
         $includeUnassigned = in_array('Unassigned', $normalizedTags);
         $includeLost = in_array('Lost', $normalizedTags);
+
+        // Late , Today and Future Activities 
+        $includeLateActivities = in_array('Late Activities', $normalizedTags);
+        $includeTodayActivities = in_array('Today Activities', $normalizedTags);
+        $includeFutureActivities = in_array('Future Activities', $normalizedTags);
 
         // Start building the query
         $leadsQuery = generate_lead::query();
@@ -794,6 +814,47 @@ class LeadController extends Controller
                     $query->orWhereNull('sales_person');
                 }
             });
+        }
+
+        if ($includeLateActivities || $includeTodayActivities || $includeFutureActivities) {
+            $leadsQuery->whereHas('activities', function ($query) use ($includeLateActivities, $includeTodayActivities, $includeFutureActivities) {
+                // Initialize an array to hold the conditions
+                $conditions = [];
+        
+                if ($includeLateActivities) {
+                    $conditions[] = function($q) {
+                        $q->where('due_date', '<', date('Y-m-d'))
+                          ->where('status', 0); // Status for "My Activities"
+                    };
+                }
+        
+                if ($includeTodayActivities) {
+                    $conditions[] = function($q) {
+                        $q->where('due_date', '=', date('Y-m-d'))
+                          ->where('status', 0); // Status for "My Activities"
+                    };
+                }
+        
+                if ($includeFutureActivities) {
+                    $conditions[] = function($q) {
+                        $q->where('due_date', '>', date('Y-m-d'))
+                          ->where('status', 0); // Status for "My Activities"
+                    };
+                }
+        
+                // Apply all conditions using where(function)
+                if (!empty($conditions)) {
+                    $query->where(function ($subQuery) use ($conditions) {
+                        foreach ($conditions as $condition) {
+                            $subQuery->orWhere($condition);
+                        }
+                    });
+                }
+            });
+        }
+
+        if (empty($normalizedTags)) {
+            $leadsQuery->where('is_lost', '1'); // Change this as per your logic
         }
 
         // Always include necessary relationships

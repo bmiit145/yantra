@@ -160,10 +160,10 @@
                         // Fetch all activities
                         $activities = Activity::where('status', '0')
                             ->whereHas('getLead', function ($query) {
-                                $query->where('is_lost', '1');
+                                $query->where('is_lost', '1')->where('status', 0);
                             })
                             ->orWhereHas('getPipeline', function ($query) {
-                                    $query->where('is_lost', '1');
+                                    $query->where('is_lost', '1')->where('status', 0);
                                 })
                             ->get(); // Execute the query to get results
 
@@ -192,17 +192,19 @@
                         }
 
                         $allActivityCount = Activity::where('status', '0')
-                                ->whereHas('getLead', function ($query) {
+                            ->where(function ($query) {
+                                $query->whereHas('getLead', function ($query) {
                                     $query->where('is_lost', '1');
                                 })
                                 ->orWhereHas('getPipeline', function ($query) {
                                     $query->where('is_lost', '1');
-                                })
-                                ->where(function ($query) {
-                                    $query->where('due_date', '<', now()->startOfDay())  // Overdue
-                                        ->orWhere('due_date', now()->format('Y-m-d')); // Due today
-                                })
-                                ->count();                          
+                                });
+                            })
+                            ->where(function ($query) {
+                                $query->where('due_date', '<', now()->startOfDay())  // Overdue
+                                    ->orWhere('due_date', '=', now()->startOfDay()); // Due today
+                            })
+                            ->count();                         
                     @endphp
 
                     <li id="myTrigger">
