@@ -304,7 +304,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             <span>Match</span><span class="px-1">any</span><span>of the following rules:</span>
                         </div>
                         <div id="rulesContainer" class="mt-2">
-                            <input type="hidden"  id="span_id">
                             <!-- Initial rule row -->
                             <div class="rule-row mt-2 row">
                                 <div class="col-md-3">
@@ -527,8 +526,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     }
 
     .tag,
-    .tag1 , .tag5,
-    .LTFtag {
+    .tag1,
+    .LTFtag ,
+     .tag5{
         display: inline-block;
         padding: 0px 10px 0px 0;
         background-color: #E0E0E0;
@@ -538,9 +538,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         position: relative;
     }
 
+ 
 
     .remove-tag,
-    span.remove-lost-tag,.custom-filter-remove {
+    span.remove-lost-tag {
         font-size: 22px;
         line-height: 0;
     }
@@ -1096,9 +1097,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
 
                 // Check if a tag container exists, if not, create one
-                var index = 0;
                 if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag" data-span_id="' + (index++) + '" >' + newTagHtml + '</span>');
+                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
                 } else {
                     $tag.append(' & ' + newTagHtml);
                 }
@@ -1163,7 +1163,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             } else {
                 $('.remove-tag').remove();
-                $('.tagIcon_tag').remove();
+                $('.icon_tag').remove();
             }
         }
 
@@ -1202,13 +1202,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     var index = 0;
                     // Add both the setting icon and tag container together
             var currentIndex = index++;
-
+                    // Add both the setting icon and tag container together
                     $('#search-input').before(
                         '<div class="tag1">' +
-                        '<a href="#" data-span_id="' + currentIndex + '"" class="setting-icon">' +
-                        '<a href="#" class="setting-icon lostIcon_tag">' +
+                        '<a href="#" data-span_id="' + currentIndex + '"" class="setting-icon lostIcon_tag">' +
                         '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                        '<span  class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                        '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
                         '</a>' +
                         '<span class="lost-tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
@@ -1436,14 +1435,15 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
     });
-
-    $(document).on('click', '.setting-icon', function(e) {
+  $(document).on('click', '.setting-icon', function(e) {
         e.preventDefault();
         var id = $(this).data('span_id');
         console.log(id, 'span_id');
         $('#span_id').val(id); 
         $('#customFilterModal').modal('show'); 
     });
+
+
 
 </script>
 
@@ -1500,10 +1500,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
             } else {
                 // Add selected value
-                var index = 0;  
                 var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
                 if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag" data-span_id="' + (index++) + '" >' + newTagHtml + '</span>');
+                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
                 } else {
                     $tag.append(' > ' + newTagHtml);
                 }
@@ -1904,9 +1903,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var filterType = $('#customer_filter_select').val();
             var filterValue = $('#customer_filter_input_value').val();
             var operatesValue = $('#customer_filter_operates').val();
-            var span_id = $('#span_id').val();
+              var span_id = $('#span_id').val();
 
-            handleTagSelection(filterType, operatesValue, filterValue, span_id);
+             handleTagSelection(filterType, operatesValue, filterValue, span_id);
 
             // Prepare data to send
             var data = {
@@ -1986,6 +1985,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         // Find the setting-icon tag with the specific span_id and remove it
         var $iconTag = $('span.tag[data-span_id="' + span_id + '"]');
+        console.log($iconTag, 'iconTag');
 
         if ($tagItem.length > 0) {
             $tagItem.remove();
@@ -2013,7 +2013,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         updateTagSeparators();
     }
 
-
         function updateTagSeparators() {
             var $tag = $('.tag5');
             var $tagItems = $tag.find('.tag-item');
@@ -2028,7 +2027,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             updateRemoveTagButton();
         }
 
-        function updateRemoveTagButton() {
+       function updateRemoveTagButton() {
             var $tag = $('.tag5');
             var index = 0;
             if ($tag.find('.fa-list').length === 0) {
