@@ -1703,9 +1703,252 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             // Optionally, you could send a request to update the filters on the server if necessary
         });
         
-    });
+
+        // Handle item selection from dropdown
+        $(document).on('click', '.o-dropdown-item_1', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection(selectedValue, $item);
+        });
+
+        // Listen to changes in the select dropdown
+        $('.o_add_custom_group_menu').on('change', function (e) {
+            var selectedValue = $(this).find('option:selected').text().trim();
+            handleTagSelection(selectedValue);
+            $(this).val(''); // Reset the select after selecting an option
+        });
 
 
+        // Function to handle tag selection
+        function handleTagSelection(selectedValue, $item = null) {
+            var $tag = $('.group_by_tag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // Remove selected value
+                $tagItem.remove();
+                updateTagSeparators();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+
+                let selectedTags = [];
+                $('.tag-item').each(function () {
+                    selectedTags.push($(this).data('value'));
+                });
+
+                if (selectedTags.length == 0) {
+                   location.reload();
+                }
+                filter(selectedTags);
+
+            } else {
+                // Add selected value
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                // Check if the tag already exists
+                if ($('.tag-item[data-value="' + selectedValue + '"]').length === 0) {
+                    // If no tags exist, create a new group_by_tag span
+                    if ($('.group_by_tag').length === 0) {
+                        $('#search-input').before(
+                            '<span class="group_by_tag">' +
+                            '<a href="#" class="setting-icon lostIcon_tag">' +
+                            '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                            '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                            '</a>' +
+                            newTagHtml +
+                            '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
+                            '</span>'
+                        );
+                    } else {
+                        // Append to existing group_by_tag span
+                        $('.group_by_tag').append(' ' + newTagHtml);
+                    }
+                    updateTagSeparators();
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+
+                // Collect selected tags
+                let selectedTags = [];
+                $('.tag-item').each(function () {
+                    selectedTags.push($(this).data('value'));
+                });
+                filter(selectedTags);
+            }
+
+            $('#search-dropdown').hide();
+        }
+
+        // The rest of your code remains unchanged
+
+        // Update tag separators and remove button
+        function updateTagSeparators() {
+            var $tag = $('.group_by_tag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' > ';
+                }
+            });
+            html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
+            $tag.html(html);
+            updateRemoveTagButton();
+        }
+
+        // Update/remove tag button
+        function updateRemoveTagButton() {
+            var $tag = $('.group_by_tag');
+
+            if ($tag.find('.fa-list').length === 0) {
+                $tag.prepend('<a href="#"  class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove_tag_group_by').length === 0) {
+                    $tag.append(' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove_tag_group_by').remove();
+                $('.icon_tag').remove();
+            }
+        }
+
+
+        // Remove all tags
+        $(document).on('click', '.remove_tag_group_by', function () {
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
+            $('#search-input').val('').attr('placeholder', 'Search...');
+            $('#filter').val(''); // Clear the filter value
+                location.reload();
+        });
+        // $(document).on('click', '.remove-tag', function () {
+        //     $('.tag').remove();
+        //     $('.o-dropdown-item .checkmark').hide();
+        //     $('#search-input').val('').attr('placeholder', 'Search...');
+        //     $('#filter').val(''); // Clear the filter value
+        // });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+                $('#search-dropdown').hide();
+            }
+        });
+
+
+        // Send selected tags to the server and process response
+        function filter(selectedTags) {
+            $.ajax({
+                url: '/lead-filter'
+                , type: 'POST'
+                , data: {
+                    selectedTags: JSON.stringify(selectedTags)
+                }
+                , success: function (response) {
+                    console.log('Response:', response);
+
+                    var tableBody = $('#lead-table-body');
+                    tableBody.empty();
+
+                    var leads = response.data;
+
+                    function renderGroup(groupLeads, level) {
+                        $.each(groupLeads, function (groupKey, groupValue) {
+                            var groupRow = `
+                            <tr class="group-header" data-level="${level}" style="cursor:pointer;">
+                                <td colspan="20" style="padding-left:${level * 20}px;">
+                                    <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
+                                </td>
+                            </tr>
+                        `;
+                            tableBody.append(groupRow);
+
+                            if ($.isArray(groupValue)) {
+                                $.each(groupValue, function (index, lead) {
+                                 
+                                         var rowHtml = `<<tr class="lead-row" data-id="${lead.id}" data-level="${level + 1}" style="display:none;">`;
+
+                                            // Append data only for the visible columns
+                                            if (table.column(0).visible()) rowHtml += `<td>${lead.product_name || ''}</td>`;
+                                            if (table.column(1).visible()) rowHtml += `<td>${lead.email || ''}</td>`;
+                                            if (table.column(2).visible()) rowHtml += `<td>${lead.city || ''}</td>`;
+                                            if (table.column(3).visible()) rowHtml += `<td>${lead.state ? (lead.get_state?.name || lead.get_auto_state?.name || '') : ''}</td>`;
+                                            if (table.column(4).visible()) rowHtml += `<td>${lead.country ? (lead.get_country?.name || lead.get_auto_country?.name || '') : ''}</td>`;
+                                            if (table.column(5).visible()) rowHtml += `<td>${lead.zip || ''}</td>`;
+                                            if (table.column(6).visible()) rowHtml += `<td>${lead.probability || ''}</td>`;
+                                            if (table.column(7).visible()) rowHtml += `<td>${lead.company_name || ''}</td>`;
+                                            if (table.column(8).visible()) rowHtml += `<td>${lead.address1 || ''}</td>`;
+                                            if (table.column(9).visible()) rowHtml += `<td>${lead.address2 || ''}</td>`;
+                                            if (table.column(10).visible()) rowHtml += `<td><a href="${lead.website_link || '#'}" target="_blank">${lead.website_link || ''}</a></td>`;
+                                            if (table.column(11).visible()) rowHtml += `<td>${lead.contact_name || ''}</td>`;
+                                            if (table.column(12).visible()) rowHtml += `<td>${lead.job_position || ''}</td>`;
+                                            if (table.column(13).visible()) rowHtml += `<td>${lead.phone || ''}</td>`;
+                                            if (table.column(14).visible()) rowHtml += `<td>${lead.mobile || ''}</td>`;
+                                            if (table.column(15).visible()) rowHtml += `<td>${lead.priority || ''}</td>`;
+                                            if (table.column(16).visible()) rowHtml += `<td>${lead.title ? (lead.get_title?.title || '') : ''}</td>`;
+                                            if (table.column(17).visible()) rowHtml += `<td>${lead.tag || ''}</td>`;
+                                            if (table.column(18).visible()) rowHtml += `<td>${lead.get_user?.email || ''}</td>`;
+                                            if (table.column(19).visible()) rowHtml += `<td>${lead.sales_team || ''}</td>`;
+                                            if (table.column(20).visible()) rowHtml += `<td></td>`;
+
+                                            rowHtml += `</tr>`;
+                                            tableBody.append(rowHtml);
+                                });
+                            } else {
+                                renderGroup(groupValue, level + 1);
+                            }
+                        });
+                    }
+
+                    renderGroup(leads, 0);
+
+                    // Toggle visibility of nested groups
+                    $('.group-header').on('click', function () {
+                        var level = $(this).data('level');
+                        var nextRow = $(this).next();
+                        while (nextRow.length && nextRow.data('level') > level) {
+                            nextRow.toggle();
+                            nextRow = nextRow.next();
+                        }
+                    });
+                }
+                , error: function (xhr, status, error) {
+                    console.error('Error applying filter:', error);
+                }
+            });
+        }
+
+        $(document).on('click', '.lead-row', function () {
+            var leadId = $(this).data('id');
+            if (leadId) {
+                window.location.href = '/lead-add/' + leadId;
+            }
+        });
+
+        // Initialize tags if any tags are present on page load
+        updateTagSeparators(); // Ensure that the close icon is added correctly
+       
+ });
 </script>
 
 
@@ -1778,251 +2021,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 
 
-{{-- ----------------------------- Group by ------------------------------ --}}
-<script>
-    $(document).ready(function () {
-        // Handle item selection from dropdown
-        $(document).on('click', '.o-dropdown-item_1', function (e) {
-            e.stopPropagation();
-            var $item = $(this);
-            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelection(selectedValue, $item);
-        });
 
-        // Listen to changes in the select dropdown
-        $('.o_add_custom_group_menu').on('change', function (e) {
-            var selectedValue = $(this).find('option:selected').text().trim();
-            handleTagSelection(selectedValue);
-            $(this).val(''); // Reset the select after selecting an option
-        });
-
-
-        // Function to handle tag selection
-        function handleTagSelection(selectedValue, $item = null) {
-            var $tag = $('.group_by_tag');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-            if ($tagItem.length > 0) {
-                // Remove selected value
-                $tagItem.remove();
-                updateTagSeparators();
-
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-
-                let selectedTags = [];
-                $('.tag-item').each(function () {
-                    selectedTags.push($(this).data('value'));
-                });
-
-                if (selectedTags.length == 0) {
-                    table.ajax.reload();
-                }
-                filter(selectedTags);
-
-            } else {
-                // Add selected value
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-                // Check if the tag already exists
-                if ($('.tag-item[data-value="' + selectedValue + '"]').length === 0) {
-                    // If no tags exist, create a new group_by_tag span
-                    if ($('.group_by_tag').length === 0) {
-                        $('#search-input').before(
-                            '<span class="group_by_tag">' +
-                            '<a href="#" class="setting-icon lostIcon_tag">' +
-                            '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                            '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
-                            '</a>' +
-                            newTagHtml +
-                            '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
-                            '</span>'
-                        );
-                    } else {
-                        // Append to existing group_by_tag span
-                        $('.group_by_tag').append(' ' + newTagHtml);
-                    }
-                    updateTagSeparators();
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-
-                // Collect selected tags
-                let selectedTags = [];
-                $('.tag-item').each(function () {
-                    selectedTags.push($(this).data('value'));
-                });
-                filter(selectedTags);
-            }
-
-            $('#search-dropdown').hide();
-        }
-
-// The rest of your code remains unchanged
-
-// Update tag separators and remove button
-function updateTagSeparators() {
-    var $tag = $('.group_by_tag');
-    var $tagItems = $tag.find('.tag-item');
-    var html = '';
-    $tagItems.each(function (index) {
-        html += $(this).prop('outerHTML');
-        if (index < $tagItems.length - 1) {
-            html += ' > ';
-        }
-    });
-    html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
-    $tag.html(html);
-    updateRemoveTagButton();
-}
-
-// Update/remove tag button
-function updateRemoveTagButton() {
-    var $tag = $('.group_by_tag');
-
-    if ($tag.find('.fa-list').length === 0) {
-        $tag.prepend('<a href="#"  class="setting-icon icon_tag">' +
-            '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-            '<span  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
-            '</a>'
-        );
-    }
-
-    if ($tag.find('.tag-item').length > 0) {
-        if ($('.remove_tag_group_by').length === 0) {
-            $tag.append(' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>');
-        }
-    } else {
-        $('.remove_tag_group_by').remove();
-        $('.icon_tag').remove();
-    }
-}
-
-
-        // Remove all tags
-        $(document).on('click', '.remove_tag_group_by', function () {
-            $('.group_by_tag').remove();
-            $('.o-dropdown-item .checkmark').hide();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-            $('#filter').val(''); // Clear the filter value
-        });
-        // $(document).on('click', '.remove-tag', function () {
-        //     $('.tag').remove();
-        //     $('.o-dropdown-item .checkmark').hide();
-        //     $('#search-input').val('').attr('placeholder', 'Search...');
-        //     $('#filter').val(''); // Clear the filter value
-        // });
-
-        // Hide dropdown when clicking outside
-        $(document).on('click', function (e) {
-            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
-                $('#search-dropdown').hide();
-            }
-        });
-
-
-        // Send selected tags to the server and process response
-        function filter(selectedTags) {
-            $.ajax({
-                url: '/lead-filter'
-                , type: 'POST'
-                , data: {
-                    selectedTags: JSON.stringify(selectedTags)
-                }
-                , success: function (response) {
-                    console.log('Response:', response);
-
-                    var tableBody = $('#lead-table-body');
-                    tableBody.empty();
-
-                    var leads = response.data;
-
-                    function renderGroup(groupLeads, level) {
-                        $.each(groupLeads, function (groupKey, groupValue) {
-                            var groupRow = `
-                            <tr class="group-header" data-level="${level}" style="cursor:pointer;">
-                                <td colspan="20" style="padding-left:${level * 20}px;">
-                                    <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
-                                </td>
-                            </tr>
-                        `;
-                            tableBody.append(groupRow);
-
-                            if ($.isArray(groupValue)) {
-                                $.each(groupValue, function (index, lead) {
-                                    var leadRow = `
-                                    <tr class="lead-row" data-id="${lead.id}" data-level="${level + 1}" style="display:none;">
-                                        <td title="${lead.product_name}">${lead.product_name ?? ''}</td>
-                                        <td>${lead.email ?? ''}</td>
-                                        <td>${lead.city ?? ''}</td>
-                                        <td>${lead.getState ? lead.getState.name : ''}</td>
-                                        <td>${lead.getCountry ? lead.getCountry.name : ''}</td>
-                                        <td>${lead.zip ?? ''}</td>
-                                        <td>${lead.probability ?? ''}</td>
-                                        <td>${lead.company_name ?? ''}</td>
-                                        <td>${lead.address_1 ?? ''}</td>
-                                        <td>${lead.address_2 ?? ''}</td>
-                                        <td><a href="${lead.website_link}" target="_blank">${lead.website_link ?? ''}</a></td>
-                                        <td>${lead.contact_name ?? ''}</td>
-                                        <td>${lead.job_postion ?? ''}</td>
-                                        <td>${lead.phone ?? ''}</td>
-                                        <td>${lead.mobile ?? ''}</td>
-                                        <td>${lead.priority ?? ''}</td>
-                                        <td>${lead.title ?? ''}</td>
-                                        <td>${lead.tag ?? ''}</td>
-                                        <td>${lead.getUser ? lead.getUser.email : ''}</td>
-                                        <td>${lead.sales_team ?? ''}</td>
-                                    </tr>
-                                `;
-                                    tableBody.append(leadRow);
-                                });
-                            } else {
-                                renderGroup(groupValue, level + 1);
-                            }
-                        });
-                    }
-
-                    renderGroup(leads, 0);
-
-                    // Toggle visibility of nested groups
-                    $('.group-header').on('click', function () {
-                        var level = $(this).data('level');
-                        var nextRow = $(this).next();
-                        while (nextRow.length && nextRow.data('level') > level) {
-                            nextRow.toggle();
-                            nextRow = nextRow.next();
-                        }
-                    });
-                }
-                , error: function (xhr, status, error) {
-                    console.error('Error applying filter:', error);
-                }
-            });
-        }
-
-        $(document).on('click', '.lead-row', function () {
-            var leadId = $(this).data('id');
-            if (leadId) {
-                window.location.href = '/lead-add/' + leadId;
-            }
-        });
-
-        // Initialize tags if any tags are present on page load
-        updateTagSeparators(); // Ensure that the close icon is added correctly
-       
- });
-</script>
 
 
 <script>
