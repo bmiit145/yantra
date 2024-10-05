@@ -95,12 +95,11 @@ class generate_lead extends Model
 
     public function tags()
     {
-        // Explode the comma-separated tag_id values
         $tagIds = explode(',', $this->tag_id);
-
-        // Query the Tag model for these IDs
-        return Tag::whereIn('id', $tagIds);
+        return Tag::whereIn('id', $tagIds)->get();
+        // return $this->hasMany(Tag::class, 'id','tag_id');
     }
+
     public function filterTags()
     {        
         return $this->hasMany(Tag::class, 'id','tag_id');

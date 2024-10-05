@@ -853,9 +853,10 @@ class LeadController extends Controller
             });
         }
 
-        if (empty($normalizedTags)) {
-            $leadsQuery->where('is_lost', '1'); // Change this as per your logic
-        }
+        // if (empty($normalizedTags)) {
+        //     dd('dfdf');
+        //     $leadsQuery->where('is_lost', '1'); // Change this as per your logic
+        // }
 
         // Always include necessary relationships
         $leadsQuery->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
@@ -872,43 +873,38 @@ class LeadController extends Controller
 
 
     public function customFilter(Request $request)
-    {        
+    {
         // Retrieve the filter parameters
         $filterType = $request->input('filterType');
         $operatesValue = $request->input('operatesValue');
         $filterValue = $request->input('filterValue');
-
         // Create a query
         $query = generate_lead::query();
-
         // Apply filters based on filter type
         switch ($filterType) {
             case 'Country':
-                // $query->where('country', $operatesValue, $filterValue);
-                // break;
-                $query->where(function ($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
+                $query->where(function($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                        ->orWhereHas('getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
-                            $q->where('name', $operatesValue, $filterValue);
-                        });
+                    ->orWhereHas('getAutoCountry', function($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
                 });
                 break;
             case 'Zip':
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
-               
-                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('tags', function($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
             case 'Created by':
                 $createdByName = $filterValue;
-                $user = User::where('name', $createdByName)->first();
-                $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
-                    $q->where('name', $operatesValue, $createdByName);
+                $user = User::where('name',$createdByName)->first();
+                $query->whereHas('getUser', function($q) use ($operatesValue,$createdByName) {
+                    $q->where('name', $operatesValue,$createdByName);
                 });
                 break;
             case 'Created on':
@@ -937,13 +933,13 @@ class LeadController extends Controller
                 break;
             case 'Salesperson':
                 $salespersonId = EncryptionService::encrypt($filterValue);
-                $user = User::where('email', $salespersonId)->first();
-                $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
-                    $q->where('email', $operatesValue, $salespersonId);
+                $user = User::where('email',$salespersonId)->first();
+                $query->whereHas('getUser', function($q) use ($operatesValue,$salespersonId) {
+                    $q->where('email', $operatesValue,$salespersonId);
                 });
                 break;
             case 'Source':
-                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getSource', function($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -951,13 +947,13 @@ class LeadController extends Controller
                 $query->where('stage', $operatesValue, $filterValue);
                 break;
             case 'State':
-                $query->where(function ($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
+                $query->where(function($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                        ->orWhereHas('getAutoState', function ($q) use ($operatesValue, $filterValue) {
-                            $q->where('name', $operatesValue, $filterValue);
-                        });
+                    ->orWhereHas('getAutoState', function($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
                 });
                 break;
             case 'Street':
@@ -967,7 +963,7 @@ class LeadController extends Controller
                 $query->where('address_1', $operatesValue, $filterValue);
                 break;
             case 'Title':
-                $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getTilte', function($q) use ($operatesValue, $filterValue) {
                     $q->where('title', $operatesValue, $filterValue);
                 });
                 break;
@@ -978,7 +974,7 @@ class LeadController extends Controller
                 $query->where('website_link', $operatesValue, $filterValue);
                 break;
             case 'Campaign':
-                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getCampaign', function($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -989,14 +985,11 @@ class LeadController extends Controller
                 // Handle cases where the filterType does not match any case
                 break;
         }
-
         // Execute the query and get results
-        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser','tags');
-
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
         // Fetch results
         $customFilter = $query->get();
-        dd($customFilter); 
-
+        // dd($customFilter);
         // Return JSON response
         return response()->json([
             'success' => true,

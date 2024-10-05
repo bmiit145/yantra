@@ -1052,7 +1052,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
 
             // Collect selected tags
-            updateFilterTags();
+            updateFilterTagsA();
         }
 
         // Function to clear all group-by tags
@@ -1103,6 +1103,31 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
         }
 
+        function updateFilterTagsA() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+            console.log(selectedTags,'jdfjdfjjdf');
+            
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+         // Remove tag and preserve "Lost" tag filter
+         $(document).on('click', '.remove-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            $('.tag').remove(); // Only remove the container if it's empty
+            // updateTagSeparators2();
+
+            // Reapply filters after removing "Lost" tag
+            updateFilterTagsA();
+
+            // Remove checkmark from the dropdown
+            $('.o-dropdown-item .checkmark').hide();
+        });
+
         $(document).on('click', '.lost_span', function (e) {
             e.stopPropagation();
             var $item = $(this);
@@ -1115,7 +1140,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function handleTagSelection3(selectedValue, $item = null) {
             var $tag = $('.tag1');
-            var $tagItem = $('.lost-tag-item[data-value="' + selectedValue + '"]');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
             if ($tagItem.length > 0) {
                 // Remove existing tag
@@ -1145,7 +1170,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
                         '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
                         '</a>' +
-                        '<span class="lost-tag-item" data-value="' + selectedValue + '">' +
+                        '<span class="tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
                         '<span class="remove-lost-tag" style="cursor:pointer">×</span>' +
                         '</span>' +
@@ -1153,7 +1178,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     );
                 } else {
                     // Add new tag with close button
-                    var newTagHtml = '<span class="lost-tag-item" data-value="' + selectedValue + '">' +
+                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
                         '<span class="remove-lost-tag" style="cursor:pointer">×</span></span>';
                     $tag.append(newTagHtml);
@@ -1175,7 +1200,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function updateTagSeparators3() {
             var $tag = $('.tag1');
-            var $tagItems = $tag.find('.lost-tag-item');
+            var $tagItems = $tag.find('.tag-item');
             var html = '';
             $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
@@ -1190,7 +1215,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function updateRemoveTagButton3() {
             var $tag = $('.tag1');
-            if ($tag.find('.lost-tag-item').length > 0) {
+            if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-lost-tag').length === 0) {
                     $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
                 }
@@ -1207,6 +1232,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 selectedTags.push($(this).data('value'));
             });
 
+            console.log(selectedTags,'Lost Tag');
+
             // Send selected tags to the server for filtering
             filterData(selectedTags);
         }
@@ -1216,7 +1243,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var $tagItem = $(this).parent('.lost-tag-item');
             $tagItem.remove();
             $('.tag1').remove(); // Only remove the container if it's empty
-            updateTagSeparators3();
+            // updateTagSeparators3();
 
             // Reapply filters after removing "Lost" tag
             updateFilterTags();
@@ -1240,52 +1267,50 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
         function handleTagSelection4(selectedValue, $item = null) {
+    var $tag = $('.LTFtag');
+    var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
+    if ($tagItem.length > 0) {
+        // If the tag already exists, remove it
+        $tagItem.remove();
+        updateTagSeparators4();
 
-            var $tag = $('.LTFtag');
-            var $tagItem = $('.LTFtag-item[data-value="' + selectedValue + '"]');
-
-            if ($tagItem.length > 0) {
-                // If the tag already exists, remove it            
-                $tagItem.remove();
-                updateTagSeparatorsLTF();
-
-                // If no tags left, remove the container and reset the input
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                // Hide the checkmark if it's being deselected
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-            } else {
-                // If the tag does not exist, add it
-                var newTagHtml = '<span class="LTFtag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-                // Check if a tag container exists, if not, create one
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="LTFtag">' + newTagHtml + '</span>');
-                } else {
-                    $tag.append(' & ' + newTagHtml);
-                }
-
-                updateTagSeparators4();
-
-                // Show the checkmark on the selected item
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                // Reset input and placeholder
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-            }
-
-            // Collect selected tags
-            updateFilterTagsLTF();
+        // If no tags left, remove the container and reset the input
+        if ($tag.children().length === 0) {
+            $tag.remove();
+            $('#search-input').val('').attr('placeholder', 'Search...');
         }
+
+        // Hide the checkmark if it's being deselected
+        if ($item) {
+            $item.find('.checkmark').hide();
+        }
+    } else {
+        // If the tag does not exist, add it
+        var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+        // Check if a tag container exists, if not, create one
+        if ($tag.length === 0) {
+            $('#search-input').before('<span class="LTFtag">' + newTagHtml + '</span>');
+        } else {
+            $tag.append(' & ' + newTagHtml);
+        }
+
+        updateTagSeparators4();
+
+        // Show the checkmark on the selected item
+        if ($item) {
+            $item.find('.checkmark').show();
+        }
+
+        // Reset input and placeholder
+        $('#search-input').val('');
+        $('#search-input').attr('placeholder', '');
+    }
+
+    // Collect selected tags
+    updateFilterTagsLTF();
+}
 
         // Function to clear all group-by tags
         function clearTagsByType(type) {
@@ -1300,7 +1325,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function updateTagSeparators4() {
             var $tag = $('.LTFtag');
-            var $tagItems = $tag.find('.LTFtag-item');
+            var $tagItems = $tag.find('.tag-item');
             var html = '';
             $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
@@ -1323,7 +1348,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     '</a>'
                 );
             }
-            if ($tag.find('.LTFtag-item').length > 0) {
+            if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-LTFtag').length === 0) {
                     $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
                 }
@@ -1336,7 +1361,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         // Function to update filters after tag removal
         function updateFilterTagsLTF() {
             let selectedTags = [];
-            $('.LTFtag-item').each(function () {
+            $('.tag-item').each(function () {
                 selectedTags.push($(this).data('value'));
             });
 
@@ -1345,7 +1370,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         }
 
         $(document).on('click', '.remove-LTFtag', function () {
-            var $tagItem = $(this).parent('.LTFtag-item');
+            var $tagItem = $(this).parent('.tag-item');
             $tagItem.remove();
             $('.LTFtag').remove(); // Only remove the container if it's empty
             updateTagSeparators4();
@@ -1365,6 +1390,130 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             console.log(id, 'span_id');
             $('#span_id').val(id); 
             $('#customFilterModal').modal('show'); 
+        });
+
+
+        $(document).on('click', '.o-dropdown-item_2', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
+
+            // Clone the item, remove the checkmark span and get the trimmed text
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection5(selectedValue, $item);
+        });
+
+        function handleTagSelection5(selectedValue, $item = null) {
+            var $tag = $('.CRtag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // If the tag already exists, remove it            
+                $tagItem.remove();
+                updateTagSeparatorsCR();
+
+                // If no tags left, remove the container and reset the input
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide the checkmark if it's being deselected
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                // If the tag does not exist, add it
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' +
+                                selectedValue + '</span>';
+
+                // Check if a tag container exists, if not, create one
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="CRtag">' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(' / ' + newTagHtml);
+                }
+
+                // Show the checkmark on the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Update the tag separator and add the remove icon if there are tags
+            updateTagSeparatorsCR();
+        }
+
+        function updateTagSeparatorsCR() {
+            var $tag = $('.CRtag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' / ';
+                }
+            });
+
+            // Append the remove icon after the last tag
+            if ($tagItems.length > 0) {
+                html += ' <span class="remove-cr-tag" style="cursor:pointer;">&times;</span>';
+            }
+
+            $tag.html(html);
+        }
+
+        function updateFilterTagsCR() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+        $(document).on('click', '.remove-cr-tag', function () {
+            // Remove the tag container if the icon is clicked
+            var $tagContainer = $(this).closest('.CRtag');
+            
+            // Remove all tags
+            $tagContainer.find('.tag-item').remove();
+            $tagContainer.remove();
+            $('#search-input').val('').attr('placeholder', 'Search...');
+
+            // Hide all checkmarks from the dropdown
+            $('.o-dropdown-item_2 .checkmark').hide();
+
+            // Reapply filters after removing the tag
+            updateFilterTagsCR();
+        });
+
+        // Remove individual tags when the close icon is clicked
+        $(document).on('click', '.tag-item', function () {
+            var $tagItem = $(this);
+            var selectedValue = $tagItem.data('value');
+            
+            // Remove the tag
+            $tagItem.remove();
+
+            // Remove the tag container if it's empty
+            if ($('.tag-item').length === 0) {
+                $('.CRtag').remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+
+            // Hide checkmark from the dropdown
+            $('.o-dropdown-item_2 .checkmark').filter(function() {
+                return $(this).closest('.o-dropdown-item_2').text().trim() === selectedValue;
+            }).hide();
+
+            // Reapply filters after removing the tag
+            updateFilterTagsCR();
         });
     });
 
@@ -1581,12 +1730,12 @@ function updateRemoveTagButton() {
             $('#search-input').val('').attr('placeholder', 'Search...');
             $('#filter').val(''); // Clear the filter value
         });
-        $(document).on('click', '.remove-tag', function () {
-            $('.tag').remove();
-            $('.o-dropdown-item .checkmark').hide();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-            $('#filter').val(''); // Clear the filter value
-        });
+        // $(document).on('click', '.remove-tag', function () {
+        //     $('.tag').remove();
+        //     $('.o-dropdown-item .checkmark').hide();
+        //     $('#search-input').val('').attr('placeholder', 'Search...');
+        //     $('#filter').val(''); // Clear the filter value
+        // });
 
         // Hide dropdown when clicking outside
         $(document).on('click', function (e) {
@@ -1684,131 +1833,7 @@ function updateRemoveTagButton() {
 
         // Initialize tags if any tags are present on page load
         updateTagSeparators(); // Ensure that the close icon is added correctly
-   
-
-
-    $(document).on('click', '.o-dropdown-item_2', function (e) {
-        e.stopPropagation();
-        var $item = $(this);
-
-        // Clone the item, remove the checkmark span and get the trimmed text
-        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-        handleTagSelection5(selectedValue, $item);
-    });
-
-    function handleTagSelection5(selectedValue, $item = null) {
-        var $tag = $('.CRtag');
-        var $tagItem = $('.CRtag-item[data-value="' + selectedValue + '"]');
-
-        if ($tagItem.length > 0) {
-            // If the tag already exists, remove it            
-            $tagItem.remove();
-            updateTagSeparatorsCR();
-
-            // If no tags left, remove the container and reset the input
-            if ($tag.children().length === 0) {
-                $tag.remove();
-                $('#search-input').val('').attr('placeholder', 'Search...');
-            }
-
-            // Hide the checkmark if it's being deselected
-            if ($item) {
-                $item.find('.checkmark').hide();
-            }
-        } else {
-            // If the tag does not exist, add it
-            var newTagHtml = '<span class="CRtag-item" data-value="' + selectedValue + '">' +
-                             selectedValue + '</span>';
-
-            // Check if a tag container exists, if not, create one
-            if ($tag.length === 0) {
-                $('#search-input').before('<span class="CRtag">' + newTagHtml + '</span>');
-            } else {
-                $tag.append(' / ' + newTagHtml);
-            }
-
-            // Show the checkmark on the selected item
-            if ($item) {
-                $item.find('.checkmark').show();
-            }
-
-            // Reset input and placeholder
-            $('#search-input').val('');
-            $('#search-input').attr('placeholder', '');
-        }
-
-        // Update the tag separator and add the remove icon if there are tags
-        updateTagSeparatorsCR();
-    }
-
-    function updateTagSeparatorsCR() {
-        var $tag = $('.CRtag');
-        var $tagItems = $tag.find('.CRtag-item');
-        var html = '';
-
-        $tagItems.each(function (index) {
-            html += $(this).prop('outerHTML');
-            if (index < $tagItems.length - 1) {
-                html += ' / ';
-            }
-        });
-
-        // Append the remove icon after the last tag
-        if ($tagItems.length > 0) {
-            html += ' <span class="remove-tag" style="cursor:pointer;">&times;</span>';
-        }
-
-        $tag.html(html);
-    }
-
-    function updateFilterTagsCR() {
-        let selectedTags = [];
-        $('.CRtag-item').each(function () {
-            selectedTags.push($(this).data('value'));
-        });
-
-        // Send selected tags to the server for filtering
-        filterData(selectedTags);
-    }
-
-    $(document).on('click', '.remove-tag', function () {
-        // Remove the tag container if the icon is clicked
-        var $tagContainer = $(this).closest('.CRtag');
-        
-        // Remove all tags
-        $tagContainer.find('.CRtag-item').remove();
-        $tagContainer.remove();
-        $('#search-input').val('').attr('placeholder', 'Search...');
-
-        // Hide all checkmarks from the dropdown
-        $('.o-dropdown-item_2 .checkmark').hide();
-
-        // Reapply filters after removing the tag
-        updateFilterTagsCR();
-    });
-
-    // Remove individual tags when the close icon is clicked
-    $(document).on('click', '.CRtag-item', function () {
-        var $tagItem = $(this);
-        var selectedValue = $tagItem.data('value');
-        
-        // Remove the tag
-        $tagItem.remove();
-
-        // Remove the tag container if it's empty
-        if ($('.CRtag-item').length === 0) {
-            $('.CRtag').remove();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-        }
-
-        // Hide checkmark from the dropdown
-        $('.o-dropdown-item_2 .checkmark').filter(function() {
-            return $(this).closest('.o-dropdown-item_2').text().trim() === selectedValue;
-        }).hide();
-
-        // Reapply filters after removing the tag
-        updateFilterTagsCR();
-    });
+       
  });
 </script>
 
