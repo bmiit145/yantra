@@ -872,7 +872,7 @@ class LeadController extends Controller
 
 
     public function customFilter(Request $request)
-    {
+    {        
         // Retrieve the filter parameters
         $filterType = $request->input('filterType');
         $operatesValue = $request->input('operatesValue');
@@ -899,6 +899,7 @@ class LeadController extends Controller
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
+               
                 $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
@@ -990,11 +991,11 @@ class LeadController extends Controller
         }
 
         // Execute the query and get results
-        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser','tags');
 
         // Fetch results
         $customFilter = $query->get();
-        // dd($customFilter); 
+        dd($customFilter); 
 
         // Return JSON response
         return response()->json([
