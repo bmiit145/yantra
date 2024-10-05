@@ -980,13 +980,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
         });
 
-        // $(document).on('click', '.remove-tag', function() {
-        //     $('.tag').remove();
-        //     $('.checkmark').hide();
-        //     $('#search-input').val('').attr('placeholder', 'Search...');
-        //     $('#filter').val(''); // Clear the filter value
-        //     table.ajax.reload();
-        // });
+  
         $(document).on('click', '.custom-filter-remove', function () {
             $('#search-input').val('').attr('placeholder', 'Search...');
             table.ajax.reload();
@@ -1000,70 +994,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 
 
-        $(document).ready(function () {
-            // Initialize the Bootstrap modal
-            var customFilterModal = new bootstrap.Modal(document.getElementById('customFilterModal'));
-
-            // Handle the click event on the "Add Custom Filter" button
-            $('.o_add_custom_filter').on('click', function () {
-                customFilterModal.show();
-            });
-
-
-            // Handle form submission with AJAX
-            $('#saveFilterBtn').on('click', function () {
-                var filterName = $('#filterName').val();
-
-                $.ajax({
-                    url: '/path/to/your/api/endpoint', // Replace with your API endpoint
-                    type: 'POST'
-                    , data: {
-                        filterName: filterName
-                    }
-                    , success: function (response) {
-                        // Handle success, e.g., show a success message or update UI
-                        console.log('Filter saved successfully:', response);
-                        customFilterModal.hide();
-                    }
-                    , error: function (xhr, status, error) {
-                        // Handle error, e.g., show an error message
-                        console.error('Error saving filter:', error);
-                    }
-                });
-            });
-
-            // Function to add a new rule row
-            function addNewRule() {
-                var template = $('#ruleTemplate').html();
-                $('#rulesContainer').append(template);
-            }
-
-            // Click handler for "New Rule" link
-            $('#addNewRule').on('click', function (event) {
-                event.preventDefault();
-                addNewRule();
-            });
-
-            // Click handler for "fa-plus" button in rule rows
-            $(document).on('click', '.add-new-rule', function (event) {
-                event.preventDefault();
-                addNewRule();
-            });
-
-            // Click handler for "Delete node" button
-            $(document).on('click', '.delete-rule', function (event) {
-                event.preventDefault();
-                // Ensure that at least one rule remains
-                if ($('#rulesContainer .rule-row')) {
-                    $(this).closest('.rule-row').remove();
-                } else {
-                    // Add a new rule when all are deleted
-                    $('#rulesContainer').empty(); // Clear container
-                    addNewRule(); // Add one new rule
-                }
-            });
-
-        });
+      
 
 
         $(document).on('click', '.activities', function (e) {
@@ -1427,17 +1358,86 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $('.LTFActivities .checkmark').hide();
         });
 
+
+        $(document).on('click', '.setting-icon', function(e) {
+            e.preventDefault();
+            var id = $(this).data('span_id');
+            console.log(id, 'span_id');
+            $('#span_id').val(id); 
+            $('#customFilterModal').modal('show'); 
+        });
     });
-  $(document).on('click', '.setting-icon', function(e) {
-        e.preventDefault();
-        var id = $(this).data('span_id');
-        console.log(id, 'span_id');
-        $('#span_id').val(id); 
-        $('#customFilterModal').modal('show'); 
-    });
 
 
 
+</script>
+
+
+<script>
+  $(document).ready(function () {
+            // Initialize the Bootstrap modal
+            var customFilterModal = new bootstrap.Modal(document.getElementById('customFilterModal'));
+
+            // Handle the click event on the "Add Custom Filter" button
+            $('.o_add_custom_filter').on('click', function () {
+                customFilterModal.show();
+            });
+
+
+            // Handle form submission with AJAX
+            $('#saveFilterBtn').on('click', function () {
+                var filterName = $('#filterName').val();
+
+                $.ajax({
+                    url: '/path/to/your/api/endpoint', // Replace with your API endpoint
+                    type: 'POST'
+                    , data: {
+                        filterName: filterName
+                    }
+                    , success: function (response) {
+                        // Handle success, e.g., show a success message or update UI
+                        console.log('Filter saved successfully:', response);
+                        customFilterModal.hide();
+                    }
+                    , error: function (xhr, status, error) {
+                        // Handle error, e.g., show an error message
+                        console.error('Error saving filter:', error);
+                    }
+                });
+            });
+
+            // Function to add a new rule row
+            function addNewRule() {
+                var template = $('#ruleTemplate').html();
+                $('#rulesContainer').append(template);
+            }
+
+            // Click handler for "New Rule" link
+            $('#addNewRule').on('click', function (event) {
+                event.preventDefault();
+                addNewRule();
+            });
+
+            // Click handler for "fa-plus" button in rule rows
+            $(document).on('click', '.add-new-rule', function (event) {
+                event.preventDefault();
+                addNewRule();
+            });
+
+            // Click handler for "Delete node" button
+            $(document).on('click', '.delete-rule', function (event) {
+                event.preventDefault();
+                // Ensure that at least one rule remains
+                if ($('#rulesContainer .rule-row')) {
+                    $(this).closest('.rule-row').remove();
+                } else {
+                    // Add a new rule when all are deleted
+                    $('#rulesContainer').empty(); // Clear container
+                    addNewRule(); // Add one new rule
+                }
+            });
+
+        });
 </script>
 
 
@@ -1684,122 +1684,9 @@ function updateRemoveTagButton() {
 
         // Initialize tags if any tags are present on page load
         updateTagSeparators(); // Ensure that the close icon is added correctly
-    });
+   
 
-</script>
-{{-- ---------------- time ------------------- --}}
-<!-- <script>
-    $(document).ready(function () {
-        // Handle item selection from dropdown
-        $(document).on('click', '.o-dropdown-item_2', function (e) {
-            e.stopPropagation();
-            var $item = $(this);
-            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
 
-            // Determine if the selected item is Creation Date or Closed Date
-            if ($item.hasClass('creation_time')) {
-                handleTagSelection4(selectedValue, 'Creation Date');
-            } else if ($item.hasClass('closed_time')) {
-                handleTagSelection4(selectedValue, 'Closed Date');
-            }
-        });
-
-        // Function to handle tag selection for both Creation and Closed dates
-        function handleTagSelection4(selectedValue, type) {
-            var $tagContainer = $('.tag3');
-            var $creationTag = $tagContainer.find('.creation-date-tag');
-            var $closedTag = $tagContainer.find('.closed-date-tag');
-
-            // Helper function to remove value from tag and tag if empty
-            function updateTag($tag, selectedValue) {
-                var existingValues = $tag.text().split('/').map(v => v.trim()).filter(v => v);
-                var valueIndex = existingValues.indexOf(selectedValue);
-
-                if (valueIndex !== -1) {
-                    // Remove value
-                    existingValues.splice(valueIndex, 1);
-                    var newTagText = existingValues.join('/');
-
-                    // Update tag text
-                    if (newTagText) {
-                        $tag.text(newTagText);
-                    } else {
-                        // Remove tag if empty
-                        $tag.remove();
-                    }
-                } else {
-                    // Add new value
-                    $tag.append('/' + selectedValue);
-                }
-            }
-
-            // Add or update tags
-            if (type === 'Creation Date') {
-                if ($creationTag.length > 0) {
-                    updateTag($creationTag, selectedValue);
-                } else {
-                    if ($tagContainer.length === 0) {
-                        $('#search-input').before('<span class="tag3">Creation Date: <span class="creation-date-tag">' + selectedValue + '</span></span>');
-                    } else {
-                        $tagContainer.append('Creation Date: <span class="creation-date-tag">' + selectedValue + '</span>');
-                    }
-                }
-            } else if (type === 'Closed Date') {
-                if ($closedTag.length > 0) {
-                    updateTag($closedTag, selectedValue);
-                } else {
-                    if ($tagContainer.length > 0) {
-                        $tagContainer.append(' or Closed Date: <span class="closed-date-tag">' + selectedValue + '</span>');
-                    } else {
-                        $('#search-input').before('<span class="tag3">Closed Date: <span class="closed-date-tag">' + selectedValue + '</span></span>');
-                    }
-                }
-            }
-
-            // Hide or show checkmark
-            if ($item) {
-                var $checkmark = $item.find('.checkmark');
-                $checkmark.toggle(); // Toggle visibility of the checkmark
-            }
-
-            updateTagSeparators4();
-            $('#search-input').val('');
-            $('#search-dropdown').hide();
-        }
-
-        // Update tag separators and close button
-        function updateTagSeparators4() {
-            var $tagContainer = $('.tag3');
-
-            // Remove existing close button
-            $tagContainer.find('.remove-tag').remove();
-
-            // Add a single close button if there are any tags present
-            if ($tagContainer.length > 0 && ($tagContainer.find('.creation-date-tag').length > 0 || $tagContainer.find('.closed-date-tag').length > 0)) {
-                $tagContainer.append(' <span class="remove-tag" style="cursor:pointer;">&times; Remove All</span>');
-            }
-        }
-
-        // Remove individual tags when clicked
-        $(document).on('click', '.creation-date-tag, .closed-date-tag', function () {
-            var $tagContainer = $(this).closest('.tag3');
-            var type = $(this).hasClass('creation-date-tag') ? 'Creation Date' : 'Closed Date';
-            var selectedValue = $(this).text().trim();
-            handleTagSelection4(selectedValue, type);
-        });
-
-        // Remove all tags when the close button is clicked
-        $(document).on('click', '.remove-tag', function () {
-            $('.tag3').remove();
-            $('.o-dropdown-item_2 .checkmark').hide();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-        });
-
-        updateTagSeparators4(); // Ensure that the close icon is added correctly
-    });
-</script> -->
-
-<script>
     $(document).on('click', '.o-dropdown-item_2', function (e) {
         e.stopPropagation();
         var $item = $(this);
@@ -1922,6 +1809,7 @@ function updateRemoveTagButton() {
         // Reapply filters after removing the tag
         updateFilterTagsCR();
     });
+ });
 </script>
 
 
