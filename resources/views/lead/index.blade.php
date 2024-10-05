@@ -1529,8 +1529,179 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             // Reapply filters after removing the tag
             updateFilterTagsCR();
         });
+        
 
         // ------------------------------ Creation Date and Closed Date End -----------------------------------------------
+
+
+             $('.add_filter').on('click', function (event) {
+            event.preventDefault();
+            var filterType = $('#customer_filter_select').val();
+            var filterValue = $('#customer_filter_input_value').val();
+            var operatesValue = $('#customer_filter_operates').val();
+              var span_id = $('#span_id').val();
+
+               
+
+             handleTagSelection(filterType, operatesValue, filterValue, span_id);
+
+            // Prepare data to send
+            var data = {
+                filterType: filterType,
+                filterValue: filterValue,
+                operatesValue: operatesValue
+            };
+
+            // Send AJAX request
+            $.ajax({
+                url: '{{route('lead.custom.filter')}}',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    var $tableBody = $('#lead-table-body');
+
+                    // Clear existing table data
+                    $tableBody.empty();
+
+                    // Check if response contains data
+                    if (response.success && response.data && response.data.length > 0) {
+                        // Loop through the response and create table rows
+                        response.data.forEach(function (item) {
+                            var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                                // Append data only for the visible columns
+                                if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
+                                if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                                if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                                if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
+                                if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
+                                if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
+                                if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                                if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
+                                if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
+                                if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
+                                if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
+                                if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                                if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
+                                if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                                if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
+                                if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                                if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
+                                if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
+                                if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
+                                if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                                if (table.column(20).visible()) rowHtml += `<td></td>`;
+
+                                rowHtml += `</tr>`;
+                                $tableBody.append(rowHtml);
+                            
+
+                        });
+
+                        // Attach click event handler to rows
+                        $('#lead-table-body .lead-row').on('click', function () {
+                            var leadId = $(this).data('id');
+                            window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                        });
+                    } else {
+                        // If no data, show a message or keep it empty
+                        $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+
+            $('#customFilterModal').modal('hide');
+        });
+
+        function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
+            console.log(filterType, operatesValue, filterValue, span_id);
+            var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
+            var $tag = $('.tag5');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            // Find the tag with the specific span_id and remove it
+            var $iconTag = $('span.tag[data-span_id="' + span_id + '"]'); // Select span with class "tag" and matching span_id
+            var $icosnDiv = $('div.tag1[data-span_id="' + span_id + '"]'); // Select div with class "tag" and matching span_id
+            console.log($iconTag, 'iconTag');
+
+            if ($tagItem.length > 0) {
+                $tagItem.remove();
+                updateTagSeparators();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+            } else {
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
+                } else {
+                    $tag.html(newTagHtml); // Overwrite with new tag
+                }
+                $('#search-input').val('').attr('placeholder', '');
+            }
+
+            // Remove the entire span.tag element using the span_id
+            if ($iconTag.length > 0) {
+                $iconTag.remove();  // This removes the <span class="tag"> element
+            }
+            if ($icosnDiv.length > 0) {
+                $icosnDiv.remove();  // This removes the <span class="tag"> element
+            }
+
+            updateTagSeparators();
+        }
+
+        function updateTagSeparators() {
+            var $tag = $('.tag5');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton();
+        }
+
+        function updateRemoveTagButton() {
+            var $tag = $('.tag5');
+            var index = 0;
+            if ($tag.find('.fa-list').length === 0) {
+            var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '""  class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  data-span_id="' + currentIndex + '""  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }   
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.custom-filter-remove').length === 0) {
+                    $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.custom-filter-remove').remove();
+                $('.icon_tag').remove();
+            }
+        }
+
+        $(document).on('click', '.custom-filter-remove', function () {
+            $('.tag5').remove();
+            var valueToRemove = $(this).closest('.tag-item').data('value');
+            $(this).closest('.tag-item').remove();
+            if ($('.tag5').children().length === 0) {
+                $('.tag5').remove();
+            }
+
+
+            // Optionally, you could send a request to update the filters on the server if necessary
+        });
         
     });
 
@@ -1940,174 +2111,7 @@ function updateRemoveTagButton() {
             }
         });
 
-        $('.add_filter').on('click', function (event) {
-            event.preventDefault();
-            var filterType = $('#customer_filter_select').val();
-            var filterValue = $('#customer_filter_input_value').val();
-            var operatesValue = $('#customer_filter_operates').val();
-              var span_id = $('#span_id').val();
-
-               
-
-             handleTagSelection(filterType, operatesValue, filterValue, span_id);
-
-            // Prepare data to send
-            var data = {
-                filterType: filterType,
-                filterValue: filterValue,
-                operatesValue: operatesValue
-            };
-
-            // Send AJAX request
-            $.ajax({
-                url: '{{route('lead.custom.filter')}}',
-                type: 'POST',
-                data: data,
-                success: function (response) {
-                    var $tableBody = $('#lead-table-body');
-
-                    // Clear existing table data
-                    $tableBody.empty();
-
-                    // Check if response contains data
-                    if (response.success && response.data && response.data.length > 0) {
-                        // Loop through the response and create table rows
-                        response.data.forEach(function (item) {
-                            var rowHtml = `
-                                <tr class="lead-row" data-id="${item.id}">
-                                    <td>${item.product_name || ''}</td>
-                                    <td>${item.email || ''}</td>
-                                    <td>${item.city || ''}</td>
-                                    <td>
-                                        ${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}
-                                    </td>
-                                    <td>
-                                        ${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}
-                                    </td>
-                                    <td>${item.zip || ''}</td>
-                                    <td>${item.probability || ''}</td>
-                                    <td>${item.company_name || ''}</td>
-                                    <td>${item.address_1 || ''}</td>
-                                    <td>${item.address_2 || ''}</td>
-                                    <td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>
-                                    <td>${item.contact_name || ''}</td>
-                                    <td>${item.job_position || ''}</td>
-                                    <td>${item.phone || ''}</td>
-                                    <td>${item.mobile || ''}</td>
-                                    <td>${item.priority || ''}</td>
-                                    <td>${item.title ? (item.get_tilte?.title || '') : ''}</td>
-                                    <td>${item.tag || ''}</td>
-                                    <td>${item.get_user?.email || ''}</td>
-                                    <td>${item.sales_team || ''}</td>
-                                </tr>
-                            `;
-                            $tableBody.append(rowHtml);
-                        });
-
-                        // Attach click event handler to rows
-                        $('#lead-table-body .lead-row').on('click', function () {
-                            var leadId = $(this).data('id');
-                            window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
-                        });
-                    } else {
-                        // If no data, show a message or keep it empty
-                        $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-
-            $('#customFilterModal').modal('hide');
-        });
-
-        function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
-            console.log(filterType, operatesValue, filterValue, span_id);
-            var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
-            var $tag = $('.tag5');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-            // Find the tag with the specific span_id and remove it
-            var $iconTag = $('span.tag[data-span_id="' + span_id + '"]'); // Select span with class "tag" and matching span_id
-            var $icosnDiv = $('div.tag1[data-span_id="' + span_id + '"]'); // Select div with class "tag" and matching span_id
-            console.log($iconTag, 'iconTag');
-
-            if ($tagItem.length > 0) {
-                $tagItem.remove();
-                updateTagSeparators();
-
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-            } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
-                } else {
-                    $tag.html(newTagHtml); // Overwrite with new tag
-                }
-                $('#search-input').val('').attr('placeholder', '');
-            }
-
-            // Remove the entire span.tag element using the span_id
-            if ($iconTag.length > 0) {
-                $iconTag.remove();  // This removes the <span class="tag"> element
-            }
-            if ($icosnDiv.length > 0) {
-                $icosnDiv.remove();  // This removes the <span class="tag"> element
-            }
-
-            updateTagSeparators();
-        }
-
-        function updateTagSeparators() {
-            var $tag = $('.tag5');
-            var $tagItems = $tag.find('.tag-item');
-            var html = '';
-            $tagItems.each(function (index) {
-                html += $(this).prop('outerHTML');
-                if (index < $tagItems.length - 1) {
-                    html += ' & ';
-                }
-            });
-            $tag.html(html);
-            updateRemoveTagButton();
-        }
-
-       function updateRemoveTagButton() {
-            var $tag = $('.tag5');
-            var index = 0;
-            if ($tag.find('.fa-list').length === 0) {
-            var currentIndex = index++;
-                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '""  class="setting-icon icon_tag">' +
-                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-                    '<span  data-span_id="' + currentIndex + '""  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
-                    '</a>'
-                );
-            }   
-            if ($tag.find('.tag-item').length > 0) {
-                if ($('.custom-filter-remove').length === 0) {
-                    $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
-                }
-            } else {
-                $('.custom-filter-remove').remove();
-                $('.icon_tag').remove();
-            }
-        }
-
-        $(document).on('click', '.custom-filter-remove', function () {
-            $('.tag5').remove();
-            var valueToRemove = $(this).closest('.tag-item').data('value');
-            $(this).closest('.tag-item').remove();
-            if ($('.tag5').children().length === 0) {
-                $('.tag5').remove();
-            }
-
-
-            // Optionally, you could send a request to update the filters on the server if necessary
-        });
+   
     });
 </script>
 
