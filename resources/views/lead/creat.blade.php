@@ -435,14 +435,14 @@
                                         Opportunity</span></button>
                                         
                                         <button data-hotkey="l" data-id="{{isset($data) ? $data->id : ''}}" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary lead_lost_btn" name="510" type="action" data-tooltip="Mark as lost" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Lost</span></button>
-                                        @if($allData > 1)
+                                        <!-- @if($allData > 1)
                                             <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                                                 <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
                                                     <span>Similar Leads</span><br>
                                                     <span>{{ $allData ?? '' }}</span>
                                                 </button>
                                             </a>
-                                        @endif
+                                        @endif -->
                                         @endif
                                         @if(isset($data) && $data->is_lost == 2)
                                         <button data-hotkey="x"  invisible="probability > 0 or active" class="btn btn-secondary restore_lead" data-id="{{isset($data) ? $data->id : ''}}" name="toggle_active" type="object"><span>Restore</span></button>

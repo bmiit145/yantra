@@ -530,7 +530,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     .tag1,
     .LTFtag ,
      .tag5,
-     .group_by_tag{
+     .group_by_tag,
+     .CRtag
+     {
         display: inline-block;
         padding: 0px 10px 0px 0;
         background-color: #E0E0E0;
@@ -1686,7 +1688,7 @@ function updateRemoveTagButton() {
 
 </script>
 {{-- ---------------- time ------------------- --}}
-<script>
+<!-- <script>
     $(document).ready(function () {
         // Handle item selection from dropdown
         $(document).on('click', '.o-dropdown-item_2', function (e) {
@@ -1704,9 +1706,9 @@ function updateRemoveTagButton() {
 
         // Function to handle tag selection for both Creation and Closed dates
         function handleTagSelection4(selectedValue, type) {
-            var $tag = $('.tag3');
-            var $creationTag = $tag.find('.creation-date-tag');
-            var $closedTag = $tag.find('.closed-date-tag');
+            var $tagContainer = $('.tag3');
+            var $creationTag = $tagContainer.find('.creation-date-tag');
+            var $closedTag = $tagContainer.find('.closed-date-tag');
 
             // Helper function to remove value from tag and tag if empty
             function updateTag($tag, selectedValue) {
@@ -1731,40 +1733,23 @@ function updateRemoveTagButton() {
                 }
             }
 
+            // Add or update tags
             if (type === 'Creation Date') {
                 if ($creationTag.length > 0) {
                     updateTag($creationTag, selectedValue);
-
-                    // Remove Creation Date label if it's the last tag
-                    if ($creationTag.text().trim() === '') {
-                        $creationTag.remove();
-                        if (!$tag.find('.creation-date-tag').length) {
-                            $tag.remove(); // Remove label if it's the last tag
-                        }
-                    }
                 } else {
-                    // Add new creation date tag
-                    if ($tag.length === 0) {
+                    if ($tagContainer.length === 0) {
                         $('#search-input').before('<span class="tag3">Creation Date: <span class="creation-date-tag">' + selectedValue + '</span></span>');
                     } else {
-                        $tag.append('Creation Date: <span class="creation-date-tag">' + selectedValue + '</span>');
+                        $tagContainer.append('Creation Date: <span class="creation-date-tag">' + selectedValue + '</span>');
                     }
                 }
             } else if (type === 'Closed Date') {
                 if ($closedTag.length > 0) {
                     updateTag($closedTag, selectedValue);
-
-                    // Remove Closed Date label if it's the last tag
-                    if ($closedTag.text().trim() === '') {
-                        $closedTag.remove();
-                        if (!$tag.find('.closed-date-tag').length) {
-                            $tag.remove(); // Remove label if it's the last tag
-                        }
-                    }
                 } else {
-                    // Add new closed date tag
-                    if ($tag.length > 0) {
-                        $tag.append(' or Closed Date: <span class="closed-date-tag">' + selectedValue + '</span>');
+                    if ($tagContainer.length > 0) {
+                        $tagContainer.append(' or Closed Date: <span class="closed-date-tag">' + selectedValue + '</span>');
                     } else {
                         $('#search-input').before('<span class="tag3">Closed Date: <span class="closed-date-tag">' + selectedValue + '</span></span>');
                     }
@@ -1784,22 +1769,20 @@ function updateRemoveTagButton() {
 
         // Update tag separators and close button
         function updateTagSeparators4() {
-            var $tag = $('.tag3');
-            var $creationTag = $tag.find('.creation-date-tag');
-            var $closedTag = $tag.find('.closed-date-tag');
+            var $tagContainer = $('.tag3');
 
             // Remove existing close button
-            $tag.find('.remove-tag').remove();
+            $tagContainer.find('.remove-tag').remove();
 
             // Add a single close button if there are any tags present
-            if ($tag.length > 0 && ($creationTag.length > 0 || $closedTag.length > 0)) {
-                $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+            if ($tagContainer.length > 0 && ($tagContainer.find('.creation-date-tag').length > 0 || $tagContainer.find('.closed-date-tag').length > 0)) {
+                $tagContainer.append(' <span class="remove-tag" style="cursor:pointer;">&times; Remove All</span>');
             }
         }
 
         // Remove individual tags when clicked
         $(document).on('click', '.creation-date-tag, .closed-date-tag', function () {
-            var $tag = $(this).closest('.tag3');
+            var $tagContainer = $(this).closest('.tag3');
             var type = $(this).hasClass('creation-date-tag') ? 'Creation Date' : 'Closed Date';
             var selectedValue = $(this).text().trim();
             handleTagSelection4(selectedValue, type);
@@ -1813,6 +1796,131 @@ function updateRemoveTagButton() {
         });
 
         updateTagSeparators4(); // Ensure that the close icon is added correctly
+    });
+</script> -->
+
+<script>
+    $(document).on('click', '.o-dropdown-item_2', function (e) {
+        e.stopPropagation();
+        var $item = $(this);
+
+        // Clone the item, remove the checkmark span and get the trimmed text
+        var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+        handleTagSelection5(selectedValue, $item);
+    });
+
+    function handleTagSelection5(selectedValue, $item = null) {
+        var $tag = $('.CRtag');
+        var $tagItem = $('.CRtag-item[data-value="' + selectedValue + '"]');
+
+        if ($tagItem.length > 0) {
+            // If the tag already exists, remove it            
+            $tagItem.remove();
+            updateTagSeparatorsCR();
+
+            // If no tags left, remove the container and reset the input
+            if ($tag.children().length === 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+
+            // Hide the checkmark if it's being deselected
+            if ($item) {
+                $item.find('.checkmark').hide();
+            }
+        } else {
+            // If the tag does not exist, add it
+            var newTagHtml = '<span class="CRtag-item" data-value="' + selectedValue + '">' +
+                             selectedValue + '</span>';
+
+            // Check if a tag container exists, if not, create one
+            if ($tag.length === 0) {
+                $('#search-input').before('<span class="CRtag">' + newTagHtml + '</span>');
+            } else {
+                $tag.append(' / ' + newTagHtml);
+            }
+
+            // Show the checkmark on the selected item
+            if ($item) {
+                $item.find('.checkmark').show();
+            }
+
+            // Reset input and placeholder
+            $('#search-input').val('');
+            $('#search-input').attr('placeholder', '');
+        }
+
+        // Update the tag separator and add the remove icon if there are tags
+        updateTagSeparatorsCR();
+    }
+
+    function updateTagSeparatorsCR() {
+        var $tag = $('.CRtag');
+        var $tagItems = $tag.find('.CRtag-item');
+        var html = '';
+
+        $tagItems.each(function (index) {
+            html += $(this).prop('outerHTML');
+            if (index < $tagItems.length - 1) {
+                html += ' / ';
+            }
+        });
+
+        // Append the remove icon after the last tag
+        if ($tagItems.length > 0) {
+            html += ' <span class="remove-tag" style="cursor:pointer;">&times;</span>';
+        }
+
+        $tag.html(html);
+    }
+
+    function updateFilterTagsCR() {
+        let selectedTags = [];
+        $('.CRtag-item').each(function () {
+            selectedTags.push($(this).data('value'));
+        });
+
+        // Send selected tags to the server for filtering
+        filterData(selectedTags);
+    }
+
+    $(document).on('click', '.remove-tag', function () {
+        // Remove the tag container if the icon is clicked
+        var $tagContainer = $(this).closest('.CRtag');
+        
+        // Remove all tags
+        $tagContainer.find('.CRtag-item').remove();
+        $tagContainer.remove();
+        $('#search-input').val('').attr('placeholder', 'Search...');
+
+        // Hide all checkmarks from the dropdown
+        $('.o-dropdown-item_2 .checkmark').hide();
+
+        // Reapply filters after removing the tag
+        updateFilterTagsCR();
+    });
+
+    // Remove individual tags when the close icon is clicked
+    $(document).on('click', '.CRtag-item', function () {
+        var $tagItem = $(this);
+        var selectedValue = $tagItem.data('value');
+        
+        // Remove the tag
+        $tagItem.remove();
+
+        // Remove the tag container if it's empty
+        if ($('.CRtag-item').length === 0) {
+            $('.CRtag').remove();
+            $('#search-input').val('').attr('placeholder', 'Search...');
+        }
+
+        // Hide checkmark from the dropdown
+        $('.o-dropdown-item_2 .checkmark').filter(function() {
+            return $(this).closest('.o-dropdown-item_2').text().trim() === selectedValue;
+        }).hide();
+
+        // Reapply filters after removing the tag
+        updateFilterTagsCR();
     });
 </script>
 
