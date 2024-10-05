@@ -983,7 +983,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
   
         $(document).on('click', '.custom-filter-remove', function () {
             $('#search-input').val('').attr('placeholder', 'Search...');
-            table.ajax.reload();
+            // table.ajax.reload();
         });
         // CSRF token setup for AJAX requests
         $.ajaxSetup({
@@ -993,7 +993,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
 
-
+// -------------------------------------------- Activities Start ------------------------------------------------------------------
       
 
 
@@ -1128,6 +1128,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $('.o-dropdown-item .checkmark').hide();
         });
 
+        // -------------------------------------------- Activities End ------------------------------------------------------------------
+
+        // -------------------------------------------- Lost Span Start ------------------------------------------------------------------
+
         $(document).on('click', '.lost_span', function (e) {
             e.stopPropagation();
             var $item = $(this);
@@ -1253,9 +1257,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
        
+        // -------------------------------------------- Lost Span End ------------------------------------------------------------------
 
 
-        // ------------------------------ Late , Today and Future Activitis -----------------------------------------------
+        // ------------------------------ Late , Today and Future Activitis Start -----------------------------------------------
 
         $(document).on('click', '.LTFActivities', function (e) {
             e.stopPropagation();
@@ -1267,50 +1272,50 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
         function handleTagSelection4(selectedValue, $item = null) {
-    var $tag = $('.LTFtag');
-    var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+            var $tag = $('.LTFtag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
-    if ($tagItem.length > 0) {
-        // If the tag already exists, remove it
-        $tagItem.remove();
-        updateTagSeparators4();
+            if ($tagItem.length > 0) {
+                // If the tag already exists, remove it
+                $tagItem.remove();
+                updateTagSeparators4();
 
-        // If no tags left, remove the container and reset the input
-        if ($tag.children().length === 0) {
-            $tag.remove();
-            $('#search-input').val('').attr('placeholder', 'Search...');
+                // If no tags left, remove the container and reset the input
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide the checkmark if it's being deselected
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                // If the tag does not exist, add it
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                // Check if a tag container exists, if not, create one
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="LTFtag">' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(' & ' + newTagHtml);
+                }
+
+                updateTagSeparators4();
+
+                // Show the checkmark on the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Collect selected tags
+            updateFilterTagsLTF();
         }
-
-        // Hide the checkmark if it's being deselected
-        if ($item) {
-            $item.find('.checkmark').hide();
-        }
-    } else {
-        // If the tag does not exist, add it
-        var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-        // Check if a tag container exists, if not, create one
-        if ($tag.length === 0) {
-            $('#search-input').before('<span class="LTFtag">' + newTagHtml + '</span>');
-        } else {
-            $tag.append(' & ' + newTagHtml);
-        }
-
-        updateTagSeparators4();
-
-        // Show the checkmark on the selected item
-        if ($item) {
-            $item.find('.checkmark').show();
-        }
-
-        // Reset input and placeholder
-        $('#search-input').val('');
-        $('#search-input').attr('placeholder', '');
-    }
-
-    // Collect selected tags
-    updateFilterTagsLTF();
-}
 
         // Function to clear all group-by tags
         function clearTagsByType(type) {
@@ -1384,6 +1389,11 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
 
+        // ------------------------------ Late , Today and Future Activitis End -----------------------------------------------
+
+
+        // ------------------------------ Setting Icon Open Model Start  -----------------------------------------------
+
         $(document).on('click', '.setting-icon', function(e) {
             e.preventDefault();
             var id = $(this).data('span_id');
@@ -1392,6 +1402,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $('#customFilterModal').modal('show'); 
         });
 
+
+        // ------------------------------ Setting Icon Open Model End  -----------------------------------------------
+
+        // ------------------------------ Creation Date and Closed Date Start -----------------------------------------------
 
         $(document).on('click', '.o-dropdown-item_2', function (e) {
             e.stopPropagation();
@@ -1515,8 +1529,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             // Reapply filters after removing the tag
             updateFilterTagsCR();
         });
-    });
 
+        // ------------------------------ Creation Date and Closed Date End -----------------------------------------------
+        
+    });
 
 
 </script>
@@ -2082,6 +2098,7 @@ function updateRemoveTagButton() {
         }
 
         $(document).on('click', '.custom-filter-remove', function () {
+            $('.tag5').remove();
             var valueToRemove = $(this).closest('.tag-item').data('value');
             $(this).closest('.tag-item').remove();
             if ($('.tag5').children().length === 0) {
