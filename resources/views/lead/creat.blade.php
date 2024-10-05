@@ -687,7 +687,7 @@
                                                         <input class="o_input" id="city_0" type="text" value="{{ isset($data) ? $data->city : '' }}" autocomplete="off" placeholder="City">
                                                     </div>
                                                     <div name="zip" class="o_field_widget o_field_char o_address_zip">
-                                                        <input class="o_input" value="{{ $zip }}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
+                                                        <input class="o_input" value="{{ isset($data) ? $data->zip : '' }}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
                                                     </div>
                                                     <div name="state_id" class="o_field_widget o_field_many2one o_address_state">
                                                         <div class="o_field_many2one_selection">
