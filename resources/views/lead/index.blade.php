@@ -124,7 +124,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             </div>
         </div>
         <div class="o_accordion position-relative">
-            <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0"
+            <button class="o_menu_item o_accordion_toggle closed_time o-navigable text-truncate" tabindex="0"
                 aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
                 Closed Date
                 <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
@@ -844,6 +844,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     // Clear existing table data
                     $tableBody.empty();
 
+                    if (response.data.length === 0) {
+                        // Display the message if no data is found
+                        $tableBody.append(`<tr><td colspan="21" class="text-center">No data found!</td></tr>`);
+                        return;
+                    }
+
                     // Check if response contains data
 
                     // Loop through the response and create table rows
@@ -1407,7 +1413,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         // ------------------------------ Creation Date and Closed Date Start -----------------------------------------------
 
-        $(document).on('click', '.o-dropdown-item_2', function (e) {
+        $(document).on('click', '#creationDateDropdown1 .o-dropdown-item_2 ', function (e) {
             e.stopPropagation();
             var $item = $(this);
 
@@ -1421,9 +1427,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
             if ($tagItem.length > 0) {
-                // If the tag already exists, remove it            
+                // If the tag already exists, remove it
                 $tagItem.remove();
-                updateTagSeparatorsCR();
+                updateTagSeparators5();
 
                 // If no tags left, remove the container and reset the input
                 if ($tag.children().length === 0) {
@@ -1437,15 +1443,17 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             } else {
                 // If the tag does not exist, add it
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' +
-                                selectedValue + '</span>';
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
 
                 // Check if a tag container exists, if not, create one
                 if ($tag.length === 0) {
                     $('#search-input').before('<span class="CRtag">' + newTagHtml + '</span>');
-                } else {
+                }
+                 else {
                     $tag.append(' / ' + newTagHtml);
                 }
+
+                updateTagSeparators5();
 
                 // Show the checkmark on the selected item
                 if ($item) {
@@ -1457,30 +1465,57 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 $('#search-input').attr('placeholder', '');
             }
 
-            // Update the tag separator and add the remove icon if there are tags
-            updateTagSeparatorsCR();
+            // Collect selected tags
+            updateFilterTagsCR();
         }
 
-        function updateTagSeparatorsCR() {
+        // Function to clear all group-by tags
+        function clearTagsByType(type) {
+            console.log(selectedTags);
+
+            var $tag = $('.' + type + '-CRtag');
+            if ($tag.length > 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+        }
+
+        function updateTagSeparators5() {
             var $tag = $('.CRtag');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
-
             $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
                 if (index < $tagItems.length - 1) {
                     html += ' / ';
                 }
             });
-
-            // Append the remove icon after the last tag
-            if ($tagItems.length > 0) {
-                html += ' <span class="remove-cr-tag" style="cursor:pointer;">&times;</span>';
-            }
-
             $tag.html(html);
+            updateRemoveTagButton5();
         }
 
+
+        function updateRemoveTagButton5() {
+            var $tag = $('.CRtag');
+            // Ensure the icon appears only once at the beginning
+            if ($tag.find('.fa-list').length === 0) {
+                $tag.prepend('<a href="#" class="setting-icon CRIcon_tag">' +
+                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-CRtag').length === 0) {
+                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-CRtag').remove();
+                $('.CRIcon_tag').remove();
+            }
+        }
+
+        // Function to update filters after tag removal
         function updateFilterTagsCR() {
             let selectedTags = [];
             $('.tag-item').each(function () {
@@ -1491,43 +1526,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             filterData(selectedTags);
         }
 
-        $(document).on('click', '.remove-cr-tag', function () {
-            // Remove the tag container if the icon is clicked
-            var $tagContainer = $(this).closest('.CRtag');
-            
-            // Remove all tags
-            $tagContainer.find('.tag-item').remove();
-            $tagContainer.remove();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-
-            // Hide all checkmarks from the dropdown
-            $('.o-dropdown-item_2 .checkmark').hide();
-
-            // Reapply filters after removing the tag
-            updateFilterTagsCR();
-        });
-
-        // Remove individual tags when the close icon is clicked
-        $(document).on('click', '.tag-item', function () {
-            var $tagItem = $(this);
-            var selectedValue = $tagItem.data('value');
-            
-            // Remove the tag
+        $(document).on('click', '.remove-CRtag', function () {
+            var $tagItem = $(this).parent('.tag-item');
             $tagItem.remove();
+            $('.CRtag').remove(); // Only remove the container if it's empty
+            updateTagSeparators5();
 
-            // Remove the tag container if it's empty
-            if ($('.tag-item').length === 0) {
-                $('.CRtag').remove();
-                $('#search-input').val('').attr('placeholder', 'Search...');
-            }
 
-            // Hide checkmark from the dropdown
-            $('.o-dropdown-item_2 .checkmark').filter(function() {
-                return $(this).closest('.o-dropdown-item_2').text().trim() === selectedValue;
-            }).hide();
-
-            // Reapply filters after removing the tag
+            // Reapply filters after removing "Lost" tag
             updateFilterTagsCR();
+
+            // Remove checkmark from the dropdown
+            $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
         });
         
 
@@ -1709,26 +1719,26 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelection(selectedValue, $item);
+            handleTagSelectionGrop(selectedValue, $item);
         });
 
         // Listen to changes in the select dropdown
         $('.o_add_custom_group_menu').on('change', function (e) {
             var selectedValue = $(this).find('option:selected').text().trim();
-            handleTagSelection(selectedValue);
+            handleTagSelectionGrop(selectedValue);
             $(this).val(''); // Reset the select after selecting an option
         });
 
 
         // Function to handle tag selection
-        function handleTagSelection(selectedValue, $item = null) {
+        function handleTagSelectionGrop(selectedValue, $item = null) {
             var $tag = $('.group_by_tag');
             var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
 
             if ($tagItem.length > 0) {
                 // Remove selected value
                 $tagItem.remove();
-                updateTagSeparators();
+                updateTagSeparatorsGrop();
 
                 if ($tag.children().length === 0) {
                     $tag.remove();
@@ -1771,7 +1781,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         // Append to existing group_by_tag span
                         $('.group_by_tag').append(' ' + newTagHtml);
                     }
-                    updateTagSeparators();
+                    updateTagSeparatorsGrop();
                 }
 
                 if ($item) {
@@ -1795,7 +1805,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         // The rest of your code remains unchanged
 
         // Update tag separators and remove button
-        function updateTagSeparators() {
+        function updateTagSeparatorsGrop() {
             var $tag = $('.group_by_tag');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
@@ -1807,11 +1817,11 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });
             html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
             $tag.html(html);
-            updateRemoveTagButton();
+            updateRemoveTagButtonGrop();
         }
 
         // Update/remove tag button
-        function updateRemoveTagButton() {
+        function updateRemoveTagButtonGrop() {
             var $tag = $('.group_by_tag');
 
             if ($tag.find('.fa-list').length === 0) {
@@ -1946,7 +1956,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
 
         // Initialize tags if any tags are present on page load
-        updateTagSeparators(); // Ensure that the close icon is added correctly
+        updateTagSeparatorsGrop(); // Ensure that the close icon is added correctly
        
  });
 </script>

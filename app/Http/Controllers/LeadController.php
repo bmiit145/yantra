@@ -137,20 +137,12 @@ class LeadController extends Controller
         $countrys = Country::all();
         $tags = Tag::where('tage_type', 2)->get();
         $data = generate_lead::find($id);
-        $allData = generate_lead::where('product_name', $data->product_name)->count();
-        // $getAllLeads = generate_lead::all(); // Use all() instead of get() for better readability
-
-        // // Initialize an array to hold similar leads for each product
-        // $similarLeadsCollection = [];
-
-        // // Step 2: Loop through each lead to find similar leads
-        // foreach ($getAllLeads as $lead) {
-        //     if (isset($lead->product_name)) {
-        //         $similarLeads = generate_lead::where('product_name', $lead->product_name)->count();
-        //         $similarLeadsCollection[$lead->product_name] = $similarLeads;
-        //     }
-        // }
-        // dd($similarLeadsCollection);
+        if($data){            
+            $allData = generate_lead::where('product_name', $data->product_name)->count();
+        }
+        else{
+            $allData = 0;
+        }
         $users = User::orderBy('id', 'DESC')->get();
         if ($data && isset($data->product_name)) {
             $count = generate_lead::where('product_name', $data->product_name)->count();
@@ -772,77 +764,71 @@ class LeadController extends Controller
     }
 
     public function activities(Request $request)
-    {
-        // dd($request->all());
+    {                
         // Get all tags from the request
         $tags = $request->tags ?? [];
-
+    
         // Normalize tags to handle "Lost & Archived" as "Lost"
         $normalizedTags = array_map(function ($tag) {
             return $tag === 'Lost & Archived' ? 'Lost' : $tag;
         }, $tags);
-
+    
         // Initialize variables to determine which filters to apply
         $includeMyActivities = in_array('My Activities', $normalizedTags);
         $includeUnassigned = in_array('Unassigned', $normalizedTags);
         $includeLost = in_array('Lost', $normalizedTags);
-
-        // Late , Today and Future Activities 
+    
+        // Late, Today and Future Activities 
         $includeLateActivities = in_array('Late Activities', $normalizedTags);
         $includeTodayActivities = in_array('Today Activities', $normalizedTags);
         $includeFutureActivities = in_array('Future Activities', $normalizedTags);
-
+    
         // Start building the query
         $leadsQuery = generate_lead::query();
-
+    
         // Apply filters based on specific tag combinations
         if ($includeLost) {
-            // Apply the "Lost" filter
             $leadsQuery->where('is_lost', '2'); // Assuming '2' indicates "Lost"
         }
-
+    
         if ($includeMyActivities || $includeUnassigned) {
-            // Apply "My Activities" and/or "Unassigned" filters
             $leadsQuery->where(function ($query) use ($includeMyActivities, $includeUnassigned) {
                 if ($includeMyActivities) {
                     $query->whereHas('activities', function ($q) {
                         $q->where('status', 0); // Status for "My Activities"
                     });
                 }
-
                 if ($includeUnassigned) {
                     $query->orWhereNull('sales_person');
                 }
             });
         }
-
+    
         if ($includeLateActivities || $includeTodayActivities || $includeFutureActivities) {
             $leadsQuery->whereHas('activities', function ($query) use ($includeLateActivities, $includeTodayActivities, $includeFutureActivities) {
-                // Initialize an array to hold the conditions
                 $conditions = [];
-        
+    
                 if ($includeLateActivities) {
                     $conditions[] = function($q) {
                         $q->where('due_date', '<', date('Y-m-d'))
-                          ->where('status', 0); // Status for "My Activities"
+                          ->where('status', 0);
                     };
                 }
-        
+    
                 if ($includeTodayActivities) {
                     $conditions[] = function($q) {
                         $q->where('due_date', '=', date('Y-m-d'))
-                          ->where('status', 0); // Status for "My Activities"
+                          ->where('status', 0);
                     };
                 }
-        
+    
                 if ($includeFutureActivities) {
                     $conditions[] = function($q) {
                         $q->where('due_date', '>', date('Y-m-d'))
-                          ->where('status', 0); // Status for "My Activities"
+                          ->where('status', 0);
                     };
                 }
-        
-                // Apply all conditions using where(function)
+    
                 if (!empty($conditions)) {
                     $query->where(function ($subQuery) use ($conditions) {
                         foreach ($conditions as $condition) {
@@ -852,18 +838,52 @@ class LeadController extends Controller
                 }
             });
         }
+    
+        // Initially assume no filters are applied
+        $dateFilterApplied = false;
 
-        // if (empty($normalizedTags)) {
-        //     dd('dfdf');
-        //     $leadsQuery->where('is_lost', '1'); // Change this as per your logic
-        // }
+        foreach ($tags as $selectedDate) {
+            // Check for month names
+            if (in_array($selectedDate, [date('F'), date('F', strtotime('-1 month')), date('F', strtotime('-2 months'))])) {
+                $year = date('Y');
+                $month = date('m', strtotime($selectedDate));
 
+                $leadsQuery->orWhere(function ($query) use ($year, $month) {
+                    $query->where('is_lost', '1')
+                        ->whereYear('created_at', $year)
+                        ->whereMonth('created_at', $month);
+                });
+                $dateFilterApplied = true; // Set flag if filter is applied
+            }
+            // Check for years
+            elseif (in_array($selectedDate, [date('Y'), date('Y', strtotime('-1 year')), date('Y', strtotime('-2 year'))])) {
+                $year = (int)$selectedDate;
+                $yearExists = generate_lead::whereYear('created_at', $year)
+                                        ->where('is_lost', '1')
+                                        ->exists();
+
+                if ($yearExists) {
+                    $leadsQuery->orWhere(function ($query) use ($year) {
+                        $query->whereYear('created_at', $year)
+                            ->where('is_lost', '1');
+                    });
+                    $dateFilterApplied = true; // Set flag if filter is applied
+                }
+            }
+        }
+
+        // If no filters were applied, do not modify the query further
+        if ($dateFilterApplied) {
+            // If a date filter was applied, execute the query
+            $leads = $leadsQuery->get(); // Execute the query and get the results
+        }
+    
         // Always include necessary relationships
         $leadsQuery->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
-
+    
         // Fetch results
         $generateLeads = $leadsQuery->get();
-
+    
         // Return results as JSON
         return response()->json([
             'success' => true,
