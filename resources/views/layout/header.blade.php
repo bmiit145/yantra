@@ -309,7 +309,7 @@
                 </div>
             </div>
             @if(isset($data->is_lost) && $data->is_lost == 1)
-                @if($allData > 1)
+                @if(isset($allData) && $allData > 1)
                     <div class="o-form-buttonbox d-print-none position-relative d-flex w-md-auto o_not_full" style="margin-left:42%;position: absolute !important;">
                         <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                             <button

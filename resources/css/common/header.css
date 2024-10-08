@@ -569,6 +569,7 @@ p.stage_new_info span {
 }
 .o_searchview.form-control.d-print-contents.d-flex.align-items-center.py-1.border-end-0{
     height: auto;
+    column-gap: 8px;
 }
 /*================ responsive-css ====================== */
 

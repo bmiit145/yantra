@@ -31,15 +31,52 @@ class ActivityController extends Controller
         return view('lead.createactivity');
     }
 
-    public function allActivities()
-    {
-        try {
-            $getAssignedTo = User::orderBy('id', 'DESC')->get();
-            return view('lead.activity.index', compact('getAssignedTo'));
-        } catch (\Exception $e) {
-            return redirect()->back()->with('message', 'Something Went wrong!');
+    public function allActivities(Request $request)
+{
+    try {
+        $getAssignedTo = User::orderBy('id', 'DESC')->get();
+        $data = Activity::where('status', '0');
+
+        // Check for the filter type
+        if ($request->has('filterType')) {
+            $filterType = $request->filterType;
+
+            switch ($filterType) {
+                case 'late':
+                    $data = $data->where('due_date', '<', now()->toDateString());
+                    break;
+
+                case 'today':
+                    $data = $data->whereDate('due_date', '=', now()->toDateString());
+                    break;
+
+                case 'future':
+                    $data = $data->where('due_date', '>', now()->toDateString());
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            // If no filter is applied, show all activities as before
+            $data = $data->where(function ($query) {
+                $query->whereHas('getLead', function ($query) {
+                    $query->where('is_lost', '1');
+                })
+                ->orWhereHas('getPipeline', function ($query) {
+                    $query->where('is_lost', '1');
+                });
+            });
         }
+
+        // Get the filtered data
+        $data = $data->get();
+
+        return view('lead.activity.index', compact('getAssignedTo', 'data'));
+    } catch (\Exception $e) {
+        return redirect()->back()->with('message', 'Something Went wrong!');
     }
+}
 
     public function AllActivitiesGetLeads(Request $request)
     {
@@ -178,26 +215,25 @@ class ActivityController extends Controller
 
         // Start building the query
         $leadsQuery = Activity::query();
-        dd($leadsQuery);
 
         // Apply status filters
         $leadsQuery->where(function ($query) use ($includeOverdue, $includeToday, $includeFuture, $includeDone) {
             if ($includeOverdue) {
                 $query->orWhere(function ($query) {
                     $query->where('status', '0')
-                        ->where('due_date', '<', now());
+                        ->where('due_date', '<', date('Y-m-d'));
                 });
             }
 
             if ($includeToday) {
                 $query->orWhere(function ($query) {
-                    $query->where('status', '0')->whereDate('due_date', now()->format('Y-m-d'));
+                    $query->where('status', '0')->where('due_date', '=', date('Y-m-d'));
                 });
             }
 
             if ($includeFuture) {
                 $query->orWhere(function ($query) {
-                    $query->where('status', '0')->where('due_date', '>', now()->format('Y-m-d'));
+                    $query->where('status', '0')->where('due_date', '>', date('Y-m-d'));
                 });
             }
 
@@ -225,9 +261,12 @@ class ActivityController extends Controller
         $leadsQuery->whereDoesntHave('getLead', function ($query) {
             $query->where('is_lost', 2);
         });
+        $leadsQuery->whereDoesntHave('getPipeline', function ($query) {
+            $query->where('is_lost', 2);
+        });
 
         // Always include necessary relationships
-        $leadsQuery->with('getLead', 'getUser');
+        $leadsQuery->with('getLead','getPipeline', 'getUser');
 
         // Fetch results
         $generateLeads = $leadsQuery->get();

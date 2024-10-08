@@ -62,7 +62,7 @@
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2   fa fa-filter"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 fa fa-filter" style="color: #714b67;"></i>
             <input type="hidden" id="filter" name="filter" value="">
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
@@ -731,7 +731,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             </thead>
             <tbody id="lead-table-body">
                 @forEach($data as $lead)
-                    <tr data-id="{{$lead->id}}">
+                    <tr data-id="{{$lead->id}}" style="cursor: pointer;">
                         <td>{{$lead->product_name ?? ''}}</td>
                         <td>{{$lead->email ?? ''}}</td>
                         <td>{{$lead->city ?? ''}}</td>
@@ -989,7 +989,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
   
         $(document).on('click', '.custom-filter-remove', function () {
             $('#search-input').val('').attr('placeholder', 'Search...');
-            // table.ajax.reload();
+            location.reload();
         });
         // CSRF token setup for AJAX requests
         $.ajaxSetup({
@@ -1005,6 +1005,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $(document).on('click', '.activities', function (e) {
             e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1140,6 +1142,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $(document).on('click', '.lost_span', function (e) {
             e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
             var $item = $(this);
 
             // Get the text of the clicked "Lost" span
@@ -1270,6 +1274,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $(document).on('click', '.LTFActivities', function (e) {
             e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1298,11 +1304,14 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             } else {
                 // If the tag does not exist, add it
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+                var newTagHtml = '<span class="tag-item" data-span_id="' + currentIndex + '"" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                var index = 0;
+                var currentIndex = index++;
 
                 // Check if a tag container exists, if not, create one
                 if ($tag.length === 0) {
-                    $('#search-input').before('<span class="LTFtag">' + newTagHtml + '</span>');
+                    $('#search-input').before('<span class="LTFtag" data-span_id="' + currentIndex + '"" >' + newTagHtml + '</span>');
                 } else {
                     $tag.append(' & ' + newTagHtml);
                 }
@@ -1351,11 +1360,13 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         function updateRemoveTagButton4() {
             var $tag = $('.LTFtag');
+            var index = 0;
             // Ensure the icon appears only once at the beginning
             if ($tag.find('.fa-list').length === 0) {
-                $tag.prepend('<a href="#" class="setting-icon LTFIcon_tag">' +
+                var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '"" class="setting-icon LTFIcon_tag">' +
                     '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '<span data-span_id="' + currentIndex + '"" class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                     '</a>'
                 );
             }
@@ -1415,6 +1426,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $(document).on('click', '#creationDateDropdown1 .o-dropdown-item_2 ', function (e) {
             e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1544,87 +1557,87 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         // ------------------------------ Creation Date and Closed Date End -----------------------------------------------
 
 
-             $('.add_filter').on('click', function (event) {
-            event.preventDefault();
-            var filterType = $('#customer_filter_select').val();
-            var filterValue = $('#customer_filter_input_value').val();
-            var operatesValue = $('#customer_filter_operates').val();
-              var span_id = $('#span_id').val();
+            $('.add_filter').on('click', function (event) {
+                event.preventDefault();
+                var filterType = $('#customer_filter_select').val();
+                var filterValue = $('#customer_filter_input_value').val();
+                var operatesValue = $('#customer_filter_operates').val();
+                var span_id = $('#span_id').val();
 
-               
+                
 
-             handleTagSelection(filterType, operatesValue, filterValue, span_id);
+                handleTagSelection(filterType, operatesValue, filterValue, span_id);
 
-            // Prepare data to send
-            var data = {
-                filterType: filterType,
-                filterValue: filterValue,
-                operatesValue: operatesValue
-            };
+                // Prepare data to send
+                var data = {
+                    filterType: filterType,
+                    filterValue: filterValue,
+                    operatesValue: operatesValue
+                };
 
-            // Send AJAX request
-            $.ajax({
-                url: '{{route('lead.custom.filter')}}',
-                type: 'POST',
-                data: data,
-                success: function (response) {
-                    var $tableBody = $('#lead-table-body');
+                // Send AJAX request
+                $.ajax({
+                    url: '{{route('lead.custom.filter')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        var $tableBody = $('#lead-table-body');
 
-                    // Clear existing table data
-                    $tableBody.empty();
+                        // Clear existing table data
+                        $tableBody.empty();
 
-                    // Check if response contains data
-                    if (response.success && response.data && response.data.length > 0) {
-                        // Loop through the response and create table rows
-                        response.data.forEach(function (item) {
-                            var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+                        // Check if response contains data
+                        if (response.success && response.data && response.data.length > 0) {
+                            // Loop through the response and create table rows
+                            response.data.forEach(function (item) {
+                                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
 
-                                // Append data only for the visible columns
-                                if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
-                                if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                                if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                                if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
-                                if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
-                                if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
-                                if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                                if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
-                                if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
-                                if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
-                                if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
-                                if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                                if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
-                                if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                                if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
-                                if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                                if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
-                                if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
-                                if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
-                                if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                                if (table.column(20).visible()) rowHtml += `<td></td>`;
+                                    // Append data only for the visible columns
+                                    if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
+                                    if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                                    if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                                    if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
+                                    if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
+                                    if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
+                                    if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                                    if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
+                                    if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
+                                    if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
+                                    if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
+                                    if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                                    if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
+                                    if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                                    if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
+                                    if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                                    if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
+                                    if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
+                                    if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
+                                    if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                                    if (table.column(20).visible()) rowHtml += `<td></td>`;
 
-                                rowHtml += `</tr>`;
-                                $tableBody.append(rowHtml);
-                            
+                                    rowHtml += `</tr>`;
+                                    $tableBody.append(rowHtml);
+                                
 
-                        });
+                            });
 
-                        // Attach click event handler to rows
-                        $('#lead-table-body .lead-row').on('click', function () {
-                            var leadId = $(this).data('id');
-                            window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
-                        });
-                    } else {
-                        // If no data, show a message or keep it empty
-                        $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                            // Attach click event handler to rows
+                            $('#lead-table-body .lead-row').on('click', function () {
+                                var leadId = $(this).data('id');
+                                window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                            });
+                        } else {
+                            // If no data, show a message or keep it empty
+                            $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
                     }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+                });
 
-            $('#customFilterModal').modal('hide');
-        });
+                $('#customFilterModal').modal('hide');
+            });
 
         function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
             console.log(filterType, operatesValue, filterValue, span_id);
@@ -1634,8 +1647,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
             // Find the tag with the specific span_id and remove it
             var $iconTag = $('span.tag[data-span_id="' + span_id + '"]'); // Select span with class "tag" and matching span_id
+            
             var $icosnDiv = $('div.tag1[data-span_id="' + span_id + '"]'); // Select div with class "tag" and matching span_id
             console.log($iconTag, 'iconTag');
+            var $iconLTFTag = $('span.LTFtag[data-span_id="' + span_id + '"]');
 
             if ($tagItem.length > 0) {
                 $tagItem.remove();
@@ -1646,7 +1661,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     $('#search-input').val('').attr('placeholder', 'Search...');
                 }
             } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove">×</span></span>';
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
                 if ($tag.length === 0) {
                     $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                 } else {
@@ -1661,6 +1676,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
             if ($icosnDiv.length > 0) {
                 $icosnDiv.remove();  // This removes the <span class="tag"> element
+            }
+            if ($iconLTFTag.length > 0) {
+                $iconLTFTag.remove();  // This removes the <span class="tag"> element
             }
 
             updateTagSeparators();
@@ -1717,6 +1735,14 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         // Handle item selection from dropdown
         $(document).on('click', '.o-dropdown-item_1', function (e) {
             e.stopPropagation();
+            $('.tag').remove();
+            $('.o-dropdown-item .checkmark').hide();
+            $('.tag1').remove();
+            $('.lost_span:contains("Lost")').find('.checkmark').hide();
+            $('.LTFtag').remove();
+            $('.LTFActivities .checkmark').hide();
+            $('.CRtag').remove();
+            $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
             handleTagSelectionGrop(selectedValue, $item);
@@ -1849,7 +1875,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $('.o-dropdown-item_1  .checkmark').hide();
             $('#search-input').val('').attr('placeholder', 'Search...');
             $('#filter').val(''); // Clear the filter value
-                location.reload();
+            location.reload();
         });
         // $(document).on('click', '.remove-tag', function () {
         //     $('.tag').remove();

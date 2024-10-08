@@ -133,6 +133,7 @@ class LeadController extends Controller
 
     public function create($id = null)
     {
+        $allLead = generate_lead::where('is_lost','1')->count();
         $titles = PersonTitle::all();
         $countrys = Country::all();
         $tags = Tag::where('tage_type', 2)->get();
@@ -265,7 +266,7 @@ class LeadController extends Controller
         }
         $sales_teams = SaleTeam::all();
      
-        return view('lead.creat', compact('titles', 'countrys','sales_teams', 'tags','log_notes', 'data','authfollowers','followers','allData','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles'));
+        return view('lead.creat', compact('titles', 'countrys','sales_teams', 'tags','log_notes', 'data','authfollowers','followers','allData','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles','allLead'));
     }
 
     public function store(Request $request)

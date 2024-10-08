@@ -1498,7 +1498,7 @@
                                                                     <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                                                         <div class="o_row o_row_readonly">
                                                                             <div name="edit_due_date" class="o_field_widget">
-                                                                                <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;" type="text" id="edit_due_date"></div>
+                                                                                <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;cursor: pointer;" type="text" id="edit_due_date"></div>
                                                                             </div>                                                
                                                                         </div>
                                                                     </div>
@@ -1534,9 +1534,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                        <button type="submit" class="btn btn-secondary" id="markAsDoneButton">Mark as Done</button>
+                                                        <button type="button" class="btn btn-secondary" id="editDoneAndScheduleButton">Done & Schedule Next</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -2408,7 +2410,7 @@
                             <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                 <div class="o_row o_row_readonly">
                                     <div name="due_date" class="o_field_widget">
-                                        <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;" type="text" id="due_date"></div>
+                                        <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;cursor: pointer;" type="text" id="due_date"></div>
                                     </div>                                                
                                 </div>
                             </div>
@@ -3317,32 +3319,32 @@
         });
 
         $('#done_and_schedule_next').on('click', function(e) {
-        e.preventDefault(); // Prevent the default form submission
-        let action = 'next'; // Set the action for the "Done & Schedule Next" button
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'next'; // Set the action for the "Done & Schedule Next" button
 
-        // Perform AJAX request
-        $.ajax({
-            url: $('#scheduleForm').attr('action'), // Use the form's action
-            method: 'POST',
-            data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
-            success: function(response) {
-                toastr.success(response.message);
-                // Store a flag in localStorage to indicate the modal should reopen
-                localStorage.setItem('reopenModal', 'true');
-                location.reload(); // Reload the page
-            },
-            error: function(xhr) {
-                // Handle any errors
-                alert('An error occurred while scheduling the activity.');
-            }
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    // Store a flag in localStorage to indicate the modal should reopen
+                    localStorage.setItem('reopenModal', 'true');
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
         });
-    });
 
-    // Check localStorage on page load to reopen the modal if needed
-    if (localStorage.getItem('reopenModal') === 'true') {
-        $('#activitiesAddModal').modal('show'); // Show the modal
-        localStorage.removeItem('reopenModal'); // Clear the flag
-    }
+        // Check localStorage on page load to reopen the modal if needed
+        if (localStorage.getItem('reopenModal') === 'true') {
+            $('#activitiesAddModal').modal('show'); // Show the modal
+            localStorage.removeItem('reopenModal'); // Clear the flag
+        }
     });
 </script>
 
@@ -3436,7 +3438,7 @@
 
         // Handle form submission
         $('#editForm').on('submit', function(e) {
-            console.log('jjjjjjjjjjj');;
+            console.log('jjjjjjjjjjj');
             
             e.preventDefault();
 
@@ -3460,6 +3462,67 @@
                     console.error('Error updating activity:', xhr.responseText);
                 }
             });
+        });
+
+        // Handle the "Mark as Done" button click
+        $('#markAsDoneButton').on('click', function() {
+            const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}', // Your actual route
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token for security
+                    id: activityId,
+                    status: 1 // Mark as done
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#editModal').modal('hide');
+                        $('div[data-activity-id="' + activityId + '"]').remove(); // Remove from UI
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        // Handle the "Done & Schedule Next" button click
+        $('#editDoneAndScheduleButton').on('click', function() {
+            const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: activityId,
+                    status: 1 // Mark as done
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Set a flag in local storage to indicate the modal should open after reload
+                        localStorage.setItem('openSchedulingModal', 'true');
+                        location.reload(); // Reload the page
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        // Check if the flag is set in local storage and open the modal
+        $(document).ready(function() {
+            if (localStorage.getItem('openSchedulingModal') === 'true') {
+                $('#activitiesAddModal').modal('show'); // Show the scheduling modal
+                localStorage.removeItem('openSchedulingModal'); // Remove the flag
+            }
         });
 
         // Handle the Delete button click
@@ -4133,13 +4196,24 @@ $('.restore_lead').on('click', function(){
 
 <script>
    $('.send_message_btn').on('click', function() {
+        // Hide the notes section if it's open
+        if ($('.show3').is(':visible')) {
+            $('.show3').hide();
+        }
+        // Toggle the message section
         $('.show1').toggle();
         $('.show2').toggle(); 
-  });
-   $('.click_add_notes').on('click', function() {
-        $('.show3').toggle();
-  });
+   });
 
+   $('.click_add_notes').on('click', function() {
+        // Hide the message sections if they're open
+        if ($('.show1').is(':visible') || $('.show2').is(':visible')) {
+            $('.show1').hide();
+            $('.show2').hide();
+        }
+        // Toggle the notes section
+        $('.show3').toggle();
+   });
 </script>
 
 <script>

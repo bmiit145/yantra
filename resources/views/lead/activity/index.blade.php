@@ -41,6 +41,11 @@
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
+
 @endsection
 
 <style>
@@ -118,48 +123,17 @@
         /* Rotate the arrow */
     }
 
-    .tag {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
-
-    .tag1 {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
-
-    .tag2 {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
-
+    .tag,
+    .tag1,
+    .tag2,
     .tag5 {
         display: inline-block;
-        padding: 5px 10px;
+        padding: 0px 10px 0px 0;
         background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
+        border-radius: 8px;
         font-size: 14px;
-        top: 5px;
-        left: 5px;
+        margin: 5px 0;
+        position: relative;
     }
 
     .remove-tag {
@@ -251,13 +225,92 @@
     .today {
         color: #9A6B01;
     }
+
+    tbody#lead-table-body tr:hover {
+        background-color: #FAFAFA !important;
+    }
+
+    tbody#lead-table-body tr:hover td {
+        background-color: #FAFAFA !important;
+    }
+
+    table.dataTable thead th,
+    table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #11111147;
+        border-top: 1px solid #11111147;
+        background: #F1F1F1;
+    }
+
+    .dataTables_length label {
+        display: flex;
+        gap: 10px;
+        margin: 0 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid #2222;
+    }
+
+    table.dataTable tbody tr,
+    table.dataTable.display tbody tr.odd>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+    table.dataTable.display tbody tr.even>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+        background-color: #FFFFFF !important;
+    }
+
+    .dropdown-toggle::after {
+        content: none !important;
+    }
+
+    span.setting_icon i {
+        color: #fff;
+    }
+
+    span.setting_icon {
+        padding: 3px;
+        background: #714B67;
+        border-radius: 5px;
+        display: inline-block;
+        margin-right: 5px;
+        width: 27px;
+        height: 27px;
+        text-align: center;
+        position: absolute;
+    }
+
+    span.setting_icon.setting_icon_hover {
+        display: none;
+    }
+
+    a.setting-icon:hover span {
+        display: block;
+    }
+
+    span.tag-item {
+        line-height: 1.9;
+    }
+
+    a.setting-icon {
+        padding-right: 35px;
+    }
+
+    .o_accordion_toggle::after {
+        display: none;
+    }
+    .dropdown-item.selected:not(.dropdown-item_active_noarrow):before{
+        display: none !important;
+    }
 </style>
 
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 fa fa-filter" style="color: #714b67;"></i>
             <input type="hidden" id="filter" name="filter" value="">
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
@@ -267,14 +320,14 @@
                 class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
         <div class="dropdown-divider" role="separator"></div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"  id="filterOverdue"><span class="float-end checkmark"
-                style="display:none;">✔</span>Overdue</span>
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterOverdue"><span
+                class="float-end checkmark" style="display:none;">✔</span>Overdue</span>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterToday"><span class="float-end checkmark"
-                style="display:none;">✔</span>Today</span>
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterToday"><span
+                class="float-end checkmark" style="display:none;">✔</span>Today</span>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterFuture"><span class="float-end checkmark"
-                style="display:none;">✔</span>Future</span>
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="filterFuture"><span
+                class="float-end checkmark" style="display:none;">✔</span>Future</span>
         <div class="dropdown-divider" role="separator"></div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate done" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
@@ -284,7 +337,7 @@
             tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action fa fa-layer-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
         </div>
         <div class="o_accordion position-relative">
@@ -436,7 +489,7 @@
 
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
-        <table id="example" class="display nowrap example">
+        <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th>Document Name</th>
@@ -449,148 +502,95 @@
                 </tr>
             </thead>
 
-            <tbody id="lead-table-body"></tbody>
+            <tbody id="lead-table-body">
+                @foreach ($data as $activity)
+                                <tr data-id="{{ $activity->lead_id ? $activity->lead_id : $activity->pipeline_id }}" style="cursor: pointer;">
+                                    <td>
+                                        @if($activity->getLead)
+                                            {{$activity->getLead->product_name ?? ''}}
+                                        @elseif($activity->getPipeline)
+                                            {{$activity->getPipeline->opportunity ?? ''}}
+                                        @else
+
+                                        @endif
+                                    </td>
+                                    <td>{{$activity->activity_type ?? ''}}</td>
+                                    <td>{{$activity->getUser->email ?? ''}}</td>
+                                    <td>{{$activity->summary ?? ''}}</td>
+                                    <?php
+                    // Assuming $activity->due_date is a date string
+                    $dueDate = $activity->due_date ?? null;
+                    $today = new DateTime();
+                    $diffDays = $dueDate ? $today->diff(new DateTime($dueDate))->days * ($today < new DateTime($dueDate) ? 1 : -1) : null;
+
+                    $text = '';
+                    $className = '';
+
+                    if ($diffDays === 0) {
+                        $text = 'Today';
+                        $className = 'today'; // Define CSS class for today
+                    } elseif ($diffDays === -1) {
+                        $text = 'Yesterday';
+                        $className = 'due-yesterday';
+                    } elseif ($diffDays === 1) {
+                        $text = 'Tomorrow';
+                        $className = 'due-tomorrow';
+                    } elseif ($diffDays < -1) {
+                        $text = abs($diffDays) . ' Days ago';
+                        $className = 'due-days-ago';
+                    } elseif ($diffDays > 1) {
+                        $text = 'In ' . $diffDays . ' days';
+                        $className = 'due-in-days';
+                    } else {
+                        // If due_date is not set
+                        $text = 'Today';
+                        $className = 'today'; // Use the same class for styling
+                    }
+                                        ?>
+                                    <td class="<?= htmlspecialchars($className) ?>"><?= htmlspecialchars($text) ?></td>
+
+                                    <td>
+                                        <a href="javascript:void(0);" style="color:#017e84;" class="mark-done"
+                                            data-id="{{$activity->id}}"><i class="o_button_icon fa fa-fw fa-check me-1"></i>Done</a>
+                                        <a href="javascript:void(0);" style="color:black;" class="cancel" data-id="{{$activity->id}}"><i
+                                                class="o_button_icon fa fa-fw fa-times me-1"></i>Cancel</a>
+                                        <a href="javascript:void(0);" style="color:black;" class="snooze" data-id="{{$activity->id}}"><i
+                                                class="o_button_icon fa fa-fw fa-bell-slash me-1"></i>Snooze 7d</a>
+                                    </td>
+                                </tr>
+                @endforeach
+            </tbody>
         </table>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+<!-- jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
 
 <script>
     $(document).ready(function () {
-        // Initialize DataTable with server-side processing
-        const urlParams = new URLSearchParams(window.location.search);
-        const filterType = urlParams.get('filterType') || '';
+
         var table = $('#example').DataTable({
-            processing: true
-            , serverSide: true,
-            searching: false
-            , ajax: {
-                url: '{{ route('lead.AllActivitiesGetLeads') }}'
-                , type: "POST"
-                , data: function (d) {
-                    d.search = {
-                        value: $('#example_filter input').val()
-                    };
-                    // d.filter = $('#filter').val();
-                    d.filterType = filterType;
-                }
-            }
-            , order: [
-                [1, 'DESC']
-            ]
-            , pageLength: 10
-            , aoColumns: [
-                {
-                    data: 'get_lead',
-                        render: function (data, type, row) {
-                            if (data && data.product_name) {
-                                return data.product_name;
-                            } 
-                            else if (row.get_pipeline && row.get_pipeline.opportunity) {
-                                return row.get_pipeline.opportunity;
-                            } 
-                            else {
-                                return '';
-                            }
-                        }
-                }
-                , {
-                    data: 'activity_type',
-                    render: function (data, type, row) {
-                        if (data) {
-                            let processedData = data.toLowerCase().replace(/-/g, ' ');
-                            return processedData.split(' ').map(word => {
-                                return word.charAt(0).toUpperCase() + word.slice(1);
-                            }).join(' ');
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'get_user'
-                    , render: function (data, type, row) {
-                        if (data) {
-                            return data.email;
-                        } else {
-                            return '';
-                        }
-                    }
-                }
-                , {
-                    data: 'summary'
-                    , render: function (data, type, row) {
-                        if (data) {
-                            return data;
-                        }
-                        return '';
-                    }
-                }
-                , {
-                    data: 'due_date',
-                    render: function (data, type, row) {
-                        if (data) {
-                            const dueDate = new Date(data);
-                            const now = new Date();
-                            // Set time to start of the day for accurate comparison
-                            dueDate.setHours(0, 0, 0, 0);
-                            now.setHours(0, 0, 0, 0);
+            "pageLength": 25,
+            searching: false,
+            "lengthChange": false,
+            "sDom": 'Rlfrtip',
+            "oColReorder": {
+                "bAddFixed": true
+            },
+            columnDefs: [
+                { orderable: false, targets: -1 } // Disable sorting for the last column
+            ],
 
-                            // Calculate the difference in days
-                            const diffTime = dueDate - now;
-                            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-                            // Determine the appropriate class and text
-                            let text = '';
-                            let className = '';
-
-                            if (diffDays === 0) {
-                                text = 'Today';
-                                className = 'today';
-                            } else if (diffDays === -1) {
-                                text = 'Yesterday';
-                                className = 'due-yesterday';
-                            } else if (diffDays === 1) {
-                                text = 'Tomorrow';
-                                className = 'due-tomorrow';
-                            } else if (diffDays < -1) {
-                                text = Math.abs(diffDays) + ' Days ago';
-                                className = 'due-days-ago';
-                            } else if (diffDays > 1) {
-                                text = 'In ' + diffDays + ' days';
-                                className = 'due-in-days';
-                            }
-
-                            return `<span class="${className}">${text}</span>`;
-                        } else {
-                            return '';
-                        }
-                    }
-
-                }
-                ,
-                // Uncomment and modify the following column if needed
-                {
-                    data: 'id',
-                    width: "20%",
-                    render: function (data, type, row) {
-                        return `
-                        <a href="javascript:void(0);" style="color:#017e84;" class="mark-done" data-id="${data}"><i class="o_button_icon fa fa-fw fa-check me-1"></i>Done</a>
-                        <a href="javascript:void(0);" style="color:black;" class="cancel" data-id="${data}"><i class="o_button_icon fa fa-fw fa-times me-1"></i>Cancel</a>
-                        <a href="javascript:void(0);" style="color:black;" class="snooze" data-id="${data}"><i class="o_button_icon fa fa-fw fa-bell-slash me-1"></i>Snooze 7d</a>
-                    `;
-                    }
-                }
-            ]
-            , createdRow: function (row, data, dataIndex) {
-                $(row).attr('data-id', data.lead_id);
-            }
-
-
-        });        
+        });
 
         $('#example').on('click', '.mark-done', function () {
             var id = $(this).data('id');
@@ -602,7 +602,7 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        table.ajax.reload(); // Reload the DataTable
+                        location.reload();
                     }
                 }
             });
@@ -618,7 +618,7 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        table.ajax.reload(); // Reload the DataTable
+                        location.reload();
                     }
                 }
             });
@@ -634,19 +634,21 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        table.ajax.reload(); // Reload the DataTable
+                        location.reload();
                     }
                 }
             });
         });
 
-        // Handle row click event
-        // $('#example tbody').on('click', 'tr', function () {
-        //     var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-        //     if (id) {
-        //         window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
-        //     }
-        // });
+        $('#example tbody').on('click', 'tr', function (e) {
+            // Check if the clicked target is not inside the last <td>
+            if (!$(e.target).closest('td:last-child').length) {
+                var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+                if (id) {
+                    window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+                }
+            }
+        });
     });
 
 </script>
@@ -751,7 +753,508 @@
 </script>
 
 <script>
+    $(document).on('click', '.lead-row', function () {
+        var leadId = $(this).data('id');
+        window.location.href = "{{ route('lead.create') }}/" + leadId;
+    });
+
+    function storeLead() {
+        $.ajax({
+            url: "{{ route('lead.storeLead') }}"
+            , type: "POST"
+            , data: {
+                _token: "{{ csrf_token() }}"
+                ,
+            }
+            , success: function (response) {
+                console.log('Lead stored successfully.', response);
+            }
+            , error: function (error) {
+                console.error('Error storing lead:', error);
+            }
+        });
+    }
+
+    // Auto-refresh every 2 minutes
+    setInterval(function () {
+        console.log('Attempting to store lead...');
+        storeLead();
+    }, 2 * 60 * 1000);
+    storeLead();
+
+</script>
+
+
+<script>
     $(document).ready(function () {
+        // Default selected tags
+        const defaultTags = ['My Activities', 'Overdue', 'Today'];
+
+        function getUrlParameter(name) {
+            const regex = new RegExp('[?&]' + name + '=([^&#]*)', 'i');
+            const results = regex.exec(window.location.href);
+            return results ? decodeURIComponent(results[1]) : null;
+        }
+
+        // Function to set URL parameters
+        function setUrlParameter(name, value) {
+            const url = new URL(window.location);
+            if (value) {
+                url.searchParams.set(name, value);
+            } else {
+                url.searchParams.delete(name);
+            }
+            window.history.replaceState({}, '', url);
+        }
+
+        // Prepopulate tags based on URL parameters
+        function prepopulateTags() {
+            const filterType = getUrlParameter('filterType');
+            if (filterType) {
+                const types = filterType.split(',');
+                types.forEach(function (type) {
+                    if (type === 'late') {
+                        handleTagSelection2('Overdue');
+                    } else if (type === 'today') {
+                        handleTagSelection2('Today');
+                    } else if (type === 'future') {
+                        handleTagSelection2('Future');
+                    }
+                });
+            }
+        }
+
+        prepopulateTags();
+
+        // Event listeners for tag clicks
+        $(document).on('click', '.activities', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection2(selectedValue, $item);
+        });
+
+        $(document).on('click', '.my_activities', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection3(selectedValue, $item);
+        });
+
+        $(document).on('click', '.done', function (e) {
+            e.stopPropagation();
+            var $item = $(this);
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection4(selectedValue, $item);
+        });
+
+        // Handle tag selection for activities
+        function handleTagSelection2(selectedValue, $item = null) {
+            var $tag = $('.tag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                $tagItem.remove();
+                updateTagSeparators2();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                if ($item) {
+                    updateUrl();
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                var newTagHtml = '<span class="tag-item" data-span_id="' + currentIndex + '"" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+                var index = 0;
+                var currentIndex = index++;
+
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="tag" data-span_id="' + currentIndex + '"">' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(' & ' + newTagHtml);
+                }
+
+                updateTagSeparators2();
+
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            updateFilterTags();
+        }
+
+        // Handle tag selection for "My Activities"
+        function handleTagSelection3(selectedValue, $item = null) {
+            var $tag = $('.tag1');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                $tagItem.remove();
+                updateTagSeparators3();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag">×</span></span>';
+
+                if ($tag.length === 0) {
+                    var index = 0;
+                    // Add both the setting icon and tag container together
+                    var currentIndex = index++;
+
+                    // Create the tag container with icon
+                    $('#search-input').before(
+                        '<div class="tag1" data-span_id="' + currentIndex + '">' +
+                        '<a href="#" data-span_id="' + currentIndex + '" class="setting-icon lostIcon_tag">' +
+                        '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                        '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                        '</a>' +
+                        '<span class="tag-item" data-value="' + selectedValue + '">' +
+                        selectedValue +
+                        '<span class="remove-lost-tag" style="cursor:pointer">×</span>' +
+                        '</span>' +
+                        '</div>'
+                    );
+                } else {
+                    $tag.append(newTagHtml);
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            updateFilterTags();
+        }
+
+        // Handle tag selection for "Done"
+        function handleTagSelection4(selectedValue, $item = null) {
+            var $tag = $('.tag2');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                $tagItem.remove();
+                updateTagSeparators4();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-done-tag">×</span></span>';
+
+                if ($tag.length === 0) {
+                    var index = 0;
+                    // Add both the setting icon and tag container together
+                    var currentIndex = index++;
+
+                    // Create the tag container with icon
+                    $('#search-input').before(
+                        '<div class="tag2" data-span_id="' + currentIndex + '">' +
+                        '<a href="#" data-span_id="' + currentIndex + '" class="setting-icon lostIcon_tag">' +
+                        '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                        '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                        '</a>' +
+                        '<span class="tag-item" data-value="' + selectedValue + '">' +
+                        selectedValue +
+                        '<span class="remove-done-tag" style="cursor:pointer">×</span>' +
+                        '</span>' +
+                        '</div>'
+                    );
+                } else {
+                    $tag.append(newTagHtml);
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            updateFilterTags();
+        }
+
+        // Update tag separators
+        function updateTagSeparators2() {
+            var $tag = $('.tag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton2();
+        }
+
+        function updateTagSeparators3() {
+            var $tag = $('.tag1');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton3();
+        }
+
+        function updateTagSeparators4() {
+            var $tag = $('.tag2');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton4();
+        }
+
+        // Update remove tag buttons
+        function updateRemoveTagButton2() {
+            var $tag = $('.tag');
+            var index = 0;
+
+            // Ensure the icon appears only once at the beginning
+            if ($tag.find('.fa-list').length === 0) {
+                var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '" class="setting-icon LTFIcon_tag">' +
+                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                    '<span data-span_id="' + currentIndex + '" class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-tag').length === 0) {
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-tag').remove();
+                $('.LTFIcon_tag').remove(); // Remove the setting icon when there are no tags
+            }
+        }
+
+        function updateRemoveTagButton3() {
+            var $tag = $('.tag1');
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-lost-tag').length === 0) {
+                    $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-lost-tag').remove();
+            }
+        }
+
+        function updateRemoveTagButton4() {
+            var $tag = $('.tag2');
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-done-tag').length === 0) {
+                    $tag.append(' <span class="remove-done-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-done-tag').remove();
+            }
+        }
+
+        // Update filters and reload data
+        function updateFilterTags() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+
+            filterData(selectedTags);
+        }
+
+        // Update the URL based on the remaining tags
+        function updateUrl() {
+            const tags = [];
+            $('.tag-item').each(function () {
+                if ($(this).data('value') === 'Overdue') tags.push('late');
+                if ($(this).data('value') === 'Today') tags.push('today');
+                if ($(this).data('value') === 'Future') tags.push('future');
+            });
+
+            if (tags.length > 0) {
+                setUrlParameter('filterType', tags.join(','));
+            } else {
+                setUrlParameter('filterType', null);
+            }
+        }
+
+        // Remove tag and reload data
+        $(document).on('click', '.remove-lost-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            if ($('.tag1').children().length === 0) {
+                $('.tag1').remove();
+            } else {
+                updateTagSeparators3();
+            }
+            $('.tag1').remove();
+            updateFilterTags();
+            updateUrl();
+            $('.my_activities:contains("My Activities")').find('.checkmark').hide();
+        });
+
+        $(document).on('click', '.remove-done-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            if ($('.tag2').children().length === 0) {
+                $('.tag2').remove();
+            } else {
+                updateTagSeparators4();
+            }
+            updateFilterTags();
+            $('.tag2').remove();
+            updateUrl();
+            $('.done:contains("Done")').find('.checkmark').hide();
+        });
+
+        $(document).on('click', '.remove-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            if ($('.tag').children().length === 0) {
+                $('.tag').remove();
+            } else {
+                $('.tag').remove();
+                updateTagSeparators2();
+            }
+            updateFilterTags();
+            updateUrl();
+            $('.activities:contains("Overdue")').find('.checkmark').hide();
+            $('.activities:contains("Today")').find('.checkmark').hide();
+            $('.activities:contains("Future")').find('.checkmark').hide();
+        });
+
+        // Fetch data based on selected tags
+        function filterData(selectedTags) {
+            $.ajax({
+                url: '{{route('activity.filter')}}', // Your endpoint for fetching leads
+                method: 'GET',
+                data: {
+                    tags: selectedTags
+                },
+                success: function (response) {
+                    var $tableBody = $('#lead-table-body');
+                    $tableBody.empty();
+
+                    if (response.success && response.data && response.data.length > 0) {
+                        response.data.forEach(function (item) {
+
+                            var dueDateText = '';
+                            var dueDateClass = '';
+                            var dueDate = item.due_date ? new Date(item.due_date) : null;
+
+                            if (dueDate) {
+                                const now = new Date();
+                                dueDate.setHours(0, 0, 0, 0);
+                                now.setHours(0, 0, 0, 0);
+
+                                const diffTime = dueDate - now;
+                                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                                if (diffDays === 0) {
+                                    dueDateText = 'Today';
+                                    dueDateClass = 'today';
+                                } else if (diffDays === -1) {
+                                    dueDateText = 'Yesterday';
+                                    dueDateClass = 'due-yesterday';
+                                } else if (diffDays === 1) {
+                                    dueDateText = 'Tomorrow';
+                                    dueDateClass = 'due-tomorrow';
+                                } else if (diffDays < -1) {
+                                    dueDateText = Math.abs(diffDays) + ' Days ago';
+                                    dueDateClass = 'due-days-ago';
+                                } else if (diffDays > 1) {
+                                    dueDateText = 'In ' + diffDays + ' days';
+                                    dueDateClass = 'due-in-days';
+                                }
+                            }
+
+                            // Include activities based on the selected tags
+                            if (selectedTags.includes('Done') && item.status == '1') {
+                                var rowHtml = `
+                                <tr class="lead-row" data-id="${item.lead_id ? item.lead_id : item.pipeline_id}" style="cursor:pointer;">
+                                    <td>
+  ${item.get_lead && item.get_lead.product_name ? item.get_lead.product_name :
+                                        (item.get_pipeline && item.get_pipeline.opportunity ? item.get_pipeline.opportunity : '')}
+</td>
+                                    <td>${item.activity_type || ''}</td>
+                                    <td>${item.get_user.email || ''}</td>
+                                    <td>${item.summary || ''}</td>
+                                    <td><span class="${dueDateClass}">${dueDateText}</span></td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            `;
+                                $tableBody.append(rowHtml);
+                            } else if (!selectedTags.includes('Done') && item.status != '1') {
+                                var rowHtml = `
+                                <tr class="lead-row" data-id="${item.lead_id ? item.lead_id : item.pipeline_id}" style="cursor:pointer;">
+                                    <td>
+  ${item.get_lead && item.get_lead.product_name ? item.get_lead.product_name :
+                                        (item.get_pipeline && item.get_pipeline.opportunity ? item.get_pipeline.opportunity : '')}
+</td>
+                                    <td>${item.activity_type || ''}</td>
+                                    <td>${item.get_user.email || ''}</td>
+                                    <td>${item.summary || ''}</td>
+                                    <td><span class="${dueDateClass}">${dueDateText}</span></td>
+                                    <td>
+                                        <a href="javascript:void(0);" style="color:#017e84;" class="mark-done" data-id="${item.id}"><i class="o_button_icon fa fa-fw fa-check me-1"></i>Done</a>
+                                        <a href="javascript:void(0);" style="color:black;" class="cancel" data-id="${item.id}"><i class="o_button_icon fa fa-fw fa-times me-1"></i>Cancel</a>
+                                        <a href="javascript:void(0);" style="color:black;" class="snooze" data-id="${item.id}"><i class="o_button_icon fa fa-fw fa-bell-slash me-1"></i>Snooze 7d</a>
+                                    </td>
+                                </tr>
+                            `;
+                                $tableBody.append(rowHtml);
+                            }
+                        });
+
+                        // $('#lead-table-body .lead-row').on('click', function () {
+                        //     var leadId = $(this).data('id');
+                        //     window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                        // });
+                    } else {
+                        $tableBody.append('<tr><td colspan="6">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                    }
+                },
+                error: function () {
+                    console.error('Failed to fetch data');
+                }
+            });
+        }
+        
         // Handle filter selection
         $('#customer_filter_select').on('change', function () {
             var selectedValue = $(this).val();
@@ -802,8 +1305,9 @@
             var filterType = $('#customer_filter_select').val();
             var filterValue = $('#customer_filter_input_value').val();
             var operatesValue = $('#customer_filter_operates').val();
+            var span_id = $('#span_id').val();
 
-            handleTagSelection(filterType, operatesValue, filterValue);
+            handleTagSelection(filterType, operatesValue, filterValue,span_id);
 
             // Prepare data to send
             var data = {
@@ -901,10 +1405,24 @@
         }
 
         // Handle tag selection and display
-        function handleTagSelection(filterType, operatesValue, filterValue) {
+        function handleTagSelection(filterType, operatesValue, filterValue ,span_id) {
             var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
             var $tag = $('.tag5');
             var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            var $iconTag = $('span.tag[data-span_id="' + span_id + '"]');
+            console.log($iconTag,'fdfdfd');
+            
+            var $icosnDiv = $('div.tag1[data-span_id="' + span_id + '"]');
+            console.log($icosnDiv);
+            
+            if ($iconTag.length > 0) {
+                $iconTag.remove();  // This removes the <span class="tag"> element
+            }
+
+            if ($icosnDiv.length > 0) {
+                $icosnDiv.remove();
+            }
 
             if ($tagItem.length > 0) {
                 $tagItem.remove();
@@ -950,11 +1468,24 @@
         // Update remove tag button
         function updateRemoveTagButton() {
             var $tag = $('.tag5');
+
+            var index = 0;
+
+            // Ensure the icon appears only once at the beginning
+            if ($tag.find('.fa-list').length === 0) {
+                var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '" class="setting-icon LTFIcon_tag">' +
+                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                    '<span data-span_id="' + currentIndex + '" class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.custom-filter-remove').length === 0) {
                     $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
                 }
-            } else {
+            } else {                
                 $('.custom-filter-remove').remove();
             }
         }
@@ -969,6 +1500,7 @@
 
             // Optionally, send an AJAX request to update the filters on the server if necessary
             var filters = getCurrentFilters();
+            $('.tag5').remove();
             fetchFilteredData(filters);
         });
 
@@ -988,462 +1520,134 @@
             });
             return filters;
         }
-    });
-</script>
 
-
-
-<script>
-    $(document).on('click', '.lead-row', function () {
-        var leadId = $(this).data('id');
-        window.location.href = "{{ route('lead.create') }}/" + leadId;
-    });
-
-    function storeLead() {
-        $.ajax({
-            url: "{{ route('lead.storeLead') }}"
-            , type: "POST"
-            , data: {
-                _token: "{{ csrf_token() }}"
-                ,
-            }
-            , success: function (response) {
-                console.log('Lead stored successfully.', response);
-            }
-            , error: function (error) {
-                console.error('Error storing lead:', error);
-            }
-        });
-    }
-
-    // Auto-refresh every 2 minutes
-    setInterval(function () {
-        console.log('Attempting to store lead...');
-        storeLead();
-    }, 2 * 60 * 1000);
-    storeLead();
-
-</script>
-
-
-<script>
-    $(document).ready(function () {
-        // Default selected tags
-        const defaultTags = ['My Activities', 'Overdue', 'Today'];
-
-        // Initialize with default tags
-        // defaultTags.forEach(tag => {
-        //     const $item = $(`.activities:contains("${tag}"), .my_activities:contains("${tag}"), .done:contains("${tag}")`);
-        //     const selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-
-        //     // Determine which handler to call based on the tag
-        //     if ($item.hasClass('activities')) {
-        //         handleTagSelection2(selectedValue, $item);
-        //     } else if ($item.hasClass('my_activities')) {
-        //         handleTagSelection3(selectedValue, $item);
-        //     } else if ($item.hasClass('done')) {
-        //         handleTagSelection4(selectedValue, $item);
-        //     }
-        // });
-
-        // Event listeners for tag clicks
-        $(document).on('click', '.activities', function (e) {
-            e.stopPropagation();
-            var $item = $(this);
-            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelection2(selectedValue, $item);
-        });
-
-        $(document).on('click', '.my_activities', function (e) {
-            e.stopPropagation();
-            var $item = $(this);
-            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelection3(selectedValue, $item);
-        });
-
-        $(document).on('click', '.done', function (e) {
-            e.stopPropagation();
-            var $item = $(this);
-            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelection4(selectedValue, $item);
-        });
-
-        // Handle tag selection for activities
-        function handleTagSelection2(selectedValue, $item = null) {
-            var $tag = $('.tag');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-            if ($tagItem.length > 0) {
-                $tagItem.remove();
-                updateTagSeparators2();
-
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-            } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag">' + newTagHtml + '</span>');
-                } else {
-                    $tag.append(' & ' + newTagHtml);
-                }
-
-                updateTagSeparators2();
-
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-            }
-
-            updateFilterTags();
-        }
-
-        // Handle tag selection for "My Activities"
-        function handleTagSelection3(selectedValue, $item = null) {
-            var $tag = $('.tag1');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-            if ($tagItem.length > 0) {
-                $tagItem.remove();
-                updateTagSeparators3();
-
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-            } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-lost-tag">×</span></span>';
-
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag1">' + newTagHtml + '</span>');
-                } else {
-                    $tag.append(newTagHtml);
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-            }
-
-            updateFilterTags();
-        }
-
-        // Handle tag selection for "Done"
-        function handleTagSelection4(selectedValue, $item = null) {
-            var $tag = $('.tag2');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
-
-            if ($tagItem.length > 0) {
-                $tagItem.remove();
-                updateTagSeparators4();
-
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-            } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="remove-done-tag">×</span></span>';
-
-                if ($tag.length === 0) {
-                    $('#search-input').before('<span class="tag2">' + newTagHtml + '</span>');
-                } else {
-                    $tag.append(newTagHtml);
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-            }
-
-            updateFilterTags();
-        }
-
-        // Update tag separators
-        function updateTagSeparators2() {
-            var $tag = $('.tag');
-            var $tagItems = $tag.find('.tag-item');
-            var html = '';
-            $tagItems.each(function (index) {
-                html += $(this).prop('outerHTML');
-                if (index < $tagItems.length - 1) {
-                    html += ' & ';
-                }
-            });
-            $tag.html(html);
-            updateRemoveTagButton2();
-        }
-
-        function updateTagSeparators3() {
-            var $tag = $('.tag1');
-            var $tagItems = $tag.find('.tag-item');
-            var html = '';
-            $tagItems.each(function (index) {
-                html += $(this).prop('outerHTML');
-                if (index < $tagItems.length - 1) {
-                    html += ' & ';
-                }
-            });
-            $tag.html(html);
-            updateRemoveTagButton3();
-        }
-
-        function updateTagSeparators4() {
-            var $tag = $('.tag2');
-            var $tagItems = $tag.find('.tag-item');
-            var html = '';
-            $tagItems.each(function (index) {
-                html += $(this).prop('outerHTML');
-                if (index < $tagItems.length - 1) {
-                    html += ' & ';
-                }
-            });
-            $tag.html(html);
-            updateRemoveTagButton4();
-        }
-
-        // Update remove tag buttons
-        function updateRemoveTagButton2() {
-            var $tag = $('.tag');
-            if ($tag.find('.tag-item').length > 0) {
-                if ($('.remove-tag').length === 0) {
-                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
-                }
-            } else {
-                $('.remove-tag').remove();
-            }
-        }
-
-        function updateRemoveTagButton3() {
-            var $tag = $('.tag1');
-            if ($tag.find('.tag-item').length > 0) {
-                if ($('.remove-lost-tag').length === 0) {
-                    $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
-                }
-            } else {
-                $('.remove-lost-tag').remove();
-            }
-        }
-
-        function updateRemoveTagButton4() {
-            var $tag = $('.tag2');
-            if ($tag.find('.tag-item').length > 0) {
-                if ($('.remove-done-tag').length === 0) {
-                    $tag.append(' <span class="remove-done-tag" style="cursor:pointer">&times;</span>');
-                }
-            } else {
-                $('.remove-done-tag').remove();
-            }
-        }
-
-        // Update filters and reload data
-        function updateFilterTags() {
-            let selectedTags = [];
-            $('.tag-item').each(function () {
-                selectedTags.push($(this).data('value'));
-            });
-
-            filterData(selectedTags);
-        }
-
-        // Remove tag and reload data
-        $(document).on('click', '.remove-lost-tag', function () {
-            var $tagItem = $(this).parent('.tag-item');
-            $tagItem.remove();
-            if ($('.tag1').children().length === 0) {
-                $('.tag1').remove();
-            } else {
-                updateTagSeparators3();
-            }
-            updateFilterTags();
-            $('.my_activities:contains("My Activities")').find('.checkmark').hide();
-        });
-
-        $(document).on('click', '.remove-done-tag', function () {
-            var $tagItem = $(this).parent('.tag-item');
-            $tagItem.remove();
-            if ($('.tag2').children().length === 0) {
-                $('.tag2').remove();
-            } else {
-                updateTagSeparators4();
-            }
-            updateFilterTags();
-            $('.done:contains("Done")').find('.checkmark').hide();
-        });
-
-        $(document).on('click', '.remove-tag', function () {
-            var $tagItem = $(this).parent('.tag-item');
-            $tagItem.remove();
-            if ($('.tag').children().length === 0) {
-                $('.tag').remove();
-            } else {
-                $('.tag').remove();
-                updateTagSeparators2();
-            }
-            updateFilterTags();
-            $('.activities:contains("Overdue")').find('.checkmark').hide();
-            $('.activities:contains("Today")').find('.checkmark').hide();
-            $('.activities:contains("Future")').find('.checkmark').hide();
-        });
-
-        // Fetch data based on selected tags
-        function filterData(selectedTags) {
-            $.ajax({
-                url: '{{route('activity.filter')}}', // Your endpoint for fetching leads
-                method: 'GET',
-                data: {
-                    tags: selectedTags
-                },
-                success: function (response) {
-                    var $tableBody = $('#lead-table-body');
-                    $tableBody.empty();
-
-                    if (response.success && response.data && response.data.length > 0) {
-                        response.data.forEach(function (item) {
-
-                            var dueDateText = '';
-                            var dueDateClass = '';
-                            var dueDate = item.due_date ? new Date(item.due_date) : null;
-
-                            if (dueDate) {
-                                const now = new Date();
-                                dueDate.setHours(0, 0, 0, 0);
-                                now.setHours(0, 0, 0, 0);
-
-                                const diffTime = dueDate - now;
-                                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-                                if (diffDays === 0) {
-                                    dueDateText = 'Today';
-                                    dueDateClass = 'today';
-                                } else if (diffDays === -1) {
-                                    dueDateText = 'Yesterday';
-                                    dueDateClass = 'due-yesterday';
-                                } else if (diffDays === 1) {
-                                    dueDateText = 'Tomorrow';
-                                    dueDateClass = 'due-tomorrow';
-                                } else if (diffDays < -1) {
-                                    dueDateText = Math.abs(diffDays) + ' Days ago';
-                                    dueDateClass = 'due-days-ago';
-                                } else if (diffDays > 1) {
-                                    dueDateText = 'In ' + diffDays + ' days';
-                                    dueDateClass = 'due-in-days';
-                                }
-                            }
-
-                            // Include activities based on the selected tags
-                            if (selectedTags.includes('Done') && item.status == '1') {
-                                var rowHtml = `
-                                <tr class="lead-row" data-id="${item.id}">
-                                    <td>${item.get_lead.product_name || item.get_pipeline.opportunity ||''}</td>
-                                    <td>${item.activity_type || ''}</td>
-                                    <td>${item.get_user.email || ''}</td>
-                                    <td>${item.summary || ''}</td>
-                                    <td><span class="${dueDateClass}">${dueDateText}</span></td>
-                                    <td>
-                                    </td>
-                                </tr>
-                            `;
-                                $tableBody.append(rowHtml);
-                            } else if (!selectedTags.includes('Done') && item.status != '1') {
-                                var rowHtml = `
-                                <tr class="lead-row">
-                                    <td>${item.get_lead.product_name || item.get_pipeline.opportunity || ''}</td>
-                                    <td>${item.activity_type || ''}</td>
-                                    <td>${item.get_user.email || ''}</td>
-                                    <td>${item.summary || ''}</td>
-                                    <td><span class="${dueDateClass}">${dueDateText}</span></td>
-                                    <td>
-                                        <a href="javascript:void(0);" style="color:#017e84;" class="mark-done" data-id="${item.id}"><i class="o_button_icon fa fa-fw fa-check me-1"></i>Done</a>
-                                        <a href="javascript:void(0);" style="color:black;" class="cancel" data-id="${item.id}"><i class="o_button_icon fa fa-fw fa-times me-1"></i>Cancel</a>
-                                        <a href="javascript:void(0);" style="color:black;" class="snooze" data-id="${item.id}"><i class="o_button_icon fa fa-fw fa-bell-slash me-1"></i>Snooze 7d</a>
-                                    </td>
-                                </tr>
-                            `;
-                                $tableBody.append(rowHtml);
-                            }
-                        });
-
-                        // $('#lead-table-body .lead-row').on('click', function () {
-                        //     var leadId = $(this).data('id');
-                        //     window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
-                        // });
-                    } else {
-                        $tableBody.append('<tr><td colspan="6">No data available</td></tr>'); // Adjust colspan based on the number of columns
-                    }
-                },
-                error: function () {
-                    console.error('Failed to fetch data');
-                }
-            });
-        }
     });
 
     $(document).ready(function () {
-    // Get filterType from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const filterType = urlParams.get('filterType') || '';
+        // Get filterType from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterType = urlParams.get('filterType') || '';
 
-    // Pre-select the filter based on the filterType and set the search input value
-    if (filterType) {
-        switch (filterType) {
-            case 'late':
-                $('#filterOverdue').addClass('selected'); // Add the selected class
-                $('#filterOverdue .checkmark').show(); // Show checkmark
-                $('#searchInput').val('Late'); // Set the input value
-                break;
-            case 'today':
-                $('#filterToday').addClass('selected');
-                $('#filterToday .checkmark').show();
-                $('#searchInput').val('Today'); // Set the input value
-                break;
-            case 'future':
-                $('#filterFuture').addClass('selected');
-                $('#filterFuture .checkmark').show();
-                $('#searchInput').val('Future'); // Set the input value
-                break;
-        }
-    }
-
-    // Click event handlers for filters
-    $('.activities').on('click', function () {
-        const filterValue = $(this).text().trim().toLowerCase(); // Get filter text
-        const filterTypeMap = {
-            "overdue": "late",
-            "today": "today",
-            "future": "future"
-        };
-
-        // Redirect to the same route with the selected filter
-        if (filterTypeMap[filterValue]) {
-            window.location.href = "{{ route('lead.allActivities') }}?filterType=" + filterTypeMap[filterValue];
+        // Pre-select the filter based on the filterType and set the search input value
+        if (filterType) {
+            switch (filterType) {
+                case 'late':
+                    $('#filterOverdue').addClass('selected'); // Add the selected class
+                    $('#filterOverdue .checkmark').show(); // Show checkmark
+                    $('#searchInput').val('Late'); // Set the input value
+                    break;
+                case 'today':
+                    $('#filterToday').addClass('selected');
+                    $('#filterToday .checkmark').show();
+                    $('#searchInput').val('Today'); // Set the input value
+                    break;
+                case 'future':
+                    $('#filterFuture').addClass('selected');
+                    $('#filterFuture .checkmark').show();
+                    $('#searchInput').val('Future'); // Set the input value
+                    break;
+            }
         }
     });
+</script>
 
-    // Other initialization code for your table, etc.
-});
+<script>
+    $(document).ready(function () {
+        // Show the dropdown when the input field is clicked
+        $('#search-input').on('click', function () {
+            $('#search-dropdown').show();
+            $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+            $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+        });
+
+        // Add selected value to the input field and hide the dropdown
+        $(document).on('click', '#search-dropdown .o-dropdown-item', function () {
+            $('#search-dropdown').hide();
+            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change back to down arrow
+        });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown, .o_searchview_dropdown_toggler').length) {
+                $('#search-dropdown').hide();
+                $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change back to down arrow
+                $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false'); // Update aria-expanded
+            }
+        });
+
+        // Toggle dropdown on arrow click
+        $('.o_searchview_dropdown_toggler').click(function (event) {
+            event.stopPropagation(); // Prevent click event from bubbling up
+            const dropdown = $('#search-dropdown');
+            const isExpanded = $(this).attr('aria-expanded') === 'true';
+
+            // Toggle the dropdown visibility
+            dropdown.toggle();
+            $(this).attr('aria-expanded', !isExpanded);
+
+            // Change the arrow direction
+            if (isExpanded) {
+                $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
+            } else {
+                $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+            }
+        });
+
+        // Toggle Creation Date Dropdown
+        $('#creationDateBtn, #creationDateBtn1').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#creationDateDropdown1' : '#creationDateDropdown';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns, except creation date dropdown
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Toggle Closed Date Dropdown
+        $('#closeDateBtn, #closeDateBtn1').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#closeDateDropdown1' : '#closeDateDropdown';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Toggle Conversion Date &  Expected Date Dropdown
+        $('#conversionBtn, #expectedBtn').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#conversionDate' : '#cxpectedClosing';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Close dropdowns if clicking outside of the dropdowns
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.o_accordion, .o_dropdown_container').length) {
+                $('.o_dropdown_content').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
+    });
+
+    $(document).on('click', '.setting-icon', function(e) {
+            e.preventDefault();
+            var id = $(this).data('span_id');
+            console.log(id, 'span_id');
+            $('#span_id').val(id); 
+            $('#customFilterModal').modal('show'); 
+        });
 </script>
 
 
