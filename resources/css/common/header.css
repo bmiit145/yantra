@@ -421,13 +421,13 @@ p.head_breadcrumb_title {
 .head_breadcrumb_info a svg {
     transition: all 0.5s ease;
 }
-.crm_head_centerside input {
+/* .crm_head_centerside input {
     width: 100%;
     border: 1px solid #979797;
     border-radius: 4px;
     font-size: 16px;
     padding: 7px 20px 7px 0px;
-}
+} */
 .heade_search_icon {
     display: inline-block;
     position: absolute;

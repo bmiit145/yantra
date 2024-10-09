@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\Attachment;
 use App\Models\Campaign;
+use App\Models\Favorite;
 use App\Models\Medium;
 use App\Models\Source;
 use App\Models\Following;
@@ -41,7 +42,7 @@ class LeadController extends Controller
     public function index($id = null)
     {
         // $data = generate_lead::with('tags')->get();
-        $data = generate_lead::orderBy('id','DESC')->where('is_lost' ,'1')->get();
+        $data = generate_lead::orderBy('id', 'DESC')->where('is_lost', '1')->get();
 
         // Filter out leads with unique product_name while preserving the first occurrence
         // $data = $datas->groupBy('product_name')->map(function ($group) {
@@ -58,7 +59,8 @@ class LeadController extends Controller
         $States = State::all();
         $PersonTitle = PersonTitle::all();
         $Campaigns = Campaign::all();
-        return view('lead.index', compact('Countrs', 'data', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns'));
+        $getFavoritesFilter = Favorite::where('filter_type','lead')->get();
+        return view('lead.index', compact('Countrs', 'data', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns','getFavoritesFilter'));
     }
 
     public function getLeads(Request $request)
@@ -133,15 +135,14 @@ class LeadController extends Controller
 
     public function create($id = null)
     {
-        $allLead = generate_lead::where('is_lost','1')->count();
+        $allLead = generate_lead::where('is_lost', '1')->count();
         $titles = PersonTitle::all();
         $countrys = Country::all();
         $tags = Tag::where('tage_type', 2)->get();
         $data = generate_lead::find($id);
-        if($data){            
+        if ($data) {
             $allData = generate_lead::where('product_name', $data->product_name)->count();
-        }
-        else{
+        } else {
             $allData = 0;
         }
         $users = User::orderBy('id', 'DESC')->get();
@@ -170,71 +171,71 @@ class LeadController extends Controller
         $sources = Source::orderBy('id', 'DESC')->get();
         $lost_reasons = LostReason::all();
         $employees = Contact::all();
-        $send_message = send_message::orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
-        $log_notes = send_log_notes::with('user')->orderBy('id','DESC')->where('type_id', $id)->where('type', 'lead')->get();
+        $send_message = send_message::orderBy('id', 'DESC')->where('type_id', $id)->where('type', 'lead')->get();
+        $log_notes = send_log_notes::with('user')->orderBy('id', 'DESC')->where('type_id', $id)->where('type', 'lead')->get();
 
         $followers = Following::where('type_id', $id)
-        ->where('customer_id', '!=' , 'users/'.Auth::user()->id)
-        ->where('type', '1')
-        ->get()
-        ->map(function($follower) {
-            // Parse customer_id to determine if it's for Employee or User
-            $customerParts = explode('/', $follower->customer_id);
-            $entityType = $customerParts[0];
-            $entityId = $customerParts[1];
-    
-            if ($entityType === 'employee') {
-                // Fetch related employee details
-                $employee = Contact::find($entityId);
-                if ($employee) {
-                    $follower->customer = $employee; 
+            ->where('customer_id', '!=', 'users/' . Auth::user()->id)
+            ->where('type', '1')
+            ->get()
+            ->map(function ($follower) {
+                // Parse customer_id to determine if it's for Employee or User
+                $customerParts = explode('/', $follower->customer_id);
+                $entityType = $customerParts[0];
+                $entityId = $customerParts[1];
+
+                if ($entityType === 'employee') {
+                    // Fetch related employee details
+                    $employee = Contact::find($entityId);
+                    if ($employee) {
+                        $follower->customer = $employee;
+                    }
+                } elseif ($entityType === 'users') {
+                    // Fetch related user details
+                    $user = User::find($entityId);
+                    if ($user) {
+                        $follower->customer = $user;
+                    }
                 }
-            } elseif ($entityType === 'users') {
-                // Fetch related user details
-                $user = User::find($entityId);
-                if ($user) {
-                    $follower->customer = $user; 
-                }
-            }
-    
-            return $follower;
-        });
+
+                return $follower;
+            });
 
         // return $followers;
 
         $authfollowers = Following::where('type_id', $id)
-        ->where('type', '1')
-        ->where('customer_id', 'users/'.Auth::user()->id)
-        ->get()
-        ->map(function($follower1) {
-            // Parse customer_id to determine if it's for Employee or User
-            $customerParts = explode('/', $follower1->customer_id);
-            $entityType = $customerParts[0];
-            $entityId = $customerParts[1];
-    
-            if ($entityType === 'employee') {
-                // Fetch related employee details
-                $employee = Employee::find($entityId);
-                if ($employee) {
-                    $follower1->customer = $employee; 
-                }
-            } elseif ($entityType === 'users') {
-                // Fetch related user details
-                $user = User::find($entityId);
-                if ($user) {
-                    $follower1->customer = $user; 
-                }
-            }
-    
-            return $follower1;
-        });
+            ->where('type', '1')
+            ->where('customer_id', 'users/' . Auth::user()->id)
+            ->get()
+            ->map(function ($follower1) {
+                // Parse customer_id to determine if it's for Employee or User
+                $customerParts = explode('/', $follower1->customer_id);
+                $entityType = $customerParts[0];
+                $entityId = $customerParts[1];
 
-            $userId = Auth::user()->id;
+                if ($entityType === 'employee') {
+                    // Fetch related employee details
+                    $employee = Employee::find($entityId);
+                    if ($employee) {
+                        $follower1->customer = $employee;
+                    }
+                } elseif ($entityType === 'users') {
+                    // Fetch related user details
+                    $user = User::find($entityId);
+                    if ($user) {
+                        $follower1->customer = $user;
+                    }
+                }
+
+                return $follower1;
+            });
+
+        $userId = Auth::user()->id;
 
         // Check if the current user is following the lead
         $isFollowing = Following::where('customer_id', 'users/' . $userId)
-                                ->where('type_id', $id)
-                                ->exists();
+            ->where('type_id', $id)
+            ->exists();
 
         $followerscount = $followers->count();
         $authfollowerscount = $authfollowers->count();
@@ -242,10 +243,10 @@ class LeadController extends Controller
 
         $attachment = null;
         $fileCount = ''; // Initialize variable
-        
+
         if ($data) { // Check if $data is not null
             $attachment = Attachment::where('type_id', $data->id)->first();
-            
+
             if ($attachment) {
                 $fileArray = explode(',', $attachment->files);
                 $fileCount = count($fileArray);
@@ -265,8 +266,8 @@ class LeadController extends Controller
         } else {
         }
         $sales_teams = SaleTeam::all();
-     
-        return view('lead.creat', compact('titles', 'countrys','sales_teams', 'tags','log_notes', 'data','authfollowers','followers','allData','users','employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources','send_message','isFollowing','fileCount','allFiles','allLead'));
+
+        return view('lead.creat', compact('titles', 'countrys', 'sales_teams', 'tags', 'log_notes', 'data', 'authfollowers', 'followers', 'allData', 'users', 'employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources', 'send_message', 'isFollowing', 'fileCount', 'allFiles', 'allLead'));
     }
 
     public function store(Request $request)
@@ -478,7 +479,17 @@ class LeadController extends Controller
     {
         $leads = generate_lead::orderBy('id', 'desc')->with('getUser')->get();
         $currentUser = auth()->user();
-        return view('lead.kanban', compact('leads', 'currentUser'));
+        $getFavoritesFilter = Favorite::where('filter_type','lead')->get();
+        $Countrs = Country::all();
+        $tages = Tag::where('tage_type', 2)->get();
+        $users = User::all();
+        $customers = Contact::all();
+        $Sources = Source::all();
+        $CrmStages = CrmStage::all();
+        $States = State::all();
+        $PersonTitle = PersonTitle::all();
+        $Campaigns = Campaign::all();
+        return view('lead.kanban', compact('leads', 'currentUser','getFavoritesFilter','Countrs','tages','users','customers', 'Sources','CrmStages','States','PersonTitle','Campaigns'));
     }
 
     public function updatePriority(Request $request)
@@ -545,12 +556,11 @@ class LeadController extends Controller
 
 
     public function scheduleActivityStore(Request $request)
-    {                
+    {
         try {
             // Create a new activity record
             $activity = new Activity();
-            if($request->action == 'schedule')            
-            {
+            if ($request->action == 'schedule') {
                 $activity->lead_id = $request->lead_id;
                 $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
@@ -560,9 +570,7 @@ class LeadController extends Controller
                 $activity->note = $request->log_note;
                 $activity->status = '0';
                 $activity->save();
-            }
-            else if($request->action == 'done')
-            {
+            } else if ($request->action == 'done') {
                 $activity->lead_id = $request->lead_id;
                 $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
@@ -572,10 +580,7 @@ class LeadController extends Controller
                 $activity->note = $request->log_note;
                 $activity->status = '1';
                 $activity->save();
-            }
-
-            else if($request->action == 'next')
-            {
+            } else if ($request->action == 'next') {
                 $activity->lead_id = $request->lead_id;
                 $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
@@ -602,7 +607,7 @@ class LeadController extends Controller
     }
 
     public function activitiesUpdate(Request $request)
-    {        
+    {
         $data = $request->all();
 
         // Find the activity by ID and update it
@@ -765,33 +770,33 @@ class LeadController extends Controller
     }
 
     public function activities(Request $request)
-    {                
+    {
         // Get all tags from the request
         $tags = $request->tags ?? [];
-    
+
         // Normalize tags to handle "Lost & Archived" as "Lost"
         $normalizedTags = array_map(function ($tag) {
             return $tag === 'Lost & Archived' ? 'Lost' : $tag;
         }, $tags);
-    
+
         // Initialize variables to determine which filters to apply
         $includeMyActivities = in_array('My Activities', $normalizedTags);
         $includeUnassigned = in_array('Unassigned', $normalizedTags);
         $includeLost = in_array('Lost', $normalizedTags);
-    
+
         // Late, Today and Future Activities 
         $includeLateActivities = in_array('Late Activities', $normalizedTags);
         $includeTodayActivities = in_array('Today Activities', $normalizedTags);
         $includeFutureActivities = in_array('Future Activities', $normalizedTags);
-    
+
         // Start building the query
         $leadsQuery = generate_lead::query();
-    
+
         // Apply filters based on specific tag combinations
         if ($includeLost) {
             $leadsQuery->where('is_lost', '2'); // Assuming '2' indicates "Lost"
         }
-    
+
         if ($includeMyActivities || $includeUnassigned) {
             $leadsQuery->where(function ($query) use ($includeMyActivities, $includeUnassigned) {
                 if ($includeMyActivities) {
@@ -804,32 +809,32 @@ class LeadController extends Controller
                 }
             });
         }
-    
+
         if ($includeLateActivities || $includeTodayActivities || $includeFutureActivities) {
             $leadsQuery->whereHas('activities', function ($query) use ($includeLateActivities, $includeTodayActivities, $includeFutureActivities) {
                 $conditions = [];
-    
+
                 if ($includeLateActivities) {
-                    $conditions[] = function($q) {
+                    $conditions[] = function ($q) {
                         $q->where('due_date', '<', date('Y-m-d'))
-                          ->where('status', 0);
+                            ->where('status', 0);
                     };
                 }
-    
+
                 if ($includeTodayActivities) {
-                    $conditions[] = function($q) {
+                    $conditions[] = function ($q) {
                         $q->where('due_date', '=', date('Y-m-d'))
-                          ->where('status', 0);
+                            ->where('status', 0);
                     };
                 }
-    
+
                 if ($includeFutureActivities) {
-                    $conditions[] = function($q) {
+                    $conditions[] = function ($q) {
                         $q->where('due_date', '>', date('Y-m-d'))
-                          ->where('status', 0);
+                            ->where('status', 0);
                     };
                 }
-    
+
                 if (!empty($conditions)) {
                     $query->where(function ($subQuery) use ($conditions) {
                         foreach ($conditions as $condition) {
@@ -839,7 +844,7 @@ class LeadController extends Controller
                 }
             });
         }
-    
+
         // Initially assume no filters are applied
         $dateFilterApplied = false;
 
@@ -858,10 +863,10 @@ class LeadController extends Controller
             }
             // Check for years
             elseif (in_array($selectedDate, [date('Y'), date('Y', strtotime('-1 year')), date('Y', strtotime('-2 year'))])) {
-                $year = (int)$selectedDate;
+                $year = (int) $selectedDate;
                 $yearExists = generate_lead::whereYear('created_at', $year)
-                                        ->where('is_lost', '1')
-                                        ->exists();
+                    ->where('is_lost', '1')
+                    ->exists();
 
                 if ($yearExists) {
                     $leadsQuery->orWhere(function ($query) use ($year) {
@@ -878,13 +883,13 @@ class LeadController extends Controller
             // If a date filter was applied, execute the query
             $leads = $leadsQuery->get(); // Execute the query and get the results
         }
-    
+
         // Always include necessary relationships
         $leadsQuery->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
-    
+
         // Fetch results
         $generateLeads = $leadsQuery->get();
-    
+
         // Return results as JSON
         return response()->json([
             'success' => true,
@@ -904,28 +909,28 @@ class LeadController extends Controller
         // Apply filters based on filter type
         switch ($filterType) {
             case 'Country':
-                $query->where(function($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getCountry', function($q) use ($operatesValue, $filterValue) {
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                    ->orWhereHas('getAutoCountry', function($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    });
+                        ->orWhereHas('getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
                 });
                 break;
             case 'Zip':
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
-                $query->whereHas('tags', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
             case 'Created by':
                 $createdByName = $filterValue;
-                $user = User::where('name',$createdByName)->first();
-                $query->whereHas('getUser', function($q) use ($operatesValue,$createdByName) {
-                    $q->where('name', $operatesValue,$createdByName);
+                $user = User::where('name', $createdByName)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
+                    $q->where('name', $operatesValue, $createdByName);
                 });
                 break;
             case 'Created on':
@@ -954,13 +959,13 @@ class LeadController extends Controller
                 break;
             case 'Salesperson':
                 $salespersonId = EncryptionService::encrypt($filterValue);
-                $user = User::where('email',$salespersonId)->first();
-                $query->whereHas('getUser', function($q) use ($operatesValue,$salespersonId) {
-                    $q->where('email', $operatesValue,$salespersonId);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
+                    $q->where('email', $operatesValue, $salespersonId);
                 });
                 break;
             case 'Source':
-                $query->whereHas('getSource', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -968,13 +973,13 @@ class LeadController extends Controller
                 $query->where('stage', $operatesValue, $filterValue);
                 break;
             case 'State':
-                $query->where(function($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getState', function($q) use ($operatesValue, $filterValue) {
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
                         $q->where('name', $operatesValue, $filterValue);
                     })
-                    ->orWhereHas('getAutoState', function($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    });
+                        ->orWhereHas('getAutoState', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
                 });
                 break;
             case 'Street':
@@ -984,7 +989,7 @@ class LeadController extends Controller
                 $query->where('address_1', $operatesValue, $filterValue);
                 break;
             case 'Title':
-                $query->whereHas('getTilte', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('title', $operatesValue, $filterValue);
                 });
                 break;
@@ -995,7 +1000,7 @@ class LeadController extends Controller
                 $query->where('website_link', $operatesValue, $filterValue);
                 break;
             case 'Campaign':
-                $query->whereHas('getCampaign', function($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -1032,12 +1037,12 @@ class LeadController extends Controller
         // Check if the file exists in the request
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            
+
             // Generate a unique filename
             $fileName = time() . '_' . $file->getClientOriginalName();
-            
+
             // Store the file in the 'uploads/upload_document' directory in storage
-            $path = $file->storeAs('upload_document', $fileName,'public');
+            $path = $file->storeAs('upload_document', $fileName, 'public');
 
             // Update the database
             $activity = Activity::find($activityId);
@@ -1091,57 +1096,57 @@ class LeadController extends Controller
         $data->type = 'lead';
         $data->created_by = Auth::user()->id;
         $data->from_mail = auth()->user()->email;
-        
+
         $uploadedFiles = []; // Array to hold the file paths
-    
+
         if ($request->hasFile('image_uplode')) {
             foreach ($request->file('image_uplode') as $file) {
                 // Get the original file name
                 $fileName = time() . '_' . $file->getClientOriginalName();
-    
+
                 // Store the file in the 'public/uploads' directory
                 $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
-    
+
                 $uploadedFiles[] = $filePath; // Store the path
             }
-    
+
             // Convert the array to a JSON string
             $data->image = json_encode($uploadedFiles);
         }
-    
+
         $data->save();
-    
+
         // Prepare message data
-        $messageData = $request->send_message; 
+        $messageData = $request->send_message;
         $recipientEmail = $request->to_mail;
-    
+
         // Return JSON response immediately
         response()->json(['message' => 'Message sent successfully'])->send();
-    
+
         // Defer the email sending until after the response
         $this->send_message_by_mail($uploadedFiles, $messageData, $recipientEmail);
         return null;
     }
-    
+
     public function send_message_by_mail($uploadedFiles, $messageData, $recipientEmail)
     {
         $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
-    
+
         // If $messageData is a string, wrap it in an array with a key
         if (!is_array($messageData)) {
-            $messageData = ['content' => $messageData]; 
+            $messageData = ['content' => $messageData];
         }
-    
+
         // Set a default message title
         $messageTitle = 'New Message';
-    
+
         // Send the email after the response has been sent
-        app()->terminating(function() use ($recipientEmail, $messageTitle, $files, $messageData) {
+        app()->terminating(function () use ($recipientEmail, $messageTitle, $files, $messageData) {
             Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageTitle, $files) {
                 // Set recipient and subject
                 $message->to($recipientEmail)
-                        ->subject($messageTitle);
-    
+                    ->subject($messageTitle);
+
                 // Attach files if they exist
                 foreach ($files as $file) {
                     $fullPath = storage_path('app/public/' . $file); // Construct the full path
@@ -1154,84 +1159,84 @@ class LeadController extends Controller
             });
         });
     }
-    
-    
-    
+
+
+
 
     public function deleteImage(Request $request)
     {
-       
+
         $messageId = $request->input('message_id');
         $imagePath = $request->input('image');
-    
+
         // Fetch the record from the database
         $message = send_message::find($messageId);
-    
+
         if (!$message) {
             return response()->json(['success' => false, 'message' => 'Message not found'], 404);
         }
-    
+
         // Get the current image array
         $imageArray = json_decode($message->image);
-    
+
         if (!$imageArray) {
             return response()->json(['success' => false, 'message' => 'No images found'], 404);
         }
-    
+
         // Remove the image from storage
         Storage::disk('public')->delete($imagePath);
-    
+
         // Filter out the image that was deleted from the array
-        $updatedImageArray = array_filter($imageArray, function($img) use ($imagePath) {
+        $updatedImageArray = array_filter($imageArray, function ($img) use ($imagePath) {
             return $img !== $imagePath;
         });
-    
+
         // Save the updated image array back to the database
         $message->image = json_encode(array_values($updatedImageArray)); // Re-index and encode
         $message->save();
-    
+
         return response()->json(['success' => true]);
     }
 
     public function deleteImage1(Request $request)
     {
-       
+
         $messageId = $request->input('message_id');
         $imagePath = $request->input('image');
-    
+
         // Fetch the record from the database
         $message = send_log_notes::find($messageId);
-    
+
         if (!$message) {
             return response()->json(['success' => false, 'message' => 'Message not found'], 404);
         }
-    
+
         // Get the current image array
         $imageArray = json_decode($message->image);
-    
+
         if (!$imageArray) {
             return response()->json(['success' => false, 'message' => 'No images found'], 404);
         }
-    
+
         // Remove the image from storage
         Storage::disk('public')->delete($imagePath);
-    
+
         // Filter out the image that was deleted from the array
-        $updatedImageArray = array_filter($imageArray, function($img) use ($imagePath) {
+        $updatedImageArray = array_filter($imageArray, function ($img) use ($imagePath) {
             return $img !== $imagePath;
         });
-    
+
         // Save the updated image array back to the database
         $message->image = json_encode(array_values($updatedImageArray)); // Re-index and encode
         $message->save();
-    
+
         return response()->json(['success' => true]);
     }
 
     public function downloadAllImages($id)
     {
-    
-        $message = send_message::find($id); 
+
+        $message = send_message::find($id);
 
         // Get the images from the 'image' field
         $images = json_decode($message->image);
@@ -1266,258 +1271,293 @@ class LeadController extends Controller
     }
 
     public function click_star(Request $request)
-{
-    $lead = send_message::find($request->id);
-    
-    // Toggle the is_star status
-    if ($request->is_star == '1') {
-        $lead->is_star = '0'; // Unstar
-    } else {
-        $lead->is_star = '1'; // Star
-    }
-    
-    $lead->save();
+    {
+        $lead = send_message::find($request->id);
 
-    return response()->json($lead);
-}
+        // Toggle the is_star status
+        if ($request->is_star == '1') {
+            $lead->is_star = '0'; // Unstar
+        } else {
+            $lead->is_star = '1'; // Star
+        }
+
+        $lead->save();
+
+        return response()->json($lead);
+    }
 
     public function click_follow(Request $request)
-{
-    $leadId = $request->id;
-    $userId = Auth::user()->id; // Current user ID
+    {
+        $leadId = $request->id;
+        $userId = Auth::user()->id; // Current user ID
 
-    // Check if the user is already following the lead
-    $followRecord = Following::where('customer_id', 'users/' . $userId)
-                            ->where('type_id', $leadId)
-                            ->first();
+        // Check if the user is already following the lead
+        $followRecord = Following::where('customer_id', 'users/' . $userId)
+            ->where('type_id', $leadId)
+            ->first();
 
-    if ($followRecord) {
-        // If the record exists, we are unfollowing
-        $followRecord->delete();
-        $isFollowing = false; // Update status
-    } else {
-        // If no record exists, we are following
+        if ($followRecord) {
+            // If the record exists, we are unfollowing
+            $followRecord->delete();
+            $isFollowing = false; // Update status
+        } else {
+            // If no record exists, we are following
+            $newFollow = new Following();
+            $newFollow->customer_id = 'users/' . $userId; // Ensure it references the user
+            $newFollow->type_id = $leadId;
+            $newFollow->type = 1; // Assuming '1' indicates a follow
+            $newFollow->save();
+            $isFollowing = true; // Update status
+        }
+
+        return response()->json([
+            'isFollowing' => $isFollowing,
+        ]);
+    }
+
+    public function invite_followers(Request $request)
+    {
+        $leadId = $request->id;
+        $userId = $request->user_id; // The ID of the user to be followed
+
+        // Check if the user is already following the lead
+        $existingFollow = Following::where('customer_id', $userId)
+            ->where('type_id', $leadId)
+            ->first();
+
+        if ($existingFollow) {
+            // If they are already following, delete the existing record
+            $existingFollow->delete();
+        }
+
+        // Create a new follow record
         $newFollow = new Following();
-        $newFollow->customer_id = 'users/' . $userId; // Ensure it references the user
+        $newFollow->customer_id = $userId; // This is the new follower
         $newFollow->type_id = $leadId;
         $newFollow->type = 1; // Assuming '1' indicates a follow
         $newFollow->save();
-        $isFollowing = true; // Update status
+
+        return redirect()->back()->with('success', 'Followers updated successfully.');
     }
 
-    return response()->json([
-        'isFollowing' => $isFollowing,
-    ]);
-}
+    public function removeFollower(Request $request)
+    {
+        $followerId = $request->id;
 
-public function invite_followers(Request $request)
-{
-    $leadId = $request->id;
-    $userId = $request->user_id; // The ID of the user to be followed
+        // Find the follower record and delete it
+        $followRecord = Following::find($followerId); // Assuming your id is unique and in the Following table
 
-    // Check if the user is already following the lead
-    $existingFollow = Following::where('customer_id', $userId)
-                                ->where('type_id', $leadId)
-                                ->first();
-
-    if ($existingFollow) {
-        // If they are already following, delete the existing record
-        $existingFollow->delete();
-    }
-
-    // Create a new follow record
-    $newFollow = new Following();
-    $newFollow->customer_id = $userId; // This is the new follower
-    $newFollow->type_id = $leadId;
-    $newFollow->type = 1; // Assuming '1' indicates a follow
-    $newFollow->save();
-
-    return redirect()->back()->with('success', 'Followers updated successfully.');
-}
-
-public function removeFollower(Request $request)
-{
-    $followerId = $request->id;
-
-    // Find the follower record and delete it
-    $followRecord = Following::find($followerId); // Assuming your id is unique and in the Following table
-
-    if ($followRecord) {
-        $followRecord->delete();
-        return response()->json(['success' => true]);
-    }
-
-    return response()->json(['success' => false], 404);
-}
-
-public function attachmentsAdd(Request $request)
-{
-    $leadId = $request->input('lead_id');
-    $storedFileNames = []; // Array to hold stored file names
-
-    // Check if files are uploaded
-    if ($request->hasFile('files')) {
-        foreach ($request->file('files') as $file) {
-            // Store file in 'uploads' directory under 'public' storage
-            $path = $file->store('uploads/attachment', 'public'); 
-            
-            // Collect the stored file name (this is the name used in the folder)
-            $storedFileNames[] = basename($path); // Use basename to get just the file name
+        if ($followRecord) {
+            $followRecord->delete();
+            return response()->json(['success' => true]);
         }
 
-        // Fetch existing attachment record
+        return response()->json(['success' => false], 404);
+    }
+
+    public function attachmentsAdd(Request $request)
+    {
+        $leadId = $request->input('lead_id');
+        $storedFileNames = []; // Array to hold stored file names
+
+        // Check if files are uploaded
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                // Store file in 'uploads' directory under 'public' storage
+                $path = $file->store('uploads/attachment', 'public');
+
+                // Collect the stored file name (this is the name used in the folder)
+                $storedFileNames[] = basename($path); // Use basename to get just the file name
+            }
+
+            // Fetch existing attachment record
+            $attachment = Attachment::where('type_id', $leadId)->first();
+
+            if ($attachment) {
+                // If record exists, append new file names
+                $existingFiles = explode(',', $attachment->files);
+                $allFileNames = array_merge($existingFiles, $storedFileNames);
+                $fileNamesImploded = implode(',', $allFileNames);
+                // Update the existing record
+                $attachment->update(['files' => $fileNamesImploded]);
+            } else {
+                // If no record exists, create a new one
+                $fileNamesImploded = implode(',', $storedFileNames);
+                Attachment::create([
+                    'type_id' => $leadId,
+                    'type' => 1,
+                    'files' => $fileNamesImploded, // Store imploded string
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Files uploaded successfully.']);
+    }
+
+    public function restore_lead(Request $request)
+    {
+        $lead = generate_lead::where('id', $request->id)->update(['is_lost' => 1]);
+
+
+        return response()->json($lead);
+    }
+
+    public function attachmentsDeleteFile(Request $request)
+    {
+        $leadId = $request->input('lead_id'); // Get lead ID from request
+        $fileNameToDelete = $request->input('file'); // Get file name from request
+
+        // Find the attachment record by lead ID
         $attachment = Attachment::where('type_id', $leadId)->first();
 
         if ($attachment) {
-            // If record exists, append new file names
+            // Get the existing file names
             $existingFiles = explode(',', $attachment->files);
-            $allFileNames = array_merge($existingFiles, $storedFileNames);
-            $fileNamesImploded = implode(',', $allFileNames);
-            // Update the existing record
-            $attachment->update(['files' => $fileNamesImploded]);
-        } else {           
-            // If no record exists, create a new one
-            $fileNamesImploded = implode(',', $storedFileNames);
-            Attachment::create([
-                'type_id' => $leadId,
-                'type' => 1,
-                'files' => $fileNamesImploded, // Store imploded string
-            ]);
-        }
-    }
 
-    return response()->json(['message' => 'Files uploaded successfully.']);
-}
+            // Remove the specified file
+            $updatedFiles = array_filter($existingFiles, function ($file) use ($fileNameToDelete) {
+                return $file !== $fileNameToDelete;
+            });
 
-public function restore_lead(Request $request)
-{
-    $lead = generate_lead::where('id', $request->id)->update(['is_lost' => 1]);
-
-
-    return response()->json($lead);
-}
-
-public function attachmentsDeleteFile(Request $request)
-{
-    $leadId = $request->input('lead_id'); // Get lead ID from request
-    $fileNameToDelete = $request->input('file'); // Get file name from request
-
-    // Find the attachment record by lead ID
-    $attachment = Attachment::where('type_id', $leadId)->first();
-
-    if ($attachment) {
-        // Get the existing file names
-        $existingFiles = explode(',', $attachment->files);
-
-        // Remove the specified file
-        $updatedFiles = array_filter($existingFiles, function($file) use ($fileNameToDelete) {
-            return $file !== $fileNameToDelete;
-        });
-
-        // Delete the file from storage
-        $filePath = 'uploads/attachment/' . $fileNameToDelete;
-        if (Storage::disk('public')->exists($filePath)) {
-            Storage::disk('public')->delete($filePath);
-        }
-
-        // Check if there are no files left
-        if (empty($updatedFiles)) {
-            // If no files left, delete the entire record
-            $attachment->delete();
-        } else {
-            // Update the attachment record
-            $attachment->files = implode(',', $updatedFiles);
-            $attachment->save();
-        }
-
-        return response()->json(['success' => true, 'message' => 'File deleted successfully.']);
-    }
-
-    return response()->json(['success' => false, 'message' => 'Attachment not found.'], 404);
-}
-
-public function log_notes(Request $request)
-{
-    $data = new send_log_notes();
-    $data->message = $request->send_message;
-    $data->type_id = $request->lead_id;
-    $data->type = 'lead';
-    $data->created_by = Auth::user()->id;
-    
-    $uploadedFiles = []; // Array to hold the file paths
-
-    if ($request->hasFile('image_uplode')) {
-        foreach ($request->file('image_uplode') as $file) {
-            // Get the original file name
-            $fileName = time() . '_' . $file->getClientOriginalName();
-
-            // Store the file in the 'public/uploads' directory
-            $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
-
-            $uploadedFiles[] = $filePath; // Store the path
-        }
-
-        // Convert the array to a JSON string
-        $data->image = json_encode($uploadedFiles);
-    }
-
-    $data->save();
-    return response()->json(['message' => 'Notes Add deleted successfully.']);
-
-   
-}
-public function delete_send_message_notes(Request $request)
-{
-    $message = send_log_notes::find($request->id);
-    $message->delete();
-
-    return response()->json(['message' => 'Message deleted successfully']);
-}
-
-public function click_star_notes(Request $request)
-{
-$lead = send_log_notes::find($request->id);
-
-// Toggle the is_star status
-if ($request->is_star == '1') {
-    $lead->is_start = '0'; // Unstar
-} else {
-    $lead->is_start = '1'; // Star
-}
-
-$lead->save();
-
-return response()->json($lead);
-}
-
-public function downloadAllImagessend_message($id)
-{
-
-    $message = send_log_notes::find($id); 
-
-    // Get the images from the 'image' field
-    $images = json_decode($message->image);
-
-    // Create a temporary file for the zip
-    $zipFileName = 'images_' . time() . '.zip';
-    $zipFilePath = storage_path($zipFileName);
-
-    $zip = new ZipArchive;
-    if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
-        // Add each image to the zip
-        foreach ($images as $image) {
-            // Get the image path from the 'storage' directory
-            $imagePath = storage_path('app/public/' . $image);
-            if (file_exists($imagePath)) {
-                $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+            // Delete the file from storage
+            $filePath = 'uploads/attachment/' . $fileNameToDelete;
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
             }
+
+            // Check if there are no files left
+            if (empty($updatedFiles)) {
+                // If no files left, delete the entire record
+                $attachment->delete();
+            } else {
+                // Update the attachment record
+                $attachment->files = implode(',', $updatedFiles);
+                $attachment->save();
+            }
+
+            return response()->json(['success' => true, 'message' => 'File deleted successfully.']);
         }
-        $zip->close();
+
+        return response()->json(['success' => false, 'message' => 'Attachment not found.'], 404);
     }
 
-    // Return the zip file for download
-    return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
-}
-   
+    public function log_notes(Request $request)
+    {
+        $data = new send_log_notes();
+        $data->message = $request->send_message;
+        $data->type_id = $request->lead_id;
+        $data->type = 'lead';
+        $data->created_by = Auth::user()->id;
+
+        $uploadedFiles = []; // Array to hold the file paths
+
+        if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+
+        $data->save();
+        return response()->json(['message' => 'Notes Add deleted successfully.']);
+
+
+    }
+    public function delete_send_message_notes(Request $request)
+    {
+        $message = send_log_notes::find($request->id);
+        $message->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
+
+    public function click_star_notes(Request $request)
+    {
+        $lead = send_log_notes::find($request->id);
+
+        // Toggle the is_star status
+        if ($request->is_star == '1') {
+            $lead->is_start = '0'; // Unstar
+        } else {
+            $lead->is_start = '1'; // Star
+        }
+
+        $lead->save();
+
+        return response()->json($lead);
+    }
+
+    public function downloadAllImagessend_message($id)
+    {
+
+        $message = send_log_notes::find($id);
+
+        // Get the images from the 'image' field
+        $images = json_decode($message->image);
+
+        // Create a temporary file for the zip
+        $zipFileName = 'images_' . time() . '.zip';
+        $zipFilePath = storage_path($zipFileName);
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            // Add each image to the zip
+            foreach ($images as $image) {
+                // Get the image path from the 'storage' directory
+                $imagePath = storage_path('app/public/' . $image);
+                if (file_exists($imagePath)) {
+                    $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+                }
+            }
+            $zip->close();
+        }
+
+        // Return the zip file for download
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
+    }
+
+    public function favoritesFilter(Request $request)
+    {
+
+        $exists = Favorite::where('favorites_name', $request->favorites_name)->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'A filter with same name already exists.'], 409); // 409 Conflict
+        }
+
+        if ($request->is_default == 1) {
+            Favorite::where('is_default', 1)->update(['is_default' => 0]);
+        }
+
+        $favorite = Favorite::create([
+            'filter_type' => 'lead',
+            'favorites_name' => $request->favorites_name,
+            'is_default' => $request->is_default,
+            'is_shared' => $request->is_shared,
+        ]);
+
+        return response()->json(['message' => 'Favorite saved', 'favorite' => $favorite], 201);
+    }
+
+    public function deleteFavoritesFilter($id)
+    {
+        $favorite = Favorite::find($id);
+
+        if ($favorite) {
+            $favorite->delete();
+            return response()->json(['message' => 'Favorite deleted successfully!']);
+        }
+
+        return response()->json(['message' => 'Favorite not found.'], 404);
+    }
+
 }
 

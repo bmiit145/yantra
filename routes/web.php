@@ -180,6 +180,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-click_star_notes', [LeadController::class, 'click_star_notes'])->name('lead.click_star_notes');
     Route::get('/lead-downloadAllImagessend_message', [LeadController::class, 'downloadAllImagessend_message'])->name('lead.downloadAllImagessend_message');
 
+    // Favorites Filter Route
+    Route::post('/lead-favorites-filter',[LeadController::class,'favoritesFilter'])->name('lead.favorites.filter');
+    Route::delete('/delete-lead-favorites/{id}', [LeadController::class, 'deleteFavoritesFilter']);
+
 
 
     Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');

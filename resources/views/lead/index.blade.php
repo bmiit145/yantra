@@ -67,14 +67,14 @@
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span
                 class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span
                 class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
         <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate lost_span"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
                 style="display:none;">✔</span>Lost & Archived</span>
         <div class="dropdown-divider" role="separator"></div>
@@ -155,17 +155,17 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             </div>
         </div>
         <div class="dropdown-divider" role="separator"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
             style="display:none;">✔</span>Late Activities</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
             tabindex="0" title="Today Activities" aria-checked="false"><span class="float-end checkmark"
             style="display:none;">✔</span>Today Activities</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
             tabindex="0" title="Future Activities" aria-checked="false"><span class="float-end checkmark"
             style="display:none;">✔</span>Future Activities</span>
         <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
             tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
@@ -274,16 +274,67 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         </select>
     </div>
     <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-favourite fa fa-star"></i>
+        <div class="px-3 fs-5 mb-2">
+            <i class="me-2 text-favourite fa fa-star"></i>
             <h5 class="o_dropdown_title d-inline">Favorites</h5>
-        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected"
-            role="menuitemcheckbox" tabindex="0" aria-checked="true"><span
-                class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1"
-                    title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
+        </div>
+        @foreach ($getFavoritesFilter as $favoritesFilter)    
+            <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
+            role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
+                <span class="d-flex p-0 align-items-center justify-content-between">
+                    <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
+                        <span class="float-end checkmark" style="display:none;">✔</span>
+                    </span>
+                    <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+                </span>
+            </span>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure that you want to remove this filter?
+                        </div>
+                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                            <button type="button" class="btn btn-primary" style="background-color:#714B67;border: none;font-weight: 500;" id="confirmDelete">Delete Filter</button>
+                            <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
         <div role="separator" class="dropdown-divider"></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate"
-                tabindex="0" aria-expanded="false">Save current search</button></div>
+        <div class="o_accordion position-relative">
+            <button id="save-current-search" class="o_menu_item o_accordion_toggle search-dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">
+                Save current search
+                <span class="arrow-icon" style="font-size: 10px; margin-top: 4px;">▼</span>
+            </button>
+            <div class="o_accordion_values ms-4 border-start">
+                <div class="px-3 py-2">
+                    <input type="text" class="o_input" id="lead_favorites" name="favorites_name" value="Leads" placeholder="Enter favorite name">
+                    <div class="o-checkbox form-check">
+                        <input type="radio" name="filter_check" class="form-check-input" id="checkbox-comp-70">
+                        <label class="form-check-label" for="checkbox-comp-70">
+                            <span data-tooltip="Use this filter by default when opening this view">Default filter</span>
+                        </label>
+                    </div>
+                    <div class="o-checkbox form-check">
+                        <input type="radio" class="form-check-input" id="checkbox-comp-71" name="filter_check">
+                        <label class="form-check-label" for="checkbox-comp-71">
+                            <span data-tooltip="Make this filter available to other users">Shared</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="px-3 py-2">
+                    <button class="o_save_favorite btn-sm btn btn-primary w-100" style="background-color: #714b67; border: none;">Save</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -531,11 +582,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     .LTFtag ,
      .tag5,
      .group_by_tag,
-     .CRtag
+     .CRtag,
+     .favorites-filter
      {
         display: inline-block;
         padding: 0px 10px 0px 0;
-        background-color: #E0E0E0;
+        background-color: #e7e9ed;
         border-radius: 8px;
         font-size: 14px;
         margin: 5px 0;
@@ -632,6 +684,28 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
     .o_accordion_toggle::after {
         display: none;
+    }
+    .arrow-icon {
+        transition: transform 0.3s; /* Smooth transition */
+    }
+
+    .arrow-icon.open {
+        transform: rotate(180deg); /* Rotate the arrow when open */
+    }
+    .search-dropdown-item{
+        display: block;
+        width: 100%;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
+    .o_accordion_values {
+        display: none;
+        transition: all 0.3s ease;
     }
 </style>
 
@@ -1133,7 +1207,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             updateFilterTagsA();
 
             // Remove checkmark from the dropdown
-            $('.o-dropdown-item .checkmark').hide();
+            $('.o-dropdown-item-2 .checkmark').hide();
         });
 
         // -------------------------------------------- Activities End ------------------------------------------------------------------
@@ -1564,6 +1638,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 var operatesValue = $('#customer_filter_operates').val();
                 var span_id = $('#span_id').val();
 
+                $('.selected-items .o_searchview_facet').remove();
+                $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+                $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+
                 
 
                 handleTagSelection(filterType, operatesValue, filterValue, span_id);
@@ -1736,7 +1814,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         $(document).on('click', '.o-dropdown-item_1', function (e) {
             e.stopPropagation();
             $('.tag').remove();
-            $('.o-dropdown-item .checkmark').hide();
+            $('.o-dropdown-item-2 .checkmark').hide();
             $('.tag1').remove();
             $('.lost_span:contains("Lost")').find('.checkmark').hide();
             $('.LTFtag').remove();
@@ -1853,7 +1931,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             if ($tag.find('.fa-list').length === 0) {
                 $tag.prepend('<a href="#"  class="setting-icon icon_tag">' +
                     '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-                    '<span  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '<span  class="setting-icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                     '</a>'
                 );
             }
@@ -1879,7 +1957,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
         // $(document).on('click', '.remove-tag', function () {
         //     $('.tag').remove();
-        //     $('.o-dropdown-item .checkmark').hide();
+        //     $('.o-dropdown-item-2 .checkmark').hide();
         //     $('#search-input').val('').attr('placeholder', 'Search...');
         //     $('#filter').val(''); // Clear the filter value
         // });
@@ -1983,7 +2061,185 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         // Initialize tags if any tags are present on page load
         updateTagSeparatorsGrop(); // Ensure that the close icon is added correctly
-       
+
+        // ------------------------------ Favorite Filter Start -----------------------------------------------
+
+        // Handle the save button click
+        $('.o_save_favorite').on('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const favoriteName = $('#lead_favorites').val(); // Ensure this matches your input field
+            const isDefault = $('#checkbox-comp-70').is(':checked');
+            const isShared = $('#checkbox-comp-71').is(':checked');
+
+            if (favoriteName) {
+                $.ajax({
+                    url: '{{ route('lead.favorites.filter') }}', // Your API endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 
+                        favorites_name: favoriteName,
+                        is_default: isDefault,
+                        is_shared: isShared
+                    }),
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                    if (xhr.status === 409) {
+                        // Handle conflict error
+                        toastr.error(xhr.responseJSON.message); // Display the conflict message
+                    } else {
+                        console.error('Error:', xhr);
+                        toastr.error('An error occurred while saving your favorite.'); // Generic error message
+                    }
+                }
+                });
+            } else {
+                alert('Please enter a favorite name.');
+            }
+        });
+
+        // Search functionality
+        $('.o_input').on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('.o-dropdown-item').each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.includes(searchTerm));
+            });
+        });
+
+        $(document).on('click', '.delete-item', function() {
+            const itemId = $(this).data('id');
+            $('#confirmDelete').data('id', itemId); // Store the ID in the confirm button
+            $('#deleteModal').modal('show'); // Show the modal
+        });
+
+        $('#confirmDelete').on('click', function() {
+            const itemId = $(this).data('id'); // Get the ID from the confirm button
+
+            $.ajax({
+                url: `/delete-lead-favorites/${itemId}`, // Your delete endpoint
+                type: 'DELETE',
+                success: function(response) {
+                    toastr.success('Favorite deleted successfully!'); // Show success message
+                    $('#deleteModal').modal('hide'); // Hide the modal
+
+                    // Remove the item from the UI
+                    $(`span[data-id="${itemId}"]`).remove();
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    toastr.error('An error occurred while deleting the favorite.'); // Show error message
+                }
+            });
+        });
+
+        // ------------------------------ Favorite Filter End -----------------------------------------------
+               
+        $('.o-dropdown-item-3').each(function() {
+            if ($(this).attr('aria-checked') === 'true') {
+                var filterName = $(this).data('name');
+                var filterId = $(this).data('id');
+
+                // Create a container for the entire facet
+                var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap"></div>');
+
+                // Create the absolute background overlay
+                var overlay = $('<div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>');
+                container.append(overlay);
+
+                // Create the favorite button with icons
+                var facetLabel = $('<div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-favourite" style="background-color:#f3cc00" role="button">' +
+                    '<i class="small fa-fw fa fa-star" role="image"></i>' +
+                    '<span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover">' +
+                    '<i class="fa fa-fw fa-cog"></i></span></div>');
+                container.append(facetLabel);
+
+                // Create the values container with the filter name and remove button
+                var valuesContainer = $('<div class="o_facet_values position-relative d-flex flex-wrap ps-2 align-items-center rounded-end-2 text-wrap"></div>');
+                var facetValue = $('<small class="o_facet_value">' + filterName + '</small>');
+                var removeButton = $('<button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none" role="button" aria-label="Remove" title="Remove" data-id="' + filterId + '"></button>');
+
+                // Append the value and remove button to the values container
+                valuesContainer.append(facetValue);
+                valuesContainer.append(removeButton);
+
+                // Append the values container to the main container
+                container.append(valuesContainer);
+
+                // Append the entire container to the selected-items
+                $('.selected-items').append(container);
+
+                // Show the checkmark in the dropdown
+                $(this).find('.checkmark').show();
+            }
+        });
+
+        // Close icon functionality (to remove selected item)
+        $(document).on('click', '.o_facet_remove', function() {
+            var filterId = $(this).data('id');
+            $(this).closest('.o_searchview_facet').remove(); // Remove the selected item container
+
+            // Hide the checkmark in the dropdown
+            $('.o-dropdown-item-3[data-id="' + filterId + '"] .checkmark').hide();
+            $('.o-dropdown-item-3[data-id="' + filterId + '"]').attr('aria-checked', 'false'); // Reset aria-checked attribute
+        });
+
+        // Handle item click to select/deselect
+        $('.o-dropdown-item-3').on('click', function() {
+            var filterId = $(this).data('id');
+
+            // Check if the item is already selected
+            if ($(this).attr('aria-checked') === 'true') {
+                // Deselect the item
+                $(this).attr('aria-checked', 'false'); // Mark it as unchecked
+                $(this).find('.checkmark').hide(); // Hide the checkmark
+
+                // Remove the item from the selected items
+                $('.selected-items .o_searchview_facet').each(function() {
+                    if ($(this).find('.o_facet_remove').data('id') === filterId) {
+                        $(this).remove(); // Remove the selected item container
+                    }
+                });
+                return; // Exit the function
+            }
+
+            // Deselect all currently selected items
+            $('.selected-items .o_searchview_facet').remove();
+            $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+            $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+
+            // Show the selected item
+            var filterName = $(this).data('name');
+            var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap"></div>');
+
+            // Create the favorite button with icons
+            var facetLabel = $('<div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-favourite" style="background-color:#f3cc00" role="button">' +
+                '<i class="small fa-fw fa fa-star" role="image"></i>' +
+                '<span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover">' +
+                '<i class="fa fa-fw fa-cog"></i></span></div>');
+            container.append(facetLabel);
+
+            // Create the values container with the filter name and remove button
+            var valuesContainer = $('<div class="o_facet_values position-relative d-flex flex-wrap ps-2 align-items-center rounded-end-2 text-wrap"></div>');
+            var facetValue = $('<small class="o_facet_value">' + filterName + '</small>');
+            var removeButton = $('<button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none" role="button" aria-label="Remove" title="Remove" data-id="' + filterId + '"></button>');
+
+            // Append the value and remove button to the values container
+            valuesContainer.append(facetValue);
+            valuesContainer.append(removeButton);
+
+            // Append the values container to the main container
+            container.append(valuesContainer);
+
+            // Append the entire container to the selected-items
+            $('.selected-items').append(container);
+
+            // Update the dropdown item
+            $(this).attr('aria-checked', 'true'); // Mark it as checked
+            $(this).find('.checkmark').show(); // Show the checkmark
+        });
  });
 </script>
 
@@ -2274,5 +2530,26 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('save-current-search');
+    const accordionValues = document.querySelector('.o_accordion_values');
+    const arrowIcon = toggleButton.querySelector('.arrow-icon');
+
+    toggleButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default behavior to avoid page reload
+        
+        const isOpen = accordionValues.style.display === 'block';
+        accordionValues.style.display = isOpen ? 'none' : 'block';
+        toggleButton.setAttribute('aria-expanded', !isOpen);
+        
+        // Toggle the arrow direction
+        arrowIcon.classList.toggle('open', !isOpen);
+    });
+
+    // Initially hide the accordion values
+    accordionValues.style.display = 'none';
+});
+</script>
 
 @endsection

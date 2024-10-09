@@ -1129,10 +1129,17 @@
                                     @endif                                        
                                         <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span>
                                         <!-- <button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i>  -->
-                                        <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
-                                        <i class="fa fa-paperclip fa-lg me-1"></i>
-                                        <sup id="fileCount">{{$fileCount ?? ''}}</sup>
-                                    </button>
+                                        @if(isset($data) && $data->id != null)
+                                            <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
+                                                <i class="fa fa-paperclip fa-lg me-1"></i>
+                                                <sup id="fileCount">{{$fileCount ?? ''}}</sup>
+                                            </button>
+                                        @else
+                                            <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn" disabled>
+                                                <i class="fa fa-paperclip fa-lg me-1"></i>
+                                                <sup id="fileCount">{{$fileCount ?? ''}}</sup>
+                                            </button>
+                                        @endif
                                         <div class="o-mail-Followers d-flex me-1">
                                             @if(isset($data) && $data->id != null)
                                                 <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">

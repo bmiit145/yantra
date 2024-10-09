@@ -16,6 +16,7 @@
                         <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
                     <div class="o_searchview_input_container d-flex flex-grow-1 flex-wrap gap-1">
+                    <div class="selected-items" style="display: flex; align-items: center;"></div>
                         <input type="text" class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0"
                             id="search-input" accesskey="Q" placeholder="Search..." name="search" role="searchbox">
                     </div>
