@@ -24,10 +24,10 @@
                 <button type="button"
                     class="o_searchview_dropdown_toggler d-print-none btn btn-outline-secondary o-dropdown-caret rounded-start-0 dropdown-toggle"
                     title="Toggle Search Panel" aria-expanded="false">
-                    <i class="fa fa-caret-down" id="dropdown-arrow"></i> <!-- Only one arrow here -->
+                    <i class="fa fa-caret-down" id="dropdown-arrow"></i>
                 </button>
             </div>
-            <ul class="search_menu_wapper" style="display: none;" id="search-dropdown">
+            <ul class="search_menu_wapper" style="display: none;background: transparent;" id="search-dropdown">
                 @yield('search_div')
             </ul>
             <!-- <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"

@@ -504,7 +504,17 @@ class LeadController extends Controller
 
     public function calendar()
     {
-        return view('lead.calendar');
+        $getFavoritesFilter = Favorite::where('filter_type','lead')->get();
+        $Countrs = Country::all();
+        $tages = Tag::where('tage_type', 2)->get();
+        $users = User::all();
+        $customers = Contact::all();
+        $Sources = Source::all();
+        $CrmStages = CrmStage::all();
+        $States = State::all();
+        $PersonTitle = PersonTitle::all();
+        $Campaigns = Campaign::all();
+        return view('lead.calendar',compact('getFavoritesFilter','Countrs','tages','users','customers', 'Sources','CrmStages','States','PersonTitle','Campaigns'));
     }
 
     public function checkEmail(Request $request)
@@ -703,7 +713,7 @@ class LeadController extends Controller
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getSource', 'getMedium', 'activities'])->get();
+        $leads = generate_lead::with(['getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser', 'activities','getSource','getCampaign','getMedium'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {

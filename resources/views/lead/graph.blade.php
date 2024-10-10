@@ -178,10 +178,4 @@ canvas#pieChart {
     });
 </script>
 
-
-
-
-
-
-
 @endsection

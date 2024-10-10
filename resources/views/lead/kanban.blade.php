@@ -769,6 +769,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         position: absolute;
     }
 
+    span.group_setting_icon {
+        padding: 3px;
+        background: #714B67;
+        border-radius: 5px;
+        display: inline-block;
+        margin-right: 5px;
+        width: 27px;
+        height: 27px;
+        text-align: center;
+        position: absolute;
+    }
+
     span.setting_icon.setting_icon_hover {
         display: none;
     }
@@ -782,6 +794,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     }
 
     a.setting-icon {
+        padding-right: 35px;
+    }
+
+    a.group-setting-icon {
         padding-right: 35px;
     }
 
@@ -810,11 +826,22 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         display: none;
         transition: all 0.3s ease;
     }
+    .o_kanban_renderer .o_kanban_record:not(.o_legacy_kanban_record):not(.o_kanban_ghost){
+        padding: 0;
+        border: 1px;
+    }
+    .dropdown-item.selected:not(.dropdown-item_active_noarrow):before{
+        display: none;
+    }
+    .lead-kanban-position-sticky {
+        position: sticky !important;
+        background: #f9fafb !important;
+    }
 </style>
 
 <div class="o_content">
     <div
-        class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start" id="lead-container">
+        class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start lead-container d-flex" id="lead-container">
         @foreach ($leads as $lead)
             <a href="{{route('lead.create', $lead->id)}}">
                 <div role="article" class="o_kanban_record d-flex flex-grow-1 flex-md-shrink-1 flex-shrink-0 contact-card"
@@ -832,6 +859,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         </div>
                                     </span>
                                 </div>
+                            </div>
+                            <div>
+                                <span class="o_kanban_record_subtitle text-black"><span>{{$lead->contact_name ?? ''}}</span></span>
                             </div>
                             <div class="o_kanban_record_bottom">
                                 <div class="oe_kanban_bottom_left">
@@ -949,7 +979,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     <script>
         $(document).ready(function () {
             // Handle star click event
-            $('.o_priority_star').on('click', function (e) {
+            $('#lead-container').on('click', '.o_priority_star', function (e) {
                 e.preventDefault();
 
                 var $this = $(this);
@@ -1006,85 +1036,121 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });
 
             function filterData(selectedTags) {
-    $.ajax({
-        url: '{{ route('lead.activities') }}',
-        method: 'GET',
-        data: {
-            tags: selectedTags
-        },
-        success: function (response) {
-            var $leadContainer = $('#lead-container'); // Make sure to have a container for leads
+                $.ajax({
+                    url: '{{ route('lead.activities') }}',
+                    method: 'GET',
+                    data: {
+                        tags: selectedTags
+                    },
+                    success: function (response) {
+                        var $leadContainer = $('#lead-container'); // Make sure to have a container for leads
 
-            // Clear existing leads
-            $leadContainer.empty();
+                        // Clear existing leads
+                        $leadContainer.empty();
 
-            if (response.data.length === 0) {
-                $leadContainer.append(`<p class="text-center">No data found!</p>`);
-                return;
+                        if (response.data.length === 0) {
+                            $leadContainer.append(`<p class="text-center">No data found!</p>`);
+                            return;
+                        }
+
+                        // Loop through the response and create lead cards
+                        response.data.forEach(function (lead) {
+                            var leadHtml = `<div class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start lead-container" id="lead-container">
+                                <a href="{{ route('lead.create', '') }}/${lead.id}">
+                                    <div role="article" class="o_kanban_record d-flex flex-grow-1 flex-md-shrink-1 flex-shrink-0 contact-card" data-id="${lead.id}" tabindex="0">
+                                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                                            <div class="oe_kanban_details d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <strong class="o_kanban_record_title oe_partner_heading">
+                                                        <span>${lead.product_name || ''}</span>
+                                                    </strong>
+                                                    <div class="o_kanban_tags_section oe_kanban_partner_categories">
+                                                        <span class="oe_kanban_list_many2many">
+                                                            <div name="category_id" class="o_field_widget o_field_many2many_tags">
+                                                                <div class="d-flex flex-wrap gap-1"></div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span class="o_kanban_record_subtitle text-black"><span>${lead.contact_name || ''}</span></span>
+                                                </div>
+                                                <div class="o_kanban_record_bottom">
+                                                    <div class="oe_kanban_bottom_left">
+                                                        <div name="priority" class="o_field_widget o_field_priority">
+                                                            <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                                <a href="#" class="o_priority_star fa ${lead.priority === 'medium' || lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
+                                                                <a href="#" class="o_priority_star fa ${lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
+                                                                <a href="#" class="o_priority_star fa ${lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                                            </div>
+                                                        </div>
+                                                        <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
+                                                            <a class="o-mail-ActivityButton" role="button" aria-label="Show activities" title="Show activities">
+                                                                <i class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark" role="img"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="oe_kanban_bottom_right">
+                                                        <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
+                                                            <div class="d-flex align-items-center gap-1 user-icon" data-tooltip="">
+                                                                <li class="nav-item header-bg-btn dropdown">
+                                                                    <a class="nav-link" href="#" id="notificationDropdown${lead.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        <span class="kanban-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                            ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                        </span>
+                                                                    </a>
+                                                                    <!-- Dropdown Menu -->
+                                                                    <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationDropdown${lead.id}" style="width: 300px; height: 143px;">
+                                                                        <div class="o_avatar_card">
+                                                                            <div class="card-body">
+                                                                                <div class="d-flex align-items-start gap-2">
+                                                                                    <span class="o_avatar pt-1 position-relative o_card_avatar">
+                                                                                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                                            ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                                        </span>
+                                                                                        <span name="icon" class="o_card_avatar_im_status position-absolute d-flex align-items-center justify-content-center">
+                                                                                            <i class="fa fa-fw fa-circle text-success" title="Online" role="img" aria-label="User is online"></i>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <div class="d-flex flex-column o_card_user_infos overflow-hidden">
+                                                                                        <span class="fw-bold">${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}</span>
+                                                                                        <span class="text-muted text-truncate" data-tooltip="Department" title="Administration">${lead.get_user && lead.get_user.name ? lead.get_user.name : ''}</span>
+                                                                                        <a class="text-truncate" href="mailto:${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}" title="${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}">
+                                                                                            <i class="fa fa-fw fa-envelope me-1"></i>${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-wrap gap-2 mt-2">
+                                                                                    <div class="justify-content-end d-flex align-items-baseline">
+                                                                                        <div class="d-flex gap-2 o_avatar_card_buttons">
+                                                                                            <button class="btn btn-secondary btn-sm">Send message</button>
+                                                                                            <button class="btn btn-secondary btn-sm">View Profile</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a></div>`;  
+                            $leadContainer.append(leadHtml);
+                        });
+
+                        // Add the flex-wrap class to the lead container
+                        $leadContainer.addClass('flex-wrap');
+                    },
+                    error: function () {
+                        console.error('Failed to fetch data');
+                    }
+                });
             }
-
-            // Loop through the response and create lead cards
-            response.data.forEach(function (lead) {
-                var leadHtml = `
-    <a href="{{ route('lead.create', '') }}/${lead.id}">
-        <div role="article" class="o_kanban_record d-flex flex-grow-1 flex-md-shrink-1 flex-shrink-0 contact-card" data-id="${lead.id}" tabindex="0">
-            <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
-                <div class="oe_kanban_details d-flex flex-column justify-content-between">
-                    <div>
-                        <strong class="o_kanban_record_title oe_partner_heading">
-                            <span>${lead.product_name || ''}</span>
-                        </strong>
-                        <div class="o_kanban_tags_section oe_kanban_partner_categories">
-                            <span class="oe_kanban_list_many2many">
-                                <div name="category_id" class="o_field_widget o_field_many2many_tags">
-                                    <div class="d-flex flex-wrap gap-1"></div>
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="o_kanban_record_bottom">
-                        <div class="oe_kanban_bottom_left">
-                            <div name="priority" class="o_field_widget o_field_priority">
-                                <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
-                                    <a href="#" class="o_priority_star fa ${lead.priority === 'medium' || lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
-                                    <a href="#" class="o_priority_star fa ${lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
-                                    <a href="#" class="o_priority_star fa ${lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
-                                </div>
-                            </div>
-                            <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
-                                <a class="o-mail-ActivityButton" role="button" aria-label="Show activities" title="Show activities">
-                                    <i class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark" role="img"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="oe_kanban_bottom_right">
-                            <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
-                                <div class="d-flex align-items-center gap-1 user-icon" data-tooltip="">
-                                    <li class="nav-item header-bg-btn dropdown">
-                                        <a class="nav-link" href="#" id="notificationDropdown${lead.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="kanban-avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
-                                            </span>
-                                        </a>
-                                        <!-- Dropdown Menu -->
-                                        <!-- Add your dropdown menu here -->
-                                    </li>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>`;  
-                $leadContainer.append(leadHtml);
-            });
-        },
-        error: function () {
-            console.error('Failed to fetch data');
-        }
-    });
-}
 
 
             $(document).on('click', '.activities', function (e) {
@@ -1651,6 +1717,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 $('.selected-items .o_searchview_facet').remove();
                 $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
                 $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+                $('.group_by_tag').remove();
+                $('.o-dropdown-item_1  .checkmark').hide();
 
                 
 
@@ -1669,55 +1737,110 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     type: 'POST',
                     data: data,
                     success: function (response) {
-                        var $tableBody = $('#lead-table-body');
+                        var $leadContainer = $('#lead-container'); // Make sure to have a container for leads
 
-                        // Clear existing table data
-                        $tableBody.empty();
+                        // Clear existing leads
+                        $leadContainer.empty();
 
-                        // Check if response contains data
-                        if (response.success && response.data && response.data.length > 0) {
-                            // Loop through the response and create table rows
-                            response.data.forEach(function (item) {
-                                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
-
-                                    // Append data only for the visible columns
-                                    if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
-                                    if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                                    if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                                    if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
-                                    if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
-                                    if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
-                                    if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                                    if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
-                                    if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
-                                    if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
-                                    if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
-                                    if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                                    if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
-                                    if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                                    if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
-                                    if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                                    if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
-                                    if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
-                                    if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
-                                    if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                                    if (table.column(20).visible()) rowHtml += `<td></td>`;
-
-                                    rowHtml += `</tr>`;
-                                    $tableBody.append(rowHtml);
-                                
-
-                            });
-
-                            // Attach click event handler to rows
-                            $('#lead-table-body .lead-row').on('click', function () {
-                                var leadId = $(this).data('id');
-                                window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
-                            });
-                        } else {
-                            // If no data, show a message or keep it empty
-                            $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                        if (response.data.length === 0) {
+                            $leadContainer.append(`<p class="text-center">No data found!</p>`);
+                            // Add the flex-wrap class back
+                            $leadContainer.addClass('flex-wrap');
+                            return;
                         }
+
+                        // Loop through the response and create lead cards
+                        response.data.forEach(function (lead) {
+                            var leadHtml = `<div class="lead-container d-flex flex-wrap" id="lead-container">
+                                <a href="{{ route('lead.create', '') }}/${lead.id}">
+                                    <div role="article" class="o_kanban_record d-flex flex-grow-1 flex-md-shrink-1 flex-shrink-0 contact-card" data-id="${lead.id}" tabindex="0">
+                                        <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
+                                            <div class="oe_kanban_details d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <strong class="o_kanban_record_title oe_partner_heading">
+                                                        <span>${lead.product_name || ''}</span>
+                                                    </strong>
+                                                    <div class="o_kanban_tags_section oe_kanban_partner_categories">
+                                                        <span class="oe_kanban_list_many2many">
+                                                            <div name="category_id" class="o_field_widget o_field_many2many_tags">
+                                                                <div class="d-flex flex-wrap gap-1"></div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span class="o_kanban_record_subtitle text-black"><span>${lead.contact_name || ''}</span></span>
+                                                </div>
+                                                <div class="o_kanban_record_bottom">
+                                                    <div class="oe_kanban_bottom_left">
+                                                        <div name="priority" class="o_field_widget o_field_priority">
+                                                            <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                                <a href="#" class="o_priority_star fa ${lead.priority === 'medium' || lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
+                                                                <a href="#" class="o_priority_star fa ${lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
+                                                                <a href="#" class="o_priority_star fa ${lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                                            </div>
+                                                        </div>
+                                                        <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
+                                                            <a class="o-mail-ActivityButton" role="button" aria-label="Show activities" title="Show activities">
+                                                                <i class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark" role="img"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="oe_kanban_bottom_right">
+                                                        <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
+                                                            <div class="d-flex align-items-center gap-1 user-icon" data-tooltip="">
+                                                                <li class="nav-item header-bg-btn dropdown">
+                                                                    <a class="nav-link" href="#" id="notificationDropdown${lead.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        <span class="kanban-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                            ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                        </span>
+                                                                    </a>
+                                                                    <!-- Dropdown Menu -->
+                                                                    <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationDropdown${lead.id}" style="width: 300px; height: 143px;">
+                                                                        <div class="o_avatar_card">
+                                                                            <div class="card-body">
+                                                                                <div class="d-flex align-items-start gap-2">
+                                                                                    <span class="o_avatar pt-1 position-relative o_card_avatar">
+                                                                                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                                            ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                                        </span>
+                                                                                        <span name="icon" class="o_card_avatar_im_status position-absolute d-flex align-items-center justify-content-center">
+                                                                                            <i class="fa fa-fw fa-circle text-success" title="Online" role="img" aria-label="User is online"></i>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <div class="d-flex flex-column o_card_user_infos overflow-hidden">
+                                                                                        <span class="fw-bold">${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}</span>
+                                                                                        <span class="text-muted text-truncate" data-tooltip="Department" title="Administration">${lead.get_user && lead.get_user.name ? lead.get_user.name : ''}</span>
+                                                                                        <a class="text-truncate" href="mailto:${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}" title="${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}">
+                                                                                            <i class="fa fa-fw fa-envelope me-1"></i>${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="flex-wrap gap-2 mt-2">
+                                                                                    <div class="justify-content-end d-flex align-items-baseline">
+                                                                                        <div class="d-flex gap-2 o_avatar_card_buttons">
+                                                                                            <button class="btn btn-secondary btn-sm">Send message</button>
+                                                                                            <button class="btn btn-secondary btn-sm">View Profile</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a></div>`;
+                            $leadContainer.append(leadHtml);
+                        });
+
+                        // Add the flex-wrap class back
+                        $leadContainer.addClass('flex-wrap');
                     },
                     error: function (xhr, status, error) {
                         console.error('Error:', error);
@@ -1814,26 +1937,45 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             if ($('.tag5').children().length === 0) {
                 $('.tag5').remove();
             }
-
-
-            // Optionally, you could send a request to update the filters on the server if necessary
+           location.reload();
         });
         
 
         // Handle item selection from dropdown
         $(document).on('click', '.o-dropdown-item_1', function (e) {
-            e.stopPropagation();
-            $('.tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
             $('.o-dropdown-item-2 .checkmark').hide();
-            $('.tag1').remove();
             $('.lost_span:contains("Lost")').find('.checkmark').hide();
-            $('.LTFtag').remove();
             $('.LTFActivities .checkmark').hide();
-            $('.CRtag').remove();
             $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+            e.stopPropagation();
+
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelectionGrop(selectedValue, $item);
+            
+            // Toggle checkmark visibility
+            var $checkmark = $item.find('.checkmark');
+            if ($checkmark.is(':visible')) {
+                // Uncheck and remove the tag if it's already checked
+                $checkmark.hide();
+                $item.removeClass('selected'); // Optionally, you can add a class for styling
+                $('.tag-item[data-value="' + selectedValue + '"]').parent().remove(); // Remove the tag
+            } else {
+                // Clear previous tags and hide other checkmarks
+                $('.tag-item').parent().remove();
+                $('.o-dropdown-item_1 .checkmark').hide();
+                $('.lost_span:contains("Lost") .checkmark').hide();
+                
+                // Show checkmark for the selected item
+                $checkmark.show();
+                $item.addClass('selected'); // Optionally, you can add a class for styling
+                
+                // Create and append new tag
+                handleTagSelectionGrop(selectedValue, $item);
+            }
+
+            // Clear search input
+            $('#search-input').val('').attr('placeholder', 'Search...');
         });
 
         // Listen to changes in the select dropdown
@@ -1843,134 +1985,61 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $(this).val(''); // Reset the select after selecting an option
         });
 
-
         // Function to handle tag selection
         function handleTagSelectionGrop(selectedValue, $item = null) {
-            var $tag = $('.group_by_tag');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+            // Remove any existing tags
+            $('.tag-item').parent().remove();
 
-            if ($tagItem.length > 0) {
-                // Remove selected value
-                $tagItem.remove();
-                updateTagSeparatorsGrop();
+            // Create new tag with an icon
+            var newTagHtml = `
+            <span class="tag-item" data-value="${selectedValue}">
+                <a href="#" class="group-setting-icon icon_tag" style="cursor: default;">
+                    <span class="setting_icon" style="padding:0 !important;background-color: rgb(1 126 132) !important;"><i class="fa-solid fa-layer-group"></i></span>
+                </a> 
+                ${selectedValue}
+            </span>
+        `;
+            var $tag = $(`<span class="group_by_tag">${newTagHtml} <span class="remove_tag_group_by" style="cursor:pointer">×</span></span>`);
 
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
+            // Append the new tag
+            $('#search-input').before($tag);
+            updateTagSeparatorsGrop(); // Call to update separators
 
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-
-                let selectedTags = [];
-                $('.tag-item').each(function () {
-                    selectedTags.push($(this).data('value'));
-                });
-
-                if (selectedTags.length == 0) {
-                   location.reload();
-                }
-                filter(selectedTags);
-
-            } else {
-                // Add selected value
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-                // Check if the tag already exists
-                if ($('.tag-item[data-value="' + selectedValue + '"]').length === 0) {
-                    // If no tags exist, create a new group_by_tag span
-                    if ($('.group_by_tag').length === 0) {
-                        $('#search-input').before(
-                            '<span class="group_by_tag">' +
-                            '<a href="#" class="setting-icon lostIcon_tag">' +
-                            '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                            '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
-                            '</a>' +
-                            newTagHtml +
-                            '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
-                            '</span>'
-                        );
-                    } else {
-                        // Append to existing group_by_tag span
-                        $('.group_by_tag').append(' ' + newTagHtml);
-                    }
-                    updateTagSeparatorsGrop();
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-
-                // Collect selected tags
-                let selectedTags = [];
-                $('.tag-item').each(function () {
-                    selectedTags.push($(this).data('value'));
-                });
-                filter(selectedTags);
+            if ($item) {
+                $item.find('.checkmark').show();
             }
 
+            // Collect selected tags
+            let selectedTags = [selectedValue]; // Only one tag now
+            filter(selectedTags);
             $('#search-dropdown').hide();
         }
-
-        // The rest of your code remains unchanged
 
         // Update tag separators and remove button
         function updateTagSeparatorsGrop() {
             var $tag = $('.group_by_tag');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
+
             $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
                 if (index < $tagItems.length - 1) {
-                    html += ' > ';
+                    html += ' > '; // Add separator if more than one tag
                 }
             });
+
+            // Always add the remove button
             html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
             $tag.html(html);
-            updateRemoveTagButtonGrop();
         }
-
-        // Update/remove tag button
-        function updateRemoveTagButtonGrop() {
-            var $tag = $('.group_by_tag');
-
-            if ($tag.find('.fa-list').length === 0) {
-                $tag.prepend('<a href="#"  class="setting-icon icon_tag">' +
-                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-                    '<span  class="setting-icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
-                    '</a>'
-                );
-            }
-
-            if ($tag.find('.tag-item').length > 0) {
-                if ($('.remove_tag_group_by').length === 0) {
-                    $tag.append(' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>');
-                }
-            } else {
-                $('.remove_tag_group_by').remove();
-                $('.icon_tag').remove();
-            }
-        }
-
 
         // Remove all tags
         $(document).on('click', '.remove_tag_group_by', function () {
             $('.group_by_tag').remove();
-            $('.o-dropdown-item_1  .checkmark').hide();
             $('#search-input').val('').attr('placeholder', 'Search...');
-            $('#filter').val(''); // Clear the filter value
+            $('#filter').val('');
             location.reload();
         });
-        // $(document).on('click', '.remove-tag', function () {
-        //     $('.tag').remove();
-        //     $('.o-dropdown-item-2 .checkmark').hide();
-        //     $('#search-input').val('').attr('placeholder', 'Search...');
-        //     $('#filter').val(''); // Clear the filter value
-        // });
 
         // Hide dropdown when clicking outside
         $(document).on('click', function (e) {
@@ -1983,81 +2052,123 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         // Send selected tags to the server and process response
         function filter(selectedTags) {
             $.ajax({
-                url: '/lead-filter'
-                , type: 'POST'
-                , data: {
+                url: '/lead-filter',
+                type: 'POST',
+                data: {
                     selectedTags: JSON.stringify(selectedTags)
-                }
-                , success: function (response) {
+                },
+                success: function (response) {
                     console.log('Response:', response);
+                    // Clear existing content
+                    $('.o_kanban_renderer').empty();
+                    
+                    // Remove the 'flex-wrap' class from the lead-container
+                    $('#lead-container').removeClass('flex-wrap');
 
-                    var tableBody = $('#lead-table-body');
-                    tableBody.empty();
+                    // Assuming leads is an object where keys are group names
+                    const leadsData = response.data;
 
-                    var leads = response.data;
-
-                    function renderGroup(groupLeads, level) {
-                        $.each(groupLeads, function (groupKey, groupValue) {
-                            var groupRow = `
-                            <tr class="group-header" data-level="${level}" style="cursor:pointer;">
-                                <td colspan="20" style="padding-left:${level * 20}px;">
-                                    <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
-                                </td>
-                            </tr>
+                    // Render each lead in the kanban style
+                    $.each(leadsData, function (groupName, leads) {
+                        const groupHtml = `
+                            <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0" data-id="${groupName}">
+                                <div class="o_kanban_header lead-kanban-position-sticky top-0 z-1 py-2 pt-print-0">
+                                    <div class="o_kanban_header_title position-relative d-flex lh-lg">
+                                        <div class="o_column_title flex-grow-1 min-w-0 mw-100 gap-1 d-flex fs-4 fw-bold align-top text-900">
+                                            <span class="text-truncate">${groupName}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${leads.map(lead => `
+                                    <article class="o_kanban_record d-flex o_draggable cursor-pointer" data-id="${lead.id}" tabindex="0">
+                                        <div class="oe_kanban_details d-flex flex-column justify-content-between">
+                                            <div>
+                                                <strong class="o_kanban_record_title oe_partner_heading">
+                                                    <span>${lead.product_name || ''}</span>
+                                                </strong>
+                                                <div class="o_kanban_tags_section oe_kanban_partner_categories">
+                                                    <span class="oe_kanban_list_many2many">
+                                                        <div name="category_id" class="o_field_widget o_field_many2many_tags">
+                                                            <div class="d-flex flex-wrap gap-1"></div>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="o_kanban_record_subtitle text-black"><span>${lead.contact_name || ''}</span></span>
+                                            </div>
+                                            <div class="o_kanban_record_bottom">
+                                                <div class="oe_kanban_bottom_left">
+                                                    <div name="priority" class="o_field_widget o_field_priority">
+                                                        <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                            <a href="#" class="o_priority_star fa ${lead.priority === 'medium' || lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
+                                                            <a href="#" class="o_priority_star fa ${lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
+                                                            <a href="#" class="o_priority_star fa ${lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                                        </div>
+                                                    </div>
+                                                    <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
+                                                        <a class="o-mail-ActivityButton" role="button" aria-label="Show activities" title="Show activities">
+                                                            <i class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark" role="img"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="oe_kanban_bottom_right">
+                                                    <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
+                                                        <div class="d-flex align-items-center gap-1 user-icon" data-tooltip="">
+                                                            <li class="nav-item header-bg-btn dropdown">
+                                                                <a class="nav-link" href="#" id="notificationDropdown${lead.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <span class="kanban-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                        ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                    </span>
+                                                                </a>
+                                                                <!-- Dropdown Menu -->
+                                                                <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationDropdown${lead.id}" style="width: 300px; height: 143px;">
+                                                                    <div class="o_avatar_card">
+                                                                        <div class="card-body">
+                                                                            <div class="d-flex align-items-start gap-2">
+                                                                                <span class="o_avatar pt-1 position-relative o_card_avatar">
+                                                                                    <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                                        ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                                    </span>
+                                                                                    <span name="icon" class="o_card_avatar_im_status position-absolute d-flex align-items-center justify-content-center">
+                                                                                        <i class="fa fa-fw fa-circle text-success" title="Online" role="img" aria-label="User is online"></i>
+                                                                                    </span>
+                                                                                </span>
+                                                                                <div class="d-flex flex-column o_card_user_infos overflow-hidden">
+                                                                                    <span class="fw-bold">${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}</span>
+                                                                                    <span class="text-muted text-truncate" data-tooltip="Department" title="Administration">${lead.get_user && lead.get_user.name ? lead.get_user.name : ''}</span>
+                                                                                    <a class="text-truncate" href="mailto:${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}" title="${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}">
+                                                                                        <i class="fa fa-fw fa-envelope me-1"></i>${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="flex-wrap gap-2 mt-2">
+                                                                                <div class="justify-content-end d-flex align-items-baseline">
+                                                                                    <div class="d-flex gap-2 o_avatar_card_buttons">
+                                                                                        <button class="btn btn-secondary btn-sm">Send message</button>
+                                                                                        <button class="btn btn-secondary btn-sm">View Profile</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                `).join('')}
+                            </div>
                         `;
-                            tableBody.append(groupRow);
-
-                            if ($.isArray(groupValue)) {
-                                $.each(groupValue, function (index, lead) {
-                                 
-                                         var rowHtml = `<<tr class="lead-row" data-id="${lead.id}" data-level="${level + 1}" style="display:none;">`;
-
-                                            // Append data only for the visible columns
-                                            if (table.column(0).visible()) rowHtml += `<td>${lead.product_name || ''}</td>`;
-                                            if (table.column(1).visible()) rowHtml += `<td>${lead.email || ''}</td>`;
-                                            if (table.column(2).visible()) rowHtml += `<td>${lead.city || ''}</td>`;
-                                            if (table.column(3).visible()) rowHtml += `<td>${lead.state ? (lead.get_state?.name || lead.get_auto_state?.name || '') : ''}</td>`;
-                                            if (table.column(4).visible()) rowHtml += `<td>${lead.country ? (lead.get_country?.name || lead.get_auto_country?.name || '') : ''}</td>`;
-                                            if (table.column(5).visible()) rowHtml += `<td>${lead.zip || ''}</td>`;
-                                            if (table.column(6).visible()) rowHtml += `<td>${lead.probability || ''}</td>`;
-                                            if (table.column(7).visible()) rowHtml += `<td>${lead.company_name || ''}</td>`;
-                                            if (table.column(8).visible()) rowHtml += `<td>${lead.address1 || ''}</td>`;
-                                            if (table.column(9).visible()) rowHtml += `<td>${lead.address2 || ''}</td>`;
-                                            if (table.column(10).visible()) rowHtml += `<td><a href="${lead.website_link || '#'}" target="_blank">${lead.website_link || ''}</a></td>`;
-                                            if (table.column(11).visible()) rowHtml += `<td>${lead.contact_name || ''}</td>`;
-                                            if (table.column(12).visible()) rowHtml += `<td>${lead.job_position || ''}</td>`;
-                                            if (table.column(13).visible()) rowHtml += `<td>${lead.phone || ''}</td>`;
-                                            if (table.column(14).visible()) rowHtml += `<td>${lead.mobile || ''}</td>`;
-                                            if (table.column(15).visible()) rowHtml += `<td>${lead.priority || ''}</td>`;
-                                            if (table.column(16).visible()) rowHtml += `<td>${lead.title ? (lead.get_title?.title || '') : ''}</td>`;
-                                            if (table.column(17).visible()) rowHtml += `<td>${lead.tag || ''}</td>`;
-                                            if (table.column(18).visible()) rowHtml += `<td>${lead.get_user?.email || ''}</td>`;
-                                            if (table.column(19).visible()) rowHtml += `<td>${lead.sales_team || ''}</td>`;
-                                            if (table.column(20).visible()) rowHtml += `<td></td>`;
-
-                                            rowHtml += `</tr>`;
-                                            tableBody.append(rowHtml);
-                                });
-                            } else {
-                                renderGroup(groupValue, level + 1);
-                            }
-                        });
-                    }
-
-                    renderGroup(leads, 0);
-
-                    // Toggle visibility of nested groups
-                    $('.group-header').on('click', function () {
-                        var level = $(this).data('level');
-                        var nextRow = $(this).next();
-                        while (nextRow.length && nextRow.data('level') > level) {
-                            nextRow.toggle();
-                            nextRow = nextRow.next();
-                        }
+                        $('.o_kanban_renderer').append(groupHtml);
                     });
-                }
-                , error: function (xhr, status, error) {
+                },
+                error: function (xhr, status, error) {
                     console.error('Error applying filter:', error);
+                    // Optionally display a user-friendly message
                 }
             });
         }

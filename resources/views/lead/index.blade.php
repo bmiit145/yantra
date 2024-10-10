@@ -47,10 +47,6 @@
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<!-- jQuery (required for Bootstrap JS components) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
@@ -1873,10 +1869,10 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     if ($('.group_by_tag').length === 0) {
                         $('#search-input').before(
                             '<span class="group_by_tag">' +
-                            '<a href="#" class="setting-icon lostIcon_tag">' +
-                            '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
-                            '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
-                            '</a>' +
+                            '<a href="#"class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>' +
                             newTagHtml +
                             '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
                             '</span>'
@@ -1929,9 +1925,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var $tag = $('.group_by_tag');
 
             if ($tag.find('.fa-list').length === 0) {
-                $tag.prepend('<a href="#"  class="setting-icon icon_tag">' +
+                $tag.prepend('<a href="#" class="setting-icon icon_tag">' +
                     '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-                    '<span  class="setting-icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '<span  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                     '</a>'
                 );
             }
