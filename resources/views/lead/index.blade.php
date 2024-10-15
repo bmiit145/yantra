@@ -323,7 +323,7 @@
             </button>
             <div class="o_accordion_values ms-4 border-start">
                 <div class="px-3 py-2">
-                    <input type="text" class="o_input" id="lead_favorites" name="favorites_name" value="Leads" placeholder="Enter favorite name">
+                    <input type="text" class="o_input favorites_input" id="lead_favorites" name="favorites_name" value="Leads" placeholder="Enter favorite name">
                     <div class="o-checkbox form-check">
                         <input type="radio" name="filter_check" class="form-check-input" id="checkbox-comp-70">
                         <label class="form-check-label" for="checkbox-comp-70">
