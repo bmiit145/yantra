@@ -157,7 +157,7 @@ Route::middleware(['auth'])->group(function () {
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::post('/lead-data', [LeadController::class, 'getLeads'])->name('lead.get');
-    Route::get('/lead-add/{id?}', [LeadController::class, 'create'])->name('lead.create');
+    Route::get('/lead-add/{id?}/{index?}', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
     Route::POST('/storeLead', [LeadController::class, 'storeLead'])->name('lead.storeLead');
     Route::get('/lead-kanban', [LeadController::class, 'show'])->name('lead.kanban')->defaults('lead', 'kanban');
@@ -169,6 +169,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
     Route::post('/custom-filter', [LeadController::class, 'customFilter'])->name('lead.custom.filter');
     Route::post('/lead-send_message', [LeadController::class, 'send_message'])->name('lead.send_message');
+    Route::post('/lead-send_message_by_lead', [LeadController::class, 'send_message_by_lead'])->name('lead.send_message_by_lead');
     Route::post('/lead-deleteImage', [LeadController::class, 'deleteImage'])->name('lead.deleteImage');
     Route::post('/lead-deleteImage1', [LeadController::class, 'deleteImage1'])->name('lead.deleteImage1');
     Route::get('/lead-downloadAllImages/{id}', [LeadController::class, 'downloadAllImages'])->name('lead.downloadAllImages');
@@ -203,6 +204,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead/remove_follower', [LeadController::class, 'removeFollower'])->name('lead.remove_follower');
     Route::post('/attachments/add', [LeadController::class, 'attachmentsAdd'])->name('lead.attachmentsAdd');
     Route::delete('/attachments/delete-file', [LeadController::class, 'attachmentsDeleteFile'])->name('lead.attachmentsDeleteFile');
+    Route::post('DuplicateLead', [LeadController::class, 'DuplicateLead'])->name('lead.DuplicateLead');
+    Route::post('DeleteLead', [LeadController::class, 'DeleteLead'])->name('lead.DeleteLead');
 
 
 
