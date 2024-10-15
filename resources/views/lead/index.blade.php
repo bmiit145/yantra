@@ -7,6 +7,7 @@
 @section('calendar', route('lead.calendar', ['lead' => 'calendar']))
 @section('char_area', route('lead.graph'))
 @section('activity', route('lead.activity'))
+
 @section('navbar_menu')
 <li class="dropdown">
     <a href="#">Sales</a>
@@ -44,7 +45,17 @@
         <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
     </div>
 </li>
+@endsection
+@section('setting_menu')
 
+        <div role="separator" class="dropdown-divider"></div>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0">Mark Lost</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0">Send email</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0">Send SMS Text Message</a>
+        {{-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item" role="menuitem" tabindex="0">Enrich</span> --}}
+
+        
+@endsection
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -53,7 +64,7 @@
 <link rel="stylesheet" type="text/css"
     href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
 
-@endsection
+
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
@@ -85,16 +96,16 @@
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <?php   
                         // Get the current date
-$currentMonth = date('F '); // e.g., September 2024
-$lastMonth = date('F ', strtotime('-1 month')); // Last month
-$twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
-$threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
-                    ?>
-                <?php
-// Get the current year
-$currentYear = date('Y'); // e.g., 2024
-$lastYear = date('Y', strtotime('-1 year')); // Last year
-$twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
+                        $currentMonth = date('F '); // e.g., September 2024
+                        $lastMonth = date('F ', strtotime('-1 month')); // Last month
+                        $twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
+                        $threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
+                                            ?>
+                                        <?php
+                        // Get the current year
+                        $currentYear = date('Y'); // e.g., 2024
+                        $lastYear = date('Y', strtotime('-1 year')); // Last year
+                        $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     ?>
                 <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark"
                         style="display:none;">✔</span><?php echo $currentMonth; ?></span>
@@ -712,6 +723,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
+                    <th class="d-none">Index</th>
                     <th>Lead</th>
                     <th>Email</th>
                     <th>City</th>
@@ -802,6 +814,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             <tbody id="lead-table-body">
                 @forEach($data as $lead)
                     <tr data-id="{{$lead->id}}" style="cursor: pointer;">
+                        <td class="d-none">{{$loop->index + 1}}</td>
                         <td>{{$lead->product_name ?? ''}}</td>
                         <td>{{$lead->email ?? ''}}</td>
                         <td>{{$lead->city ?? ''}}</td>
@@ -894,10 +907,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 
 
-        $('#example tbody').on('click', 'tr', function () {
+       $('#example tbody').on('click', 'tr', function () {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+            var index = $(this).find('td.d-none').text(); // Get the index number from the hidden column
+            
             if (id) {
-                window.location.href = '/lead-add/' + id; // Adjust the URL to your edit page
+                window.location.href = '/lead-add/' + id + '/' + index; // Redirect to the lead-add page with the ID and index
             }
         });
         function filterData(selectedTags) {

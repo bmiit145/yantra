@@ -133,9 +133,12 @@ class LeadController extends Controller
         ], 200);
     }
 
-    public function create($id = null)
+    public function create($id = null , $index = null)
     {
         $allLead = generate_lead::where('is_lost', '1')->count();
+        $allLeads = generate_lead::where('is_lost', '1')->get();
+        $currentLead = generate_lead::where('is_lost', '1')->where('id', $id)->first();
+     
         $titles = PersonTitle::all();
         $countrys = Country::all();
         $tags = Tag::where('tage_type', 2)->get();
@@ -267,7 +270,8 @@ class LeadController extends Controller
         }
         $sales_teams = SaleTeam::all();
 
-        return view('lead.creat', compact('titles', 'countrys', 'sales_teams', 'tags', 'log_notes', 'data', 'authfollowers', 'followers', 'allData', 'users', 'employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources', 'send_message', 'isFollowing', 'fileCount', 'allFiles', 'allLead'));
+        $Contacts = Contact::all();
+        return view('lead.creat', compact('titles', 'index','Contacts','countrys', 'allLeads','sales_teams', 'tags', 'log_notes', 'data', 'authfollowers', 'followers', 'allData', 'users', 'employees', 'count', 'activitiesCount', 'activities', 'lost_reasons', 'activitiesDone', 'campaigns', 'mediums', 'sources', 'send_message', 'isFollowing', 'fileCount', 'allFiles', 'allLead'));
     }
 
     public function store(Request $request)
@@ -1099,9 +1103,89 @@ class LeadController extends Controller
 
     public function send_message(Request $request)
     {
+        // Get the recipient emails as an array
+        $recipientEmails = preg_split('/[\r\n,]+/', $request->to_mail); // Split by new line or comma
+
         $data = new send_message();
         $data->message = $request->send_message;
-        $data->to_mail = $request->to_mail;
+        $data->to_mail = json_encode($recipientEmails); // Store as JSON array in the database
+        $data->type_id = $request->lead_id;
+        $data->type = 'lead';
+        $data->created_by = Auth::user()->id;
+        $data->from_mail = auth()->user()->email;
+
+        $uploadedFiles = []; // Array to hold the file paths
+
+        if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+
+        $data->save();
+
+        // Prepare message data
+        $messageData = $request->send_message;
+
+        // Return JSON response immediately
+        response()->json(['message' => 'Message sent successfully'])->send();
+
+        // Defer the email sending until after the response
+        foreach ($recipientEmails as $recipientEmail) {
+            $this->send_message_by_mail($uploadedFiles, $messageData, $recipientEmail);
+        }
+
+        return null;
+    }
+
+    public function send_message_by_mail($uploadedFiles, $messageData, $recipientEmail)
+    {
+        $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
+
+        // If $messageData is a string, wrap it in an array with a key
+        if (!is_array($messageData)) {
+            $messageData = ['content' => $messageData];
+        }
+
+        // Set a default message title
+        $messageTitle = 'New Message';
+
+        // Send the email after the response has been sent
+        app()->terminating(function () use ($recipientEmail, $messageTitle, $files, $messageData) {
+            Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageTitle, $files) {
+                // Set recipient and subject
+                $message->to($recipientEmail)
+                    ->subject($messageTitle);
+
+                // Attach files if they exist
+                foreach ($files as $file) {
+                    $fullPath = storage_path('app/public/' . $file); // Construct the full path
+                    if (file_exists($fullPath)) {
+                        $message->attach($fullPath);
+                    } else {
+                        Log::error("File does not exist: " . $fullPath);
+                    }
+                }
+            });
+        });
+    }
+    public function send_message_by_lead(Request $request)
+    {
+        // Get the recipient emails as an array
+    
+ 
+        $data = new send_message();
+        $data->message = $request->send_message;
+        $data->to_mail = $request->to_mail; // Store as JSON array in the database
         $data->type_id = $request->lead_id;
         $data->type = 'lead';
         $data->created_by = Auth::user()->id;
@@ -1134,11 +1218,14 @@ class LeadController extends Controller
         response()->json(['message' => 'Message sent successfully'])->send();
 
         // Defer the email sending until after the response
-        $this->send_message_by_mail($uploadedFiles, $messageData, $recipientEmail);
+        
+            $this->send_message_by_mail_lead($uploadedFiles, $messageData, $recipientEmail);
+    
+
         return null;
     }
 
-    public function send_message_by_mail($uploadedFiles, $messageData, $recipientEmail)
+    public function send_message_by_mail_lead($uploadedFiles, $messageData, $recipientEmail)
     {
         $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
 
@@ -1568,6 +1655,24 @@ class LeadController extends Controller
 
         return response()->json(['message' => 'Favorite not found.'], 404);
     }
+
+    public function DuplicateLead(Request $request)
+    {
+        $lead_id = $request->lead_id;
+        $lead = generate_lead::find($lead_id);
+        $newLead = $lead->replicate();
+        $newLead->save();
+        return response()->json(['message' => 'Lead duplicated successfully.']);
+    }
+
+    public function DeleteLead(Request $request)
+    {
+        $lead_id = $request->lead_id;
+        $lead = generate_lead::find($lead_id);
+        $lead->delete();
+        return response()->json(['message' => 'Lead deleted successfully.']);
+    }
+    
 
 }
 
