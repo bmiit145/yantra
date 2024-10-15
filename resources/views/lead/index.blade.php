@@ -715,11 +715,16 @@
         transition: all 0.3s ease;
     }
     .favorites_input {
-        width: max-content;
+
         border: 0 !important;
         border-bottom: 1px solid #d8dadd !important;
         border-radius: 0 !important;
         padding: 0 !important;
+        margin-bottom: 5px;
+    }
+    .form-check-input {
+        width: 15px!important;
+        height: 15px !important;
     }
 </style>
 
