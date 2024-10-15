@@ -2,6 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Models\Activity;
+use App\Models\Campaign;
+use App\Models\Contact;
+use App\Models\Country;
+use App\Models\CrmStage;
+use App\Models\Favorite;
+use App\Models\PersonTitle;
+use App\Models\Source;
+use App\Models\State;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -15,15 +24,65 @@ class ActivityController extends Controller
             ->select('activities.*', 'generate_lead.product_name', 'generate_lead.probability', 'activities.activity_type') // Assuming 'type' column holds activity type
             ->get()
             ->groupBy('lead_id');
-            $users = User::all();
-            $currentUser = auth()->user();
+        $users = User::all();
+        $currentUser = auth()->user();
 
         // $dueDate = \Carbon\Carbon::parse($activities->due_date);
         // $daysDiff = \Carbon\Carbon::now()->diffInDays($dueDate, false);
         // return $daysDiff;
 
+        $getFavoritesFilter = Favorite::where('filter_type', 'lead')->get();
+        $Countrs = Country::all();
+        $tages = Tag::where('tage_type', 2)->get();
+        $users = User::all();
+        $customers = Contact::all();
+        $Sources = Source::all();
+        $CrmStages = CrmStage::all();
+        $States = State::all();
+        $PersonTitle = PersonTitle::all();
+        $Campaigns = Campaign::all();
 
-        return view('lead.viewactivity', compact('activities','users','currentUser'));
+
+        return view('lead.viewactivity', compact('activities', 'users', 'currentUser', 'getFavoritesFilter', 'Countrs', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns'));
+    }
+
+
+    public function filterActivities(Request $request)
+    {
+        $tags = $request->tags ?? [];
+
+        // Normalize tags to handle "Lost & Archived" as "Lost"
+        $normalizedTags = array_map(function ($tag) {
+            return $tag === 'Lost & Archived' ? 'Lost' : $tag;
+        }, $tags);
+
+        // Initialize filters
+        $includeMyActivities = in_array('My Activities', $normalizedTags);
+        $includeUnassigned = in_array('Unassigned', $normalizedTags);
+        $includeLost = in_array('Lost', $normalizedTags);
+
+        // Build the query
+        $query = Activity::leftJoin('generate_lead', 'activities.lead_id', '=', 'generate_lead.id')
+            ->select('activities.*', 'generate_lead.product_name', 'generate_lead.probability', 'activities.activity_type');
+
+        if ($includeLost) {
+            $query->where('is_lost', '2'); // Assuming '2' indicates "Lost"
+        }
+
+        if ($includeMyActivities || $includeUnassigned) {
+            $query->where(function ($query) use ($includeMyActivities, $includeUnassigned) {
+                if ($includeMyActivities) {
+                    $query->where('status', 0); // Directly filter by status
+                }
+                if ($includeUnassigned) {
+                    $query->orWhereNull('sales_person');
+                }
+            });
+        }
+
+        $activities = $query->get();
+
+        return response()->json($activities);
     }
 
     public function create()
@@ -32,51 +91,51 @@ class ActivityController extends Controller
     }
 
     public function allActivities(Request $request)
-{
-    try {
-        $getAssignedTo = User::orderBy('id', 'DESC')->get();
-        $data = Activity::where('status', '0');
+    {
+        try {
+            $getAssignedTo = User::orderBy('id', 'DESC')->get();
+            $data = Activity::where('status', '0');
 
-        // Check for the filter type
-        if ($request->has('filterType')) {
-            $filterType = $request->filterType;
+            // Check for the filter type
+            if ($request->has('filterType')) {
+                $filterType = $request->filterType;
 
-            switch ($filterType) {
-                case 'late':
-                    $data = $data->where('due_date', '<', now()->toDateString());
-                    break;
+                switch ($filterType) {
+                    case 'late':
+                        $data = $data->where('due_date', '<', now()->toDateString());
+                        break;
 
-                case 'today':
-                    $data = $data->whereDate('due_date', '=', now()->toDateString());
-                    break;
+                    case 'today':
+                        $data = $data->whereDate('due_date', '=', now()->toDateString());
+                        break;
 
-                case 'future':
-                    $data = $data->where('due_date', '>', now()->toDateString());
-                    break;
+                    case 'future':
+                        $data = $data->where('due_date', '>', now()->toDateString());
+                        break;
 
-                default:
-                    break;
-            }
-        } else {
-            // If no filter is applied, show all activities as before
-            $data = $data->where(function ($query) {
-                $query->whereHas('getLead', function ($query) {
-                    $query->where('is_lost', '1');
-                })
-                ->orWhereHas('getPipeline', function ($query) {
-                    $query->where('is_lost', '1');
+                    default:
+                        break;
+                }
+            } else {
+                // If no filter is applied, show all activities as before
+                $data = $data->where(function ($query) {
+                    $query->whereHas('getLead', function ($query) {
+                        $query->where('is_lost', '1');
+                    })
+                        ->orWhereHas('getPipeline', function ($query) {
+                            $query->where('is_lost', '1');
+                        });
                 });
-            });
+            }
+
+            // Get the filtered data
+            $data = $data->get();
+
+            return view('lead.activity.index', compact('getAssignedTo', 'data'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('message', 'Something Went wrong!');
         }
-
-        // Get the filtered data
-        $data = $data->get();
-
-        return view('lead.activity.index', compact('getAssignedTo', 'data'));
-    } catch (\Exception $e) {
-        return redirect()->back()->with('message', 'Something Went wrong!');
     }
-}
 
     public function AllActivitiesGetLeads(Request $request)
     {
@@ -95,9 +154,9 @@ class ActivityController extends Controller
                 $query->whereHas('getLead', function ($query) {
                     $query->where('is_lost', '1');
                 })
-                ->orWhereHas('getPipeline', function ($query) {
-                    $query->where('is_lost', '1');
-                });
+                    ->orWhereHas('getPipeline', function ($query) {
+                        $query->where('is_lost', '1');
+                    });
             });
 
         // Determine Order By Column
@@ -123,8 +182,8 @@ class ActivityController extends Controller
         $query = $query->orderBy($orderByName, $orderBy);
 
         $currentDate = date("Y-m-d");
-         // Apply filter based on filterType
-         if (isset($request->filterType)) {
+        // Apply filter based on filterType
+        if (isset($request->filterType)) {
             switch ($request->filterType) {
                 case 'today':
                     // Only includes today's activities
@@ -148,7 +207,7 @@ class ActivityController extends Controller
         $recordsFiltered = $recordsTotal; // Will be updated after applying search
 
         // Get Paginated Results
-        $activity = $query->with('getLead', 'getUser','getPipeline')->skip($skip)->take($pageLength)->get();
+        $activity = $query->with('getLead', 'getUser', 'getPipeline')->skip($skip)->take($pageLength)->get();
 
         return response()->json([
             "draw" => $request->draw,
@@ -201,7 +260,7 @@ class ActivityController extends Controller
     }
 
     public function activityFilter(Request $request)
-    {        
+    {
         // Get all tags from the request
         $tags = $request->tags ?? [];
 
@@ -266,7 +325,7 @@ class ActivityController extends Controller
         });
 
         // Always include necessary relationships
-        $leadsQuery->with('getLead','getPipeline', 'getUser');
+        $leadsQuery->with('getLead', 'getPipeline', 'getUser');
 
         // Fetch results
         $generateLeads = $leadsQuery->get();
@@ -355,7 +414,7 @@ class ActivityController extends Controller
 
     public function submitFeedback(Request $request)
     {
-        
+
         $activity = Activity::where('id', $request->activity_id)->first();
 
         if ($activity) {
@@ -402,25 +461,25 @@ class ActivityController extends Controller
 
     // Star Store functuin
     public function startStore(Request $request, $id)
-{
-    // Validate the incoming request
-    $request->validate([
-        'is_star' => 'required|boolean',
-    ]);
+    {
+        // Validate the incoming request
+        $request->validate([
+            'is_star' => 'required|boolean',
+        ]);
 
-    // Find the activity by ID
-    $activity = Activity::find($id);
+        // Find the activity by ID
+        $activity = Activity::find($id);
 
-    if (!$activity) {
-        return response()->json(['success' => false, 'message' => 'Activity not found'], 404);
+        if (!$activity) {
+            return response()->json(['success' => false, 'message' => 'Activity not found'], 404);
+        }
+
+        // Update the 'is_star' field
+        $activity->is_star = $request->input('is_star');
+        $activity->save();
+
+        // Return a success response
+        return response()->json(['success' => true]);
     }
-
-    // Update the 'is_star' field
-    $activity->is_star = $request->input('is_star');
-    $activity->save();
-
-    // Return a success response
-    return response()->json(['success' => true]);
-}
 
 }

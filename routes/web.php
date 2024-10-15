@@ -235,9 +235,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activity-kanban', [ActivityController::class, 'kanbanIndex'])->name('activity.kanban');
     Route::get('/activity-filter', [ActivityController::class, 'activityFilter'])->name('activity.filter');
     Route::post('/activity-custom-filter', [ActivityController::class, 'activityCustomFilter'])->name('activity.custom.filter');
+    Route::get('/filter-activities', [ActivityController::class, 'filterActivities'])->name('activity.filter.activities');
+
 
 
     Route::get('/graph/index', [GraphController::class, 'index'])->name('lead.graph');
+    Route::get('/lead-graph-filter', [GraphController::class, 'leadGrapgFilter'])->name('lead.leadGrapgFilter');
+    Route::get('/lead-graph-custom-filter', [GraphController::class, 'leadGrapgCustomFilter'])->name('lead.leadGrapgCustomFilter');
+    Route::get('/lead-graph-group-filter', [GraphController::class, 'leadGrapgGroupFilter'])->name('lead.leadGrapgGroupFilter');
+
 
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');

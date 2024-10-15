@@ -334,6 +334,15 @@ ul.top_right_navbar li a,.dropbtn {
 .main_header_wrapper {
     padding: 0 0 20px 0;
     border-bottom: 1px solid #ccc;
+    /* padding: 0 0 20px 0;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    top: 0;
+    height: fit-content;
+    width: 100%;
+    z-index: 99999;
+    background: #fff;
+    bottom: auto; */
 }
 
 .o_menu_toggle {
