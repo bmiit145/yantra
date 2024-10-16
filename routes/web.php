@@ -89,10 +89,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('orders' , [SalesController::class, 'index'])->name('orders.index');
     Route::get('orders/new' , [SalesController::class, 'create'])->name('orders.create');
     Route::get('products' , [SalesController::class, 'product_index'])->name('product.index');
-    Route::get('products/new' , [SalesController::class, 'product_create'])->name('product.create');
+    Route::get('products/list' , [SalesController::class, 'product_index_list'])->name('product.list');
+    Route::get('products/new/{id?}' , [SalesController::class, 'product_create'])->name('product.create');
     Route::post('products-store' , [SalesController::class, 'product_store'])->name('product.store');
     Route::get('pricelists' , [SalesController::class, 'Pricelists_index'])->name('pricelists.index');
-    Route::get('pricelists/new' , [SalesController::class, 'Pricelists_create'])->name('pricelists.create');
+    Route::post('pricelist-store' , [SalesController::class, 'pricelist_store'])->name('pricelist.store');
+    Route::post('pricelist-store-all/{id?}', [SalesController::class, 'pricelist_store_main'])->name('pricelist.store.main');
+    Route::get('pricelists/new/{id?}', [SalesController::class, 'Pricelists_create'])->name('pricelists.create');
+    Route::post('pricelist/edit/{id}', [SalesController::class, 'pricelist_edit'])->name('pricelist.edit');
+    Route::delete('/pricelist/{id}', [SalesController::class, 'pricelist_destroy'])->name('pricelist.destroy');
 
 
     Route::get('configuration/activity-types' , [ConfigurationController::class, 'index'])->name('configuration.activitytype');

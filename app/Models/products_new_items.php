@@ -14,8 +14,8 @@ class products_new_items extends Model
 
 
     protected $fillable = [
-        'product_name',
-        'product_image',
+        'name',
+        'image',
         'product_type',
         'track_inventory',
         'create on order',
@@ -37,5 +37,10 @@ class products_new_items extends Model
         'del_des',
         'income_ac',
         'expense_ac',
+        'invoicing_policy_service_id',
+        'sales_tax_id',
+        'purchase_taxes',
+        'category_id',
+        'tags_id',
     ];
 }

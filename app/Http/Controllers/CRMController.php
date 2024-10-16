@@ -48,7 +48,7 @@ class CRMController extends Controller
         return back();
     }
 
-    public function show($id)
+                public function show($id)
     {
         $stages = CrmStage::where('user_id', auth()->user()->id)->orderBy('seq_no', 'desc')->get();
         if ($id == 'new') {
