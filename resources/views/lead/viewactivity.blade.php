@@ -412,6 +412,8 @@
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+
 @endsection
 
 
@@ -531,7 +533,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             <h5 class="o_dropdown_title d-inline">Favorites</h5>
         </div>
         @foreach ($getFavoritesFilter as $favoritesFilter)    
-                                        <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+                                                        <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
                 tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}"
                 data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
                 <span class="d-flex p-0 align-items-center justify-content-between">
@@ -836,18 +838,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         @if($emailActivity->isNotEmpty())
                                                             <div class="text-center text-white"
                                                                 style="background-color:
-                                                                                                                                                                                                                                                                                            @php
-                                                                                                                                                                                                                                                                                                $todoActivity = $emailActivity->first();
-                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
-                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
-                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
-                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
-                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
-                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
-                                                                                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $todoActivity = $emailActivity->first();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
                                                                 <small>{{ $dueDate->format('d-m-y') }}</small>
                                                             </div>
 
@@ -1023,18 +1025,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         @if($callActivity->isNotEmpty())
                                                             <div class="text-center text-white"
                                                                 style="background-color:
-                                                                                                                                                                                                                                                                                            @php
-                                                                                                                                                                                                                                                                                                $todoActivity = $callActivity->first();
-                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
-                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
-                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
-                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
-                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
-                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
-                                                                                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $todoActivity = $callActivity->first();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
                                                                 <small>{{ $dueDate->format('d-m-y') }}</small>
                                                             </div>
 
@@ -1210,18 +1212,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         @if($meetingActivity->isNotEmpty())
                                                             <div class="text-center text-white"
                                                                 style="background-color:
-                                                                                                                                                                                                                                                                                            @php
-                                                                                                                                                                                                                                                                                                $todoActivity = $meetingActivity->first();
-                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
-                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
-                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
-                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
-                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
-                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
-                                                                                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $todoActivity = $meetingActivity->first();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
                                                                 <small>{{ $dueDate->format('d-m-y') }}</small>
                                                             </div>
 
@@ -1397,18 +1399,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         @if($todoActivities->isNotEmpty())
                                                             <div class="text-center text-white"
                                                                 style="background-color:
-                                                                                                                                                                                                                                                                                            @php
-                                                                                                                                                                                                                                                                                                $todoActivity = $todoActivities->first();
-                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
-                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
-                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
-                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
-                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
-                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
-                                                                                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $todoActivity = $todoActivities->first();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
                                                                 <small>{{ $dueDate->format('d-m-y') }}</small>
                                                             </div>
 
@@ -1577,18 +1579,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         @if($uploadDocumentActivity->isNotEmpty())
                                                             <div class="text-center text-white"
                                                                 style="background-color:
-                                                                                                                                                                                                                                                                                            @php
-                                                                                                                                                                                                                                                                                                $todoActivity = $uploadDocumentActivity->first();
-                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
-                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
-                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
-                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
-                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
-                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
-                                                                                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $todoActivity = $uploadDocumentActivity->first();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
                                                                 <small>{{ $dueDate->format('d-m-y') }}</small>
                                                             </div>
 
@@ -1738,18 +1740,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         @if($requestSignatureActivity->isNotEmpty())
                                                             <div class="text-center text-white"
                                                                 style="background-color:
-                                                                                                                                                                                                                                                                                            @php
-                                                                                                                                                                                                                                                                                                $todoActivity = $requestSignatureActivity->first();
-                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
-                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
-                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
-                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
-                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
-                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
-                                                                                                                                                                                                                                                                                                } else {
-                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
-                                                                                                                                                                                                                                                                                                }
-                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @php
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $todoActivity = $requestSignatureActivity->first();
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $dueDate = \Carbon\Carbon::parse($todoActivity->due_date);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                $daysDiff = $now->diffInDays($dueDate, false);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                if ($daysDiff < 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#d44c59'; // Overdue (red)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } elseif ($daysDiff == 0) {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#e99d00'; // Today (orange)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                } else {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    echo '#28a745'; // Planned (green)
+                                                                                                                                                                                                                                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                                                                                                                                                                                                                                            @endphp;cursor: pointer;">
                                                                 <small>{{ $dueDate->format('d-m-y') }}</small>
                                                             </div>
 
@@ -1978,7 +1980,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             </div>
                         </div>
                         <div class="col-md-12 mt-3 logNoteField">
-                            <textarea class="form-control" id="edit_log_note" name="log_note" rows="4"
+                            <textarea class="form-control makeMeSummernote" id="edit_log_note" name="log_note" rows="4"
                                 placeholder="Log Note"></textarea>
                         </div>
                     </div>
@@ -2118,7 +2120,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             </div>
                         </div>
                         <div class="col-md-12 mt-3 logNoteField">
-                            <textarea name="log_note" id="log_note" cols="30" rows="10"></textarea>
+                            <textarea name="log_note" class="makeMeSummernote" id="log_note" cols="30" rows="10"></textarea>
                         </div>
                     </div>
                 </div>
@@ -2137,15 +2139,19 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 @push('scripts')
     <script src="https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
 
     <script>
+
+        $(document).ready(function () {
+            $("#edit_log_note").summernote();
+        });
         $(function () {
 
             $.ajaxSetup({
@@ -2156,102 +2162,465 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
             // Function to fetch and filter data based on due_date
             function filterData(selectedTags) {
-    $.ajax({
-        url: '{{ route('activity.filter.activities') }}',
-        method: 'GET',
-        data: { tags: selectedTags },
-        success: function (response) {
-            let html = '';
+                // Show loading state
+                $('#activityTableBody').html('<tr><td colspan="6" class="text-center">Loading...</td></tr>');
 
-            response.forEach(activity => {
-                const dueDate = new Date(activity.due_date);
-                const now = new Date();
-                const daysDiff = (dueDate - now) / (1000 * 60 * 60 * 24);
-                let bgColor;
+                $.ajax({
+                    url: '{{ route('activity.filter.activities') }}',
+                    method: 'GET',
+                    data: { tags: selectedTags },
+                    success: function (response) {
+                        console.log(response); // Debug: Check the structure of the response
+                        const html = generateActivityHtml(response);
+                        $('#activityTableBody').html(html);
+                        attachClickEvent();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error: ', error);
+                        $('#activityTableBody').html('<tr><td colspan="6" class="text-center text-danger">Error loading data. Please try again.</td></tr>');
+                    }
+                });
+            }
 
-                if (daysDiff < 0) {
-                    bgColor = '#d44c59'; // Overdue (red)
-                } else if (daysDiff === 0) {
-                    bgColor = '#e99d00'; // Today (orange)
-                } else {
-                    bgColor = '#28a745'; // Planned (green)
-                }
+            function generateActivityHtml(activities) {
+                const groupedActivities = groupByLead(activities);
+                let html = '';
 
-                html += `
-                    <tr class="o_data_row h-100">
-                        <td class="o_activity_record p-2 cursor-pointer">
-                            <div>
-                                <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
-                                    <div class="d-flex align-items-center gap-1" data-tooltip="${activity.email || ''}">
-                                        <span class="o_avatar o_m2o_avatar d-flex">
-                                            ${activity.profile ? `
-                                                <img class="rounded" src="${activity.profile}" alt="User Profile">
-                                            ` : `
-                                                <div class="placeholder-circle rounded d-flex align-items-center justify-content-center" style="background-color: #f0f0f0; width:32px; height:32px; color:white">
-                                                    <span>${activity.email ? activity.email.charAt(0).toUpperCase() : ''}</span>
-                                                </div>
-                                            `}
-                                        </span>
+                Object.entries(groupedActivities).forEach(([leadId, activities]) => {
+                    const lead = activities[0]; // Assuming lead info is consistent
+                    const bgColor = getBgColor(new Date(lead.due_date));
+                    const userInitial = getUserInitial(lead.getLead?.email);
+
+                    html += `
+                        <tr class="o_data_row h-100">
+                            <td class="o_activity_record p-2 cursor-pointer">
+                                <div>
+                                    <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
+                                        <div class="d-flex align-items-center gap-1" data-tooltip="${lead.getLead?.email || 'Unknown User'}">
+                                            ${generateUserAvatar(lead.getLead?.profile, userInitial, bgColor)}
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        ${generateLeadInfo(lead)}
                                     </div>
                                 </div>
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="d-block text-truncate o_text_block o_text_bold">${activity.product_name}</div>
-                                        <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
-                                            <span>₹${activity.probability || '0.00'}</span>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="d-block text-truncate text-muted o_text_block"></div>
-                                        <div name="stage_id" class="o_field_widget o_field_badge d-inline-block">
-                                            <span class="badge rounded-pill">New</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="o_activity_summary_cell" data-id="${activity.lead_id}" data-activity_type="to-do" style="background-color: ${bgColor}; cursor: pointer;">
-                            <small>${dueDate.toLocaleDateString()}</small>
-                            <div class="o_popover popover mw-100">
-                                <div class="o-mail-ActivityListPopover d-flex flex-column">
-                                    <div class="overflow-y-auto d-flex flex-column flex-grow-1">
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Overdue</b>
-                                            </div>
-                                            <!-- Overdue Activities -->
-                                            ${activity.due_date < now ? `<div>${activity.email} - Overdue</div>` : ''}
-                                        </div>
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Today</b>
-                                            </div>
-                                            <!-- Today Activities -->
-                                            ${activity.due_date === now.toISOString().slice(0, 10) ? `<div>${activity.email} - Today</div>` : ''}
-                                        </div>
-                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                <b class="text-900 me-2 text-truncate flex-grow-1">Planned</b>
-                                            </div>
-                                            <!-- Planned Activities -->
-                                            ${activity.due_date > now ? `<div>${activity.email} - Planned</div>` : ''}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                            ${generateActivityCells(activities, lead.lead_id, bgColor)}
+                        </tr>
+                    `;
+                });
+
+                return html;
+            }
+
+            function groupByLead(activities) {
+                return activities.reduce((acc, activity) => {
+                    const leadId = activity.lead_id;
+                    acc[leadId] = acc[leadId] || [];
+                    acc[leadId].push(activity);
+                    return acc;
+                }, {});
+            }
+
+            function generateUserAvatar(profile, initial, bgColor) {
+                return profile ?
+                    `<img class="rounded" src="${profile}" alt="User Profile">` :
+                    `<div class="placeholder-circle rounded d-flex align-items-center justify-content-center" style="background-color: ${bgColor}; width:32px;height:32px;color:white">
+                        <span>${initial}</span>
+                    </div>`;
+            }
+
+            function generateLeadInfo(lead) {
+                return `
+                    <div class="d-flex justify-content-between">
+                        <div class="d-block text-truncate o_text_block o_text_bold">${lead.product_name}</div>
+                        <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
+                            <span>₹${lead.probability || '0.00'}</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="d-block text-truncate text-muted o_text_block"></div>
+                        <div name="stage_id" class="o_field_widget o_field_badge d-inline-block">
+                            <span class="badge rounded-pill">New</span>
+                        </div>
+                    </div>
                 `;
-            });
-            $('#activityTableBody').html(html);
-        },
-        error: function (xhr, status, error) {
-            console.error('AJAX Error: ', error);
-            console.error('Response Text: ', xhr.responseText);
-        }
-    });
-}
+            }
 
+            function generateActivityCells(activities, leadId, bgColor) {
+                const activityTypes = ['email', 'call', 'meeting', 'to-do', 'upload_document', 'request_signature'];
+                return activityTypes.map(type => generateActivityCell(type, activities, leadId, bgColor)).join('');
+            }
+
+            function generateActivityCell(activityType, activities, leadId, bgColor) {
+                const filteredActivities = activities.filter(activity => activity.activity_type === activityType);
+                if (filteredActivities.length === 0) return `<td></td>`; // Empty cell
+
+                const counts = countActivities(filteredActivities);
+                const activityDueDate = new Date(filteredActivities[0].due_date);
+                const cellColor = getBgColor((activityDueDate - new Date()) / (1000 * 60 * 60 * 24));
+
+                return `
+                    <td class="o_activity_summary_cell" data-id="${leadId}" data-activity_type="${activityType}">
+                        <div class="text-center text-white" style="background-color: ${cellColor}; cursor: pointer;">
+                            <small>${activityDueDate.toLocaleDateString()}</small>
+                        </div>
+                        <div class="o_popover popover d-none" style="max-width: 354px !important;">
+                            <div class="o-mail-ActivityListPopover d-flex flex-column">
+                                ${generateActivityDetails(counts, filteredActivities)}
+                            </div>
+                        </div>
+                    </td>
+                `;
+            }
+
+            function countActivities(activities) {
+                const now = new Date();
+                const todayString = now.toDateString();
+                return {
+                    overdue: activities.filter(activity => new Date(activity.due_date) < now).length,
+                    today: activities.filter(activity => new Date(activity.due_date).toDateString() === todayString).length,
+                    planned: activities.filter(activity => new Date(activity.due_date) > now).length
+                };
+            }
+
+            function generateActivityDetails(counts, activities) {
+                let details = '';
+
+                // Overdue Activities
+                details += `<div><b>Overdue (${counts.overdue})</b></div>`;
+                details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+                activities.filter(activity => new Date(activity.due_date) < new Date()).forEach(activity => {
+                    details += `
+                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                ${getUserInitial(activity.get_user.email)}
+                            </span>
+                            <div class="mt-1 flex-grow-1">
+                                &nbsp;&nbsp;<small>${activity.get_user.email} - Overdue</small>
+                            </div>
+                            ${activity.activity_type === 'upload_document' ? `
+                                <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                                    onclick="document.getElementById('upload_overdue_file_${activity.id}').click();">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+                                <input type="file" class="d-none" id="upload_overdue_file_${activity.id}" accept="*"
+                                    onchange="uploadFile('upload_overdue_file_${activity.id}', ${activity.id})">
+                            ` : `
+                                <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                                    data-target="#overdue_feedback_${activity.id}">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            `}
+                            <div class="d-flex align-items-center ml-2"> 
+                                <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1" 
+                                        onclick="cancelActivity('${activity.id}')">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="py-2 px-3 d-none" id="overdue_feedback_${activity.id}">
+                                <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                                          placeholder="Write Feedback"></textarea>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                            data-id="${activity.id}" style="background-color:#714B67;border:none;">Done</button>
+                                    <button type="button" class="btn btn-sm btn-link filter-feedback-discard" style="color:#017e84;"
+                                            data-target="#overdue_feedback_${activity.id}">Discard</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                details += `</div>`;
+
+                // Today Activities
+                details += `<div><b>Today (${counts.today})</b></div>`;
+                details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+                activities.filter(activity => new Date(activity.due_date).toDateString() === new Date().toDateString()).forEach(activity => {
+                    details += `
+                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                ${getUserInitial(activity.get_user.email)}
+                            </span>
+                            <div class="mt-1 flex-grow-1">
+                                &nbsp;&nbsp;<small>${activity.get_user.email} - Today</small>
+                            </div>
+                            ${activity.activity_type === 'upload_document' ? `
+                                <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                                    onclick="document.getElementById('upload_today_file_${activity.id}').click();">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+                                <input type="file" class="d-none" id="upload_today_file_${activity.id}" accept="*"
+                                    onchange="uploadFile('upload_today_file_${activity.id}', ${activity.id})">
+                            ` : `
+                                <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                                    data-target="#today_feedback_${activity.id}">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            `}
+                            <div class="d-flex align-items-center ml-2"> 
+                                <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1" 
+                                        onclick="cancelActivity('${activity.id}')">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="py-2 px-3 d-none" id="today_feedback_${activity.id}">
+                                <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                                          placeholder="Write Feedback"></textarea>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                            data-id="${activity.id}">Done</button>
+                                    <button type="button" class="btn btn-sm btn-link filter-feedback-discard" 
+                                           data-target="#today_feedback_${activity.id}">Discard</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                details += `</div>`;
+
+                // Planned Activities
+                details += `<div><b>Planned (${counts.planned})</b></div>`;
+                details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+                activities.filter(activity => new Date(activity.due_date) > new Date()).forEach(activity => {
+                    details += `
+                        <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                            <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                ${getUserInitial(activity.get_user.email)}
+                            </span>
+                            <div class="mt-1 flex-grow-1">
+                                &nbsp;&nbsp;<small>${activity.get_user.email} - Planned - ${activity.due_date}</small>
+                            </div>
+                            ${activity.activity_type === 'upload_document' ? `
+                                <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                                    onclick="document.getElementById('upload_planned_file_${activity.id}').click();">
+                                    <i class="fa fa-upload"></i>
+                                </button>
+                                <input type="file" class="d-none" id="upload_planned_file_${activity.id}" accept="*"
+                                    onchange="uploadFile('upload_planned_file_${activity.id}', ${activity.id})">
+                            ` : `
+                                <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                                    data-target="#planned_feedback_${activity.id}">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            `}
+                            <div class="d-flex align-items-center ml-2"> 
+                                <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1" 
+                                        onclick="cancelActivity('${activity.id}')">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="py-2 px-3 d-none" id="planned_feedback_${activity.id}">
+                                <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                                          placeholder="Write Feedback"></textarea>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                            data-id="${activity.id}">Done</button>
+                                    <button type="button" class="btn btn-sm btn-link filter-feedback-discard" 
+                                            data-target="#planned_feedback_${activity.id}">Discard</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                details += `</div>`;
+
+                return details;
+
+
+            }
+
+
+
+            function getUserInitial(email) {
+                return email ? email.charAt(0).toUpperCase() : '?';
+            }
+
+            // Function to attach click events for the summary cells
+            function attachClickEvent() {
+                $(document).on('click', '.o_activity_summary_cell', function (event) {
+                    const popover = $(this).find('.o_popover');
+                    const isVisible = !popover.hasClass('d-none');
+
+                    // Hide all popovers first
+                    $('.o_popover').addClass('d-none');
+
+                    // If the clicked popover is not visible, show it
+                    if (!isVisible) {
+                        popover.removeClass('d-none');
+                        // Position the popover
+                        const offset = $(this).offset();
+                        popover.css({
+                            top: offset.top + $(this).outerHeight(),
+                            left: offset.left
+                        });
+                    }
+                });
+
+                // Optional: Close the popover when clicking outside
+                $(document).on('click', function (event) {
+                    if (!$(event.target).closest('.o_activity_summary_cell').length) {
+                        $('.o_popover').addClass('d-none'); // Hide all popovers
+                    }
+                });
+            }
+
+            // Helper function to get background color based on due date
+            function getBgColor(daysDiff) {
+                if (daysDiff < 0) return '#d44c59'; // Overdue
+                if (daysDiff === 0) return '#e99d00'; // Today
+                return '#28a745'; // Planned
+            }
+
+            function toggleFeedback(targetDiv) {
+                $(targetDiv).toggleClass('d-none');
+            }
+
+            $(document).on('click', '.filter-mark-done', function (event) {
+                event.stopPropagation(); // Prevent click from closing the popover
+                var targetDiv = $(this).data('target');
+                toggleFeedback(targetDiv);
+            });
+
+
+            // Prevent textarea click from closing
+            $(document).on('click', '.filter-feedback-textarea', function (event) {
+                event.stopPropagation(); // Prevent click from closing the popover
+            });
+
+            // Feedback submission
+            $(document).on('click', '.feedback-submit', function () {
+                var feedbackText = $(this).closest('.py-2').find('textarea').val();
+                var activityId = $(this).data('id');
+                var countElement = $(this).closest('.o-mail-ActivityListPopoverItem').find('b'); // Locate the count element
+                var status = countElement.text().split(' ')[0]; // Get the current status (Overdue, Today, Planned)
+
+                filterSubmitFeedback(feedbackText, activityId, $(this), countElement, status);
+            });
+
+            function filterSubmitFeedback(feedbackText, activityId, button, countElement, status) {
+                $.ajax({
+                    url: '{{ route('lead.submit.feedback') }}',
+                    method: 'POST',
+                    data: {
+                        feedback: feedbackText,
+                        activity_id: activityId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        toastr.success(response.message);
+                        if (hideDiv.length) { // Check if hideDiv exists
+                            hideDiv.addClass('d-none'); // Hide the div
+                        } else {
+                            console.warn("hideDiv not found"); // Debugging line
+                        }
+
+                        // Decrease the count by 1
+                        var currentCount = parseInt(countElement.text().match(/\d+/)[0]); // Get the current count
+                        countElement.text(`${status} (${currentCount - 1})`); // Update the count with status
+                    },
+                    error: function (xhr) {
+                        console.error(xhr.responseText);
+                        toastr.error('An error occurred. Please try again.');
+                    }
+                });
+            }
+
+            // Handle discard button to hide the feedback textarea
+            $(document).on('click', '.filter-feedback-discard', function () {
+                var targetDiv = $(this).data('target');
+                $(targetDiv).addClass('d-none');
+            });
+
+
+            $(function () {
+                var currentDate = new Date();
+
+                $(".datepicker").datepicker({
+                    dateFormat: "yy-mm-dd",
+                    duration: "fast",
+                    onSelect: function (dateText, inst) {
+                        // Optional: Do something when a date is selected
+                        console.log("Selected date: " + dateText);
+                    }
+                }).datepicker("setDate", currentDate);
+            });
+
+            let editorInstance = null;
+
+            function initializeEditor(selector, callback) {
+                ClassicEditor
+                    .create(document.querySelector(selector))
+                    .then(editor => {
+                        if (callback) callback(editor);
+                    })
+                    .catch(error => {
+                        console.error('Error initializing CKEditor:', error);
+                    });
+            }
+
+            $(document).on('click', '.filter-edit-btn', function () {
+                var activityId = $(this).closest('.hideDiv').data('id');
+
+                // Fetch activity details using AJAX
+                $.ajax({
+                    url: '/feedback-activity/' + activityId, // Adjust to your backend route
+                    method: 'GET',
+                    success: function (data) {
+                        // Populate the modal fields with data received
+                        $('#edit_activity_id').val(data.id);
+                        $('#edit_activity_type').val(data.activity_type);
+                        $('#edit_due_date').val(data.due_date);
+                        $('#edit_summary').val(data.summary);
+                        $('#edit_assigned_to').val(data.assigned_to);
+
+                        $('#edit_log_note').summernote({
+                                height: 200,  // Set editor height
+                                focus: true,  // Set focus to editable area after modal shown
+                                tabsize: 2    // Set tab size
+                            });
+
+                        // Set the content of the Summernote editor with the fetched note
+                        $('#edit_log_note').summernote('code', response.activity.note);
+
+                        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                        editModal.show();
+                    },
+                    error: function (xhr) {
+                        toastr.error('Failed to fetch activity details.'); // Show error message
+                    }
+                });
+            });
+
+            // Handle form submission
+            $('#editForm').on('submit', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                var formData = $(this).serialize(); // Serialize the form data
+
+                // AJAX request to update the activity
+                $.ajax({
+                    url: '{{route('lead.feedback.activity.update')}}', // Adjust with your backend route
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        toastr.success('Activity updated successfully!'); // Show success message
+                        $('#editModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        toastr.error('An error occurred. Please try again.'); // Show error message
+                    }
+                });
+            });
 
 
             $(document).on('click', '.activities', function (e) {
@@ -2987,13 +3356,13 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
                 // Create new tag with an icon
                 var newTagHtml = `
-                            <span class="tag-item" data-value="${selectedValue}">
-                                <a href="#" class="group-setting-icon icon_tag" style="cursor: default;">
-                                    <span class="setting_icon" style="padding:0 !important;background-color: rgb(1 126 132) !important;"><i class="fa-solid fa-layer-group"></i></span>
-                                </a> 
-                                ${selectedValue}
-                            </span>
-                        `;
+                                            <span class="tag-item" data-value="${selectedValue}">
+                                                <a href="#" class="group-setting-icon icon_tag" style="cursor: default;">
+                                                    <span class="setting_icon" style="padding:0 !important;background-color: rgb(1 126 132) !important;"><i class="fa-solid fa-layer-group"></i></span>
+                                                </a> 
+                                                ${selectedValue}
+                                            </span>
+                                        `;
                 var $tag = $(`<span class="group_by_tag">${newTagHtml} <span class="remove_tag_group_by" style="cursor:pointer">×</span></span>`);
 
                 // Append the new tag
@@ -3300,20 +3669,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         console.log("Selected date: " + dateText);
                     }
                 }).datepicker("setDate", currentDate);
-            });
-
-            let editorInstance = null;
-
-            function initializeEditor(selector, callback) {
-                ClassicEditor
-                    .create(document.querySelector(selector))
-                    .then(editor => {
-                        if (callback) callback(editor);
-                    })
-                    .catch(error => {
-                        console.error('Error initializing CKEditor:', error);
-                    });
-            }
+            });            
 
             $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function () {
                 var activityId = $(this).closest('.hideDiv').data('id');
@@ -3330,18 +3686,17 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         $('#edit_summary').val(data.summary);
                         $('#edit_assigned_to').val(data.assigned_to);
 
-                        // Initialize CKEditor for log note
-                        if (editorInstance) {
-                            editorInstance.setData(data.note || '');
-                        } else {
-                            initializeEditor('#edit_log_note', editor => {
-                                editorInstance = editor;
-                                editor.setData(data.note || '');
+                        $('#edit_log_note').summernote({
+                                height: 200,  // Set editor height
+                                focus: true,  // Set focus to editable area after modal shown
+                                tabsize: 2    // Set tab size
                             });
-                        }
 
-                        // Show the modal
-                        $('#editModal').modal('show');
+                        // Set the content of the Summernote editor with the fetched note
+                        $('#edit_log_note').summernote('code', response.activity.note);
+
+                        const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                        editModal.show();
                     },
                     error: function (xhr) {
                         toastr.error('Failed to fetch activity details.'); // Show error message
@@ -3469,7 +3824,8 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         'top': offset.top + $(this).height()
                         , 'left': offset.left
                     });
-                } else {
+                }
+                else {
                     // If already visible, hide the popover on the second click
                     $popover.addClass('d-none');
                 }

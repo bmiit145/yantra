@@ -61,6 +61,10 @@ class ActivityController extends Controller
         $includeUnassigned = in_array('Unassigned', $normalizedTags);
         $includeLost = in_array('Lost', $normalizedTags);
 
+        $includeLateActivities = in_array('Late Activities', $normalizedTags);
+        $includeTodayActivities = in_array('Today Activities', $normalizedTags);
+        $includeFutureActivities = in_array('Future Activities', $normalizedTags);
+
         // Build the query
         $query = Activity::leftJoin('generate_lead', 'activities.lead_id', '=', 'generate_lead.id')
             ->select('activities.*', 'generate_lead.product_name', 'generate_lead.probability', 'activities.activity_type');
@@ -80,7 +84,42 @@ class ActivityController extends Controller
             });
         }
 
-        $activities = $query->get();
+        if ($includeLateActivities || $includeTodayActivities || $includeFutureActivities) {
+            $query->where( function ($query) use ($includeLateActivities, $includeTodayActivities, $includeFutureActivities) {
+                $conditions = [];
+
+                if ($includeLateActivities) {
+                    $conditions[] = function ($q) {
+                        $q->where('due_date', '<', date('Y-m-d'))
+                            ->where('status', 0);
+                    };
+                }
+
+                if ($includeTodayActivities) {
+                    $conditions[] = function ($q) {
+                        $q->where('due_date', '=', date('Y-m-d'))
+                            ->where('status', 0);
+                    };
+                }
+
+                if ($includeFutureActivities) {
+                    $conditions[] = function ($q) {
+                        $q->where('due_date', '>', date('Y-m-d'))
+                            ->where('status', 0);
+                    };
+                }
+
+                if (!empty($conditions)) {
+                    $query->where(function ($subQuery) use ($conditions) {
+                        foreach ($conditions as $condition) {
+                            $subQuery->orWhere($condition);
+                        }
+                    });
+                }
+            });
+        }
+
+        $activities = $query->with('getUser')->get();
 
         return response()->json($activities);
     }
@@ -414,7 +453,6 @@ class ActivityController extends Controller
 
     public function submitFeedback(Request $request)
     {
-
         $activity = Activity::where('id', $request->activity_id)->first();
 
         if ($activity) {
