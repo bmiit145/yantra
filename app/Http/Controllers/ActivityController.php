@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Activity;
 use App\Models\Campaign;
 use App\Models\Contact;
 use App\Models\Country;
 use App\Models\CrmStage;
 use App\Models\Favorite;
+use App\Models\generate_lead;
 use App\Models\PersonTitle;
 use App\Models\Source;
 use App\Models\State;
@@ -85,7 +87,7 @@ class ActivityController extends Controller
         }
 
         if ($includeLateActivities || $includeTodayActivities || $includeFutureActivities) {
-            $query->where( function ($query) use ($includeLateActivities, $includeTodayActivities, $includeFutureActivities) {
+            $query->where(function ($query) use ($includeLateActivities, $includeTodayActivities, $includeFutureActivities) {
                 $conditions = [];
 
                 if ($includeLateActivities) {
@@ -119,10 +121,163 @@ class ActivityController extends Controller
             });
         }
 
+
+        // Initially assume no filters are applied
+        foreach ($tags as $selectedDate) {
+            // Check for month names
+            if (in_array($selectedDate, [date('F'), date('F', strtotime('-1 month')), date('F', strtotime('-2 months'))])) {
+                $year = date('Y');
+                $month = date('m', strtotime($selectedDate));
+
+                $query->orWhere(function ($q) use ($year, $month) {
+                    $q->where('is_lost', '1')
+                        ->whereYear('activities.created_at', $year) // Specify the table name
+                        ->whereMonth('activities.created_at', $month); // Specify the table name
+                });
+            }
+            // Check for years
+            elseif (in_array($selectedDate, [date('Y'), date('Y', strtotime('-1 year')), date('Y', strtotime('-2 year'))])) {
+                $year = (int)$selectedDate;
+                if (generate_lead::whereYear('created_at', $year)->where('is_lost', '1')->exists()) {
+                    $query->orWhere(function ($q) use ($year) {
+                        $q->whereYear('activities.created_at', $year) // Specify the table name
+                            ->where('is_lost', '1');
+                    });
+                }
+            }
+        }
+
         $activities = $query->with('getUser')->get();
 
         return response()->json($activities);
     }
+
+    public function filterActivityCustomFilter(Request $request)
+    {
+        dd($request->all());
+        $filterType = $request->input('filterType');
+        $operatesValue = $request->input('operatesValue');
+        $filterValue = $request->input('filterValue');
+        // Create a query
+        $query = generate_lead::query();
+        // Apply filters based on filter type
+        switch ($filterType) {
+            case 'Country':
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    })
+                        ->orWhereHas('getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
+                });
+                break;
+            case 'Zip':
+                $query->where('zip', $operatesValue, $filterValue);
+                break;
+            case 'Tags':
+                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Created by':
+                $createdByName = $filterValue;
+                $user = User::where('name', $createdByName)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
+                    $q->where('name', $operatesValue, $createdByName);
+                });
+                break;
+            case 'Created on':
+                $query->whereDate('created_at', $operatesValue, $filterValue);
+                break;
+            case 'Customer':
+                $query->where('name', $operatesValue, $filterValue);
+                break;
+            case 'Email':
+                $query->where('email', $operatesValue, $filterValue);
+                break;
+            case 'ID':
+                $query->where('id', $operatesValue, $filterValue);
+                break;
+            case 'Phone':
+                $query->where('phone', $operatesValue, $filterValue);
+                break;
+            case 'Priority':
+                $query->where('priority', $operatesValue, $filterValue);
+                break;
+            case 'Probability':
+                $query->where('probability', $operatesValue, $filterValue);
+                break;
+            case 'Referred By':
+                $query->where('referred_by', $operatesValue, $filterValue);
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
+                    $q->where('email', $operatesValue, $salespersonId);
+                });
+                break;
+            case 'Source':
+                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Stage':
+                $query->where('stage', $operatesValue, $filterValue);
+                break;
+            case 'State':
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    })
+                        ->orWhereHas('getAutoState', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
+                });
+                break;
+            case 'Street':
+                $query->where('address_1', $operatesValue, $filterValue);
+                break;
+            case 'Street2':
+                $query->where('address_1', $operatesValue, $filterValue);
+                break;
+            case 'Title':
+                $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('title', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Type':
+                $query->where('type', $operatesValue, $filterValue);
+                break;
+            case 'Website':
+                $query->where('website_link', $operatesValue, $filterValue);
+                break;
+            case 'Campaign':
+                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'City':
+                $query->where('city', $operatesValue, $filterValue);
+                break;
+            default:
+                // Handle cases where the filterType does not match any case
+                break;
+        }
+        // Execute the query and get results
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
+        // Fetch results
+        $activities = $query->get();
+        // dd($customFilter);
+        // Return JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $activities
+        ], 200);
+    }
+
+
 
     public function create()
     {
@@ -213,7 +368,7 @@ class ActivityController extends Controller
             case '3':
                 $orderByName = 'due_date';
                 break;
-            // Add more cases as needed
+                // Add more cases as needed
             default:
                 $orderByName = 'activity_type';
                 break;
@@ -519,5 +674,4 @@ class ActivityController extends Controller
         // Return a success response
         return response()->json(['success' => true]);
     }
-
 }

@@ -1949,7 +1949,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                 </div>
                                 <div class="col-md-8">
                                     <input class="form-control datepicker" name="due_date" placeholder="Select Due Date"
-                                        style="width: 100%;" type="text" id="edit_due_date">
+                                        style="width: 100%;cursor: pointer;" type="text" id="edit_due_date">
                                 </div>
                             </div>
                         </div>
@@ -1985,9 +1985,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                    <button type="submit" class="btn btn-primary" style="background-color:#714B67;border:none;">Save Changes</button>
+                    <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border:none;" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
         </div>
@@ -2189,15 +2189,15 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 Object.entries(groupedActivities).forEach(([leadId, activities]) => {
                     const lead = activities[0]; // Assuming lead info is consistent
                     const bgColor = getBgColor(new Date(lead.due_date));
-                    const userInitial = getUserInitial(lead.getLead?.email);
+                    const userInitial = getUserInitial(lead.get_user?.email);
 
                     html += `
                         <tr class="o_data_row h-100">
                             <td class="o_activity_record p-2 cursor-pointer">
                                 <div>
                                     <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
-                                        <div class="d-flex align-items-center gap-1" data-tooltip="${lead.getLead?.email || 'Unknown User'}">
-                                            ${generateUserAvatar(lead.getLead?.profile, userInitial, bgColor)}
+                                        <div class="d-flex align-items-center gap-1" data-tooltip="${lead.get_user?.email || 'Unknown User'}">
+                                            ${generateUserAvatar(lead.get_user?.profile, userInitial, bgColor)}
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
@@ -2233,7 +2233,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             function generateLeadInfo(lead) {
                 return `
                     <div class="d-flex justify-content-between">
-                        <div class="d-block text-truncate o_text_block o_text_bold">${lead.product_name}</div>
+                        <div class="d-block text-truncate o_text_block o_text_bold ml-3">${lead.product_name}</div>
                         <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
                             <span>₹${lead.probability || '0.00'}</span>
                         </div>
@@ -2316,8 +2316,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1" 
-                                        onclick="cancelActivity('${activity.id}')">
+                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
@@ -2365,8 +2364,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1" 
-                                        onclick="cancelActivity('${activity.id}')">
+                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
@@ -2414,8 +2412,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1" 
-                                        onclick="cancelActivity('${activity.id}')">
+                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
                                     <i class="fa fa-times"></i>
                                 </button>
                             </div>
@@ -2554,19 +2551,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     }
                 }).datepicker("setDate", currentDate);
             });
-
-            let editorInstance = null;
-
-            function initializeEditor(selector, callback) {
-                ClassicEditor
-                    .create(document.querySelector(selector))
-                    .then(editor => {
-                        if (callback) callback(editor);
-                    })
-                    .catch(error => {
-                        console.error('Error initializing CKEditor:', error);
-                    });
-            }
+           
 
             $(document).on('click', '.filter-edit-btn', function () {
                 var activityId = $(this).closest('.hideDiv').data('id');
@@ -2590,7 +2575,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             });
 
                         // Set the content of the Summernote editor with the fetched note
-                        $('#edit_log_note').summernote('code', response.activity.note);
+                        $('#edit_log_note').summernote('code', data.note);
 
                         const editModal = new bootstrap.Modal(document.getElementById('editModal'));
                         editModal.show();
@@ -2600,27 +2585,48 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     }
                 });
             });
+            
+            $(document).on('click', '.filter-cancel-btn', function (event) {
+                event.stopPropagation(); // Prevent closing of popover
+                var activityId = $(this).closest('.hideDiv').data('id'); // Get the activity ID
+                var countElement = $(this).closest('.o-mail-ActivityListPopoverItem').find('b'); // Locate the count element
+                var status = countElement.text().split(' ')[0]; // Get the current status (Overdue, Today, Planned)
+                filterDeleteActivity(activityId, $(this), countElement, status);
+            });
 
-            // Handle form submission
-            $('#editForm').on('submit', function (event) {
-                event.preventDefault(); // Prevent default form submission
-                var formData = $(this).serialize(); // Serialize the form data
-
-                // AJAX request to update the activity
+            function filterDeleteActivity(activityId, button, countElement, status) {
                 $.ajax({
-                    url: '{{route('lead.feedback.activity.update')}}', // Adjust with your backend route
-                    method: 'POST',
-                    data: formData,
+                    url: '/feedback-activity-delete/' + activityId, // Use your delete route
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}' // Include CSRF token for security
+                    },
                     success: function (response) {
-                        toastr.success('Activity updated successfully!'); // Show success message
-                        $('#editModal').modal('hide');
-                        location.reload();
+                        toastr.success(response.message);
+                        button.closest('.hideDiv').addClass('d-none'); // Hide the activity after deletion
+
+                        // Decrease the count by 1
+                        var currentCount = parseInt(countElement.text().match(/\d+/)[0]); // Get the current count
+                        countElement.text(`${status} (${currentCount - 1})`); // Update the count with status
+
+                        // Check if all activities in Overdue, Today, and Planned are deleted
+                        var overdueCount = parseInt($('b:contains("Overdue")').text().match(/\d+/)[0]); // Count in Overdue
+                        var todayCount = parseInt($('b:contains("Today")').text().match(/\d+/)[0]); // Count in Today
+                        var plannedCount = parseInt($('b:contains("Planned")').text().match(/\d+/)[0]); // Count in Planned
+
+                        var remainingActivities = overdueCount + todayCount + plannedCount;
+
+                        // If all activities are deleted, reload the page
+                        if (remainingActivities === 0) {
+                            location.reload(); // Reload the page
+                        }
                     },
                     error: function (xhr) {
-                        toastr.error('An error occurred. Please try again.'); // Show error message
+                        console.error(xhr.responseText);
+                        toastr.error('An error occurred while deleting the activity. Please try again.');
                     }
                 });
-            });
+            }
 
 
             $(document).on('click', '.activities', function (e) {
@@ -3198,20 +3204,25 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     operatesValue: operatesValue
                 };
 
-                // Send AJAX request
-                $.ajax({
-                    url: '{{route('lead.custom.filter')}}',
-                    type: 'POST',
+                 $.ajax({
+                    url: '{{ route('filter-activity.custom.filter') }}',
+                    method: 'POST',
                     data: data,
                     success: function (response) {
-
+                        console.log(response);
                     },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
+                    error: function (error) {
+                       console.log(error);
                     }
                 });
 
+                // Send AJAX request
+               
+
+                // Hide the modal after the request
                 $('#customFilterModal').modal('hide');
+
+                
             });
 
             function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
@@ -3693,7 +3704,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             });
 
                         // Set the content of the Summernote editor with the fetched note
-                        $('#edit_log_note').summernote('code', response.activity.note);
+                        $('#edit_log_note').summernote('code', data.note);
 
                         const editModal = new bootstrap.Modal(document.getElementById('editModal'));
                         editModal.show();
@@ -3755,7 +3766,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         var plannedCount = parseInt($('b:contains("Planned")').text().match(/\d+/)[0]); // Count in Planned
 
                         var remainingActivities = overdueCount + todayCount + plannedCount;
-                        alert(remainingActivities)
 
                         // If all activities are deleted, reload the page
                         if (remainingActivities === 0) {
@@ -3837,12 +3847,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     $('.o_popover').addClass('d-none');
                 }
             });
-
-            ClassicEditor
-                .create(document.querySelector('#log_note'))
-                .catch(error => {
-                    console.error(error);
-                });
 
             $('#scheduleActivityModal').on('shown.bs.modal', function () {
                 var selectedLeadId = null;
