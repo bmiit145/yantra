@@ -12,7 +12,7 @@
 <li class="dropdown">
     <a href="#">Sales</a>
     <div class="dropdown-content">
-        <a href="#">My Pipeline</a>
+        <a href="{{url('/crm')}}">My Pipeline</a>
         <a href="#">My Activities</a>
         <a href="#">My Quotations</a>
         <a href="#">Teams</a>
@@ -49,10 +49,10 @@
 @section('setting_menu')
 
         <div role="separator" class="dropdown-divider"></div>
-        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0">Mark Lost</a>
-        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0">Send email</a>
-        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0">Send SMS Text Message</a>
-        {{-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item" role="menuitem" tabindex="0">Enrich</span> --}}
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0"><i class="fa fa-fw fa-upload me-1"></i>Export All </a>
+    
+       
 
         
 @endsection
@@ -490,17 +490,16 @@
         left: 0;
         /* Align with the button */
     }
-
     .dropdown-menu {
         display: none;
-        position: fixed;
+        position: absolute;
         background-color: #F9F9F9;
-        min-width: 623px;
+        min-width: auto;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
         top: auto;
-        right: 0;
-        left: auto;
+        right: auto;
+        left: 6%;
     }
 
     .dropdown-menu a {
@@ -602,7 +601,9 @@
     }
 
  
-
+.dropdown-menu.show {
+    display: block !important;
+}
     .remove-tag,
     span.remove-lost-tag {
         font-size: 22px;
@@ -649,7 +650,7 @@
         display: none
     }
 
-    .head_breadcrumb_info {
+    .breadcrumb  {
         display: none
     }
 
