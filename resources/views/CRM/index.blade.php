@@ -145,7 +145,7 @@
 
                 @foreach($stage->sales as $sale)
              
-                <div role="article" class="o_kanban_record sale-card d-flex o_draggable oe_kanban_card_undefined o_legacy_kanban_record" tabindex="0">
+                <div role="article" class="o_kanban_record sale-card d-flex o_draggable oe_kanban_card_undefined o_legacy_kanban_record" data-id="{{$sale->id}}" tabindex="0">
                     <div class="oe_kanban_color_0 oe_kanban_global_click oe_kanban_card d-flex flex-column">
                         <div class="oe_kanban_color w-5 " data-id="{{$sale->id}}" style="width: 3px;background: {{$sale->is_side_colour}};height: 100%;position: absolute;top: 0;left: 0;"></div>
                         @if(isset($sale) && $sale->is_lost == 2)
