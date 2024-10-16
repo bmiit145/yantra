@@ -8,6 +8,7 @@ use App\Models\purchase_taxes;
 use App\Models\product_categories;
 use App\Models\products_new_items;
 use App\Models\User;
+use App\Models\SaleTeam;
 use App\Models\Tag;
 use App\Models\invoicing_policies;
 use App\Models\optional_product;
@@ -338,4 +339,35 @@ class SalesController extends Controller
             return response()->json(['id' => $product->id]);
         }
         
+
+    public function Teams_create($id = null)
+    {
+        $data = SaleTeam::where('id', $id)->first();
+        $teams = User::where('is_confirmed', '1')->get();
+        return view('Sale.teamcreat' , compact('teams','data'));
+    }
+
+    public function teams_store(Request $request)
+    {
+        
+        $sales_type = is_array($request->sales_type) ? implode(',', $request->sales_type) : null;
+
+        $team = SaleTeam::updateOrCreate(
+            ['id' => $request->team_id],
+            [
+                'name' => $request->name,
+                'sales_type' => $sales_type, // Store the comma-separated string
+                'team_leader' => $request->team_leader,
+                'email' => $request->email,
+                'accept_emails_from' => $request->acceptm,
+                'invoicing_target'=> $request->invoiced,
+
+            ]
+        );
+
+        return response()->json($team);
+    }
+   
+
+    
 }

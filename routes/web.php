@@ -69,6 +69,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-calendar', [CRMController::class, 'calendar'])->name('crm.pipeline.calendar');
     Route::get('/pipeline-activity' , [CRMController::class, 'pipelineActivity'])->name('crm.pipeline.activity');
     Route::get('/pipeline-graph', [CRMController::class, 'pipelineGraph'])->name('crm.pipeline.graph');
+    Route::post('/setColor', [CRMController::class, 'setColor'])->name('crm.setColor');
+    Route::get('/pipelineDelete', [CRMController::class, 'pipelineDelete'])->name('crm.delete');
     
 
 
@@ -158,7 +160,7 @@ Route::middleware(['auth'])->group(function () {
     // lead
     Route::get('/lead', [LeadController::class, 'index'])->name('lead.index');
     Route::post('/lead-data', [LeadController::class, 'getLeads'])->name('lead.get');
-    Route::get('/lead-add/{id?}', [LeadController::class, 'create'])->name('lead.create');
+    Route::get('/lead-add/{id?}/{index?}', [LeadController::class, 'create'])->name('lead.create');
     Route::POST('/lead-store', [LeadController::class, 'store'])->name('lead.store');
     Route::POST('/storeLead', [LeadController::class, 'storeLead'])->name('lead.storeLead');
     Route::get('/lead-kanban', [LeadController::class, 'show'])->name('lead.kanban')->defaults('lead', 'kanban');
@@ -170,10 +172,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
     Route::post('/custom-filter', [LeadController::class, 'customFilter'])->name('lead.custom.filter');
     Route::post('/lead-send_message', [LeadController::class, 'send_message'])->name('lead.send_message');
+    Route::post('/lead-send_message_by_lead', [LeadController::class, 'send_message_by_lead'])->name('lead.send_message_by_lead');
     Route::post('/lead-deleteImage', [LeadController::class, 'deleteImage'])->name('lead.deleteImage');
+    Route::post('/lead-deleteImage1', [LeadController::class, 'deleteImage1'])->name('lead.deleteImage1');
     Route::get('/lead-downloadAllImages/{id}', [LeadController::class, 'downloadAllImages'])->name('lead.downloadAllImages');
     Route::get('/lead-delete_send_message', [LeadController::class, 'delete_send_message'])->name('lead.delete_send_message');
     Route::get('/lead-click_star', [LeadController::class, 'click_star'])->name('lead.click_star');
+    Route::post('/lead-restore_lead', [LeadController::class, 'restore_lead'])->name('lead.restore_lead');
+    Route::post('/lead-log_notes', [LeadController::class, 'log_notes'])->name('lead.log_notes');
+    Route::get('/lead-delete_send_message_notes', [LeadController::class, 'delete_send_message_notes'])->name('lead.delete_send_message_notes');
+    Route::get('/lead-click_star_notes', [LeadController::class, 'click_star_notes'])->name('lead.click_star_notes');
+    Route::get('/lead-downloadAllImagessend_message', [LeadController::class, 'downloadAllImagessend_message'])->name('lead.downloadAllImagessend_message');
+
+    // Favorites Filter Route
+    Route::post('/lead-favorites-filter',[LeadController::class,'favoritesFilter'])->name('lead.favorites.filter');
+    Route::delete('/delete-lead-favorites/{id}', [LeadController::class, 'deleteFavoritesFilter']);
 
 
 
@@ -190,6 +203,14 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/upload-file', [LeadController::class, 'uploadFile'])->name('lead.uploadFile');
     Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
     Route::post('/lead/click_follow', [LeadController::class, 'click_follow'])->name('lead.click_follow');
+    Route::post('/lead/invite-followers', [LeadController::class, 'invite_followers'])->name('lead.invite_followers');
+    Route::post('/lead/remove_follower', [LeadController::class, 'removeFollower'])->name('lead.remove_follower');
+    Route::post('/attachments/add', [LeadController::class, 'attachmentsAdd'])->name('lead.attachmentsAdd');
+    Route::delete('/attachments/delete-file', [LeadController::class, 'attachmentsDeleteFile'])->name('lead.attachmentsDeleteFile');
+    Route::post('DuplicateLead', [LeadController::class, 'DuplicateLead'])->name('lead.DuplicateLead');
+    Route::post('DeleteLead', [LeadController::class, 'DeleteLead'])->name('lead.DeleteLead');
+
+
 
     
     // Star Store Route
@@ -220,9 +241,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activity-kanban', [ActivityController::class, 'kanbanIndex'])->name('activity.kanban');
     Route::get('/activity-filter', [ActivityController::class, 'activityFilter'])->name('activity.filter');
     Route::post('/activity-custom-filter', [ActivityController::class, 'activityCustomFilter'])->name('activity.custom.filter');
+    Route::get('/filter-activities', [ActivityController::class, 'filterActivities'])->name('activity.filter.activities');
+    Route::post('/filter-activity-custom-filter', [ActivityController::class, 'filterActivityCustomFilter'])->name('filter-activity.custom.filter');
+
 
 
     Route::get('/graph/index', [GraphController::class, 'index'])->name('lead.graph');
+    Route::get('/lead-graph-filter', [GraphController::class, 'leadGrapgFilter'])->name('lead.leadGrapgFilter');
+    Route::get('/lead-graph-custom-filter', [GraphController::class, 'leadGrapgCustomFilter'])->name('lead.leadGrapgCustomFilter');
+    Route::get('/lead-graph-group-filter', [GraphController::class, 'leadGrapgGroupFilter'])->name('lead.leadGrapgGroupFilter');
+
 
     // setting
     Route::get('/settings', [SettingController::class, 'index'])->name('setting.index');

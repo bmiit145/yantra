@@ -334,6 +334,15 @@ ul.top_right_navbar li a,.dropbtn {
 .main_header_wrapper {
     padding: 0 0 20px 0;
     border-bottom: 1px solid #ccc;
+    /* padding: 0 0 20px 0;
+    border-bottom: 1px solid #ccc;
+    position: fixed;
+    top: 0;
+    height: fit-content;
+    width: 100%;
+    z-index: 99999;
+    background: #fff;
+    bottom: auto; */
 }
 
 .o_menu_toggle {
@@ -369,9 +378,9 @@ ul.navbar_menu_wapper li a {
     line-height: 1.2;
 }
 
-ul.navbar_menu_wapper li a:hover {
+/* ul.navbar_menu_wapper li a:hover {
     color: #00A5A8;
-}
+} */
 .crmcenter_header {
     padding: 0 20px;
 }
@@ -421,13 +430,7 @@ p.head_breadcrumb_title {
 .head_breadcrumb_info a svg {
     transition: all 0.5s ease;
 }
-.crm_head_centerside input {
-    width: 100%;
-    border: 1px solid #979797;
-    border-radius: 4px;
-    font-size: 16px;
-    padding: 7px 20px 7px 40px;
-}
+
 .heade_search_icon {
     display: inline-block;
     position: absolute;
@@ -566,6 +569,10 @@ img.r_card_logo {
 }
 p.stage_new_info span {
     display: inline-flex;
+}
+.o_searchview.form-control.d-print-contents.d-flex.align-items-center.py-1.border-end-0{
+    height: auto;
+    column-gap: 8px;
 }
 /*================ responsive-css ====================== */
 

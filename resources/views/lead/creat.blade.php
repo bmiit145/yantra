@@ -1,40 +1,213 @@
 @extends('layout.header')
 @section('head_new_btn_link', route('crm.show', ['crm' => 'new']))
+@section('head_new_btn_link', route('lead.create'))
+@section('lead', route('lead.index'))
+@section('kanban', route('lead.kanban', ['lead' => 'kanban']))
+@section('calendar', route('lead.calendar', ['lead' => 'calendar']))
+@section('char_area', route('lead.graph'))
+@section('activity', route('lead.activity'))
+@section('head_breadcrumb_title', isset($data) ? $data->product_name : '')
+@section('redirect_button', route('lead.index'))
+@section('redirect_name' , 'Lead')
+
 
 @section('navbar_menu')
-<li class="dropdown">
-    <a href="#">Sales</a>
-    <div class="dropdown-content">
-        <a href="{{ route('crm.index') }}">My Pipeline</a>
-        <a href="#">My Activities</a>
-        <a href="#">My Quotations</a>
-        <a href="#">Teams</a>
-        <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
-    </div>
-</li>
-<li>
-    <a href="{{ route('lead.index') }}">Leads</a>
-
-</li>
-<li class="dropdown">
-    <a href="#">Reporting</a>
-    <div class="dropdown-content">
-        <!-- Dropdown content for Reporting -->
-        <a href="{{ route('crm.forecasting') }}">Forecast</a>
-        <a href="{{ route('crm.index') }}">Pipeline</a>
+ <li class="dropdown">
+        <a href="#">Sales</a>
+        <div class="dropdown-content">
+            <a href="#">My Pipeline</a>
+            <a href="#">My Activities</a>
+            <a href="#">My Quotations</a>
+            <a href="#">Teams</a>
+            <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
+        </div>
+    </li>
+    <li>
         <a href="{{ route('lead.index') }}">Leads</a>
-        <a href="#">Activities</a>
-    </div>
-</li>
-<li class="dropdown">
-    <a href="#">Configuration</a>
-    <div class="dropdown-content">
-        <a href="#">Settings</a>
-        <a href="#">Sales Teams</a>
-    </div>
-</li>
+    </li>
+    <li class="dropdown">
+        <a href="#">Reporting</a>
+        <div class="dropdown-content">  
+            <!-- Dropdown content for Reporting -->
+            <a href="{{ route('crm.forecasting') }}">Forecast</a>
+            <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+            <a href="{{ route('lead.graph') }}">Leads</a>
+            <a href="{{route('crm.pipeline.graph')}}">Activities</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="#">Configuration</a>
+        <div class="dropdown-content">
+              <a href="#"><b>Sales Teams</b></a>
+            <a href="#"><b>Activities</b></a>
+            <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
+            <a href="#" style="margin-left: 15px;">Activity Plans</a>
+            <a href="{{route('configuration.recurring_index')}}"><b>Recurring Plans</b></a>
+            <a href="#"><b>Pipeline</b></a>
+            <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
+            <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
+        </div>
+    </li>
 @endsection
 
+@section('setting_menu')
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item archive_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 oi oi-archive"></i>Archive</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item duplicate_lead" data-id="{{isset($data) ? $data->id : ''}}" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-clone"></i>Duplicate</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item delete_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-trash-o"></i>Delete</a>
+        {{-- <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-cogs"></i>Add Properties</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_sign_request focus" role="menuitem" tabindex="0"><i class="fa fa-file-text fa-fw"></i> Request Signature </a> --}}
+        <div role="separator" class="dropdown-divider"></div>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0">Mark Lost</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0">Send email</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0">Send SMS Text Message</a>
+        {{-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item" role="menuitem" tabindex="0">Enrich</span> --}}
+
+        
+@endsection
+{{-- ---------------------  Archive confirmation -------------------------------------- --}}
+<div class="modal fade" id="ArchiveconfirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Are you sure that you want to archive this record?
+            </div>
+            <div class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100">
+                <button type="button" class="btn btn-primary" data-id="{{isset($data) ? $data->id : ''}}"
+                    id="archiveconfirmDelete">Archive</button>
+                <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{-- ---------------------  delete confirmation -------------------------------------- --}}
+<div class="modal fade" id="deleteconfirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Bye-bye, record!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                        <p class="text-prewrap">Ready to make your record disappear into thin air? Are you sure?<br>It will be gone forever!<br><br>Think twice before you click that 'Delete' button!</p>
+            </div>
+            <div class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100">
+                <button type="button" class="btn btn-primary" data-id="{{isset($data) ? $data->id : ''}}"
+                    id="deleteconfirmDelete">Delete</button>
+                <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">No, keep it</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+     <!-- Modal -->
+<div class="modal fade" id="marklostModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
+                        <div class="resonse_select_hide">
+                            <select class="o_input" id="lost_reasons_lead" style="width: 100%;">
+                                <option value=""></option>
+                                @foreach ($lost_reasons as $reason)
+                                <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
+                                    {{ $reason->name }}</option>
+                                @endforeach
+                             
+                            </select>
+                        </div>
+                        
+            
+                <br>
+                <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
+                <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control makeMeSummernote"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary mark_as_lost_lead" >Mark as Lost</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+     <!-- send mail Modal -->
+<div class="modal fade" id="sendmailleadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Send email</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Recipients</span>
+            <div class="">
+                <select class="o_input" id="contact_id" style="width: 100%;">
+                    <option value=""></option>
+                    @foreach ($Contacts as $contact)
+                    <option value="{{ $contact->email }}">{{ $contact->name }} ({{$contact->email}})</option>
+                    @endforeach
+                    
+                </select>
+            </div>
+            <br>
+            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Subject</span>
+            <div class="resonse_select_hide">
+                <input type="text" id="subject" value="{{ isset($data) ? $data->product_name : '' }}" class="o_input" style="width: 100%;" >
+            </div>
+            <br>
+            <textarea name="" id="lead_mail_message" cols="30" rows="10" class="form-control makeMeSummernote" placeholder="Write your Message here.."></textarea>
+            <br>
+            <div id="attachment_view">
+            </div>
+            <div class="oe_add">
+                <span class="o_file_input" aria-atomic="true">
+                    <span class="o_file_input_trigger">
+                        <button class="btn btn-secondary o_attach" id="attachButton" data-tooltip="Attach" title=""><span class="fa fa-paperclip" aria-label="Attach"></span> Attachments</button>
+                    </span>
+                    <input type="file" name="ufile" class="o_input_file d-none" id="attachment" multiple="" accept="*">
+                </span>
+            </div>
+        </div>
+        <div class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100">
+            <button type="button" class="btn btn-primary send_mail_by_lead" >Send</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+@section('menu_bar')
+<div class="o_control_panel_navigation flex-wrap flex-md-nowrap justify-content-end gap-1 gap-xl-3 order-1 order-lg-2 flex-grow-1">
+    <div class="o_cp_pager text-nowrap" role="search">
+        <nav class="o_pager d-flex gap-2 " aria-label="Pager" style="margin-top: -27px;float: right">
+            <span class="o_pager_counter align-self-center">
+                <span class="o_pager_value d-inline-block border-bottom border-transparent mb-n1">{{$index}}</span>
+                <span>/</span>
+                <span class="o_pager_limit">{{$allLead}}</span>
+            </span>
+             <span class="btn-group d-print-none" aria-atomic="true">
+                <button type="button" class="btn btn-secondary o_pager_previous px-2 rounded-start" aria-label="Previous" data-tooltip="Previous" tabindex="-1" data-hotkey="p" title="">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" class="btn btn-secondary o_pager_next px-2 rounded-end" aria-label="Next" data-tooltip="Next" tabindex="-1" data-hotkey="n" title="">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </span>
+        </nav>
+    </div>
+</div>
+@endsection
 
 @section('head')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -53,6 +226,9 @@
 
 
 <style>
+    .crm_head_centerside{
+        display: none;
+    }
     .buyerlead h3 {
         font-size: 30px;
         margin: 0 0 30px;
@@ -236,11 +412,40 @@
         display: flex;
     }
     .o-mail-AttachmentImage {
-        width: 33.33%;
-        padding: 0 15px;
+        width: 20%;
+        padding: 0 10px;
     }
     .o-mail-AttachmentList {
-        max-width: 60%;
+        max-width: 90%;
+    }
+    .document-container.d-flex.flex-wrap.mb-2 {
+        gap:13px;
+        grid-template-columns: repeat(var(--columns, 13), 1fr);
+    }
+    .delete_document{
+        width: 30%;
+    }
+    .image-container{
+        gap:5px;
+    }
+    .location{
+        display: none;
+    }
+    .send_message_image{
+        width: 35%;
+    height: 35%;
+    }
+    .o_input::placeholder{
+        font-weight: 200;
+    }
+    .dropdown-item {
+        padding: 8px 20px !important;
+        font-size: 16px;
+        line-height: 1.2;
+    }
+    .dropdown-menu.show {
+        display: block;
+        padding: 0;
     }
 </style>
 <style>
@@ -303,6 +508,52 @@
     #search-input{
         display: none;
     }
+    .o_form_view .o_form_renderer {
+        max-width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+    .o_form_sheet_bg {
+       width: 70%;
+        max-width: 70%;
+    }
+    .o-mail-ChatterContainer.o-mail-Form-chatter.o-aside.w-print-100 {
+        width: 30%;
+        max-width: 30%;
+    }
+    .selected-star {
+        color: #f3cc00; /* Gold color for the selected star */
+    }
+    .o_field_widget {
+        width: 100%;
+    }
+    
+    .send-message-image{
+        height: auto !important;
+        width: 175px !important;
+        max-height: 300px !important;
+    }
+
+    .image-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Adjust the spacing as needed */
+    }
+
+    .image-item {
+        flex: 1 0 calc(20% - 10px); /* 5 images per row with spacing */
+        position: relative;
+    }
+
+    .image-overlay {
+        transition: opacity 0.3s;
+    }
+
+    .image-item:hover .image-overlay {
+        opacity: 1; /* Show overlay on hover */
+    }
+    .crm_head_rightside{
+        display: none;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -328,56 +579,196 @@
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
                             <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1">
-                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" class="btn btn-primary " name="511" type="action"><span>Convert to
+                            @if(isset($data) && $data->is_lost == 1)
+                                <button invisible="type == 'opportunity' or not active" data-hotkey="v" data-id="{{isset($data) ? $data->id : ''}}" class="btn btn-primary convert_to_opportunity" name="511" type="action"><span>Convert to
                                         Opportunity</span></button>
+                                        
                                         <button data-hotkey="l" data-id="{{isset($data) ? $data->id : ''}}" invisible="type == 'opportunity' or probability == 0 and not active" class="btn btn-secondary lead_lost_btn" name="510" type="action" data-tooltip="Mark as lost" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Lost</span></button>
-                                        @if($count > 1)
+                                        <!-- @if($allData > 1)
                                             <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
                                                 <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
                                                     <span>Similar Leads</span><br>
-                                                    <span>{{ $count ?? '' }}</span>
+                                                    <span>{{ $allData ?? '' }}</span>
                                                 </button>
                                             </a>
+                                        @endif -->
+                                        @endif
+                                        @if(isset($data) && $data->is_lost == 2)
+                                        <button data-hotkey="x"  invisible="probability > 0 or active" class="btn btn-secondary restore_lead" data-id="{{isset($data) ? $data->id : ''}}" name="toggle_active" type="object"><span>Restore</span></button>
                                         @endif
                                             <!-- Modal -->
                                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-md">
-                                            <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <div class="modal-dialog modal-dialog-centered modal-md">
+                                                <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">Mark Lost</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
+                                                                <div class="resonse_select_hide">
+                                                                    <select class="o_input" id="lost_reasons" style="width: 100%;">
+                                                                        <option value=""></option>
+                                                                        @foreach ($lost_reasons as $reason)
+                                                                        <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
+                                                                            {{ $reason->name }}</option>
+                                                                        @endforeach
+                                                                        <option value="add_new_reson">Start typing...
+                                                                        </option>
+                                                                    </select>
+                                                                </div>
+                                                                <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
+                                                    
+                                                        <br>
+                                                        <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
+                                                        <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control makeMeSummernote"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                </div>
+                                                </div>
                                             </div>
-                                            <div class="modal-body">
-                                                <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost Reason</span>
-                                                            <div class="resonse_select_hide">
-                                                                <select class="o-autocomplete--input o_input" id="lost_reasons" style="width: 100%;">
-                                                                    <option value=""></option>
-                                                                    @foreach ($lost_reasons as $reason)
-                                                                    <option value="{{ $reason->id }}" @if (isset($data->lost_reason) && $reason->id == $data->lost_reason) selected @endif>
-                                                                        {{ $reason->name }}</option>
-                                                                    @endforeach
-                                                                    <option value="add_new_reson">Start typing...
-                                                                    </option>
-                                                                </select>
+                                        </div>
+
+                                            
+                                                {{-- ---- convertopportunityModal ------- --}}
+                                        <div class="modal fade" id="convertopportunityModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-md">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="staticBackdropLabel">Convert to opportunity</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="o_inner_group grid">
+                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                    <label class="o_form_label" for="name_0">Conversion Action</label>
+                                                                </div>
+                                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                    <div name="name" class="o_field_widget o_field_radio">
+                                                                        <div role="radiogroup" class="o_vertical" aria-label="Conversion Action">
+                                                                            <div class="form-check o_radio_item" aria-atomic="true">
+                                                                                <input type="radio" class="form-check-input o_radio_input" name="radio_field_4" data-value="convert" data-index="0" id="radio_field_4_convert">
+                                                                                    <label class="form-check-label o_form_label" for="radio_field_4_convert">Convert to opportunity</label>
+                                                                            </div>
+                                                                            <div class="form-check o_radio_item" aria-atomic="true">
+                                                                                <input type="radio" class="form-check-input o_radio_input" name="radio_field_4" data-value="merge" data-index="1" id="radio_field_4_merge">
+                                                                                <label class="form-check-label o_form_label" for="radio_field_4_merge">Merge with existing opportunities</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <input type="text" id="new_lost_input" class="o_input mt-2" style="display: none; " placeholder="Enter new reason">
-                                                
-                                                    <br>
-                                                    <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Closing Note</span>
-                                                    <textarea name="" id="closing_notes" cols="30" rows="10" class="form-control"></textarea>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-primary mark_as_lost" >Mark as Lost</button>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            </div>
+                                                        </div>
+                                                        <div class="o_inner_group grid">
+                                                            <div class="g-col-sm-2">
+                                                                <div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Assign this opportunity to</div>
+                                                            </div>
+                                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                    <label class="o_form_label" for="user_id_0">Salesperson</label>
+                                                                </div>
+                                                                <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                    <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
+                                                                        <div class="d-flex align-items-center gap-1" data-tooltip="info@yantradesign.co.in">
+                                                                            {{-- <span class="o_avatar o_m2o_avatar"><img class="rounded" src="/web/image/res.users/2/avatar_128"></span> --}}
+                                                                            <div class="o_field_many2one_selection"><div class="o_input_dropdown">
+                                                                                <div class="o-autocomplete dropdown">
+                                                                                    <select type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="user_id_0" placeholder="" aria-expanded="false">
+                                                                                        @foreach($users as $user)
+                                                                                            <option value="{{$user->id}}">{{$user->name}}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                              
+                                                                            </div>
+                                                                            <button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
+                                                                        </div>
+                                                                        <div class="o_field_many2one_extra"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label" for="team_id_0">Sales Team</label>
+                                                            </div>
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                <div name="team_id" class="o_field_widget o_field_many2one">
+                                                                    <div class="o_field_many2one_selection">
+                                                                        <div class="o_input_dropdown">
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="team_id_0" placeholder="" aria-expanded="false">
+                                                                                   
+                                                                                    @foreach($sales_teams as $team)
+                                                                                        <option value="{{$team->id}}">{{$team->name}}</option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                       
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="o_field_many2one_extra"></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        </div>
+                                                        <div class="o_group row align-items-start">
+                                                            <div class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">Customer</div>
+                                                            <div name="action" class="o_field_widget o_field_radio">
+                                                                <div role="radiogroup" class="o_vertical" aria-label="Related Customer">
+                                                                    <div class="form-check o_radio_item" aria-atomic="true">
+                                                                        <input type="radio" class="form-check-input o_radio_input" name="radio_field_5" data-value="create" data-index="0" id="radio_field_5_create">
+                                                                        <label class="form-check-label o_form_label" for="radio_field_5_create">Create a new customer</label>
+                                                                    </div>
+                                                                    <div class="form-check o_radio_item" aria-atomic="true">
+                                                                        <input type="radio" class="form-check-input o_radio_input" name="radio_field_5" data-value="exist" data-index="1" id="radio_field_5_exist">
+                                                                        <label class="form-check-label o_form_label" for="radio_field_5_exist">Link to an existing customer</label>
+                                                                    </div>
+                                                                    <div class="form-check o_radio_item" aria-atomic="true">
+                                                                        <input type="radio" class="form-check-input o_radio_input" name="radio_field_5" data-value="nothing" data-index="2" id="radio_field_5_nothing">
+                                                                        <label class="form-check-label o_form_label" for="radio_field_5_nothing">Do not link to a customer</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="o_inner_group grid">
+                                                                <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                                    <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                        <label class="o_form_label" for="partner_id_0">Customer</label>
+                                                                    </div>
+                                                                    <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                        <div name="partner_id" class="o_field_widget o_required_modifier o_field_res_partner_many2one">
+                                                                            <div class="o_field_many2one_selection">
+                                                                                <div class="o_input_dropdown">
+                                                                                    <div class="o-autocomplete dropdown">
+                                                                                        <input type="text" class="o-autocomplete--input o_input" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="partner_id_0" placeholder="" aria-expanded="false">
+                                                                                    </div>
+                                                                                    <!-- <span class="o_dropdown_button"></span> -->
+                                                                                </div>
+                                                                                    <button type="button" class="btn btn-link text-action oi o_external_button oi-launch" tabindex="-1" draggable="false" aria-label="Internal link" data-tooltip="Internal link"></button>
+                                                                            </div>
+                                                                            <div class="o_field_many2one_extra"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-primary">Create Opportunity</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        </div>
+                                        
                                         
                             </div>                            
                         </div>
                         <input type="hidden" name="lead_id" id="lead_id" value="{{ isset($data) ? $data->id : '' }}">
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                         @if(isset($data) && $data->is_lost == 2)
                             <div class="o_widget o_widget_web_ribbon">
                                 <div class="ribbon ribbon-top-right">
@@ -388,15 +779,18 @@
                   
                             <div class="oe_title">
                                 <h1>
-                                    <div name="name" class="o_field_widget">
-                                        <div style="height: 45px;">
-                                            <textarea class="o_input" 
-                                            id="name_0" style="width: 1000px" 
-                                            value="{{ isset($data) ? $data->product_name : '' }}" 
-                                            placeholder="e.g. Product Pricing" rows="1" spellcheck="false" 
-                                            style="height: 45px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;">
-                                            {{ isset($data) ? $data->product_name : '' }}</textarea>
+                                    <!-- <div name="name" class="o_field_widget text-break">
+                                        <div style="height: 45px;"> 
+                                            <textarea class="o_input o_field_translate" id="name_0"
+                                                                      placeholder="e.g. Cheese Burger" rows="1"
+                                                                      style="height: 85px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;"
+                                                                      spellcheck="true">{{ isset($data) ? $data->product_name : '' }}</textarea>
                                         </div>
+                                    </div> -->
+                                    <div name="name" class="o_field_widget o_required_modifier text-break">
+                                        <div style="height: 30px;"><textarea class="o_input" id="name_0" placeholder="e.g. Product Pricing" rows="1"
+                                                spellcheck="true"
+                                                style="height: 60px; border-top-width: 0px; border-bottom-width: 1px; padding: 1px 0px;overflow: hidden;">{{ isset($data) ? $data->product_name : '' }}</textarea></div>
                                     </div>
                                 </h1>
                                 <h2 class="row g-0 pb-3 pb-sm-4">
@@ -437,21 +831,24 @@
                                                 <div name="street" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street_0" type="text" autocomplete="off" value="{{ $address }}" placeholder="Street..."></div>
                                                 <div name="street2" class="o_field_widget o_field_char o_address_street"><input class="o_input" id="street2_0" value="{{ isset($data) ? $data->address_2 : '' }}" type="text" autocomplete="off" placeholder="Street 2...">
                                                 </div>
-                                                <div name="city" class="o_field_widget o_field_char o_address_city"><input class="o_input" id="city_0" type="text" value="{{ isset($data) ? $data->city : '' }}" autocomplete="off" placeholder="City"></div>
-                                                <div name="zip" class="o_field_widget o_field_char o_address_zip">
-
-                                                    <input class="o_input" value="{{ $zip }}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
-                                                </div>
-                                                <div name="state_id" class="o_field_widget o_field_many2one o_address_state">
-                                                    <div class="o_field_many2one_selection">
-                                                        <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown">
-                                                                <select class="o-autocomplete--input o_input" id="state_id_0" style="width: 150px;">
-                                                                </select>
+                                                <div style="display: flex; gap: 10px">
+                                                    <div name="city" class="o_field_widget o_field_char o_address_city">
+                                                        <input class="o_input" id="city_0" type="text" value="{{ isset($data) ? $data->city : '' }}" autocomplete="off" placeholder="City">
+                                                    </div>
+                                                    <div name="zip" class="o_field_widget o_field_char o_address_zip">
+                                                        <input class="o_input" value="{{ isset($data) ? $data->zip : '' }}" id="zip_0" type="text" autocomplete="off" placeholder="ZIP">
+                                                    </div>
+                                                    <div name="state_id" class="o_field_widget o_field_many2one o_address_state">
+                                                        <div class="o_field_many2one_selection">
+                                                            <div class="o_input_dropdown">
+                                                                <div class="o-autocomplete dropdown">
+                                                                    <select class="o-autocomplete--input o_input" id="state_id_0" style="width: 150px;">
+                                                                    </select>
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        <div class="o_field_many2one_extra"></div>
                                                     </div>
-                                                    <div class="o_field_many2one_extra"></div>
                                                 </div>
                                                 <div name="country" class="o_field_widget o_field_many2one">
                                                     <div class="o_field_many2one_selection">
@@ -586,9 +983,10 @@
                                                 <div name="user_id"
                                                     class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
                                                     <div class="d-flex align-items-center gap-1"
-                                                        data-tooltip="info@yantradesign.co.in"><span
+                                                        data-tooltip="info@yantradesign.co.in">
+                                                        <!-- <span
                                                             class="o_avatar o_m2o_avatar"><img class="rounded"
-                                                                src="/web/image/res.users/2/avatar_128"></span>
+                                                                src="/web/image/res.users/2/avatar_128"></span> -->
                                                         <div class="o_field_many2one_selection">
                                                             <div class="o_input_dropdown">
                                                                 <div class="o-autocomplete dropdown">
@@ -602,12 +1000,7 @@
                                                                             @endforeach
                                                                         </select>
                                                                     </div>
-                                                                <span class="o_dropdown_button"></span>
-                                                            </div><button type="button"
-                                                                class="btn btn-link text-action oi o_external_button oi-arrow-right"
-                                                                tabindex="-1" draggable="false"
-                                                                aria-label="Internal link"
-                                                                data-tooltip="Internal link"></button>
+                                                            </div>
                                                         </div>
                                                         <div class="o_field_many2one_extra"></div>
                                                     </div>
@@ -629,7 +1022,8 @@
                                                                     autocomplete="off" role="combobox" value="Sales" readonly
                                                                     aria-autocomplete="list" aria-haspopup="listbox"
                                                                     id="team_id_0" placeholder="" aria-expanded="false">
-                                                            </div><span class="o_dropdown_button"></span>
+                                                            </div>
+                                                            <!-- <span class="o_dropdown_button"></span> -->
                                                         </div>
                                                     </div>
                                                     <div class="o_field_many2one_extra"></div>
@@ -735,7 +1129,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <div class="campaign_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="campaign_id_0" style="width: 150px;">
-                                                                                <option value="">Selecte Campaign</option>
+                                                                                <option value=""></option>
                                                                                 
                                                                                 @foreach ($campaigns as $campaign)
                                                                                     <option value="{{ $campaign->id }}" @if (isset($data->campaign_id) && $campaign->id == $data->campaign_id) selected @endif>
@@ -764,7 +1158,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <div class="medium_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="medium_id_0" style="width: 150px;">
-                                                                                <option value="">Selecte Medium</option>
+                                                                                <option value=""> </option>
                                                                                 @foreach ($mediums as $medium)
                                                                                     <option value="{{ $medium->id }}" @if (isset($data->medium_id) && $medium->id == $data->medium_id) selected @endif>
                                                                                         {{ $medium->name }}
@@ -792,7 +1186,7 @@
                                                                     <div class="o-autocomplete dropdown">
                                                                         <div class="source_select_hide">
                                                                             <select class="o-autocomplete--input o_input" id="source_id_0" style="width: 150px;">
-                                                                                <option value="">Selecte Source</option>
+                                                                                <option value=""> </option>
                                                                                 @foreach ($sources as $source)
                                                                                     <option value="{{ $source->id }}" @if (isset($data->source_id) && $source->id == $data->source_id) selected @endif>
                                                                                         {{ $source->name }}
@@ -866,15 +1260,48 @@
                         <div class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto o-chatter-disabled">
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
-                                    <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button><button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m"> Log note </button>
-                                    <div class="flex-grow-1 d-flex"><button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button><span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i></button><span style="display:contents"><button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files"><i class="fa fa-paperclip fa-lg me-1"></i></button></span><input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
-                                        <div class="o-mail-Followers d-flex me-1">
-                                            <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
-                                                <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button>
+                                    @else
+                                        <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m" disabled> Send message </button>
+                                    @endif
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2 click_add_notes" data-hotkey="shift+m"> Log note </button>
+                                    @else
+                                        <button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m" disabled> Log note </button>
+                                    @endif                                    
+                                    <div class="flex-grow-1 d-flex">
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button>
+                                    @else
+                                        <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal" disabled><span>Activities</span></button>
+                                    @endif                                        
+                                        <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span>
+                                        <!-- <button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i>  -->
+                                        @if(isset($data) && $data->id != null)
+                                            <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
+                                                <i class="fa fa-paperclip fa-lg me-1"></i>
+                                                <sup id="fileCount">{{$fileCount ?? ''}}</sup>
                                             </button>
+                                        @else
+                                            <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn" disabled>
+                                                <i class="fa fa-paperclip fa-lg me-1"></i>
+                                                <sup id="fileCount">{{$fileCount ?? ''}}</sup>
+                                            </button>
+                                        @endif
+                                        <div class="o-mail-Followers d-flex me-1">
+                                            @if(isset($data) && $data->id != null)
+                                                <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
+                                                    <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                                </button>
+                                            @else
+                                                <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false" disabled>
+                                                    <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                                </button>
+                                            @endif                                              
 
                                             <!-- Dropdown Menu -->
-                                            <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1537.12px;width: 300px;">
+                                            <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1715.12px;width: 300px;">
                                                 <a class="o-dropdown-item dropdown-item o-navigable focus add_followers" role="menuitem" tabindex="0" href="#">Add Followers</a>
                                                 <div role="separator" class="dropdown-divider"></div>
                                                 @foreach($authfollowers as $auth)
@@ -883,10 +1310,7 @@
                                                         <img class="o-mail-Follower-avatar me-2 rounded" alt="" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
                                                         <span class="flex-shrink text-truncate">{{$auth->customer->email}}</span>
                                                     </a>
-                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
-                                                        <i class="fa fa-pencil"></i>
-                                                    </button>
-                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Remove this follower" aria-label="Remove this follower">
+                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0 remove-follower" title="Remove this follower" aria-label="Remove this follower" data-follower-id="{{ $auth->id }}">
                                                         <i class="fa fa-remove"></i>
                                                     </button>
                                                 </div>
@@ -896,9 +1320,9 @@
                                                     <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
                                                         <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
                                                             <!-- Display the profile image if it exists -->
-                                                            @if(isset($follower1->customer->profile_image))
+                                                            @if(isset($follower1->customer->image))
                                                                 <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
-                                                                    src="{{ asset('uploads/' . $follower1->customer->profile_image) }}">
+                                                                    src="{{ asset('uploads/' . $follower1->customer->image) }}">
                                                             @else
                                                                 <!-- Default image if no profile image is available -->
                                                                 <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
@@ -907,71 +1331,73 @@
 
                                                             <!-- Display the name of the customer -->
                                                             <span class="flex-shrink text-truncate">
-                                                                {{ $follower1->customer->email ?? $follower1->customer->work_email}}
+                                                                {{ $follower1->customer->email ?? $follower1->customer->email ?? ''}}
                                                             </span>
                                                         </a>
 
-                                                        <!-- Edit and Remove buttons -->
-                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Edit subscription" aria-label="Edit subscription">
-                                                            <i class="fa fa-pencil"></i>
-                                                        </button>
-                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0" title="Remove this follower" aria-label="Remove this follower">
+                                                        <!-- Remove buttons -->
+                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0 remove-follower" title="Remove this follower" aria-label="Remove this follower" data-follower-id="{{ $follower1->id }}">
                                                             <i class="fa fa-remove"></i>
                                                         </button>
                                                     </div>
                                                     <div role="separator" class="dropdown-divider"></div>
                                                 @endforeach
                                             </div>
-                                            {{-- -------- add followers modal ---------------- --}}
-                                           <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="activitiesAddModalLable" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                    <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="activitiesAddModalLable">Invite Follower</h5> 
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <form id="inviteForm" action="{{route('lead.click_follow')}}" method="POST" enctype="application/x-www-form-urlencoded">
-                                                        @csrf
-                                                        <input type="hidden" value="{{$data->id ?? ''}}" name="id">
-                                                        <div class="modal-body">
-                                                         
-                                                            <div class="d-flex">
-                                                                <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
-                                                                <select class="form-control" name="user_id">
-                                                                    <option></option>
-                                                                    @foreach($employees as  $employee)
-                                                                         <option value="employee/{{$employee->id}}">  {{ $employee->name }} ({{ $employee->work_email }})</option>
-                                                                    @endforeach
-                                                                    @foreach($users as $user) 
-                                                                    <option value="users/{{$user->id}}">{{$user->name}}({{$user->email}})</option>
-                                                                    @endforeach
-                                                                 <select> 
-                                                            </div>
-                                                            <div class="d-flex my-2">
-                                                                <label for="recipient-name" class="col-form-label mx-3">  Send Notification: </label>
-                                                                <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked> 
-                                                            </div>
-                                                          
-                                                            <div class="d-flex my-2 hiden_div">
-                                                                <label for="recipient-name" class="col-form-label mx-3"> Message </label>
-                                                                <textarea class="form-control" id="send_notification"  name="message" value="Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}">Hello , {{Auth::user()->email}}invited you to follow Lead/Opportunity document:{{isset($data) ? $data->product_name : ''}}</textarea>
-                                                            </div>
-                                                          
-                                                            
-                                                                                        
-                                                          
-                                                        </div>
-                                                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                                                            <button type="submit" class="btn btn-primary">Add Followers</button>
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                        </div>
-                                                    </form>
+                                            {{-- Add Followers Modal --}}
+                                            <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="followersModalLabel">Invite Follower</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
+                                                <form id="inviteForm" action="{{ route('lead.invite_followers') }}" method="POST">
+                                                    @csrf
+                                                    <input type="hidden" value="{{ $data->id ?? '' }}" name="id">
+                                                    <div class="modal-body">
+                                                        <div class="d-flex">
+                                                            <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
+                                                            <select class="form-control" name="user_id" required>
+                                                                <option value=""></option>
+                                                                @foreach($employees as $employee)
+                                                                    <option value="employee/{{ $employee->id }}">{{ $employee->name }} ({{ $employee->emial }})</option>
+                                                                @endforeach
+                                                                @foreach($users as $user)
+                                                                    <option value="users/{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="d-flex my-2">
+                                                            <label for="send-notification" class="col-form-label mx-3">Send Notification: </label>
+                                                            <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked>
+                                                        </div>
+                                                        <div class="d-flex my-2 hiden_div">
+                                                            <label for="message" class="col-form-label mx-3">Message</label>
+                                                            <textarea class="form-control" id="send_notification" name="message">Hello, {{ Auth::user()->email }} invited you to follow Lead/Opportunity document: {{ isset($data) ? $data->product_name : '' }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                        <button type="submit" class="btn btn-primary">Add Followers</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </form>
                                             </div>
-                                        </div>
-                                        <button class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
-                                            <div class="position-relative followers"><span class="d-flex  text-nowrap">Follow</span></div>
-                                        </button>
+                                            </div>
+                                            </div>
+                                            </div>
+                                            @if(isset($data) && $data->id != null)
+                                                <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}">
+                                                    <div class="position-relative">
+                                                        <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                    </div>
+                                                </button>
+                                            @else
+                                                <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}" disabled>
+                                                    <div class="position-relative">
+                                                        <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                    </div>
+                                                </button>
+                                            @endif                                            
                                     </div>
                                 </div>
                             </div>
@@ -982,25 +1408,28 @@
                                             }
                               </style>
                                 <span class="fw-bold">To:</span>
-                                <span class="ps-1">
-                                <span class="text-muted" id="to_mail">
-                                    @if($data)
-                                       @if($data->email)
-                                        {{$data->email}}
-                                        @else
-                                         No recipient
-                                        @endif
-                                    @endif
-                                </span>
-                                </span>
-                                <button class="o-mail-Chatter-recipientListButton btn btn-link badge rounded-pill border-0 p-1 ms-1" title="Show all recipients">
-                                    <i class="fa fa-caret-down"></i>
-                                </button>
+                                    <span class="ps-1">
+                                        <span class="text-muted" id="to_mail">
+                                            @if($data)
+                                            @if($data->email)
+                                             <P>
+                                                {{$data->email}}
+                                                    @foreach($authfollowers as $auth)
+                                                       {{$auth->customer->email}}
+                                                        @endforeach
+                                                @else
+                                                No recipient
+                                                @endif
+                                                </P>
+                                            @endif
+                                        </span>
+                                    </span>
+                            
                             </div>
-                                                <div class="o-mail-Composer d-grid flex-shrink-0 pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
-                                                    <div class="o-mail-Composer-sidebarMain flex-shrink-0" >
+                                                    <div class="o-mail-Composer  pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
+                                                    {{-- <div class="o-mail-Composer-sidebarMain flex-shrink-0" >
                                                         <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                    </div>
+                                                    </div> --}}
                                                     <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
                                                         <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
                                                             <div class="position-relative flex-grow-1">
@@ -1030,83 +1459,39 @@
                                                 </div>
                                                 <div class="image_show" style="display: flex;">
                                                 </div>
-                                            @if($send_message)
-                                               @foreach($send_message as $value)
-                                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
-                                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
-                                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
-                                                                <div class="o-mail-Message-avatarContainer position-relative bg-view cursor-pointer" aria-label="Open card">
-                                                                    <img class="o-mail-Message-avatar w-100 h-100 rounded o_object_fit_cover o_redirect cursor-pointer" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                                </div>
+                                                 <div class="o-mail-Composer  pt-0 pb-2 o-extended show3" style="display: none !important;"> 
+                                                 
+                                                    <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
+                                                        <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
+                                                            <div class="position-relative flex-grow-1">
+                                                                <textarea class="o-mail-Composer-input o-mail-Composer-inputStyle form-control bg-view border-0 rounded-3 shadow-none overflow-auto" style="height:40px;" id="send_message1" placeholder="Log an internal note…"></textarea>
+                                                                <textarea class="o-mail-Composer-fake o-mail-Composer-inputStyle position-absolute border-0" disabled="1"></textarea>
                                                             </div>
-                                                            <div class="w-100 o-min-width-0">
-                                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
-                                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
-                                                                        <strong class="me-1">{{$value->from_mail}}</strong>
-                                                                    </span>
-                                                                    <div class="mx-1">
-                                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
-                                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                            <div class="o-mail-Composer-actions d-flex bg-view mx-3 border-top p-1 rounded">
+                                                                    <div class="d-flex flex-grow-1 align-items-baseline mt-1">
+                                                                 
+                                                                        <span style="display:contents">
+                                                                            <button class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1" title="Attach files" aria-label="Attach files" type="button">
+                                                                                    <i class="fa fa-fw fa-paperclip"></i>
+                                                                            </button>
                                                                         </span>
+                                                                        <input type="file" class="o_input_file d-none image_uplode_2" multiple="multiple" accept="*">
                                                                     </div>
-                                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
-                                                                        @if($value->is_star == 1)
-                                                                          <a class="px-1 rounded-0 send_message_star" data-id="{{$value->id}}" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star o-mail-Message-starred"></i></a>
-                                                                        @else
-                                                                          <a class="px-1 rounded-0 send_message_star" data-id="{{$value->id}}" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></a>
-                                                                        @endif
-                                                                          <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
-                                                                          <a class="px-1 rounded-0" title="Edit" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-pencil"></i></a>
-                                                                      <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
-                                                                </div>
-                                                                <div class="position-relative d-flex">
-                                                                    <div class="o-mail-Message-content o-min-width-0">
-                                                                        <div class="o-mail-Message-textContent position-relative d-flex">
-                                                                            <div class="position-relative overflow-x-auto d-inline-block">
-                                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
-                                                                                </div>
-                                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value->message}}</p>
-                                                                                </div>
-                                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
-                                                                                <div class="d-flex rounded-1 overflow-hidden">
-                                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
-                                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
-                                                                                        <div class="d-flex rounded-0">
-                                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
-                                                                                        </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                      
-
-                                                                        <div class="o-mail-AttachmentList">
-                                                                            <div class="o-mail-AttachmentList-mas" role="menu">
-                                                                              @if (!is_null($value->image) && !empty(json_decode($value->image)))
-                                                                                @foreach (json_decode($value->image) as $image)
-                                                                                    <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
-                                                                                        <img class="img img-fluid my-0 mx-auto o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: min(100%, 1920px); max-height: 300px;">
-                                                                                        <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flax-wrap flex-column">
-                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $image }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
-                                                                                            <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                @endforeach
-                                                                            @endif
-                                                                            </div>
-                                                                            <div class="grid row-gap-0 column-gap-0"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
+                                                                    <button class="o-mail-Composer-fullComposer btn p-1 border-0 rounded-pill" title="Full composer" aria-label="Full composer" type="button" data-hotkey="shift+c" style="position: relative;">
+                                                                        <i class="fa fa-fw fa-expand"></i>
+                                                                    </button>
                                                             </div>
                                                         </div>
+                                                            <div class="d-flex align-items-center mt-2 gap-2">
+                                                                    <button class="o-mail-Composer-send btn btn-primary store_log_notes" aria-label="Send">Send</button>
+                                                                        
+                                                            </div>
                                                     </div>
-                                                @endforeach
-                                            @endif
+                                                </div>
+                                                <div class="image_show2" style="display: flex;">
+                                                </div>                                                                                            
                             @if($activitiesCount > 0)
-                                <div class="d-flex pt-2 cursor-pointer fw-bolder" id="toggleHeader">
+                                <div class="d-flex pt-2 cursor-pointer fw-bolder planned_activities" id="toggleHeader">
                                     <hr class="flex-grow-1 fs-3">
                                     <div class="d-flex align-items-center px-3">
                                         <i class="fa fa-fw fa-caret-down" id="toggleIcon"></i> Planned Activities 
@@ -1193,6 +1578,15 @@
                                                     <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3" data-bs-toggle="modal" data-bs-target="#markDoneModal">
                                                         <i class="fa fa-check"></i> Mark Done
                                                     </button>
+                                                    @if ($activity->activity_type === 'upload_document')
+                                                        <button class="btn btn-link text-action p-0 me-3"
+                                                            onclick="document.getElementById('upload_overdue_file_{{ $activity->id }}').click();">
+                                                            <i class="fa fa-upload"></i> Upload Document
+                                                        </button>
+                                                        <input type="file" class="d-none"
+                                                            id="upload_overdue_file_{{ $activity->id }}" accept="*"
+                                                            onchange="uploadFile('upload_overdue_file_{{ $activity->id }}', {{ $activity->id }})">
+                                                    @endif
                                                     <button type="button" class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
                                                         <i class="fa fa-pencil"></i> Edit
                                                     </button>
@@ -1216,6 +1610,7 @@
                                                     <textarea class="form-control" rows="4" placeholder="Write Feedback"></textarea>
                                                 </div>
                                                 <div class="modal-footer">
+                                                    <button type="button" id="doneAndScheduleButton" class="btn btn-primary">Done & Schedule Next</button>
                                                     <button type="button" id="saveChangesButton" class="btn btn-primary">Done</button>
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">discard</button>
                                                 </div>
@@ -1262,7 +1657,7 @@
                                                                     <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                                                         <div class="o_row o_row_readonly">
                                                                             <div name="edit_due_date" class="o_field_widget">
-                                                                                <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;" type="text" id="edit_due_date"></div>
+                                                                                <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;cursor: pointer;" type="text" id="edit_due_date"></div>
                                                                             </div>                                                
                                                                         </div>
                                                                     </div>
@@ -1294,13 +1689,15 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-12 mt-3 logNoteField">
-                                                            <textarea class="form-control edit_log_note" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
+                                                            <textarea class="form-control makeMeSummernote" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                    <div class="modal-footer">
-                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                        <button type="submit" class="btn btn-secondary" id="markAsDoneButton">Mark as Done</button>
+                                                        <button type="button" class="btn btn-secondary" id="editDoneAndScheduleButton">Done & Schedule Next</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -1309,10 +1706,461 @@
                                 @endforeach
                             </div>
                             @endif
+
+                            <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
+                                        <div class="d-flex align-items-center">
+                                            <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
+                                            <hr class="flex-grow-1">
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                                @php
+                                                    $images = [];
+                                                    $documents = [];
+                                                @endphp
+
+                                                @foreach ($allFiles as $file)
+                                                    @php
+                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                        // Categorize files into images and documents
+                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                            $documents[] = $file;
+                                                        } else {
+                                                            $images[] = $file; // Add all other files to images
+                                                        }
+                                                    @endphp
+                                                @endforeach
+
+                                                <!-- Display Images -->
+                                                @if(count($images) > 0)
+                                                <div class="image-container d-flex flex-wrap mb-2">
+                                                @foreach ($images as $file)
+                                                    <div id="image-{{ $file }}" class="o-mail-AttachmentImage position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                        tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                        <img data-enlargable class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                            src="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                            alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+
+                                                        <div class="position-absolute top-0 start-0 p-2">
+                                                            <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                            class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -3px; position: absolute;"
+                                                            download title="Download">
+                                                                <i class="fa fa-download" role="img" style="font-size: 10px;margin-left: -5px;position: absolute;" aria-label="Download"></i>
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="position-absolute bottom-0 start-0 p-2">
+                                                            <button class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -15px; position: absolute;"
+                                                                    title="Delete"
+                                                                    onclick="showDeleteConfirmation('{{ $file }}', '{{ $data->id }}')">
+                                                                <i class="fa fa-trash" style="font-size: 10px;margin-left: -5px;margin-top: -5px;position: absolute;" role="img" aria-label="Delete"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                                </div>
+                                                @endif
+
+                                                <!-- Display Documents -->
+                                                @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column documnet-file">
+                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="showDeleteConfirmation('{{ $file }}','{{ $data->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                            <span style="display:contents">
+                                            <button class="btn btn-link" type="button" id="openFileUpload">
+                                                <i class="fa fa-plus-square"></i> Attach files
+                                            </button>
+                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                            </span>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this file?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
                             <!-- <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                 <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
                                 <hr class="o-discuss-separator flex-grow-1">
                             </div> -->
+
+                            @if(!empty($send_message) && count($send_message) > 0)
+                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Send Message</span>
+                                <hr class="o-discuss-separator flex-grow-1">
+                            </div>
+                                @foreach($send_message as $value)
+                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
+                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                            @php
+                                                    $user = $value->user;
+                                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+                                                    $colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+                                                    if ($user) {
+                                                        $colorIndex = crc32($user->email) % count($colors);
+                                                        $bgColor = $colors[$colorIndex];
+                                                    } else {
+                                                        $bgColor = '#F0F0F0';
+                                                    }
+                                                @endphp
+                                                @if(optional($user)->profile)
+                                                    <!-- If profile image exists -->
+                                                    <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                @else
+                                                    <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                    <div class="activity-avatar-initials rounded d-flex align-items-center justify-content-center" data-id="{{$value->id}}" style="background-color: {{ $bgColor }};">
+                                                        <span>{{ $initial }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="w-100 o-min-width-0" style="margin-left: 10px;">
+                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
+                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value->from_mail}}</strong>
+                                                    </span>
+                                                    <div class="mx-1">
+                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
+                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                        </span>
+                                                    </div>
+                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
+                                                        @if($value->is_star == 1)
+                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                            </a>
+                                                        @else
+                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                            </a>
+                                                        @endif
+                                                            <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
+                                                            
+                                                            @if (!is_null($value->image) && !empty(json_decode($value->image)))
+                                                                <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
+                                                            @endif
+                                                </div>
+                                                <div class="position-relative d-flex">
+                                                    <div class="o-mail-Message-content o-min-width-0">
+                                                        <div class="o-mail-Message-textContent position-relative d-flex">
+                                                            <div class="position-relative overflow-x-auto d-inline-block">
+                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
+                                                                </div>
+                                                                {{-- <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{!! $value->message !!}</p>
+                                                                </div> --}}
+                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3">
+                                                                 <p><?php echo nl2br($value->message); ?></p>
+                                                                </div>
+                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
+                                                                <div class="d-flex rounded-1 overflow-hidden">
+                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
+                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                     @php
+                                                        // Initialize the arrays
+                                                        $documents = [];
+                                                        $images = [];
+
+                                                        // Decode the JSON field if it's not empty or null
+                                                        $imageFiles = !is_null($value->image) ? json_decode($value->image, true) : [];
+
+                                                        // Ensure the decoded data is an array
+                                                        if (is_array($imageFiles)) {
+                                                            foreach ($imageFiles as $file) {
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                                // Categorize files into images and documents
+                                                                if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                                    $documents[] = $file;
+                                                                } else {
+                                                                    $images[] = $file; // Add all other files to images
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+
+
+                                                        
+                                                        <div class="o-mail-AttachmentList">
+                                                       @if(count($images) > 0)
+                                                            <div class="o-mail-AttachmentList-mas" role="menu">
+                                
+                                                                    <div class="image-grid">
+                                                                    @foreach ($images as $file)
+                                                                            <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($file) }}" title="{{ basename($file) }}" data-mimetype="image/jpeg">
+                                                                                <img data-message  class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $file) }}" alt="{{ basename($file) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $file }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $file) }}')"><i class="fa fa-download"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                            
+                                                            </div>
+                                                         @endif
+
+                                                                    {{-- @if(count($images) > 0)
+                                                                        <div class="image-container d-flex flex-wrap mb-2">
+                                                                        @foreach ($images as $file) @foreach ($images as $file)
+                                                                            <div id="image-{{ $file }}" class="o-mail-AttachmentImage position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                                tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                                                <img data-enlargable class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                                    src="{{ asset('storage/' . $file) }}"
+                                                                                    alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+
+                                                                                <div class="position-absolute top-0 start-0 p-2">
+                                                                                    <a href="{{ asset('storage/' . $file) }}"
+                                                                                    class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -3px; position: absolute;"
+                                                                                    download title="Download">
+                                                                                        <i class="fa fa-download" role="img" style="font-size: 10px;margin-left: -5px;position: absolute;" aria-label="Download"></i>
+                                                                                    </a>
+                                                                                </div>
+
+                                                                                <div class="position-absolute bottom-0 start-0 p-2">
+                                                                                    <button class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -15px; position: absolute;"
+                                                                                            title="Delete"
+                                                                                            onclick="deleteImage('{{ $file }}', '{{ $data->id }}')">
+                                                                                        <i class="fa fa-trash" style="font-size: 10px;margin-left: -5px;margin-top: -5px;position: absolute;" role="img" aria-label="Delete"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                        </div>
+                                                                    @endif --}}
+
+                                                                       @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column documnet-file">
+                                                                        <a href="{{ asset('storage/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="deleteImage('{{ $file }}','{{ $value->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                            <div class="grid row-gap-0 column-gap-0">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                            @if(!empty($log_notes) && count($log_notes) > 0)
+                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Log Note</span>
+                                <hr class="o-discuss-separator flex-grow-1">
+                            </div>
+                                @foreach($log_notes as $value2)
+                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
+                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                            @php
+                                                    $user = $value2->user;
+                                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+                                                    $colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+                                                    if ($user) {
+                                                        $colorIndex = crc32($user->email) % count($colors);
+                                                        $bgColor = $colors[$colorIndex];
+                                                    } else {
+                                                        $bgColor = '#F0F0F0';
+                                                    }
+                                                @endphp
+                                                @if(optional($user)->profile)
+                                                    <!-- If profile image exists -->
+                                                    <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                @else
+                                                    <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                    <div class="activity-avatar-initials rounded d-flex align-items-center justify-content-center" data-id="{{$value2->id}}" style="background-color: {{ $bgColor }};">
+                                                        <span>{{ $initial }}</span>
+                                                    </div>
+                                                @endif
+                                                <!-- <span
+                                                    class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                    {{ strtoupper($value2->user->name[0] ?? strtoupper($value2->user[0] ?? '')) }}
+                                                </span> -->
+                                            </div>
+                                            <div class="w-100 o-min-width-0" style="margin-left: 10px;">
+                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
+                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value2->user->email ?? ''}}</strong>
+                                                    </span>
+                                                    <div class="mx-1">
+                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
+                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                        </span>
+                                                    </div>
+                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value2->created_at}}">{{ $value2->created_at->diffForHumans() }}</small>
+                                                        @if($value2->is_start == 1)
+                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                            </a>
+                                                        @else
+                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                            </a>
+                                                        @endif                                                        
+                                                            <a class="px-1 rounded-0 send_message_delete1" data-id="{{$value2->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
+                                                            @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
+                                                                <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages1({{ $value2->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
+                                                            @endif
+                                                </div>
+                                                <div class="position-relative d-flex">
+                                                    <div class="o-mail-Message-content o-min-width-0">
+                                                        <div class="o-mail-Message-textContent position-relative d-flex">
+                                                            <div class="position-relative overflow-x-auto d-inline-block">
+                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
+                                                                </div>
+                                                                <!-- <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value2->message}}</p>
+                                                                </div> -->
+                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3">
+                                                                    <p><?php echo nl2br(htmlspecialchars($value2->message)); ?></p>
+                                                                </div>
+                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
+                                                                <div class="d-flex rounded-1 overflow-hidden">
+                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
+                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+
+                                                        <div class="o-mail-AttachmentList">
+                                                            <div class="o-mail-AttachmentList-mas" role="menu">
+                                                                @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
+                                                                    <div class="image-grid">
+                                                                        @foreach (json_decode($value2->image) as $image)
+                                                                            <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                                <img class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage1('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="grid row-gap-0 column-gap-0">
+                                                                <!-- Additional content goes here -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             <div class="o-mail-Chatter-content">
                                 @if(isset($data) && $data->lead_type == 1)
                                     @php
@@ -1322,24 +2170,26 @@
                                     <x-log-display :logs="$logs" />
                                     @if($activitiesDone->count() > 0)
                                         <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                            <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Activities Done</span>
+                                            <hr class="o-discuss-separator flex-grow-1"><span
+                                                class="px-2 smaller text-muted">Activities Done</span>
                                             <hr class="o-discuss-separator flex-grow-1">
-                                            <br>                                    
+                                            <br>
                                         </div>
                                         @foreach ($activitiesDone as $activityDone)                                                            
-                                            <div class="o-mail-Activity-container">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
                                                 <div class="o-mail-Activity d-flex py-1 mb-2">
                                                     <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
                                                         <a role="button">
-                                                        <span
-                                                            class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                            {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}                                                        
-                                                        </span>
+                                                            <span
+                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
+                                                            </span>
                                                         </a>
                                                     </div>
                                                     <div class="flex-grow px-3">
                                                         <div class="o-mail-Activity-info lh-1">
-                                                            <b><span class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
+                                                            <b><span
+                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
                                                             @php
                                                                 $activityTime = Carbon::parse($activityDone->updated_at);
                                                                 $currentTime = Carbon::now();
@@ -1351,11 +2201,13 @@
                                                                 $diffInDays = $activityTime->diffInDays($currentTime);
                                                             @endphp
 
-                                                            <small class="o-mail-Message-date text-muted smaller" title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
+                                                            <small class="o-mail-Message-date text-muted smaller"
+                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
                                                                 @if ($diffInSeconds < 60)
                                                                     now
                                                                 @elseif ($diffInMinutes < 60)
-                                                                    {{ intval($diffInMinutes) }} minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
+                                                                    {{ intval($diffInMinutes) }}
+                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
                                                                 @elseif ($diffInHours < 24)
                                                                     {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
                                                                 @else
@@ -1366,25 +2218,317 @@
                                                         <div class="lh-lg">
                                                             <div class="o-mail-Message-body text-break mb-0 w-100">
                                                                 <p>
-                                                                    <span class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span> done
-                                                                </p>     
-                                                                @if(!empty($activityDone->feedback))                                                       
+                                                                    <span
+                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
+                                                                    done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
+                                                                </p>
+                                                                @if(!empty($activityDone->feedback))
                                                                     <div>
                                                                         <div class="fw-bold">Feedback:</div>
-                                                                            {{$activityDone->feedback ?? ''}}
+                                                                        {{$activityDone->feedback ?? ''}}
                                                                     </div>
                                                                 @endif
-                                                            </div>                                                                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
+                                                @php
+                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
+                                                @endphp
+
+                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
+                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
+                                                        id="document-{{ $activityDone->id }}">
+                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                style="margin-left:60px;width: max-content;" role="menu"
+                                                                title="{{ $activityDone->document }}"
+                                                                aria-label="{{ $activityDone->document }}">
+                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
+                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
+                                                                    
+                                                                    @if($extension === 'pdf')
+                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                    @elseif(in_array($extension, ['doc', 'docx']))
+                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                    @endif
+                                                                </div>
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
+                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
+                                                                    <small class="text-uppercase">{{ $extension }}</small>
+                                                                </div>
+
+                                                                <div class="flex-grow-1"></div>
+                                                                <div
+                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                    </a>
+                                                                    <button
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        title="Delete"
+                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                @else
+                                                @if($activityDone->document != null)
+                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                                                                        
+                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
+                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
+                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
+
+                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        alt="{{ $activityDone->document }}"
+                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
+
+                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
+                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
+                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
+                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        
+
+                                                    <div class="grid row-gap-0 column-gap-0"></div>
+                                                    </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+
+                                            <!-- Confirmation Modal -->
+                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this document?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                id="confirmDelete">Ok</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         @endforeach
-                                    @endif
+                                    @endif  
+                                                                        
                                 @endif
                                 @if(isset($data->lead_type) && $data->lead_type == 2)
-                                
-                              
+
+
+                                @php
+                                    $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
+                                    @endphp
+
+                                    <x-log-display :logs="$logs" />
+                                    @if($activitiesDone->count() > 0)
+                                        <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                            <hr class="o-discuss-separator flex-grow-1"><span
+                                                class="px-2 smaller text-muted">Activities Done</span>
+                                            <hr class="o-discuss-separator flex-grow-1">
+                                            <br>
+                                        </div>
+                                        @foreach ($activitiesDone as $activityDone)                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
+                                                <div class="o-mail-Activity d-flex py-1 mb-2">
+                                                    <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
+                                                        <a role="button">
+                                                            <span
+                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="flex-grow px-3">
+                                                        <div class="o-mail-Activity-info lh-1">
+                                                            <b><span
+                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
+                                                            @php
+                                                                $activityTime = Carbon::parse($activityDone->updated_at);
+                                                                $currentTime = Carbon::now();
+
+                                                                // Calculate time differences
+                                                                $diffInSeconds = $activityTime->diffInSeconds($currentTime);
+                                                                $diffInMinutes = $activityTime->diffInMinutes($currentTime);
+                                                                $diffInHours = $activityTime->diffInHours($currentTime);
+                                                                $diffInDays = $activityTime->diffInDays($currentTime);
+                                                            @endphp
+
+                                                            <small class="o-mail-Message-date text-muted smaller"
+                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
+                                                                @if ($diffInSeconds < 60)
+                                                                    now
+                                                                @elseif ($diffInMinutes < 60)
+                                                                    {{ intval($diffInMinutes) }}
+                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
+                                                                @elseif ($diffInHours < 24)
+                                                                    {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
+                                                                @else
+                                                                    {{ intval($diffInDays) }} day{{ $diffInDays > 1 ? 's' : '' }} ago
+                                                                @endif
+                                                            </small>
+                                                        </div>
+                                                        <div class="lh-lg">
+                                                            <div class="o-mail-Message-body text-break mb-0 w-100">
+                                                                <p>
+                                                                    <span
+                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
+                                                                    done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
+                                                                </p>
+                                                                @if(!empty($activityDone->feedback))
+                                                                    <div>
+                                                                        <div class="fw-bold">Feedback:</div>
+                                                                        {{$activityDone->feedback ?? ''}}
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
+                                                @php
+                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
+                                                @endphp
+
+                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
+                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
+                                                        id="document-{{ $activityDone->id }}">
+                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                style="margin-left:60px;width: max-content;" role="menu"
+                                                                title="{{ $activityDone->document }}"
+                                                                aria-label="{{ $activityDone->document }}">
+                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
+                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
+                                                                    
+                                                                    @if($extension === 'pdf')
+                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                    @elseif(in_array($extension, ['doc', 'docx']))
+                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                    @endif
+                                                                </div>
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
+                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
+                                                                    <small class="text-uppercase">{{ $extension }}</small>
+                                                                </div>
+
+                                                                <div class="flex-grow-1"></div>
+                                                                <div
+                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                    </a>
+                                                                    <button
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        title="Delete"
+                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                @else
+                                                @if($activityDone->document != null)
+                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                                                                        
+                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
+                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
+                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
+
+                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        alt="{{ $activityDone->document }}"
+                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
+
+                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
+                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
+                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
+                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        
+
+                                                    <div class="grid row-gap-0 column-gap-0"></div>
+                                                    </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+
+                                            <!-- Confirmation Modal -->
+                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this document?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                id="confirmDelete">Ok</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @endif      
+                                    <br>                                                                                      
                                 <div class="main-lead-details">
                                     <div class="lead-details">
                                         <div class="lead-box">
@@ -1527,7 +2671,7 @@
                             <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                 <div class="o_row o_row_readonly">
                                     <div name="due_date" class="o_field_widget">
-                                        <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;" type="text" id="due_date"></div>
+                                        <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;cursor: pointer;" type="text" id="due_date"></div>
                                     </div>                                                
                                 </div>
                             </div>
@@ -1559,19 +2703,22 @@
                     </div>
                 </div>
                 <div class="col-md-12 mt-3 logNoteField">
-                    <textarea name="log_note" id="log_note" cols="30" rows="10"></textarea>
+                    <textarea class="makeMeSummernote" name="log_note" id="log_note" cols="30" rows="10"></textarea>
                 </div>
             </div>
         </div>
         <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-            <button type="submit" class="btn btn-primary">Schedule</button>
-            <!-- <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
-            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button> -->
+            <button type="submit" class="btn btn-primary" id="schedule">Schedule</button>
+            <button type="submit" class="btn btn-secondary" id="schedule_and_mark_done">Schedule & Mark as Done</button>
+            <button type="submit" class="btn btn-secondary" id="done_and_schedule_next">Done & Schedule Next</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
     </form>
   </div>
 </div>
+
+
+
 
 
 
@@ -1610,16 +2757,13 @@
 </script>
 <script>
     $("#title_0").select2({
-        placeholder: "Select Title"
-        , allowClear: true
+        placeholder: "Select Title",
     });
     $("#country_id_0").select2({
         placeholder: "Select country"
-        , allowClear: true
     });
     $("#state_id_0").select2({
         placeholder: "Select state"
-        , allowClear: true
     });
     $("#tag_ids_1").select2({
         placeholder: "Select tag"
@@ -1627,21 +2771,10 @@
     });
     $("#sales_person").select2({
         placeholder: "Salesperson"
-        , allowClear: true
     });
+ 
 
-    $("#campaign_id_0").select2({
-        allowClear: true
-    });
-
-    $("#medium_id_0").select2({
-        allowClear: true
-    });
-
-    $("#source_id_0").select2({
-        allowClear: true
-    });
-
+  
     $(function() {
         var currentDate = new Date();
 
@@ -2302,6 +3435,7 @@
             var source_id_0 = $('#source_id_0').val();
             var referred_0 = $('#referred_0').val();
             var internal_notes = $('#description').val();
+            var partner_name_0 = $('#partner_name_0').val();
            
 
             // Validate fields
@@ -2374,12 +3508,14 @@
                         medium_id_0: medium_id_0,
                         source_id_0: source_id_0,
                         referred_0: referred_0,
-                        internal_notes : internal_notes
+                        internal_notes : internal_notes,
+                        partner_name_0 : partner_name_0
                     },
                     success: function(response) {
                         toastr.success(response.message);
                         setTimeout(function() {
-                            window.location.href = "{{ route('lead.index') }}";
+                            location.reload();
+                            // window.location.href = "{{ route('lead.index') }}";
                         }, 2000);
                     },
                     error: function(xhr, status, error) {
@@ -2398,31 +3534,27 @@
   $(document).ready(function () {
      $("#send_notification").summernote();
     });
-</script>
-<script>
-  
-
-        ClassicEditor
-        .create(document.querySelector('#log_note'))
-        .catch(error => {
-            console.error(error);
-        });
-    
+  $(document).ready(function () {
+     $("#lead_mail_message").summernote();
+    });
 </script>
 
 <script>
     $(document).ready(function() {       
-
-        $('#scheduleForm').on('submit', function(e) {
+        
+        $('#schedule').on('click', function(e) {
             e.preventDefault(); // Prevent the default form submission
+            let action = 'schedule'; // Set the action for the "Schedule" button
+
+            // Perform AJAX request
             $.ajax({
-                url: $(this).attr('action'),
+                url: $('#scheduleForm').attr('action'), // Use the form's action
                 method: 'POST',
-                data: $(this).serialize(),
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
                 success: function(response) {
                     toastr.success(response.message);
                     $('#activitiesAddModal').modal('hide'); // Hide the modal
-                    location.reload();
+                    location.reload(); // Reload the page
                 },
                 error: function(xhr) {
                     // Handle any errors
@@ -2430,6 +3562,55 @@
                 }
             });
         });
+
+        $('#schedule_and_mark_done').on('click', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'done'; // Set the action for the "Schedule & Mark as Done" button
+
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#activitiesAddModal').modal('hide'); // Hide the modal
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
+        });
+
+        $('#done_and_schedule_next').on('click', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'next'; // Set the action for the "Done & Schedule Next" button
+
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    // Store a flag in localStorage to indicate the modal should reopen
+                    localStorage.setItem('reopenModal', 'true');
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
+        });
+
+        // Check localStorage on page load to reopen the modal if needed
+        if (localStorage.getItem('reopenModal') === 'true') {
+            $('#activitiesAddModal').modal('show'); // Show the modal
+            localStorage.removeItem('reopenModal'); // Clear the flag
+        }
     });
 </script>
 
@@ -2475,18 +3656,6 @@
                 });
         }
 
-        // Initialize CKEditors
-        // initializeEditor('log_note');
-
-        // Initialize CKEditor for the log note with existing content
-        initializeEditor('.edit_log_note', editor => {
-            editorInstance = editor;
-            const existingContent = $('#edit_log_note').data('content') || ''; // Default to empty string if no content
-            if (existingContent) {
-                editorInstance.setData(existingContent);
-            }
-        });
-
         // Define URLs using Laravel's route helper
         const deleteUrl = "{{ route('lead.activitiesDelete', ['id' => '']) }}";
         const baseUrl = "{{ route('lead.activitiesEdit', ['id' => '']) }}";
@@ -2515,21 +3684,14 @@
                     $('#edit_summary').val(response.activity.summary);
                     $('#edit_assigned_to').val(response.activity.assigned_to);
 
-                    const logNoteElement = document.querySelector('.edit_log_note');
-                    if (logNoteElement) {
-                        if (editorInstance) {
-                            const noteContent = response.activity.note || ''; // Default to empty string if no note
-                            editorInstance.setData(noteContent);
-                        } else {
-                            initializeEditor('.edit_log_note', editor => {
-                                editorInstance = editor;
-                                const noteContent = response.activity.note || ''; // Default to empty string if no note
-                                editorInstance.setData(noteContent);
+                    $('#edit_log_note').summernote({
+                                height: 200,  // Set editor height
+                                focus: true,  // Set focus to editable area after modal shown
+                                tabsize: 2    // Set tab size
                             });
-                        }
-                    } else {
-                        console.error('CKEditor element not found.');
-                    }
+
+                            // Set the content of the Summernote editor with the fetched note
+                            $('#edit_log_note').summernote('code', response.activity.note);
 
                     const editModal = new bootstrap.Modal(document.getElementById('editModal'));
                     editModal.show();
@@ -2542,17 +3704,16 @@
 
         // Handle form submission
         $('#editForm').on('submit', function(e) {
+            console.log('jjjjjjjjjjj');
+            
             e.preventDefault();
 
             const formData = $(this).serializeArray();
-            const editorData = editorInstance ? editorInstance.getData() : '';
 
             const formObject = {};
             formData.forEach(field => {
                 formObject[field.name] = field.value;
             });
-
-            formObject.log_note = editorData;
 
             $.ajax({
                 url: updateUrl,
@@ -2567,6 +3728,67 @@
                     console.error('Error updating activity:', xhr.responseText);
                 }
             });
+        });
+
+        // Handle the "Mark as Done" button click
+        $('#markAsDoneButton').on('click', function() {
+            const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}', // Your actual route
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}', // CSRF token for security
+                    id: activityId,
+                    status: 1 // Mark as done
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#editModal').modal('hide');
+                        $('div[data-activity-id="' + activityId + '"]').remove(); // Remove from UI
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        // Handle the "Done & Schedule Next" button click
+        $('#editDoneAndScheduleButton').on('click', function() {
+            const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: activityId,
+                    status: 1 // Mark as done
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Set a flag in local storage to indicate the modal should open after reload
+                        localStorage.setItem('openSchedulingModal', 'true');
+                        location.reload(); // Reload the page
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        // Check if the flag is set in local storage and open the modal
+        $(document).ready(function() {
+            if (localStorage.getItem('openSchedulingModal') === 'true') {
+                $('#activitiesAddModal').modal('show'); // Show the scheduling modal
+                localStorage.removeItem('openSchedulingModal'); // Remove the flag
+            }
         });
 
         // Handle the Delete button click
@@ -2602,7 +3824,7 @@
 
         // Reset form when modal is hidden
         $('#editModal').on('hidden.bs.modal', function() {
-            $('#editForm')[0].reset();
+            $('#editForm')[0].reset(); // Reset the form
             // Additional logic to reset other elements or states if necessary
         });
 
@@ -2633,6 +3855,36 @@
                         // Close the modal
                         $('#markDoneModal').modal('hide');
                         location.reload();
+                    } else {
+                        alert('Failed to mark activity as done.');
+                    }
+                },
+                error: function() {
+                    alert('An error occurred.');
+                }
+            });
+        });
+
+        $('#doneAndScheduleButton').click(function() {
+            // Same AJAX logic as above
+            var activityId = $('#markDoneModal').data('activity-id');
+            var feedback = $('#markDoneModal textarea').val();
+            
+            $.ajax({
+                url: '{{route('lead.activitiesUpdateStatus')}}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: activityId,
+                    status: 1,
+                    feedback: feedback
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Open the modal for scheduling next activity
+                        $('div[data-activity-id="' + activityId + '"]').remove();
+                        $('#markDoneModal').modal('hide');
+                        $('#activitiesAddModal').modal('show'); // Open the scheduling modal
                     } else {
                         alert('Failed to mark activity as done.');
                     }
@@ -2736,19 +3988,19 @@
 
         let closingNotesEditor; // Store the CKEditor instance
 
-        ClassicEditor
-            .create(document.querySelector('#closing_notes'))
-            .then(editor => {
-                closingNotesEditor = editor; // Save the CKEditor instance
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        // ClassicEditor
+        //     .create(document.querySelector('#closing_notes'))
+        //     .then(editor => {
+        //         closingNotesEditor = editor; // Save the CKEditor instance
+        //     })
+        //     .catch(error => {
+        //         console.error(error);
+        //     });
 
         $(document).on('click', '.mark_as_lost', function() {
             var lead_id = $('#lead_id').val();
             var lost_reasons = $('#lost_reasons').val();
-               var closing_notes = closingNotesEditor.getData();
+            var closing_notes = $('#closing_notes').val();
             
             $.ajax({
                 url: '{{ route('leads.markAsLost') }}',
@@ -2869,13 +4121,53 @@
                 }
             }
         });
+        $(".image_uplode_2").on("change", function(event){
+            var files = event.target.files;
+            $(".image_show2").html(''); // Clear any previous images
 
-       $('.send_messag_by_email').on('click', function(event){
+            // Loop through each selected file and display it
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                // Only process image files
+                if (file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+
+                    // Closure to capture the file information
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            // Append the image to the .image_show div
+                            $(".image_show2").append('<img src="' + e.target.result + '" class="img-thumbnail m-2" width="100" height="100">');
+                        };
+                    })(file);
+
+                    // Read the image file as a data URL
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+       // Collect all email addresses from the #to_mail span and inner elements
+        let emails = [];
+        $('#to_mail').find('P').each(function() {
+            emails.push($(this).text().trim());
+        });
+
+        // Check if there is an email directly in #to_mail without <P> tags
+        if ($('#to_mail').contents().not('P').text().trim()) {
+            emails.push($('#to_mail').contents().not('P').text().trim());
+        }
+
+        // Join all emails into a single string (comma separated if needed)
+        const to_mail = emails.join(', ');
+
+        console.log(to_mail,'to_mail');  // Check the collected emails
+
+        $('.send_messag_by_email').on('click', function(event){
             var send_message = $('#send_message').val(); 
             var image_uplode = $('.image_uplode')[0].files; // Files are objects
             var lead_id = $('#lead_id').val();
-            // var to_mail = $('#to_mail').val();
-            const to_mail = $('#to_mail').text();
+
             $('.send_messag_by_email').prop('disabled', true);
 
             // Create a FormData object
@@ -2883,12 +4175,15 @@
             formData.append('_token', '{{ csrf_token() }}');
             formData.append('send_message', send_message);
             formData.append('lead_id', lead_id);
-            formData.append('to_mail', to_mail);
+            formData.append('to_mail', to_mail); // Pass the collected emails
 
             // Append files to FormData
             for (var i = 0; i < image_uplode.length; i++) {
                 formData.append('image_uplode[]', image_uplode[i]); // Multiple files are added as an array
             }
+
+            $('.show1').hide();
+            $('.show2').hide();
 
             $.ajax({
                 url: '{{ route('lead.send_message') }}',
@@ -2897,6 +4192,41 @@
                 contentType: false, // Important: Prevent jQuery from setting the Content-Type header
                 processData: false, // Important: Prevent jQuery from processing the data
                 success: function(response) {
+                    console.log(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+
+        $('.store_log_notes').on('click', function(event){
+            var send_message = $('#send_message1').val(); 
+            var image_uplode = $('.image_uplode_2')[0].files; // Files are objects
+            var lead_id = $('#lead_id').val();
+
+            // Create a FormData object
+            var formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('send_message', send_message);
+            formData.append('lead_id', lead_id);
+
+            // Append files to FormData
+            for (var i = 0; i < image_uplode.length; i++) {
+                formData.append('image_uplode[]', image_uplode[i]); // Multiple files are added as an array
+            }
+
+      
+
+            $.ajax({
+                url: '{{ route('lead.log_notes') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false, // Important: Prevent jQuery from setting the Content-Type header
+                processData: false, // Important: Prevent jQuery from processing the data
+                success: function(response) {
+                    $('.show3').hide();
                     console.log(response)
                     location.reload();
                     
@@ -2947,10 +4277,50 @@
         link.click();
         document.body.removeChild(link);
     }
+
+    function deleteImage1(imagePath, messageId) {
+        if (confirm('Are you sure you want to delete this image?')) {
+            // Send AJAX request to delete the image
+            fetch('/lead-deleteImage1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                body: JSON.stringify({ image: imagePath, message_id: messageId }) // Pass message_id along with image path
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to see the changes
+                } else {
+                    alert('Failed to delete the image.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
 </script>
 <script>
     function downloadAllImages(messageId) {
         fetch(`/lead-downloadAllImages/${messageId}`, {
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+            }
+        })
+        .then(response => response.blob())  // Handle the zip file blob
+        .then(blob => {
+            // Create a link to download the file
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "images.zip";  // Name of the downloaded file
+            link.click();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    function downloadAllImages1(messageId) {
+        fetch(`/lead-downloadAllImagessend_message/${messageId}`, {
             method: 'GET',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
@@ -2991,14 +4361,97 @@
         });
         
     });
+    $('.send_message_delete1').on('click', function(){
+        var id = $(this).data('id');
 
-  $('.send_message_star').on('click', function(){
+        $.ajax({
+            url: '{{ route('lead.delete_send_message_notes') }}',
+            type: 'get',
+            data: {
+                _token: '{{ csrf_token() }}',
+                id: id,
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                
+            setTimeout(function() {
+                location.reload(); // Reloads the page
+            }, 2000);
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+        
+    });
+
+    $('.send_message_star').on('click', function() {
     var $this = $(this); // Store the clicked element
     var id = $this.data('id');
-    
+    var isStarred = $this.data('starred'); // Get the current star status
+
     $.ajax({
         url: '{{ route('lead.click_star') }}',
         type: 'get',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id: id,
+            is_star: isStarred // Send current star status
+        },
+        success: function(response) {
+            // Toggle the star status
+            if (isStarred == 1) {
+                // If it was starred, unstar it
+                $this.find('i').removeClass('fa-star o-mail-Message-starred').addClass('fa-star-o');
+                $this.data('starred', 0); // Update data attribute
+            } else {
+                // If it was not starred, star it
+                $this.find('i').removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred');
+                $this.data('starred', 1); // Update data attribute
+            }
+        },
+        error: function(xhr, status, error) {
+            toastr.error('Something went wrong!');
+        }
+    });
+});
+$('.send_message_star1').on('click', function(){
+    var $this = $(this); // Store the clicked element
+    var id = $this.data('id');
+    var isStarred = $this.data('starred'); // Get the current star status
+
+    $.ajax({
+        url: '{{ route('lead.click_star_notes') }}',
+        type: 'get',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id: id,
+            is_star: isStarred // Send current star status
+        },
+        success: function(response) {
+            // Toggle the star status
+            if (isStarred == 1) {
+                // If it was starred, unstar it
+                $this.find('i').removeClass('fa-star o-mail-Message-starred').addClass('fa-star-o');
+                $this.data('starred', 0); // Update data attribute
+            } else {
+                // If it was not starred, star it
+                $this.find('i').removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred');
+                $this.data('starred', 1); // Update data attribute
+            }
+        },
+        error: function(xhr, status, error) {
+            toastr.error('Something went wrong!');
+        }
+    });
+});
+$('.restore_lead').on('click', function(){
+    var id = $(this).data('id');
+    
+    $.ajax({
+        url: '{{ route('lead.restore_lead') }}',
+        type: 'post',
         data: {
             _token: '{{ csrf_token() }}',
             id: id,
@@ -3006,8 +4459,7 @@
         success: function(response) {
 
             // Change the icon class after successful AJAX call
-            var icon = $this.find('i'); // Find the icon element inside the anchor
-            icon.removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred'); // Change the class to the desired one
+        location.reload();
             
            
         },
@@ -3021,47 +4473,788 @@
 
 <script>
    $('.send_message_btn').on('click', function() {
-        $('.show1').css('display','block');
-        $('.show2').css('display','block'); 
-  });
+        // Hide the notes section if it's open
+        if ($('.show3').is(':visible')) {
+            $('.show3').hide();
+        }
+        // Toggle the message section
+        $('.show1').toggle();
+        $('.show2').toggle(); 
+   });
 
+   $('.click_add_notes').on('click', function() {
+        // Hide the message sections if they're open
+        if ($('.show1').is(':visible') || $('.show2').is(':visible')) {
+            $('.show1').hide();
+            $('.show2').hide();
+        }
+        // Toggle the notes section
+        $('.show3').toggle();
+   });
 </script>
 
 <script>
-   $('.followers').on('click', function() {
-        var id = $('#lead_id').val();
-        $.ajax({
-            url: '{{ route('lead.click_follow') }}',
-            type: 'post',
-            data: {
-                _token: '{{ csrf_token() }}',
-                id : id
-         
-        },
-        success: function(response) {   
-           console.log(response);
-        },
-        error: function(xhr, status, error) {
-                toastr.error('Something went wrong!');
-            }
-        }); 
-   
-      
-    });
+    $(document).ready(function() {
+        var $button = $('#follow-button');
+        var currentStatus = $button.data('follow-status');
 
-    $(document).on('click', '.add_followers', function() {
-    
-        $('#followersModal').modal('show')
-    });
-
-    $('#send_notofiction_chekbox').on('change', function() {
-        if($(this).is(':checked')) {
-            $('.hiden_div').attr('style', 'display:block !important'); 
+        // Check the current status and update the button text accordingly
+        if (currentStatus === 'following') {
+            $button.find('span').text('Following');
         } else {
-            $('.hiden_div').attr('style', 'display:none !important');
+            $button.find('span').text('Follow');
         }
+
+        $('.followers').on('click', function() {
+            var id = $('#lead_id').val();
+            var $button = $(this); // Reference the button that was clicked
+
+            $.ajax({
+                url: '{{ route('lead.click_follow') }}',
+                type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    auth_id: '{{ Auth::user()->id }}' // Include the user ID
+                },
+                success: function(response) {
+                    // Update button text and status based on response
+                    if (response.isFollowing) {
+                        $button.data('follow-status', 'following').find('span').text('Following');
+                    } else {
+                        $button.data('follow-status', 'not-following').find('span').text('Follow');
+                    }
+                    
+                    // Reload the page to reflect the updated state
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+
+        $(document).on('click', '.add_followers', function() {
+            $('#followersModal').modal('show');
+        });
+
+        $('#send_notofiction_chekbox').on('change', function() {
+            $('.hiden_div').toggle(this.checked);
+        });
+
+
+        $(document).on('click', '.remove-follower', function() {
+            var followerId = $(this).data('follower-id'); // Get the follower ID
+            var $item = $(this).closest('.dropdown-item'); // Get the closest dropdown item
+            var $separator = $item.next('.dropdown-divider'); // Get the next separator line
+
+            $.ajax({
+                url: '{{ route('lead.remove_follower') }}', // Update with your route
+                type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}', // Include CSRF token
+                    id: followerId // Send the follower ID to the server
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the follower item and separator line from the dropdown
+                        $item.remove();
+                        if ($separator.length) {
+                            $separator.remove(); // Remove the horizontal line
+                        }
+                        
+                        // Update the follower count
+                        var $countElement = $('.o-mail-Followers-counter'); // Adjust selector if needed
+                        var currentCount = parseInt($countElement.text());
+                        $countElement.text(currentCount - 1); // Decrease count
+
+                        toastr.success('Follower removed successfully.');
+                    } else {
+                        toastr.error('Failed to remove follower.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
     });
 </script>
+
+<script>
+    $(document).ready(function() {
+        var lead_id = $('#lead_id').val();
+
+        // When the "Attach files" button is clicked, toggle the attachment box and open the file dialog
+        $('#attachFilesBtn').on('click', function() {
+            $('#attachmentBox').toggleClass('d-none'); 
+        });
+
+        $('#openFileUpload').on('click', function() {
+            $('.o-mail-Chatter-fileUploader').click(); // Open the file dialog
+        });
+
+        // When the file input changes, handle the file selection
+        $('.o-mail-Chatter-fileUploader').on('change', function(event) {
+            const files = event.target.files;
+            const fileList = Array.from(files).map(file => file.name).join(', ');
+            $('#fileList').text(`Selected files: ${fileList}`);
+
+            // Prepare form data for AJAX
+            const formData = new FormData();
+            formData.append('lead_id', lead_id); // Append lead_id
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files[]', files[i]);
+            }
+
+            // AJAX request to upload files
+            $.ajax({
+                url: '{{ route('lead.attachmentsAdd') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    location.reload();
+                    $('#fileCount').text(response.newFileCount); // Update file count
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert('Error uploading files: ' + textStatus);
+                }
+            });
+        });
+
+        let fileToDelete = '';
+        let leadIdToDelete = ''; // New variable for lead ID
+
+        window.showDeleteConfirmation = function(fileName, leadId, type) {
+            fileToDelete = fileName; // Store the file name to delete
+            leadIdToDelete = leadId; // Store the lead ID
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+            modal.show();
+
+            document.getElementById('confirmDeleteButton').onclick = function() {
+                deleteFile(fileName, leadIdToDelete, type); // Pass lead ID to deleteFile
+                modal.hide();
+            };
+        };
+
+        function deleteFile(fileName, leadId) {
+        $.ajax({
+            url: '/attachments/delete-file', // Your delete endpoint
+            method: 'DELETE',
+            data: { file: fileName, lead_id: leadId },
+            success: function(response) {
+                console.log("Response received:", response);
+                console.log("File to delete:", fileName);
+                
+                if (response.success) {
+                    // Remove the corresponding elements from the UI
+                    $(`#image-${fileName}`).remove(); // Remove the image element
+                    $(`#document-${fileName}`).remove(); // Remove the document element if applicable
+                    
+                    // Check if the attachment box is empty
+                    if ($('.o-mail-AttachmentImage').length === 0 && $('.delete_document').length === 0) {
+                        // If there are no files left, hide the attachment box or perform any other action
+                        $('#attachmentBox').hide(); // Example action: Hide the attachment box
+                    }
+                    location.reload();
+                } else {
+                    console.log("Failed to delete file:", response.message);
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred during deletion:", error);
+                alert('An error occurred while trying to delete the file.');
+            }
+        });
+    }
+
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.5) url('+src+') no-repeat center',
+            backgroundSize: 'contain',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+    });
+
+    $(document).ready(function() {
+        $('img[data-message]').addClass('img-message').click(function() {
+            alert('fggfg');  // This should trigger on click
+            var src = $(this).attr('src');
+            $('<div>').css({
+                background: 'RGBA(0,0,0,.5) url(' + src + ') no-repeat center',
+                backgroundSize: 'contain',
+                width: '100%', height: '100%',
+                position: 'fixed',
+                zIndex: '10000',
+                top: '0', left: '0',
+                cursor: 'zoom-out'
+            }).click(function() {
+                $(this).remove();
+            }).appendTo('body');
+        });
+    });
+</script>
+
+<script>
+    function previewFile(filePath) {
+        // Open PDF in a new tab
+        window.open(filePath, '_blank');
+    }
+
+
+    let documentIdToDelete; // Variable to store the document ID to delete
+
+    // Function to show the confirmation modal
+    function activityDoneShowDeleteConfirmation(id) {
+        documentIdToDelete = id; // Store the ID of the document to delete
+        $('#confirmationModal').modal('show'); // Show the modal
+    }
+
+    // Confirm delete action
+    $('#confirmDelete').on('click', function () {
+        $.ajax({
+            url: '{{ route('lead.deleteDocument') }}', // Adjust route as necessary
+            method: 'POST',
+            data: {
+                id: documentIdToDelete,
+                _token: '{{ csrf_token() }}' // Include CSRF token for security
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success('Document deleted successfully!');
+                    // Hide the modal
+                    $('#confirmationModal').modal('hide');
+                    // Remove the document from the UI
+                    $('#document-' + documentIdToDelete).remove(); // Use the unique ID to remove the document
+                } else {
+                    toastr.error('Failed to delete document.');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Error occurred while deleting the document.');
+            }
+        });
+    });
+
+    window.uploadFile = function (inputId, activityId) {
+        const fileInput = document.getElementById(inputId);
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert('Please select a file to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('activity_id', activityId); // Include the activity ID for database update
+
+        // Add CSRF token for Laravel
+        formData.append('_token', '{{ csrf_token() }}');
+
+        $.ajax({
+            url: '{{ route('lead.uploadFile') }}',  // Change to your backend endpoint
+            method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                if (response.success) {
+                    location.reload();
+                    // Optionally, update the UI to reflect the new status
+                    toastr.success('File uploaded successfully.');
+                } else {
+                    toastr.error('Failed to upload the file.');
+                }
+            },
+            error: function (xhr) {
+                toastr.error('Error occurred while uploading the file: ' + xhr.responseText);
+            }
+        });
+    };
+</script>
+
+<!-- Activity Done Star Store Function -->
+<script>
+            $(document).ready(function() {
+                $('.toggle-star').each(function() {
+                    const activityId = $(this).data('id');
+                    const icon = $(this).find('i');
+                    
+                    // Check localStorage for the star state
+                    const storedState = localStorage.getItem(`activity_${activityId}_is_star`);
+                    
+                    if (storedState !== null) {
+                        const isStar = storedState === '1';
+                        icon.toggleClass('fa-star', isStar);
+                        icon.toggleClass('fa-star-o', !isStar);
+                        icon.toggleClass('selected-star', isStar); // Gold color for selected star
+                        icon.toggleClass('not-selected', !isStar); // Gray border for unselected star
+                    }
+                });
+
+                $('.toggle-star').on('click', function() {
+                    const icon = $(this).find('i'); // Target the icon for this button
+                    const activityId = $(this).data('id');
+                    const isStar = icon.hasClass('fa-star');
+                    const newIsStar = !isStar ? 1 : 0; // Set to 1 if selected, 0 if unselected
+
+                    // AJAX request to update the database
+                    $.ajax({
+                        url: `/star-update/${activityId}`,
+                        type: 'POST',
+                        data: {
+                            is_star: newIsStar,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(data) {
+                            if (data.success) {
+                                // Toggle star icon and classes for this button only
+                                icon.toggleClass('fa-star fa-star-o');
+                                icon.toggleClass('selected-star', newIsStar === 1);
+                                icon.toggleClass('not-selected', newIsStar === 0);
+                                
+                                // Store the state in localStorage for this activity
+                                localStorage.setItem(`activity_${activityId}_is_star`, newIsStar);
+                            } else {
+                                console.error(data.message);
+                            }
+                        }.bind(this),
+                        error: function(xhr, status, error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                });
+            });
+        </script>
+
+        <!-- Activity Done Star Store Function -->
+<script>
+  $('.convert_to_opportunity').on('click', function(){
+     console.log('clicked');
+     $('#convertopportunityModal').modal('show');
+  });
+</script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+    const textarea = document.getElementById("send_message");
+    const fileInput = document.querySelector('.image_uplode');
+    const sendButton = document.querySelector('.send_messag_by_email');
+
+    function updateSendButtonState() {
+        // Enable send button if textarea has text or if files are selected
+        const hasText = textarea.value.trim() !== '';
+        const hasFiles = fileInput.files.length > 0;
+        sendButton.disabled = !(hasText || hasFiles);
+    }
+
+    textarea.addEventListener('input', updateSendButtonState);
+    fileInput.addEventListener('change', updateSendButtonState);
+
+    // Initialize button state on page load
+    updateSendButtonState();
+});
+
+    // Log Note Send button
+document.addEventListener("DOMContentLoaded", function() {
+    const textarea = document.getElementById("send_message1");
+    const fileInput = document.querySelector('.image_uplode_2');
+    const sendButton = document.querySelector('.store_log_notes');
+
+    function updateSendButtonState() {
+        // Enable send button if textarea has text or if files are selected
+        const hasText = textarea.value.trim() !== '';
+        const hasFiles = fileInput.files.length > 0;
+        sendButton.disabled = !(hasText || hasFiles);
+    }
+
+    textarea.addEventListener('input', updateSendButtonState);
+    fileInput.addEventListener('change', updateSendButtonState);
+
+    // Initialize button state on page load
+    updateSendButtonState();
+});
+
+$(document).ready(function() {
+    const form = $('#myForm');
+    const saveButton = $('#main_save_btn');
+    const discardButton = $('#main_discard_btn');
+
+    // Initialize default values for inputs
+    const inputs = form.find('input, select, textarea');
+    inputs.each(function() {
+        if ($(this).is(':checkbox') || $(this).is(':radio')) {
+            $(this).data('defaultChecked', $(this).is(':checked'));
+        } else {
+            $(this).data('defaultValue', $(this).val());
+        }
+    });
+
+    // Function to check for changes
+    function checkChanges() {
+        let hasChanged = false;
+
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                    hasChanged = true;
+                }
+            } else if ($(this).is('select')) {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            } else {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            }
+        });
+
+        saveButton.toggle(hasChanged);
+        discardButton.toggle(hasChanged);
+    }
+
+    // Event listeners for input and change events
+    form.on('input change', checkChanges);
+
+    // Handle paste and drop events on the textarea
+    $('textarea#description').on('paste', function(event) {
+        const clipboardData = event.originalEvent.clipboardData;
+        const items = clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image pasted!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when pasting
+    });
+
+    // Handle drop event
+    $('textarea#description').on('drop', function(event) {
+        event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+        const dataTransfer = event.originalEvent.dataTransfer;
+        const items = dataTransfer.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image dropped!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when dropping
+    });
+
+    // Handle star selection for priority
+    $('.o_priority_star').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+
+        // Remove 'fa-star' class from all stars and add 'fa-star-o'
+        $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+        // Add 'fa-star' class to the selected star and all stars before it
+        $(this).addClass('fa-star');
+        $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+        // Update the default value for change detection
+        inputs.each(function() {
+            if ($(this).attr('data-value') === selectedValue) {
+                $(this).data('defaultValue', selectedValue); // Update default value for change detection
+            }
+        });
+
+        checkChanges(); // Check for changes after updating the priority
+    });
+
+    discardButton.on('click', function() {
+        location.reload();
+    });
+
+    // Select2 initialization
+    $('.o-autocomplete--input').select2();
+
+    // Reset button visibility on form load
+    saveButton.hide();
+    discardButton.hide();
+});
+
+</script>
+<script>
+$(document).ready(function() {
+    // Store the current ID and index globally
+    var currentId = {{ isset($data) ? $data->id : 'null' }};
+    var currentIndex = {{ $index }};
+    var allLeads = {!! json_encode($allLeads) !!}; // Pass all leads to JavaScript
+
+    // Find the total number of leads
+    var totalLeads = allLeads.length;
+
+    // Handle Next button click
+    $('.o_pager_next').on('click', function() {
+        // If current index is the last lead, redirect to the first lead
+        if (currentIndex >= totalLeads) {
+            currentIndex = 1; // Reset to first index
+            currentId = allLeads[0].id; // Update currentId to the first lead's ID
+        } else {
+            currentIndex++; // Increment index
+            currentId = allLeads[currentIndex - 1].id; // Update currentId to the next lead's ID
+        }
+        // Redirect to the lead-add route with the new ID and index
+        window.location.href = '/lead-add/' + currentId + '/' + currentIndex;
+    });
+
+    // Handle Previous button click
+    $('.o_pager_previous').on('click', function() {
+        // If current index is the first lead, redirect to the last lead
+        if (currentIndex <= 1) {
+            currentIndex = totalLeads; // Set to last index
+            currentId = allLeads[totalLeads - 1].id; // Update currentId to the last lead's ID
+        } else {
+            currentIndex--; // Decrement index
+            currentId = allLeads[currentIndex - 1].id; // Update currentId to the previous lead's ID
+        }
+        // Redirect to the lead-add route with the new ID and index
+        window.location.href = '/lead-add/' + currentId + '/' + currentIndex;
+    });
+
+  
+});
+  $('.archive_lead').on('click',function(){
+            console.log('clicked');
+
+        $('#ArchiveconfirmationModal').modal('show');
+
+    });
+    $('#archiveconfirmDelete').on('click', function(){
+        var lead_id = $('#lead_id').val();
+        
+        
+        $.ajax({
+            url: '{{ route('leads.markAsLost') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                lead_id: lead_id,
+                
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                $('#ArchiveconfirmationModal').modal('hide');
+                location.reload();
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+    })
+    $('.duplicate_lead').on('click',function(){
+            var lead_id = $('#lead_id').val();
+            $.ajax({
+            url: '{{ route('lead.DuplicateLead') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                lead_id: lead_id,
+                
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                location.reload();
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+
+    });
+
+    $('.delete_lead').on('click',function(){
+        $('#deleteconfirmationModal').modal('show');
+    });
+    $('#deleteconfirmDelete').on('click',function(){
+            var lead_id = $('#lead_id').val();
+            $.ajax({
+            url: '{{ route('lead.DeleteLead') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                lead_id: lead_id,
+                
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                location.href = '{{ route('lead.index') }}';
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+
+    });
+
+    $('.mark_lost_lead').on('click',function(){
+        $('#marklostModal').modal('show');
+    });
+
+    $('.mark_as_lost_lead').on('click', function(){
+          var lead_id = $('#lead_id').val();
+            var lost_reasons = $('#lost_reasons_lead').val();
+            var closing_notes = $('#new_lost_input_lead').val();
+            
+            $.ajax({
+                url: '{{ route('leads.markAsLost') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    lead_id: lead_id,
+                    lost_reasons: lost_reasons,
+                    closing_notes: closing_notes,
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#marklostModal').modal('hide');
+                    location.reload();
+                  
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+    });
+
+    $('.send_mail_lead').on('click',function(){
+        $('#sendmailleadModal').modal('show');
+    });
+
+  $('.send_mail_by_lead').on('click', function () {
+    var to_mail = $('#contact_id').val();
+    var send_message  = $('#lead_mail_message ').val();
+    var lead_id = $('#lead_id').val();
+    var image_uplode = $('#attachment')[0].files; // Get the file(s) from input
+
+    // Create FormData object
+    var formData = new FormData();
+    formData.append('_token', '{{ csrf_token() }}');
+    formData.append('to_mail', to_mail);
+    formData.append('send_message', send_message);
+    formData.append('lead_id', lead_id);
+
+    // Append the files to the FormData
+    for (var i = 0; i < image_uplode.length; i++) {
+        formData.append('image_uplode[]', image_uplode[i]);
+    }
+
+    $.ajax({
+        url: '{{ route('lead.send_message_by_lead') }}',
+        type: 'POST',
+        data: formData,
+        contentType: false, // Important for file upload
+        processData: false, // Important for file upload
+        success: function (response) {
+            toastr.success(response.message);
+            $('#sendmailleadModal').modal('hide');
+            location.reload();
+        },
+        error: function (xhr, status, error) {
+            toastr.error('Something went wrong!');
+        }
+    });
+});
+
+    
+
+  
+
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('attachment').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const attachmentView = document.getElementById('attachment_view');
+            attachmentView.innerHTML = ''; // Clear the previous previews
+
+            Array.from(files).forEach((file, index) => {
+                const fileType = file.type;
+
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'file-preview';
+                fileDiv.style.position = 'relative';
+                fileDiv.style.marginBottom = '10px';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.style.position = 'absolute';
+                removeBtn.style.top = '5px';
+                removeBtn.style.right = '5px';
+                removeBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+
+                // Function to handle file removal
+                removeBtn.addEventListener('click', function() {
+                    // Remove the preview from the DOM
+                    fileDiv.remove();
+
+                    // Create a new FileList without the removed file
+                    const newFiles = Array.from(files).filter((_, i) => i !== index);
+                    const dataTransfer = new DataTransfer();
+
+                    newFiles.forEach((file) => {
+                        dataTransfer.items.add(file);
+                    });
+
+                    // Update the input element with the new FileList
+                    document.getElementById('attachment').files = dataTransfer.files;
+                });
+
+                fileDiv.appendChild(removeBtn);
+
+                if (fileType.startsWith('image/')) {
+                    // Display the name of the image instead of the preview
+                    const imgName = document.createElement('span');
+                    imgName.innerHTML = '🖼️ ' + file.name;
+                    imgName.style.fontSize = '16px';
+                    fileDiv.appendChild(imgName);
+                    attachmentView.appendChild(fileDiv);
+                } else if (fileType === 'application/pdf') {
+                    // Show PDF name with an icon
+                    const pdfIcon = document.createElement('span');
+                    pdfIcon.innerHTML = '📄 ' + file.name;
+                    pdfIcon.style.fontSize = '16px';
+                    fileDiv.appendChild(pdfIcon);
+                    attachmentView.appendChild(fileDiv);
+                }
+            });
+        });
+
+        document.getElementById('attachButton').addEventListener('click', function() {
+            document.getElementById('attachment').click();
+        });
+    });
+</script>
+
 
 
 

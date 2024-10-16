@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class send_message extends Model
+class send_log_notes extends Model
 {
     use HasFactory;
-    protected $fillable = ['to_mail', 'from_mail', 'message', 'image', 'type_id', 'type','is_star'];
+    protected $fillable = ['id','message', 'image', 'type', 'type_id','is_start'];
 
     public function user()
     {

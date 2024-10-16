@@ -24,10 +24,11 @@
 <li class="dropdown">
     <a href="#">Reporting</a>
     <div class="dropdown-content">
-        <a href="{{route('crm.forecasting')}}">Forecast</a>
-        <a href="#">Pipeline</a>
-        <a href="#">Leads</a>
-        <a href="#">Activities</a>
+        <!-- Dropdown content for Reporting -->
+        <a href="{{ route('crm.forecasting') }}">Forecast</a>
+        <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+        <a href="{{ route('lead.graph') }}">Leads</a>
+        <a href="{{route('crm.pipeline.graph')}}">Activities</a>
     </div>
 </li>
 <li class="dropdown">
@@ -51,33 +52,37 @@
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
+
 @endsection
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-primary fa fa-filter"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 fa fa-filter"></i>
             <input type="hidden" id="filter" name="filter" value="">
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-activities"><span
-                class="float-end checkmark" style="display:none;">✔</span>My Activities</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate my-pipeline"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-pipeline"><span
+                class="float-end checkmark" style="display:none;">✔</span>My Pipeline</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate unassigned"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span
                 class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
-        <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span"
-            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false"><span class="float-end checkmark"
-                style="display:none;">✔</span>Lost & Archived</span>
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate open_opportunities"
+            role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="open_opportunities"><span
+                class="float-end checkmark" style="display:none;">✔</span>Open Opportunities</span>
         <div class="dropdown-divider" role="separator"></div>
         <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate"
                 style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false"
                 id="creationDateBtn1">
                 Creation Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown1"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
@@ -87,13 +92,13 @@ $currentMonth = date('F '); // e.g., September 2024
 $lastMonth = date('F ', strtotime('-1 month')); // Last month
 $twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
 $threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
-                    ?>
+                                            ?>
                 <?php
 // Get the current year
 $currentYear = date('Y'); // e.g., 2024
 $lastYear = date('Y', strtotime('-1 year')); // Last year
 $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
-                    ?>
+                ?>
                 <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark"
                         style="display:none;">✔</span><?php echo $currentMonth; ?></span>
                 <span class="o-dropdown-item_2  creation_time"><span class="float-end checkmark"
@@ -121,7 +126,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             <button class="o_menu_item o_accordion_toggle creation_time o-navigable text-truncate" tabindex="0"
                 aria-expanded="false" id="closeDateBtn1" style="display: flex;justify-content: space-between;">
                 Closed Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown1"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
@@ -150,19 +155,17 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         </div>
         <div class="dropdown-divider" role="separator"></div><span
             class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="" aria-checked="false">Late Activities</span><span
+            tabindex="0" title="Won" aria-checked="false">Won</span><span
             class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="Today Activities" aria-checked="false">Today Activities</span><span
+            tabindex="0" title="Ongoing" aria-checked="false">Ongoing</span><span
             class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox"
-            tabindex="0" title="Future Activities" aria-checked="false">Future Activities</span>
+            tabindex="0" title="Lost" aria-checked="false">Lost</span>
         <div class="dropdown-divider" role="separator"></div>
-        <!-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate lost_span" role="menuitemcheckbox" tabindex="0" title="" aria-checked="false">Archived</span>
-        <div role="separator" class="dropdown-divider"></div> -->
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
             tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action oi oi-group"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 text-action fa fa-layer-group"></i>
             <h5 class="o_dropdown_title d-inline">Group By</h5>
         </div>
         <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
@@ -173,10 +176,16 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 style="display:none;">✔</span>Sales Team</span>
         <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Stage</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>City</span>
         <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Country</span>
+        <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
+            tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
+                style="display:none;">✔</span>Lost Reason</span>
         <span class="o-dropdown-item_1 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
             tabindex="0" title="" aria-checked="false"> <span class="float-end checkmark"
                 style="display:none;">✔</span>Campaign</span>
@@ -193,7 +202,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 style="display: flex;justify-content: space-between;" tabindex="0" aria-expanded="false"
                 id="creationDateBtn">
                 Creation Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="creationDateDropdown"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
@@ -213,7 +222,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
                 aria-expanded="false" id="closeDateBtn" style="display: flex;justify-content: space-between;">
                 Closed Date
-                <span class="arrow-icon">▼</span>
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
             </button>
             <div class="o_dropdown_content" id="closeDateDropdown"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
@@ -229,15 +238,46 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
-
-        {{-- <div class="o_accordion position-relative">
+        <div class="o_accordion position-relative">
             <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
-                aria-expanded="false">Closed Date</button>
-        </div> --}}
-        <div class="dropdown-divider" role="separator"></div>
-        {{-- <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable  text-truncate" tabindex="0"
-                aria-expanded="false">Properties</button></div> --}}
+                aria-expanded="false" id="conversionBtn" style="display: flex;justify-content: space-between;">
+                Conversion Date
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="conversionDate"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Day</span>
+            </div>
+        </div>
+        <div class="o_accordion position-relative">
+            <button class="o_menu_item o_accordion_toggle dropdown-item o-navigable text-truncate" tabindex="0"
+                aria-expanded="false" id="expectedBtn" style="display: flex;justify-content: space-between;">
+                Expected Closing
+                <span class="arrow-icon" style="font-size: 10px;margin-top: 4px;">▼</span>
+            </button>
+            <div class="o_dropdown_content" id="cxpectedClosing"
+                style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Year</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Month</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Week</span>
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                        class="float-end checkmark" style="display:none;">✔</span>Day</span>
+            </div>
+        </div>
         <div role="separator" class="dropdown-divider"></div>
         <select class="o_add_custom_group_menu o_menu_item dropdown-item">
             <option value="" disabled="true" selected="true" hidden="true">Add Custom Group</option>
@@ -436,13 +476,14 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
     .dropdown-menu {
         display: none;
-        position: absolute;
+        position: fixed;
         background-color: #f9f9f9;
-        min-width: 691px;
+        min-width: 623px;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
-        padding: 10px;
         top: auto;
+        right: 0;
+        left: auto;
     }
 
     .dropdown-menu a {
@@ -569,80 +610,64 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     }
 
     .o_priority_star.fa-star {
-        color: #f3cc00; /* Color for filled stars */
+        color: #f3cc00;
+        /* Color for filled stars */
     }
 
     .o_priority_star.fa-star-o {
-        color: gray; /* Color for empty stars */
+        color: gray;
+        /* Color for empty stars */
+    }
+
+    .dropdown-toggle::after {
+        content: none !important;
+    }
+
+
+    tbody#lead-table-body tr:hover {
+        background-color: #fafafa !important;
+    }
+
+    tbody#lead-table-body tr:hover td {
+        background-color: #fafafa !important;
+    }
+
+    table.dataTable thead th,
+    table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #11111147;
+        border-top: 1px solid #11111147;
+        background: #f1f1f1;
+    }
+
+    .dataTables_length label {
+        display: flex;
+        gap: 10px;
+        margin: 0 !important;
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        text-align: center;
+        border-radius: 5px;
+        border: 1px solid #2222;
+    }
+
+    table.dataTable tbody tr,
+    table.dataTable.display tbody tr.odd>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+    table.dataTable.display tbody tr.even>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+        background-color: #ffffff !important;
+    }
+
+    .o_accordion_toggle::after {
+        display: none;
     }
 </style>
 
 <div class="card" style="padding: 1%">
     <div class="table-responsive text-nowrap">
-        <button class="dropdown-btn">Show/Hide Columns</button>
-        <div class="hide-show-dropdown-menu dropdown-menu">
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="0" checked> Lead</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="1" checked> Email</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="2"> City</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="3"> State</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="4"> Country</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="5"> Zip</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="6"> Probability</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="7"> Company Name</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="8"> Address 1</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="9"> Address 2</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="10"> Website Link</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="11"> Contact Name</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="12"> Job Postion</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="13"> Phone</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="14"> Mobile</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="15"> Priority</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="16"> Title</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="17"> Tag</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="18"> Sales Person</label>
-            </div>
-            <div class="dropdown-checkbox">
-                <label><input type="checkbox" data-column="19"> Sales Team</label>
-            </div>
-        </div>
-        <table id="example" class="display nowrap example">
+        <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
                     <th>Created On</th>
@@ -672,12 +697,154 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     <th>Probability</th>
                     <th>Lost Reason</th>
                     <th>Tags</th>
-                    <th></th>
+                    <th style="width:35px !important"><a class="dropdown-btn"><i class="fa fa-list"></i></a>
+                        <div class="hide-show-dropdown-menu dropdown-menu">
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="0" checked> Created On</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="1" checked> Opportunity</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="2"> Customer</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="3" checked> Contact Name</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="4" checked> Email</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="5"> Phone</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="4"> City</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="7"> State</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="8"> Country</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="9" checked> Sales Person</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="10"> Sales Team</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="11" checked> Priority</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="12"> Campaign</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="13"> Medium</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="14"> Source</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="15" checked> Expected Revenue</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="16"> Expected Closing</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="17" checked> Expected MRR</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="18"> Recurring Revenues</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="19"> Recurring Plan</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="20" checked> Stage</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="21" checked> Probability</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="22"> Lost Reason</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="23"> Tags</label>
+                            </div>
+
+                        </div>
+                    </th>
 
                 </tr>
             </thead>
 
             <tbody id="lead-table-body">
+                @forEach($data as $pipeline)
+                            <tr data-id="{{$pipeline->id}}" style="cursor: pointer;">
+                                <td>{{ $pipeline->created_at->format('d/m/Y H:i:s') ?? '' }}</td>
+                                <td>{{$pipeline->opportunity ?? ''}}</td>
+                                <td>{{$pipeline->contact->name ?? ''}}</td>
+                                <td>{{$pipeline->contact_name ?? ''}}</td>
+                                <td>{{$pipeline->email ?? ''}}</td>
+                                <td>{{$pipeline->phone ?? ''}}</td>
+                                <td>{{$pipeline->city ?? ''}}</td>
+                                <td>{{$pipeline->getState->name ?? ''}}</td>
+                                <td>{{$pipeline->getCountry->name ?? ''}}</td>
+                                <td>{{$pipeline->user->email ?? ''}}</td>
+                                <td>{{$pipeline->sales ?? ''}}</td>
+                                <td>
+                                    <!-- Medium Priority -->
+                                    <a href="#"
+                                        class="o_priority_star fa {{ isset($pipeline->priority) && ($pipeline->priority == 'medium' || $pipeline->priority == 'high' || $pipeline->priority == 'very_high') ? 'fa-star' : 'fa-star-o' }}"
+                                        role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium"
+                                        aria-label="Medium"></a>
+
+                                    <!-- High Priority -->
+                                    <a href="#"
+                                        class="o_priority_star fa {{ isset($pipeline->priority) && ($pipeline->priority == 'high' || $pipeline->priority == 'very_high') ? 'fa-star' : 'fa-star-o' }}"
+                                        role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High"
+                                        aria-label="High"></a>
+
+                                    <!-- Very High Priority -->
+                                    <a href="#"
+                                        class="o_priority_star fa {{ isset($pipeline->priority) && $pipeline->priority == 'very_high' ? 'fa-star' : 'fa-star-o' }}"
+                                        role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High"
+                                        aria-label="Very High"></a>
+                                </td>
+                                <!-- <td>Activities</td>
+                                                                    <td>Activity By</td> -->
+                                <!-- <td>My Deadline</td> -->
+                                <td>{{$pipeline->getCampaign->name ?? ''}}</td>
+                                <td>{{$pipeline->getMedium->name ?? ''}}</td>
+                                <td>{{$pipeline->getSource->name ?? ''}}</td>
+                                <td>{{$pipeline->expected_revenue ?? ''}}</td>
+                                <td>{{$pipeline->deadline ?? ''}}</td>
+                                <td>
+                                    @if($pipeline->recurring_revenue && $pipeline->getRecurringPlan && $pipeline->getRecurringPlan->months)
+                                                        <?php
+                                        $revenue = floatval($pipeline->recurring_revenue);
+                                        $months = floatval($pipeline->getRecurringPlan->months);
+                                        $expertMrr = ($months > 0) ? number_format($revenue / $months, 2) : 'Invalid months';
+                                                                                                                                                            ?>
+                                                        {{ $expertMrr }}
+                                    @else
+
+                                    @endif
+                                </td>
+                                <td>{{$pipeline->recurring_revenue ?? ''}}</td>
+                                <td>{{$pipeline->getRecurringPlan->plan_name ?? ''}}</td>
+                                <td>{{$pipeline->stage->title ?? ''}}</td>
+                                <td>{{$pipeline->probability ?? ''}}</td>
+                                <td>{{$pipeline->loslost_reasont ?? ''}}</td>
+                                <td>
+                                    @foreach($pipeline->tags() as $tag)
+                                        <span class="badge badge-primary"
+                                            style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
+                                    @endforeach
+                                </td>
+                                <td></td>
+                @endforeach
+                </tr>
             </tbody>
             <tfoot>
                 <tr>
@@ -687,7 +854,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     <th id="total_recurring_mrr"></th>
                     <th colspan="1"></th>
                     <th id="total_recurring_revenue"></th>
-                    <th colspan="4"></th>
+                    <th colspan="5"></th>
                 </tr>
             </tfoot>
         </table>
@@ -698,345 +865,38 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
+{{--
+<script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
 
 <script>
     $(document).ready(function () {
-        // Initialize DataTable with server-side processing
         var table = $('#example').DataTable({
-            processing: true
-            , serverSide: true
-            , ajax: {
-                url: '{{ route('crm.pipeline.list.data') }}'
-                , type: "POST"
-                , data: function (d) {
-                    d.search = {
-                        value: $('#example_filter input').val()
-                    };
-                    d.filter = $('#filter').val();
-                }
-            }
-            , order: [
-                [1, 'DESC']
-            ]
-            , pageLength: 10
-            , aoColumns: [{
-                data: 'created_at',
-                render: function (data, type, row) {
-                    if (data) {
-                        // Create a new Date object
-                        var date = new Date(data);
-
-                        // Format the date and time
-                        var formattedDate = date.toLocaleDateString('en-GB'); // Adjust locale as needed
-                        var formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }); // Adjust locale and options as needed
-
-                        return formattedDate + ' ' + formattedTime;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'opportunity'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'contact'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.name;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'contact_name'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    }
-                    return '';
-                }
-            }
-                , {
-                data: 'email'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    }
-                    return '';
-                }
-
-            }
-                , {
-                data: 'phone'
-                , render: function (data, type, row) {
-
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
+            "pageLength": 25,
+            searching: false,
+            "lengthChange": false,
+            "sDom": 'Rlfrtip',
+            "oColReorder": {
+                "bAddFixed": true
             },
-            {
-                data: 'city'
-                , render: function (data, type, row) {
-
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'get_state'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.name;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'get_country'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.name;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'user'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.email;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'sales'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'priority'
-                ,  render: function (data, type, row) {
-                    let priorityStars = '';
-                    const priority = row.priority; // Assuming 'priority' is part of the row data
-
-                    priorityStars += `<div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">`;
-
-                    // Medium priority
-                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'medium' || priority === 'high' || priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>`;
-
-                    // High priority
-                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'high' || priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>`;
-
-                    // Very High priority
-                    priorityStars += `<a href="#" class="o_priority_star fa ${priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>`;
-
-                    priorityStars += `</div>`;
-
-                    return priorityStars;
-                }
-            }
-                //     , {
-                //     data: 'contact_name'
-                //     , render: function (data, type, row) {
-                //         if (data) {
-                //             return data;
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // }
-                //     , {
-                //     data: 'job_postion'
-                //     , render: function (data, type, row) {
-                //         if (data) {
-                //             return data;
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // }
-                //     , {
-                //     data: 'deadline'
-                //     , render: function (data, type, row) {
-                //         if (data) {
-                //             return data;
-                //         } else {
-                //             return '';
-                //         }
-                //     }
-                // }
-                , {
-                data: 'get_campaign'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.name;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'get_medium'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.name;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'get_source'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.name;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'expected_revenue'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                data: 'deadline'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                , {
-                targets: 17, // Adjust index if necessary
-                render: function (data, type, row) {
-                    if (row.recurring_revenue && row.get_recurring_plan && row.get_recurring_plan.months) {
-                        const revenue = parseFloat(row.recurring_revenue); // Total revenue
-                        const months = parseFloat(row.get_recurring_plan.months); // Number of months
-
-                        if (months > 0) { // Check to avoid division by zero
-                            const monthlyValue = (revenue / months).toFixed(2);
-                            return `${monthlyValue}`; // Return the calculated MRR
-                        } else {
-                            return 'Invalid months'; // Handle invalid months case
-                        }
-                    } else {
-                        return ''; // Show nothing if either value is absent
-                    }
-                }
-            },
-            {
-                data: 'recurring_revenue'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'get_recurring_plan'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data.plan_name;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'stage_id'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'probability'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'loslost_reasont'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            },
-            {
-                data: 'tag'
-                , render: function (data, type, row) {
-                    if (data) {
-                        return data;
-                    } else {
-                        return '';
-                    }
-                }
-            }
-                // Uncomment and modify the following column if needed
-                // {
-                //     data: 'id',
-                //     width: "20%",
-                //     render: function(data, type, row) {
-                //         return `<a href="${row.id}">View</a>`;
-                //     }
-                // }
-            ]
-            ,
             footerCallback: function (row, data, start, end, display) {
                 var api = this.api();
 
-                // Calculate total expected revenue over all pages
                 var totalExpectedRevenue = api
-                    .column(15) // 'expected_revenue' column index
+                    .column(15)
                     .data()
                     .reduce(function (a, b) {
                         var x = parseFloat(a) || 0;
@@ -1044,23 +904,18 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         return x + y;
                     }, 0);
 
-                // Calculate total recurring MRR over all pages
                 var totalRecurringMrr = 0;
-                api.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                api.rows().every(function () {
                     var data = this.data();
-                    if (data.recurring_revenue && data.get_recurring_plan && data.get_recurring_plan.months) {
-                        const revenue = parseFloat(data.recurring_revenue);
-                        const months = parseFloat(data.get_recurring_plan.months);
+                    var mrrValue = parseFloat(data[17]) || 0; // Use the 17th column for MRR (index 16)
 
-                        if (months > 0) {
-                            totalRecurringMrr += (revenue / months);
-                        }
+                    if (!isNaN(mrrValue)) { // Ensure it's a number
+                        totalRecurringMrr += mrrValue;
                     }
                 });
 
-                // Calculate total recurring revenue over all pages
                 var totalRecurringRevenue = api
-                    .column(18) // 'recurring_revenue' column index
+                    .column(18)
                     .data()
                     .reduce(function (a, b) {
                         var x = parseFloat(a) || 0;
@@ -1068,52 +923,23 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         return x + y;
                     }, 0);
 
-                // Update footer for expected revenue
-                $(api.column(15).footer()).html(totalExpectedRevenue.toFixed(2));
-
-                // Update footer for recurring MRR
-                $(api.column(17).footer()).html(totalRecurringMrr.toFixed(2));
-
-                // Update footer for recurring revenue
-                $(api.column(18).footer()).html(totalRecurringRevenue.toFixed(2));
+                $(api.column(15).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+                $(api.column(17).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+                $(api.column(18).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
             },
             createdRow: function (row, data, dataIndex) {
                 $(row).attr('data-id', data.id);
-            }
-
+            },
 
         });
 
-        // Handle row click event
         $('#example tbody').on('click', 'tr', function () {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
             if (id) {
                 window.location.href = '/pipeline-create/' + id; // Adjust the URL to your edit page
             }
         });
-
-        // Handle filter click event
-        $('.o_menu_item').on('click', function () {
-            var filter = $(this).attr('id'); // Get the filter ID
-            $('#filter').val(filter); // Set the filter value
-            table.ajax.reload(); // Reload the DataTable with new filter
-        });
-
         // Restore column visibility from local storage
-        function restoreColumnVisibility() {
-            var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
-            if (visibility) {
-                table.columns().every(function () {
-                    var column = this;
-                    var index = column.index();
-                    var isVisible = visibility[index] !== undefined ? visibility[index] : true;
-                    column.visible(isVisible);
-                    $('.dropdown-menu input[data-column="' + index + '"]').prop('checked', isVisible);
-                });
-            }
-        }
-
-        // Save column visibility to local storage
         function saveColumnVisibility() {
             var visibility = {};
             table.columns().every(function () {
@@ -1123,24 +949,70 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });
             localStorage.setItem('columnVisibility', JSON.stringify(visibility));
         }
-
+        // Restore column visibility from localStorage
+        function restoreColumnVisibility() {
+            var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
+            if (visibility) {
+                table.columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    // Check if the column exists and visibility is defined
+                    if (visibility.hasOwnProperty(index)) {
+                        var isVisible = visibility[index];
+                        // Ensure the column exists before setting visibility
+                        if (typeof column !== 'undefined') {
+                            column.visible(isVisible);
+                            // Update the corresponding checkbox based on the visibility
+                            $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
+                        }
+                    }
+                });
+            } else {
+                // If no visibility settings in localStorage, set default visibility
+                table.column(0).visible(true);
+                table.column(1).visible(true);
+                table.column(2).visible(false);
+                table.column(3).visible(true);
+                table.column(4).visible(true);
+                table.column(5).visible(false);
+                table.column(6).visible(false);
+                table.column(7).visible(false);
+                table.column(8).visible(false);
+                table.column(9).visible(true);
+                table.column(10).visible(false);
+                table.column(11).visible(true);
+                table.column(12).visible(false);
+                table.column(13).visible(false);
+                table.column(14).visible(false);
+                table.column(15).visible(true);
+                table.column(16).visible(false);
+                table.column(17).visible(true);
+                table.column(18).visible(false);
+                table.column(19).visible(false);
+                table.column(20).visible(true);
+                table.column(21).visible(false);
+                table.column(22).visible(false);
+                table.column(23).visible(false);
+            }
+        }
         // Handle column visibility based on checkbox status
         $('.dropdown-menu input[type="checkbox"]').on('change', function () {
-            var column = table.column($(this).data('column'));
-            column.visible(this.checked);
-            saveColumnVisibility(); // Save visibility to local storage
+            var columnIndex = $(this).data('column');
+            var column = table.column(columnIndex);
+            // Ensure the column exists before trying to set visibility
+            if (typeof column !== 'undefined') {
+                column.visible(this.checked); // Show or hide the column based on the checkbox state
+                saveColumnVisibility(); // Save visibility to local storage
+            }
         });
-
-        // Set default visibility for columns based on initial checkbox state
+        // Restore visibility states on page load
         restoreColumnVisibility();
-
         // Handle dropdown menu display
         $(document).on('click', '.dropdown-btn', function (event) {
             event.stopPropagation(); // Prevent click event from propagating to the document
             $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
             $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
         });
-
         $(document).on('click', function (event) {
             if (!$(event.target).closest('.dropdown-menu').length) {
                 $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
@@ -1171,40 +1043,95 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
 </script>
 
-
 <script>
-    $(document).on('click', '.lead-row', function () {
-        var leadId = $(this).data('id');
-        window.location.href = "{{ route('lead.create') }}/" + leadId;
-    });
+    $(document).ready(function () {
+        // Show the dropdown when the input field is clicked
+        $('#search-input').on('click', function () {
+            $('#search-dropdown').show();
+            $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'true'); // Update aria-expanded
+            $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+        });
 
-    function storeLead() {
-        $.ajax({
-            url: "{{ route('lead.storeLead') }}"
-            , type: "POST"
-            , data: {
-                _token: "{{ csrf_token() }}"
-                ,
-            }
-            , success: function (response) {
-                console.log('Lead stored successfully.', response);
-            }
-            , error: function (error) {
-                console.error('Error storing lead:', error);
+        // Add selected value to the input field and hide the dropdown
+        $(document).on('click', '#search-dropdown .o-dropdown-item', function () {
+            $('#search-dropdown').hide();
+            $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change back to down arrow
+        });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown, .o_searchview_dropdown_toggler').length) {
+                $('#search-dropdown').hide();
+                $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change back to down arrow
+                $('.o_searchview_dropdown_toggler').attr('aria-expanded', 'false'); // Update aria-expanded
             }
         });
-    }
 
-    // Auto-refresh every 2 minutes
-    setInterval(function () {
-        console.log('Attempting to store lead...');
-        storeLead();
-    }, 2 * 60 * 1000);
-    storeLead();
+        // Toggle dropdown on arrow click
+        $('.o_searchview_dropdown_toggler').click(function (event) {
+            event.stopPropagation(); // Prevent click event from bubbling up
+            const dropdown = $('#search-dropdown');
+            const isExpanded = $(this).attr('aria-expanded') === 'true';
 
+            // Toggle the dropdown visibility
+            dropdown.toggle();
+            $(this).attr('aria-expanded', !isExpanded);
+
+            // Change the arrow direction
+            if (isExpanded) {
+                $('#dropdown-arrow').removeClass('fa-caret-up').addClass('fa-caret-down'); // Change to down arrow
+            } else {
+                $('#dropdown-arrow').removeClass('fa-caret-down').addClass('fa-caret-up'); // Change to up arrow
+            }
+        });
+
+        // Toggle Creation Date Dropdown
+        $('#creationDateBtn, #creationDateBtn1').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#creationDateDropdown1' : '#creationDateDropdown';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns, except creation date dropdown
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Toggle Closed Date Dropdown
+        $('#closeDateBtn, #closeDateBtn1').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#closeDateDropdown1' : '#closeDateDropdown';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Toggle Conversion Date &  Expected Date Dropdown
+        $('#conversionBtn, #expectedBtn').on('click', function (event) {
+            event.preventDefault();
+
+            const dropdownId = $(this).attr('id').includes('1') ? '#conversionDate' : '#cxpectedClosing';
+            $(dropdownId).slideToggle();
+            $(this).find('.arrow-icon').toggleClass('rotate');
+
+            // Close other dropdowns
+            $('.o_dropdown_content').not(dropdownId).slideUp();
+            $('.o_menu_item .arrow-icon').not($(this).find('.arrow-icon')).removeClass('rotate');
+        });
+
+        // Close dropdowns if clicking outside of the dropdowns
+        $(document).on('click', function (event) {
+            if (!$(event.target).closest('.o_accordion, .o_dropdown_container').length) {
+                $('.o_dropdown_content').slideUp();
+                $('.o_menu_item .arrow-icon').removeClass('rotate');
+            }
+        });
+    });
 </script>
-
-
-
 
 @endsection

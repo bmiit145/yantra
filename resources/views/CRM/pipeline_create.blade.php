@@ -8,37 +8,42 @@
 @section('char_area', route('crm.pipeline.graph'))
 
 @section('navbar_menu')
-<li class="dropdown">
-    <a href="#">Sales</a>
-    <div class="dropdown-content">
-        <a href="{{ route('crm.index') }}">My Pipeline</a>
-        <a href="#">My Activities</a>
-        <a href="#">My Quotations</a>
-        <a href="#">Teams</a>
-        <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
-    </div>
-</li>
-<li>
-    <a href="{{ route('lead.index') }}">Leads</a>
-
-</li>
-<li class="dropdown">
-    <a href="#">Reporting</a>
-    <div class="dropdown-content">
-        <!-- Dropdown content for Reporting -->
-        <a href="{{ route('crm.forecasting') }}">Forecast</a>
-        <a href="{{ route('crm.index') }}">Pipeline</a>
+ <li class="dropdown">
+        <a href="#">Sales</a>
+        <div class="dropdown-content">
+            <a href="#">My Pipeline</a>
+            <a href="#">My Activities</a>
+            <a href="#">My Quotations</a>
+            <a href="#">Teams</a>
+            <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
+        </div>
+    </li>
+    <li>
         <a href="{{ route('lead.index') }}">Leads</a>
-        <a href="#">Activities</a>
-    </div>
-</li>
-<li class="dropdown">
-    <a href="#">Configuration</a>
-    <div class="dropdown-content">
-        <a href="#">Settings</a>
-        <a href="#">Sales Teams</a>
-    </div>
-</li>
+    </li>
+    <li class="dropdown">
+        <a href="#">Reporting</a>
+        <div class="dropdown-content">
+            <!-- Dropdown content for Reporting -->
+            <a href="{{ route('crm.forecasting') }}">Forecast</a>
+            <a href="{{ route('crm.pipeline.graph') }}">Pipeline</a>
+            <a href="{{ route('lead.graph') }}">Leads</a>
+            <a href="{{route('crm.pipeline.graph')}}">Activities</a>
+        </div>
+    </li>
+    <li class="dropdown">
+        <a href="#">Configuration</a>
+        <div class="dropdown-content">
+              <a href="#"><b>Sales Teams</b></a>
+            <a href="#"><b>Activities</b></a>
+            <a href="{{route('configuration.activitytype')}}" style="margin-left: 15px;">Activity Types</a>
+            <a href="#" style="margin-left: 15px;">Activity Plans</a>
+            <a href="{{route('configuration.recurring_index')}}"><b>Recurring Plans</b></a>
+            <a href="#"><b>Pipeline</b></a>
+            <a href="{{route('configuration.tag_index')}}" style="margin-left: 15px;">Tags</a>
+            <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
+        </div>
+    </li>
 @endsection
 
 
@@ -370,6 +375,9 @@
     .selected-star {
         color: #f3cc00; /* Gold color for the selected star */
     }
+    .crm_head_centerside{
+        display: none;
+    }
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -524,7 +532,7 @@
                         </div>
                         <input type="hidden" name="pipeline_id" id="pipeline_id"
                             value="{{ isset($data) ? $data->id : '' }}">
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                             <!-- Ribbon Section -->
                             <div id="wonRibbon"
                                 class="o_widget o_widget_web_ribbon {{ isset($checkIsWon) && $checkIsWon->title == 'Won' ? '' : 'd-none' }}">
@@ -701,9 +709,10 @@
                                             <div name="user_id"
                                                 class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar">
                                                 <div class="d-flex align-items-center gap-1"
-                                                    data-tooltip="info@yantradesign.co.in"><span
+                                                    data-tooltip="info@yantradesign.co.in">
+                                                    <!-- <span
                                                         class="o_avatar o_m2o_avatar"><img class="rounded"
-                                                            src="/web/image/res.users/2/avatar_128"></span>
+                                                            src="/web/image/res.users/2/avatar_128"></span> -->
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete dropdown">
@@ -737,11 +746,14 @@
                                     <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                         <div class="o_lead_opportunity_form_inline_fields">
                                             <div name="date_deadline" class="o_field_widget o_field_date oe_inline">
-                                                <div class="d-flex gap-2 align-items-center"><input type="text"
+                                                <div class="d-flex gap-2 align-items-center">
+                                                    <!-- <input type="text"
                                                         class="o_input cursor-pointer text-primary datepicker"
                                                         autocomplete="off" id="date_deadline_0"
                                                         data-field="date_deadline"
-                                                        value="{{isset($data) ? $data->deadline : ''}}"></div>
+                                                        value="{{isset($data) ? $data->deadline : ''}}"> -->
+                                                        <input type="tel" class="o_input cursor-pointer text-primary datepicker date_deadline_0" autocomplete="off" id="date_deadline_0" data-field="date_deadline" value="{{isset($data) ? $data->deadline : ''}}">
+                                                </div>
                                             </div>
                                             <div name="priority"
                                                 class="o_field_widget o_field_priority oe_inline align-top">
@@ -1910,14 +1922,14 @@
             $(function () {
                 var currentDate = new Date();
 
-                $(".datepicker").datepicker({
-                    dateFormat: "yy-mm-dd",
-                    duration: "fast",
-                    onSelect: function (dateText, inst) {
-                        // Optional: Do something when a date is selected
-                        console.log("Selected date: " + dateText);
-                    }
-                }).datepicker();
+                // $(".datepicker").datepicker({
+                //     dateFormat: "yy-mm-dd",
+                //     duration: "fast",
+                //     onSelect: function (dateText, inst) {
+                //         // Optional: Do something when a date is selected
+                //         console.log("Selected date: " + dateText);
+                //     }
+                // }).datepicker();
 
                 $(".activity-datepicker").datepicker({
                     dateFormat: "yy-mm-dd",
@@ -3218,6 +3230,133 @@
                 });
             });
         </script>
+    <script>
+                    
+
+        $(document).ready(function() {
+    const form = $('#myForm');
+    const saveButton = $('#main_save_btn');
+    const discardButton = $('#main_discard_btn');
+
+    var currentDate = new Date();
+
+            $(".datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                duration: "fast",
+                onSelect: function (dateText, inst) {
+                    // Optional: Do something when a date is selected
+                    console.log("dffdf: " + dateText);
+                    checkChanges();
+                }
+            }).datepicker();
+
+    // Initialize default values for inputs
+    const inputs = form.find('input, select, textarea');
+    inputs.each(function() {
+        if ($(this).is(':checkbox') || $(this).is(':radio')) {
+            $(this).data('defaultChecked', $(this).is(':checked'));
+        } else {
+            $(this).data('defaultValue', $(this).val());
+        }
+    });
+
+    // Function to check for changes
+    function checkChanges() {
+        let hasChanged = false;
+
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                    hasChanged = true;
+                }
+            } else if ($(this).is('select')) {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            } else {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            }
+        });
+
+        saveButton.toggle(hasChanged);
+        discardButton.toggle(hasChanged);
+    }
+
+    // Event listeners for input and change events
+    form.on('input change', checkChanges);
+
+    // Handle paste and drop events on the textarea
+    $('textarea#description').on('paste', function(event) {
+        const clipboardData = event.originalEvent.clipboardData;
+        const items = clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image pasted!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when pasting
+    });
+
+    // Handle drop event
+    $('textarea#description').on('drop', function(event) {
+        event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+        const dataTransfer = event.originalEvent.dataTransfer;
+        const items = dataTransfer.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image dropped!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when dropping
+    });
+
+    // Handle star selection for priority
+    $('.o_priority_star').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+
+        // Remove 'fa-star' class from all stars and add 'fa-star-o'
+        $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+        // Add 'fa-star' class to the selected star and all stars before it
+        $(this).addClass('fa-star');
+        $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+        // Update the default value for change detection
+        inputs.each(function() {
+            if ($(this).attr('data-value') === selectedValue) {
+                $(this).data('defaultValue', selectedValue); // Update default value for change detection
+            }
+        });
+
+        checkChanges(); // Check for changes after updating the priority
+    });
+
+    discardButton.on('click', function() {
+        location.reload();
+    });
+
+    // Select2 initialization
+    $('.o-autocomplete--input').select2();
+
+    // Reset button visibility on form load
+    saveButton.hide();
+    discardButton.hide();
+});
+
+    </script>
     @endpush
 
     @endsection

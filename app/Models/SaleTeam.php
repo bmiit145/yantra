@@ -11,5 +11,11 @@ class SaleTeam extends Model
 
     protected $fillable = [
         'name',
+        'team_leader',
+        'sales_type',
+        'email',
+        'accept_emails_from',
+        'invoicing_target',
+        'member_id'
     ];
 }
