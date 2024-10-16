@@ -241,6 +241,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/activity-filter', [ActivityController::class, 'activityFilter'])->name('activity.filter');
     Route::post('/activity-custom-filter', [ActivityController::class, 'activityCustomFilter'])->name('activity.custom.filter');
     Route::get('/filter-activities', [ActivityController::class, 'filterActivities'])->name('activity.filter.activities');
+    Route::post('/filter-activity-custom-filter', [ActivityController::class, 'filterActivityCustomFilter'])->name('filter-activity.custom.filter');
 
 
 
