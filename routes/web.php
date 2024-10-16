@@ -182,6 +182,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead-log_notes', [LeadController::class, 'log_notes'])->name('lead.log_notes');
     Route::get('/lead-delete_send_message_notes', [LeadController::class, 'delete_send_message_notes'])->name('lead.delete_send_message_notes');
     Route::get('/lead-click_star_notes', [LeadController::class, 'click_star_notes'])->name('lead.click_star_notes');
+    Route::get('/lead-exportLead', [LeadController::class, 'exportLead'])->name('lead.exportLead');
+    Route::get('/lead-import', [LeadController::class, 'importlead'])->name('lead.importlead');
     Route::get('/lead-downloadAllImagessend_message', [LeadController::class, 'downloadAllImagessend_message'])->name('lead.downloadAllImagessend_message');
 
     // Favorites Filter Route

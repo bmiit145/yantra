@@ -50,7 +50,7 @@
 
         <div role="separator" class="dropdown-divider"></div>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
-        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0"><i class="fa fa-fw fa-upload me-1"></i>Export All </a>
+        <a href="{{route('lead.exportLead')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0"><i class="fa fa-fw fa-upload me-1"></i>Export All </a>
     
        
 

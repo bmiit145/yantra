@@ -36,6 +36,9 @@ use Illuminate\Support\Facades\Auth;
 use League\CommonMark\Node\Block\Document;
 use App\Mail\SendMessageMail;
 use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+
+use App\Exports\LeadExport;
 
 class LeadController extends Controller
 {
@@ -1672,6 +1675,16 @@ class LeadController extends Controller
         $lead->delete();
         return response()->json(['message' => 'Lead deleted successfully.']);
     }
+
+     public function exportLead(Request $request)
+     {
+        return Excel::download(new LeadExport, 'Lead.xlsx');
+     }
+
+     public function importlead()
+     {
+        return view('lead.importlead');
+     }
     
 
 }
