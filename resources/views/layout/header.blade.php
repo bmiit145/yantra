@@ -285,7 +285,7 @@
                                 <button class="d-print-none btn p-0 ms-1 lh-sm border-0" id="dropdownMenuButton" aria-expanded="false" title="">
                                     <i class="fa fa-cog"></i>
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="dropdown-menu-setting" aria-labelledby="dropdownMenuButton">
 
                                     @yield('setting_menu')
                            
@@ -391,13 +391,13 @@
         });
 
     document.getElementById('dropdownMenuButton').addEventListener('click', function() {
-        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const dropdownMenu = document.querySelector('.dropdown-menu-setting');
         dropdownMenu.classList.toggle('show'); // Toggle the 'show' class to display/hide the menu
     });
 
     // Optional: Close dropdown when clicking outside of it
     window.addEventListener('click', function(event) {
-        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const dropdownMenu = document.querySelector('.dropdown-menu-setting');
         if (!event.target.closest('#dropdownMenuButton')) {
             dropdownMenu.classList.remove('show');
         }

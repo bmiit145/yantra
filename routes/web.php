@@ -71,6 +71,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-graph', [CRMController::class, 'pipelineGraph'])->name('crm.pipeline.graph');
     Route::post('/setColor', [CRMController::class, 'setColor'])->name('crm.setColor');
     Route::get('/pipelineDelete', [CRMController::class, 'pipelineDelete'])->name('crm.delete');
+    Route::get('/pipeline-importpipline', [CRMController::class, 'importpipline'])->name('crm.importpipline');
+    Route::post('/pipeline-import', [CRMController::class, 'import'])->name('crm.import');
     
 
 

@@ -26,6 +26,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Log;
+use Maatwebsite\Excel\Facades\Excel;
+
+use App\Exports\LeadExport;
+use App\Imports\pipelineImport;
 
 class CRMController extends Controller
 {
@@ -762,7 +766,26 @@ private function getUserColor($userId)
     }
 
 
+    
+    public function exportpipiline(Request $request)
+    {
+       return Excel::download(new LeadExport, 'Lead.xlsx');
+    }
 
+    public function importpipline()
+    {
+       return view('crm.importpipeline');
+    }
+
+    public function import(Request $request) {
+       $request->validate([
+           'file' => 'required|mimes:xls,xlsx,csv'
+       ]);
+    
+       Excel::import(new pipelineImport, $request->file('file')->store('files'));
+   
+       return redirect()->back()->with('success', 'File imported successfully.');
+   }
 
 
 
