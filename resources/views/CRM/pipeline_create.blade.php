@@ -46,6 +46,28 @@
     </li>
 @endsection
 
+@section('menu_bar')
+<div class="o_control_panel_navigation flex-wrap flex-md-nowrap justify-content-end gap-1 gap-xl-3 order-1 order-lg-2 flex-grow-1">
+    <div class="o_cp_pager text-nowrap" role="search">
+        <nav class="o_pager d-flex gap-2 " aria-label="Pager" style="margin-top: -27px;float: right">
+            <span class="o_pager_counter align-self-center">
+                <span class="o_pager_value d-inline-block border-bottom border-transparent mb-n1">{{$index}}</span>
+                <span>/</span>
+                <span class="o_pager_limit">{{$all_sale}}</span>
+            </span>
+             <span class="btn-group d-print-none" aria-atomic="true">
+                <button type="button" class="btn btn-secondary o_pager_previous px-2 rounded-start" aria-label="Previous" data-tooltip="Previous" tabindex="-1" data-hotkey="p" title="">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button type="button" class="btn btn-secondary o_pager_next px-2 rounded-end" aria-label="Next" data-tooltip="Next" tabindex="-1" data-hotkey="n" title="">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </span>
+        </nav>
+    </div>
+</div>
+@endsection
+
 
 @section('head')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -252,6 +274,9 @@
         color: #78909C;
         font-weight: 400;
         font-size: 0.75rem;
+    }
+    .crmright_head_main__1{
+        display: none;
     }
 </style>
 <style>
@@ -3357,6 +3382,49 @@
 });
 
     </script>
+
+    
+<script>
+    $(document).ready(function() {
+    // Store the current ID and index globally
+    var currentId = {{ isset($data) ? $data->id : 'null' }};
+    var currentIndex = {{ $index }};
+    var allLeads = {!! json_encode($all_sales) !!}; // Pass all leads to JavaScript
+
+    // Find the total number of leads
+    var totalLeads = allLeads.length;
+
+    // Handle Next button click
+    $('.o_pager_next').on('click', function() {
+        // If current index is the last lead, redirect to the first lead
+        if (currentIndex >= totalLeads) {
+            currentIndex = 1; // Reset to first index
+            currentId = allLeads[0].id; // Update currentId to the first lead's ID
+        } else {
+            currentIndex++; // Increment index
+            currentId = allLeads[currentIndex - 1].id; // Update currentId to the next lead's ID
+        }
+        // Redirect to the lead-add route with the new ID and index
+        window.location.href = '/pipeline-create/' + currentId + '/' + currentIndex;
+    });
+
+    // Handle Previous button click
+    $('.o_pager_previous').on('click', function() {
+        // If current index is the first lead, redirect to the last lead
+        if (currentIndex <= 1) {
+            currentIndex = totalLeads; // Set to last index
+            currentId = allLeads[totalLeads - 1].id; // Update currentId to the last lead's ID
+        } else {
+            currentIndex--; // Decrement index
+            currentId = allLeads[currentIndex - 1].id; // Update currentId to the previous lead's ID
+        }
+        // Redirect to the lead-add route with the new ID and index
+        window.location.href = '/pipeline-create/' + currentId + '/' + currentIndex;
+    });
+
+  
+});
+</script>
     @endpush
 
     @endsection

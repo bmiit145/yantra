@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/pipeline-list',[CRMController::class,'pipelineList'])->name('crm.pipeline.list');
     Route::post('/pipeline-list-data',[CRMController::class,'pipelineListData'])->name('crm.pipeline.list.data');
-    Route::get('/pipeline-create/{id?}',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
+    Route::get('/pipeline-create/{id?}/{index?}',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
     Route::post('/pipeline-store',[CRMController::class,'pipelineStore'])->name('crm.pipeline.store');
     Route::get('/customer/{id}', [CRMController::class, 'getCustomerDetails'])->name('getCustomerDetails');
     Route::post('/update-stage', [CRMController::class,'updateStage'])->name('crm.updateStage');
@@ -181,6 +181,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-click_star_notes', [LeadController::class, 'click_star_notes'])->name('lead.click_star_notes');
     Route::get('/lead-exportLead', [LeadController::class, 'exportLead'])->name('lead.exportLead');
     Route::get('/lead-import', [LeadController::class, 'importlead'])->name('lead.importlead');
+    Route::post('/lead-import-store', [LeadController::class, 'import'])->name('lead.import');
     Route::get('/lead-downloadAllImagessend_message', [LeadController::class, 'downloadAllImagessend_message'])->name('lead.downloadAllImagessend_message');
 
     // Favorites Filter Route

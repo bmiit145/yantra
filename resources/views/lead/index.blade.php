@@ -19,7 +19,7 @@
         <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
     </div>
 </li>
-<li>
+<li class="">
     <a href="{{ route('lead.index') }}">Leads</a>
 </li>
 <li class="dropdown">
@@ -49,7 +49,7 @@
 @section('setting_menu')
 
         <div role="separator" class="dropdown-divider"></div>
-        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
+        <a href="{{route('lead.importlead')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
         <a href="{{route('lead.exportLead')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0"><i class="fa fa-fw fa-upload me-1"></i>Export All </a>
     
        
@@ -66,7 +66,7 @@
 
 
 @section('search_div')
-<div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
+<div class="o_popover popover mw-100 o-dropdown--menu filter-dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
         <div class="px-3 fs-5 mb-2"><i class="me-2 fa fa-filter" style="color: #714b67;"></i>
@@ -498,8 +498,20 @@
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 1;
         top: auto;
+        right: 0;
+        left: auto;
+    }
+    .filter-dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 685px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: auto;
         right: auto;
         left: 6%;
+        overflow-y: scroll;
     }
 
     .dropdown-menu a {
@@ -727,6 +739,12 @@
         width: 15px!important;
         height: 15px !important;
     }
+    .o_form_button_save {
+        display: none;
+    }
+    .head_breadcrumb_info{
+        gap : 0px !important;
+    }
 </style>
 
 
@@ -922,7 +940,8 @@
 
        $('#example tbody').on('click', 'tr', function () {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-            var index = $(this).find('td.d-none').text(); // Get the index number from the hidden column
+            var index = $(this).find('td.d-none').text(); // Get the index number from the hidden column]
+          
             
             if (id) {
                 window.location.href = '/lead-add/' + id + '/' + index; // Redirect to the lead-add page with the ID and index
@@ -949,13 +968,15 @@
                     }
 
                     // Check if response contains data
-
+                    var index = 1;
                     // Loop through the response and create table rows
                     response.data.forEach(function (item) {
                             
                         var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+                      
 
                         // Append data only for the visible columns
+                        if (table.column(0).visible()) rowHtml += `<td class="d-none">${index ++}</td>`;
                         if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
                         if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
                         if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
@@ -985,7 +1006,9 @@
                     // Attach click event handler to rows
                     $('#lead-table-body .lead-row').on('click', function () {
                         var leadId = $(this).data('id');
-                        window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                        var index = $(this).find('td.d-none').text();
+                        console.log(index,'3')
+                        window.location.href = `/lead-add/${leadId}/${$index}`; // Adjust the URL as needed
                     });
 
                     // Apply the column visibility settings
@@ -1689,12 +1712,14 @@
                         $tableBody.empty();
 
                         // Check if response contains data
+                        var index = 1;
                         if (response.success && response.data && response.data.length > 0) {
                             // Loop through the response and create table rows
                             response.data.forEach(function (item) {
                                 var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
 
                                     // Append data only for the visible columns
+                                    if (table.column(0).visible()) rowHtml += `<td class="d-none">${index ++}</td>`;
                                     if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
                                     if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
                                     if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
@@ -1726,7 +1751,13 @@
                             // Attach click event handler to rows
                             $('#lead-table-body .lead-row').on('click', function () {
                                 var leadId = $(this).data('id');
-                                window.location.href = `/lead-add/${leadId}`; // Adjust the URL as needed
+                                var index = parseInt($(this).find('td.d-none').text(), 10); // Ensure index is a number
+                                console.log("Lead ID:", leadId);
+                                console.log("Index:", index, '4');
+                                
+                                // Form the URL and log it for verification
+                                var url = `/lead-add/${leadId}/${index}`;
+                                console.log("Redirecting to URL:", url); // Adjust the URL as needed
                             });
                         } else {
                             // If no data, show a message or keep it empty
@@ -2077,9 +2108,12 @@
         }
 
         $(document).on('click', '.lead-row', function () {
-            var leadId = $(this).data('id');
+            var leadId = $(this).data('id')
+            var index = $(this).find('td.d-none').text();
+          
+    
             if (leadId) {
-                window.location.href = '/lead-add/' + leadId;
+                window.location.href = '/lead-add/' + leadId + '/' + index;
             }
         });
 

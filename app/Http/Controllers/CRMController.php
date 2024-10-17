@@ -291,9 +291,12 @@ class CRMController extends Controller
     }
 
 
-    public function pipelineCreate($id = null)
+    public function pipelineCreate($id = null , $index = null)
     {        
         try {
+            $all_sale = Sale::where('is_lost', 1)->count();
+            $all_sales = Sale::where('is_lost', '1')->get();
+            $currentsales = Sale::where('is_lost', '1')->where('id', $id)->first();
             $data = Sale::find($id);
             $customers = Contact::all();
             $countrys = Country::all();
@@ -333,7 +336,7 @@ class CRMController extends Controller
                 // $activitiesDone = 0;
                 $activitiesDone = collect();
             }
-            return view('CRM.pipeline_create', compact('data', 'titles', 'campaigns', 'mediums', 'sources', 'countrys', 'count', 'users', 'tags', 'activitiesCount', 'activities', 'activitiesDone', 'customers', 'recurringPlans', 'crmStages', 'checkIsWon', 'lost_reasons'));
+            return view('CRM.pipeline_create', compact('data', 'titles','index','all_sale','all_sales','currentsales', 'campaigns', 'mediums', 'sources', 'countrys', 'count', 'users', 'tags', 'activitiesCount', 'activities', 'activitiesDone', 'customers', 'recurringPlans', 'crmStages', 'checkIsWon', 'lost_reasons'));
         } catch (Exception $e) {
             return redirect()->back()->with('error', value: 'Something went wrong!');
         }
