@@ -262,7 +262,10 @@
 
         @section('header_left_side')
         <div class="new_btn_info">
-            <a class="head_new_btn" href="@yield('head_new_btn_link', '#')">New</a>
+            <a class="head_new_btn" href="@yield('head_new_btn_link', '#')">@yield('head_new_btn_name', 'New')</a>
+        </div>
+        <div class="new_btn_info_cancel" style="display:none">
+            <a class="btn btn-secondary" href="@yield('cancel_link', '#')">@yield('cancel_name', '#')<a>
         </div>
         <div class="head_breadcrumb_info">
             {{-- <p class="head_breadcrumb_title">@yield('head_breadcrumb_title', 'sabsdhd')</p> --}}
@@ -274,7 +277,7 @@
                 </ol>
                 <div class="d-flex gap-1 text-truncate">
                     <div class="o_last_breadcrumb_item active d-flex gap-2 align-items-center min-w-0 lh-sm">
-                        <span class="min-w-0 text-truncate">@yield('head_breadcrumb_title', 'sabsdhd')</span>
+                        <span class="min-w-0 text-truncate head_breadcrumb_title">@yield('head_breadcrumb_title', 'sabsdhd')</span>
                     </div>
                     <div class="o_control_panel_breadcrumbs_actions d-inline-flex d-print-none ">
                         <div class="o_cp_action_menus d-flex align-items-center pe-2 gap-1">
@@ -288,13 +291,22 @@
                            
                                  
                                 </div>
-                              
+                                @if(isset($data->id))
                                 <button style="display: none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
                                     <i class="fa fa-cloud-upload fa-fw"></i>
                                 </button>
                                 <button style="display:none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_discard_btn_id', 'main_discard_btn')" data-hotkey="s" data-tooltip="Discard all changes" aria-label="Discard all changes" title="Discard all changes">
-                                    <i class="fa fa-times"></i>
+                                   <i class="fa-solid fa-rotate-left"></i>
                                 </button>
+                                @else
+                                <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+                                    <i class="fa fa-cloud-upload fa-fw"></i>
+                                </button>
+                                <button  type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_discard_btn_id', 'main_discard_btn')" data-hotkey="s" data-tooltip="Discard all changes" aria-label="Discard all changes" title="Discard all changes">
+                                   <i class="fa-solid fa-rotate-left"></i>
+                                </button>
+                                @endif
+
                             </div>
                         </div>
                     </div>

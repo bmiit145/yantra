@@ -39,6 +39,7 @@ use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Exports\LeadExport;
+use App\Imports\LeadImport;
 
 class LeadController extends Controller
 {
@@ -1685,6 +1686,17 @@ class LeadController extends Controller
      {
         return view('lead.importlead');
      }
+
+     public function import(Request $request) {
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx,csv'
+        ]);
+    
+        Excel::import(new LeadImport, $request->file('file')->store('files'));
+    
+        return redirect()->back()->with('success', 'File imported successfully.');
+    }
+
     
 
 }

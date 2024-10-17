@@ -88,16 +88,16 @@
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <?php   
                         // Get the current date
-$currentMonth = date('F '); // e.g., September 2024
-$lastMonth = date('F ', strtotime('-1 month')); // Last month
-$twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
-$threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
-                                            ?>
-                <?php
-// Get the current year
-$currentYear = date('Y'); // e.g., 2024
-$lastYear = date('Y', strtotime('-1 year')); // Last year
-$twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
+                    $currentMonth = date('F '); // e.g., September 2024
+                    $lastMonth = date('F ', strtotime('-1 month')); // Last month
+                    $twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
+                    $threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
+                                                                ?>
+                                    <?php
+                    // Get the current year
+                    $currentYear = date('Y'); // e.g., 2024
+                    $lastYear = date('Y', strtotime('-1 year')); // Last year
+                    $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 ?>
                 <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark"
                         style="display:none;">✔</span><?php echo $currentMonth; ?></span>
@@ -670,6 +670,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
+                    <th class="d-none">Index</th>
                     <th>Created On</th>
                     <th>Opportunity</th>
                     <th>Customer</th>
@@ -781,6 +782,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             <tbody id="lead-table-body">
                 @forEach($data as $pipeline)
                             <tr data-id="{{$pipeline->id}}" style="cursor: pointer;">
+                                 <td class="d-none">{{$loop->index + 1}}</td>
                                 <td>{{ $pipeline->created_at->format('d/m/Y H:i:s') ?? '' }}</td>
                                 <td>{{$pipeline->opportunity ?? ''}}</td>
                                 <td>{{$pipeline->contact->name ?? ''}}</td>
@@ -935,8 +937,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $('#example tbody').on('click', 'tr', function () {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+            var index = $(this).find('td.d-none').text();
             if (id) {
-                window.location.href = '/pipeline-create/' + id; // Adjust the URL to your edit page
+                window.location.href = '/pipeline-create/' + id + '/' + index;
             }
         });
         // Restore column visibility from local storage
@@ -1133,5 +1136,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         });
     });
 </script>
+
 
 @endsection

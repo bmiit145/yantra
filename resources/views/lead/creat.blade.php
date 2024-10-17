@@ -22,7 +22,7 @@
             <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
-    <li>
+    <li style="    position: relative !important;">
         <a href="{{ route('lead.index') }}">Leads</a>
     </li>
     <li class="dropdown">
@@ -554,6 +554,38 @@
     .crm_head_rightside{
         display: none;
     }
+    .o-mail-ChatterContainer.o-mail-Form-chatter.o-aside.w-print-100{
+        flex-wrap: wrap !important;
+        height: 100vh;
+    }
+    .o_form_view.o_xxl_form_view .o_form_sheet_bg {
+        overflow-y: scroll;
+        height: 100vh;
+    }
+    .o_action_manager {
+        overflow: hidden;
+        height: 100vh;
+        width: 100%;
+    }
+    body {
+        overflow: hidden;
+    }
+    .o-mail-Chatter.w-100.h-100.flex-grow-1.d-flex.flex-column.overflow-auto.o-chatter-disabled {
+        padding-left: 20px;
+    }
+    .breadcrumb {
+        background: #f9fafb !important;
+    }
+    .crm_head_leftside {
+        gap: 3px !important;
+    }
+    a.o_menu_brand, ul.navbar_menu_wapper li a  {
+        line-height: 1.4 !important;
+    }
+    ul.navbar_menu_wapper {
+    align-items: center !important;
+    }   
+
 </style>
 
 @vite(['resources/css/crm_2.css'])
