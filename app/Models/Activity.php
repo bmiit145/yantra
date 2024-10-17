@@ -38,6 +38,26 @@ class Activity extends Model
         return $this->belongsTo(User::class, 'assigned_to', 'id');
     }
 
+    public function getCountry()
+    {
+        return $this->hasOne(Country::class,'id','country');
+    }
+
+    public function getAutoCountry()
+    {
+        return $this->hasOne(Country::class,'code','country');
+    }
+
+    public function getState()
+    {
+        return $this->hasOne(State::class,'id','state');
+    }
+
+    public function getAutoState()
+    {
+        return $this->hasOne(State::class,'name','state');
+    }
+
     public function getLead()
     {
         return $this->hasOne(generate_lead::class, 'id', 'lead_id');
@@ -51,5 +71,41 @@ class Activity extends Model
     public function getPipeline()
     {
         return $this->hasOne(Sale::class, 'id', 'pipeline_id');
+    }
+    
+    public function getTilte()
+    {
+        return $this->hasOne(PersonTitle::class,'id','title');
+    }
+
+    public function tags()
+    {
+        $tagIds = explode(',', $this->tag_id);
+        return Tag::whereIn('id', $tagIds)->get();
+    }
+
+    public function filterTags()
+    {        
+        return $this->hasMany(Tag::class, 'id','tag_id');
+    }
+
+    public function title()
+    {
+        return $this->product_name; // or whatever method/attribute provides the title
+    }
+
+    public function getSource()
+    {
+        return $this->hasOne(Source::class, 'id', 'source_id');
+    }
+
+    public function getCampaign()
+    {
+        return $this->hasOne(Campaign::class, 'id', 'campaign_id');
+    }
+
+    public function getMedium()
+    {
+        return $this->hasOne(Medium::class, 'id', 'medium_id');
     }
 }

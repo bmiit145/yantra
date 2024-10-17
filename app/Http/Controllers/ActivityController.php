@@ -153,129 +153,152 @@ class ActivityController extends Controller
     }
 
     public function filterActivityCustomFilter(Request $request)
-    {
-        dd($request->all());
-        $filterType = $request->input('filterType');
-        $operatesValue = $request->input('operatesValue');
-        $filterValue = $request->input('filterValue');
-        // Create a query
-        $query = generate_lead::query();
-        // Apply filters based on filter type
-        switch ($filterType) {
-            case 'Country':
-                $query->where(function ($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    })
-                        ->orWhereHas('getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
-                            $q->where('name', $operatesValue, $filterValue);
-                        });
-                });
-                break;
-            case 'Zip':
-                $query->where('zip', $operatesValue, $filterValue);
-                break;
-            case 'Tags':
-                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+{
+    // Extract input values
+    $filterType = $request->input('filterType');
+    $operatesValue = $request->input('operatesValue');
+    $filterValue = $request->input('filterValue');
+
+    // Create a query starting with activities
+    $query = Activity::query()
+        ->leftJoin('generate_lead', 'generate_lead.id', '=', 'activities.lead_id')
+        ->select('activities.*', 'generate_lead.product_name', 'generate_lead.probability', 'activities.activity_type');
+
+    // Apply filters based on filter type
+    switch ($filterType) {
+        case 'Country':
+            $query->where(function ($q) use ($operatesValue, $filterValue) {
+                $q->whereHas('getLead.getCountry', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                })
+                ->orWhereHas('getLead.getAutoCountry', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
-                break;
-            case 'Created by':
-                $createdByName = $filterValue;
-                $user = User::where('name', $createdByName)->first();
-                $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
-                    $q->where('name', $operatesValue, $createdByName);
-                });
-                break;
-            case 'Created on':
-                $query->whereDate('created_at', $operatesValue, $filterValue);
-                break;
-            case 'Customer':
-                $query->where('name', $operatesValue, $filterValue);
-                break;
-            case 'Email':
-                $query->where('email', $operatesValue, $filterValue);
-                break;
-            case 'ID':
-                $query->where('id', $operatesValue, $filterValue);
-                break;
-            case 'Phone':
-                $query->where('phone', $operatesValue, $filterValue);
-                break;
-            case 'Priority':
-                $query->where('priority', $operatesValue, $filterValue);
-                break;
-            case 'Probability':
-                $query->where('probability', $operatesValue, $filterValue);
-                break;
-            case 'Referred By':
-                $query->where('referred_by', $operatesValue, $filterValue);
-                break;
-            case 'Salesperson':
-                $salespersonId = EncryptionService::encrypt($filterValue);
-                $user = User::where('email', $salespersonId)->first();
-                $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
-                    $q->where('email', $operatesValue, $salespersonId);
-                });
-                break;
-            case 'Source':
-                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
+            });
+            break;
+
+        case 'Zip':
+            $query->where('generate_lead.zip', $operatesValue, $filterValue);
+            break;
+
+        case 'Tags':
+            $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                $q->where('name', $operatesValue, $filterValue);
+            });
+            break;
+
+        case 'Created by':
+            $query->whereHas('getUser', function ($q) use ($operatesValue, $filterValue) {
+                $q->where('name', $operatesValue, $filterValue);
+            });
+            break;
+
+        case 'Created on':
+            $query->whereDate('activities.created_at', $operatesValue, $filterValue);
+            break;
+
+        case 'Customer':
+            $query->where('generate_lead.name', $operatesValue, $filterValue);
+            break;
+
+        case 'Email':
+            $query->where('generate_lead.email', $operatesValue, $filterValue);
+            break;
+
+        case 'ID':
+            $query->where('activities.id', $operatesValue, $filterValue);
+            break;
+
+        case 'Phone':
+            $query->where('generate_lead.phone', $operatesValue, $filterValue);
+            break;
+
+        case 'Priority':
+            $query->where('activities.priority', $operatesValue, $filterValue);
+            break;
+
+        case 'Probability':
+            $query->where('generate_lead.probability', $operatesValue, $filterValue);
+            break;
+
+        case 'Referred By':
+            $query->where('generate_lead.referred_by', $operatesValue, $filterValue);
+            break;
+
+        case 'Salesperson':
+            $salespersonId = EncryptionService::encrypt($filterValue);
+            $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
+                $q->where('email', $operatesValue, $salespersonId);
+            });
+            break;
+
+        case 'Source':
+            $query->whereHas('getLead.getSource', function ($q) use ($operatesValue, $filterValue) {
+                $q->where('name', $operatesValue, $filterValue);
+            });
+            break;
+
+        case 'Stage':
+            $query->where('activities.stage', $operatesValue, $filterValue);
+            break;
+
+        case 'State':
+            $query->where(function ($q) use ($operatesValue, $filterValue) {
+                $q->whereHas('getLead.getState', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                })
+                ->orWhereHas('getLead.getAutoState', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
-                break;
-            case 'Stage':
-                $query->where('stage', $operatesValue, $filterValue);
-                break;
-            case 'State':
-                $query->where(function ($q) use ($operatesValue, $filterValue) {
-                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
-                        $q->where('name', $operatesValue, $filterValue);
-                    })
-                        ->orWhereHas('getAutoState', function ($q) use ($operatesValue, $filterValue) {
-                            $q->where('name', $operatesValue, $filterValue);
-                        });
-                });
-                break;
-            case 'Street':
-                $query->where('address_1', $operatesValue, $filterValue);
-                break;
-            case 'Street2':
-                $query->where('address_1', $operatesValue, $filterValue);
-                break;
-            case 'Title':
-                $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
-                    $q->where('title', $operatesValue, $filterValue);
-                });
-                break;
-            case 'Type':
-                $query->where('type', $operatesValue, $filterValue);
-                break;
-            case 'Website':
-                $query->where('website_link', $operatesValue, $filterValue);
-                break;
-            case 'Campaign':
-                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
-                    $q->where('name', $operatesValue, $filterValue);
-                });
-                break;
-            case 'City':
-                $query->where('city', $operatesValue, $filterValue);
-                break;
-            default:
-                // Handle cases where the filterType does not match any case
-                break;
-        }
-        // Execute the query and get results
-        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
-        // Fetch results
-        $activities = $query->get();
-        // dd($customFilter);
-        // Return JSON response
-        return response()->json([
-            'success' => true,
-            'data' => $activities
-        ], 200);
+            });
+            break;
+
+        case 'Street':
+            $query->where('generate_lead.address_1', $operatesValue, $filterValue);
+            break;
+
+        case 'Street2':
+            $query->where('generate_lead.address_2', $operatesValue, $filterValue);
+            break;
+
+        case 'Type':
+            $query->where('activities.type', $operatesValue, $filterValue);
+            break;
+
+        case 'Website':
+            $query->where('generate_lead.website_link', $operatesValue, $filterValue);
+            break;
+
+        case 'Campaign':
+            $query->whereHas('getLead.getCampaign', function ($q) use ($operatesValue, $filterValue) {
+                $q->where('name', $operatesValue, $filterValue);
+            });
+            break;
+
+        case 'City':
+            $query->where('generate_lead.city', $operatesValue, $filterValue);
+            break;
+
+        default:
+            // Handle cases where the filterType does not match any case
+            break;
     }
+
+    // Eager load relationships before fetching results
+    $activities = $query->with([
+        'getUser', 
+        'getCountry', 
+        'getAutoCountry', 
+        'getState', 
+        'getAutoState'
+    ])->get();
+
+    // Return JSON response
+    return response()->json([
+        'success' => true,
+        'data' => $activities
+    ], 200);
+}
 
 
 
