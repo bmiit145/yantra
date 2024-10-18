@@ -1687,14 +1687,102 @@ class LeadController extends Controller
         return view('lead.importlead');
      }
 
-     public function import(Request $request) {
+     public function import(Request $request)
+    {
+        // Validate the request
         $request->validate([
             'file' => 'required|mimes:xls,xlsx,csv'
         ]);
-    
-        Excel::import(new LeadImport, $request->file('file')->store('files'));
-    
+
+        // Get the uploaded file
+        $file = $request->file('file');
+
+        // Check the file extension to determine how to process the file
+        $extension = $file->getClientOriginalExtension();
+
+        if ($extension == 'csv') {
+            // Handle CSV file
+            $this->importFromCSV($file);
+        } else {
+            // Handle XLS or XLSX using PhpSpreadsheet
+            $this->importFromExcel($file);
+        }
+
         return redirect()->back()->with('success', 'File imported successfully.');
+    }
+
+    private function importFromCSV($file)
+    {
+        // Open the file
+        if (($handle = fopen($file->getRealPath(), 'r')) !== FALSE) {
+            // Skip the first row if it contains headers
+            $firstRow = true;
+
+            // Read each row of the CSV file
+            while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                if ($firstRow) {
+                    $firstRow = false;
+                    continue; // Skip header row
+                }
+
+                // Assuming your CSV columns align with the database fields
+                generate_lead::create([
+                'product_name' => $row[1],
+                'company_name' => $row[2],
+                'contact_name' => $row[3],
+                'email' => $row[4],
+                'job_postion' => $row[5],
+                'phone' => $row[6],
+                'mobile' => $row[7],
+                'address_1' => $row[8],
+                'address_2' => $row[9],
+                'city' => $row[10],
+                'state' => $row[11],
+                'zip' => $row[12],
+                'country' => $row[13],
+                'website_link' => $row[14],
+                'internal_notes' => $row[15],
+                'lead_type' => 1
+                ]);
+            }
+            fclose($handle);
+        }
+    }
+
+    private function importFromExcel($file)
+    {
+        // Load PhpSpreadsheet to handle Excel files
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $rows = $sheet->toArray();
+
+        // Skip the first row if it contains headers
+        foreach ($rows as $index => $row) {
+            if ($index == 0) {
+                continue; // Skip header row
+            }
+
+            // Insert data into the database
+            generate_lead::create([
+                'product_name' => $row[1],
+                'company_name' => $row[2],
+                'contact_name' => $row[3],
+                'email' => $row[4],
+                'job_postion' => $row[5],
+                'phone' => $row[6],
+                'mobile' => $row[7],
+                'address_1' => $row[8],
+                'address_2' => $row[9],
+                'city' => $row[10],
+                'state' => $row[11],
+                'zip' => $row[12],
+                'country' => $row[13],
+                'website_link' => $row[14],
+                'internal_notes' => $row[15],
+                'lead_type' => 1
+            ]);
+        }
     }
 
     
