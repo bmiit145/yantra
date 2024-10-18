@@ -1226,7 +1226,7 @@
             var $tag = $('.tag');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
-            $tagItems.each(function (index) {
+            $tagItems.each(function (index) { 
                 html += $(this).prop('outerHTML');
                 if (index < $tagItems.length - 1) {
                     html += ' & ';

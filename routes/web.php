@@ -78,6 +78,8 @@ Route::middleware(['auth'])->group(function () {
     // CRM pipeline Filter
 
     Route::get('/pipeline-filter', [CRMController::class, 'pipelineFilter'])->name('crm.pipeline.filter');
+    Route::post('/pipeline-filter-group-by', [CRMController::class, 'pipelineFilterGroupBy'])->name('crm.pipeline.filter.group.by');
+    Route::post('/pipeline-custom-filter', [CRMController::class, 'pipelineCustomFilter'])->name('crm.pipeline.custom.filter');
 
 
     // sale

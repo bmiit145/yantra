@@ -67,13 +67,13 @@
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-pipeline"><span
                 class="float-end checkmark" style="display:none;">✔</span>My Pipeline</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span
                 class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="open_opportunities"><span
                 class="float-end checkmark" style="display:none;">✔</span>Open Opportunities</span>
         <div class="dropdown-divider" role="separator"></div>
@@ -154,17 +154,17 @@
             </div>
         </div>
         <div class="dropdown-divider" role="separator"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
             tabindex="0" title="Won" aria-checked="false"><span
                 class="float-end checkmark" style="display:none;">✔</span>Won</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
             tabindex="0" title="Ongoing" aria-checked="false"><span
                 class="float-end checkmark" style="display:none;">✔</span>Ongoing</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
             tabindex="0" title="Lost" aria-checked="false"><span
                 class="float-end checkmark" style="display:none;">✔</span>Lost</span>
         <div class="dropdown-divider" role="separator"></div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
+        <span class="o-dropdown-item-2 dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
             tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
     </div>
     <div class="o_dropdown_container o_group_by_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
@@ -319,16 +319,67 @@
         </select>
     </div>
     <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 text-favourite fa fa-star"></i>
+        <div class="px-3 fs-5 mb-2">
+            <i class="me-2 text-favourite fa fa-star"></i>
             <h5 class="o_dropdown_title d-inline">Favorites</h5>
-        </div><span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate selected"
-            role="menuitemcheckbox" tabindex="0" aria-checked="true"><span
-                class="d-flex p-0 align-items-center justify-content-between"><span class="text-truncate flex-grow-1"
-                    title="">Leads</span><i class="ms-1 fa fa-trash-o" title="Delete item"></i></span></span>
+        </div>
+        @foreach ($getFavoritesFilter as $favoritesFilter)    
+            <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
+            role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
+                <span class="d-flex p-0 align-items-center justify-content-between">
+                    <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
+                        <span class="float-end checkmark" style="display:none;">✔</span>
+                    </span>
+                    <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+                </span>
+            </span>
+
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-md">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure that you want to remove this filter?
+                        </div>
+                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                            <button type="button" class="btn btn-primary" style="background-color:#714B67;border: none;font-weight: 500;" id="confirmDelete">Delete Filter</button>
+                            <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
         <div role="separator" class="dropdown-divider"></div>
-        <div class="o_accordion position-relative"><button
-                class="o_menu_item o_accordion_toggle dropdown-item o-navigable o_add_favorite text-truncate"
-                tabindex="0" aria-expanded="false">Save current search</button></div>
+        <div class="o_accordion position-relative">
+            <button id="save-current-search" class="o_menu_item o_accordion_toggle search-dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">
+                Save current search
+                <span class="arrow-icon" style="font-size: 10px; margin-top: 4px;">▼</span>
+            </button>
+            <div class="o_accordion_values ms-4 border-start">
+                <div class="px-3 py-2">
+                    <input type="text" class="o_input favorites_input" id="lead_favorites" name="favorites_name" value="Pipeline" placeholder="Enter favorite name">
+                    <div class="o-checkbox form-check">
+                        <input type="radio" name="filter_check" class="form-check-input" id="checkbox-comp-70">
+                        <label class="form-check-label" for="checkbox-comp-70">
+                            <span data-tooltip="Use this filter by default when opening this view">Default filter</span>
+                        </label>
+                    </div>
+                    <div class="o-checkbox form-check">
+                        <input type="radio" class="form-check-input" id="checkbox-comp-71" name="filter_check">
+                        <label class="form-check-label" for="checkbox-comp-71">
+                            <span data-tooltip="Make this filter available to other users">Shared</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="px-3 py-2">
+                    <button class="o_save_favorite btn-sm btn btn-primary w-100" style="background-color: #714b67; border: none;">Save</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -344,6 +395,7 @@
             </div>
             <div class="modal-body">
                 <form id="customFilterForm">
+                <input type="hidden" id="span_id">
                     <div class="mb-3">
                         <div class="o_tree_editor_connector d-flex flex-grow-1 align-items-center">
                             <span>Match</span><span class="px-1">any</span><span>of the following rules:</span>
@@ -1007,69 +1059,77 @@
         success: function (response) {
             console.log(response);
             var $tableBody = $('#lead-table-body');
+            var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
 
             // Clear existing table data
             $tableBody.empty();
 
-            if (response.data.length === 0) {
-                // Display the message if no data is found
-                $tableBody.append(`<tr><td colspan="21" class="text-center">No data found!</td></tr>`);
-                return;
-            }
-
-            var index = 1;
+            // Initialize total variables
             var totalExpectedRevenue = 0; // Initialize total expected revenue
             var totalRecurringMrr = 0; // Initialize total recurring MRR
             var totalRecurringRevenue = 0; // Initialize total recurring revenue
 
-            // Loop through the response and create table rows
-            response.data.forEach(function (item) {
-                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+            if (response.data.length === 0) {
+                // Display the message if no data is found
+                $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
+                
+                // Hide the footer if no data is found
+                $tableFooter.hide();
+            } else {
+                var index = 1;
 
-                // Append data only for the visible columns
-                if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
-                if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
-                if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
-                if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
-                if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
-                if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
-                if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
-                if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
-                if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
-                if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
-                if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
-                if (table.column(16).visible()) {
-                    rowHtml += `<td>${item.expected_revenue || ''}</td>`;
-                    totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
-                }
-                if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
-                
-                var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
-                var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
-                var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
-                
-                if (table.column(18).visible()) {
-                    rowHtml += `<td>${expertMrr}</td>`;
-                    totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
-                }
-                if (table.column(19).visible()) {
-                    rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
-                    totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
-                }
-                if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
-                if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
-                if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
-                if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                
-                rowHtml += `</tr>`;
-                $tableBody.append(rowHtml);
-            });
+                // Loop through the response and create table rows
+                response.data.forEach(function (item) {
+                    var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                    // Append data only for the visible columns
+                    if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
+                    if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
+                    if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
+                    if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
+                    if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                    if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                    if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                    if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                    if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
+                    if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
+                    if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
+                    if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
+                    if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                    if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
+                    if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
+                    if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
+                    if (table.column(16).visible()) {
+                        rowHtml += `<td>${item.expected_revenue || ''}</td>`;
+                        totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
+                    }
+                    if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
+                    
+                    var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
+                    var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
+                    var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
+                    
+                    if (table.column(18).visible()) {
+                        rowHtml += `<td>${expertMrr}</td>`;
+                        totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
+                    }
+                    if (table.column(19).visible()) {
+                        rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
+                        totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
+                    }
+                    if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
+                    if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                    if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                    if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
+                    if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                    
+                    rowHtml += `</tr>`;
+                    $tableBody.append(rowHtml);
+                });
+
+                // Show the footer since we have data
+                $tableFooter.show();
+            }
 
             // Update footer with totals
             $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
@@ -1090,7 +1150,6 @@
                 var isVisible = column.visible();
                 column.visible(isVisible);
             });
-
         },
         error: function () {
             console.error('Failed to fetch data');
@@ -1609,12 +1668,17 @@
 
         // ------------------------------ Setting Icon Open Model Start  -----------------------------------------------
 
-        $(document).on('click', '.setting-icon', function(e) {
+       $(document).on('click', '.setting-icon', function (e) {
             e.preventDefault();
             var id = $(this).data('span_id');
             console.log(id, 'span_id');
-            $('#span_id').val(id); 
-            $('#customFilterModal').modal('show'); 
+
+            // Set the value of the hidden input
+            $('#span_id').val(id);
+
+            // Show the modal
+            var modal = new bootstrap.Modal(document.getElementById('customFilterModal'));
+            modal.show();
         });
 
 
@@ -1710,7 +1774,7 @@
             var $tag = $('.CRtag');
             // Ensure the icon appears only once at the beginning
             if ($tag.find('.fa-list').length === 0) {
-                $tag.prepend('<a href="#" class="setting-icon CRIcon_tag">' +
+                $tag.prepend('<a href="#"  class="setting-icon CRIcon_tag">' +
                     '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
                     '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                     '</a>'
@@ -1779,37 +1843,106 @@
 
                 // Send AJAX request
                 $.ajax({
-                    url: '{{route('lead.custom.filter')}}',
+                    url: '{{route('crm.pipeline.custom.filter')}}',
                     type: 'POST',
                     data: data,
                     success: function (response) {
+                        console.log(response);
                         var $tableBody = $('#lead-table-body');
+                        var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
 
                         // Clear existing table data
                         $tableBody.empty();
 
-                        // Check if response contains data
-                        var index = 1;
-                        if (response.success && response.data && response.data.length > 0) {
+                        // Initialize total variables
+                        var totalExpectedRevenue = 0; // Initialize total expected revenue
+                        var totalRecurringMrr = 0; // Initialize total recurring MRR
+                        var totalRecurringRevenue = 0; // Initialize total recurring revenue
 
-                            // Attach click event handler to rows
-                            $('#lead-table-body .lead-row').on('click', function () {
-                                var leadId = $(this).data('id');
-                                var index = parseInt($(this).find('td.d-none').text(), 10); // Ensure index is a number
-                                console.log("Lead ID:", leadId);
-                                console.log("Index:", index, '4');
-                                
-                                // Form the URL and log it for verification
-                                var url = `/lead-add/${leadId}/${index}`;
-                                console.log("Redirecting to URL:", url); // Adjust the URL as needed
-                            });
+                        if (response.data.length === 0) {
+                            // Display the message if no data is found
+                            $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
+                            
+                            // Hide the footer if no data is found
+                            $tableFooter.hide();
                         } else {
-                            // If no data, show a message or keep it empty
-                            $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                            var index = 1;
+
+                            // Loop through the response and create table rows
+                            response.data.forEach(function (item) {
+                                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                                // Append data only for the visible columns
+                                if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
+                                if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
+                                if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
+                                if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
+                                if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                                if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                                if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                                if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                                if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
+                                if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
+                                if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
+                                if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
+                                if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                                if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
+                                if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
+                                if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
+                                if (table.column(16).visible()) {
+                                    rowHtml += `<td>${item.expected_revenue || ''}</td>`;
+                                    totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
+                                }
+                                if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
+                                
+                                var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
+                                var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
+                                var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
+                                
+                                if (table.column(18).visible()) {
+                                    rowHtml += `<td>${expertMrr}</td>`;
+                                    totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
+                                }
+                                if (table.column(19).visible()) {
+                                    rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
+                                    totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
+                                }
+                                if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
+                                if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                                if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                                if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
+                                if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                                
+                                rowHtml += `</tr>`;
+                                $tableBody.append(rowHtml);
+                            });
+
+                            // Show the footer since we have data
+                            $tableFooter.show();
                         }
+
+                        // Update footer with totals
+                        $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+                        $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+                        $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
+
+                        // Attach click event handler to rows
+                        $('#lead-table-body .lead-row').on('click', function () {
+                            var leadId = $(this).data('id');
+                            var index = $(this).find('td.d-none').text();
+                            window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+                        });
+
+                        // Apply the column visibility settings
+                        table.columns().every(function () {
+                            var column = this;
+                            var index = column.index();
+                            var isVisible = column.visible();
+                            column.visible(isVisible);
+                        });
                     },
-                    error: function (xhr, status, error) {
-                        console.error('Error:', error);
+                    error: function () {
+                        console.error('Failed to fetch data');
                     }
                 });
 
@@ -1973,9 +2106,9 @@
                         $('#search-input').before(
                             '<span class="group_by_tag">' +
                             '<a href="#"class="setting-icon icon_tag">' +
-                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
-                    '</a>' +
+                            '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                            '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                            '</a>' +
                             newTagHtml +
                             '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
                             '</span>'
@@ -2072,12 +2205,12 @@
         // Send selected tags to the server and process response
         function filter(selectedTags) {
             $.ajax({
-                url: '/lead-filter'
-                , type: 'POST'
-                , data: {
+                url: '{{route('crm.pipeline.filter.group.by')}}',
+                type: 'POST',
+                data: {
                     selectedTags: JSON.stringify(selectedTags)
-                }
-                , success: function (response) {
+                },
+                success: function (response) {
                     console.log('Response:', response);
 
                     var tableBody = $('#lead-table-body');
@@ -2088,15 +2221,33 @@
                     function renderGroup(groupLeads, level) {
                         $.each(groupLeads, function (groupKey, groupValue) {
                             var groupRow = `
-                            <tr class="group-header" data-level="${level}" style="cursor:pointer;">
-                                <td colspan="20" style="padding-left:${level * 20}px;">
-                                    <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
-                                </td>
-                            </tr>
-                        `;
+                                <tr class="group-header" data-level="${level}" style="cursor:pointer;">
+                                    <td colspan="20" style="padding-left:${level * 20}px;">
+                                        <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
+                                    </td>
+                                </tr>
+                            `;
                             tableBody.append(groupRow);
 
-                            
+                            // Render nested items if applicable
+                            if ($.isArray(groupValue)) {
+                                groupValue.forEach(function (item) {
+                                    // Adjust this part according to your actual data structure
+                                    var detailRow = `
+                                        <tr class="group-detail" data-level="${level + 1}" style="display:none;">
+                                            <td style="padding-left:${(level + 1) * 20}px;">${item.name || item.opportunity || ''}</td>
+                                            <td>${item.created_at || ''}</td>
+                                            <td>${item.email || ''}</td>
+                                            <td>${item.phone || ''}</td>
+                                            <!-- Add more columns as needed -->
+                                        </tr>
+                                    `;
+                                    tableBody.append(detailRow);
+                                });
+                            } else if (typeof groupValue === 'object') {
+                                // Handle cases where groupValue is an object with nested groups
+                                renderGroup(groupValue, level + 1);
+                            }
                         });
                     }
 
@@ -2106,16 +2257,19 @@
                     $('.group-header').on('click', function () {
                         var level = $(this).data('level');
                         var nextRow = $(this).next();
+
+                        // Toggle the visibility of the rows that have a greater level than the clicked group
                         while (nextRow.length && nextRow.data('level') > level) {
-                            nextRow.toggle();
-                            nextRow = nextRow.next();
+                            nextRow.toggle(); // Toggle the visibility of the next row
+                            nextRow = nextRow.next(); // Move to the next row
                         }
                     });
-                }
-                , error: function (xhr, status, error) {
+                },
+                error: function (xhr, status, error) {
                     console.error('Error applying filter:', error);
                 }
             });
+        $('#customFilterModal').modal('hide');
         }
 
         $(document).on('click', '.lead-row', function () {
@@ -2403,6 +2557,185 @@
             }
         });
     });
+</script>
+
+<script>
+  $(document).ready(function () {
+            // Initialize the Bootstrap modal
+            var customFilterModal = new bootstrap.Modal(document.getElementById('customFilterModal'));
+
+            // Handle the click event on the "Add Custom Filter" button
+            $('.o_add_custom_filter').on('click', function () {
+                customFilterModal.show();
+            });
+
+
+            // Handle form submission with AJAX
+            $('#saveFilterBtn').on('click', function () {
+                var filterName = $('#filterName').val();
+
+                $.ajax({
+                    url: '/path/to/your/api/endpoint', // Replace with your API endpoint
+                    type: 'POST'
+                    , data: {
+                        filterName: filterName
+                    }
+                    , success: function (response) {
+                        // Handle success, e.g., show a success message or update UI
+                        console.log('Filter saved successfully:', response);
+                        customFilterModal.hide();
+                    }
+                    , error: function (xhr, status, error) {
+                        // Handle error, e.g., show an error message
+                        console.error('Error saving filter:', error);
+                    }
+                });
+            });
+
+            // Function to add a new rule row
+            function addNewRule() {
+                var template = $('#ruleTemplate').html();
+                $('#rulesContainer').append(template);
+            }
+
+            // Click handler for "New Rule" link
+            $('#addNewRule').on('click', function (event) {
+                event.preventDefault();
+                addNewRule();
+            });
+
+            // Click handler for "fa-plus" button in rule rows
+            $(document).on('click', '.add-new-rule', function (event) {
+                event.preventDefault();
+                addNewRule();
+            });
+
+            // Click handler for "Delete node" button
+            $(document).on('click', '.delete-rule', function (event) {
+                event.preventDefault();
+                // Ensure that at least one rule remains
+                if ($('#rulesContainer .rule-row')) {
+                    $(this).closest('.rule-row').remove();
+                } else {
+                    // Add a new rule when all are deleted
+                    $('#rulesContainer').empty(); // Clear container
+                    addNewRule(); // Add one new rule
+                }
+            });
+
+        });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#customer_filter_select').on('change', function () {
+            var selectedValue = $(this).val();
+            var filterInput = $('.customer_filter_input');
+
+            // Clear the previous filter input
+            filterInput.empty();
+
+            // Dynamic content based on selected filter
+            switch (selectedValue) {
+                case 'Country':
+                    filterInput.append('<select name="country" id="customer_filter_input_value" class="form-control">@foreach($Countrs as $Country)<option value="{{ $Country->name }}">{{ $Country->name }}</option>@endforeach</select>');
+                    break;
+                case 'Zip':
+                    filterInput.append('<input type="text" name="zip" id="customer_filter_input_value" class="form-control" placeholder="Enter Zip">');
+                    break;
+                case 'Tags':
+                    filterInput.append('<select name="tags" id="customer_filter_input_value" class="form-control">@foreach($tages as $tag)<option value="{{ $tag->name }}">{{ $tag->name }}</option>@endforeach</select>');
+                    break;
+                case 'Created by':
+                    filterInput.append('<select name="created_by" id="customer_filter_input_value" class="form-control">@foreach($users as $user)<option value="{{ $user->name }}">{{ $user->name }}</option>@endforeach</select>');
+                    break;
+                case 'Created on':
+                    filterInput.append('<input type="date" name="customer_filter_input_value" id="customer_filter_input_value" class="form-control">');
+                    break;
+                case 'Customer':
+                    filterInput.append('<select name="customer" id="customer_filter_input_value" class="form-control">@foreach($customers as $customer)<option value="{{ $customer->name }}">{{ $customer->name }}</option>@endforeach</select>');
+                    break;
+                case 'Email':
+                    filterInput.append('<input type="email" name="email" id="customer_filter_input_value" class="form-control" placeholder="Enter email">');
+                    break;
+                case 'ID':
+                    filterInput.append('<input type="text" id="customer_filter_input_value" class="form-control" placeholder="Enter ID">');
+                    break;
+                case 'Phone':
+                    filterInput.append('<input type="text" name="phone" id="customer_filter_input_value" class="form-control" placeholder="Enter phone">');
+                    break;
+                case 'Priority':
+                    filterInput.append('<select name="priority" id="customer_filter_input_value" class="form-control"><option value="medium">Medium</option><option value="high">High</option><option value="very_high">Very High</option></select>');
+                    break;
+                case 'Probability':
+                    filterInput.append('<input type="text" name="probability" id="customer_filter_input_value" class="form-control" placeholder="Enter probability">');
+                    break;
+                case 'Referred By':
+                    filterInput.append('<input type="text" id="customer_filter_input_value" name="referred_by" class="form-control" placeholder="Enter referred by">');
+                    break;
+                case 'Salesperson':
+                    filterInput.append('<select name="salesperson" id="customer_filter_input_value" class="form-control">@foreach($users as $user)<option value="{{ $user->email }}">{{ $user->email }}</option>@endforeach</select>');
+                    break;
+                case 'Source':
+                    filterInput.append('<select name="source" id="customer_filter_input_value" class="form-control">@foreach($Sources as $Source)<option value="{{ $Source->name }}">{{ $Source->name }}</option>@endforeach</select>');
+                    break;
+                case 'Stage':
+                    filterInput.append('<select name="stage" id="customer_filter_input_value" class="form-control">@foreach($CrmStages as $Stage)<option value="{{ $Stage->id }}">{{ $Stage->title }}</option>@endforeach</select>');
+                    break;
+                case 'State':
+                    filterInput.append('<select name="state" id="customer_filter_input_value" class="form-control">@foreach($States as $State)<option value="{{ $State->name }}">{{ $State->name }}</option>@endforeach</select>');
+                    break;
+                case 'Street':
+                    filterInput.append('<input type="text" id="customer_filter_input_value" name="street" class="form-control" placeholder="Enter street">');
+                    break;
+                case 'Street2':
+                    filterInput.append('<input type="text" name="street2" id="customer_filter_input_value" class="form-control" placeholder="Enter street2">');
+                    break;
+                case 'Title':
+                    filterInput.append('<select name="title" id="customer_filter_input_value" class="form-control">@foreach($PersonTitle as $title)<option value="{{ $title->title }}">{{ $title->title }}</option>@endforeach</select>');
+                    break;
+                case 'Type':
+                    filterInput.append('<select name="type" id="customer_filter_input_value" class="form-control"><option value="Lead">Lead</option><option value="Opportunity">Opportunity</option></select>');
+                    break;
+                case 'Website':
+                    filterInput.append('<input type="text" id="customer_filter_input_value" name="website" class="form-control" placeholder="Enter website">');
+                    break;
+                case 'Campaign':
+                    filterInput.append('<select name="campaign" id="customer_filter_input_value" class="form-control">@foreach($Campaigns as $Campaign)<option value="{{ $Campaign->name }}">{{ $Campaign->name }}</option>@endforeach</select>');
+                    break;
+                case 'City':
+                    filterInput.append('<input type="text" name="city" id="customer_filter_input_value" class="form-control" placeholder="Enter city">');
+                    break;
+                default:
+                    filterInput.append('<input type="text" id="customer_filter_input_value" class="form-control" placeholder="Enter value">');
+                    break;
+            }
+        });
+
+   
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('save-current-search');
+    const accordionValues = document.querySelector('.o_accordion_values');
+    const arrowIcon = toggleButton.querySelector('.arrow-icon');
+
+    toggleButton.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default behavior to avoid page reload
+        
+        const isOpen = accordionValues.style.display === 'block';
+        accordionValues.style.display = isOpen ? 'none' : 'block';
+        toggleButton.setAttribute('aria-expanded', !isOpen);
+        
+        // Toggle the arrow direction
+        arrowIcon.classList.toggle('open', !isOpen);
+    });
+
+    // Initially hide the accordion values
+    accordionValues.style.display = 'none';
+});
 </script>
 
 
