@@ -13,7 +13,8 @@ use App\Models\Medium;
 use App\Models\Opportunity;
 use App\Models\PersonTitle;
 use App\Models\Pipeline;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use App\Models\RecurringPlans;
 use App\Models\Sale;
 use App\Models\Source;
@@ -883,7 +884,90 @@ private function getUserColor($userId)
     
     public function exportpipiline(Request $request)
     {
-       return Excel::download(new LeadExport, 'Lead.xlsx');
+       // Create a new spreadsheet
+       $spreadsheet = new Spreadsheet();
+       $sheet = $spreadsheet->getActiveSheet();
+   
+       // Set the headers
+       $headers = [
+           'Product Name',
+           'Contact Name',
+           'Company Name',
+           'Email',
+           'City',
+           'Country',
+           'Sales Person',
+           'Sales Team',
+           'Referred By',
+           'Medium',
+           'Tags',
+       ];
+   
+       // Set header values and styles
+       $headerStyle = [
+           'font' => [
+               'bold' => true,
+               'color' => ['rgb' => '000000'],
+               'size' => 12,
+           ],
+       ];
+   
+       $columnWidths = [
+           'A' => 30,
+           'B' => 30,
+           'C' => 30,
+           'D' => 30,
+           'E' => 20,
+           'F' => 20,
+           'G' => 30,
+           'H' => 20,
+           'I' => 20,
+           'J' => 20,
+           'K' => 15,
+       ];
+   
+       // Add headers to the spreadsheet
+       foreach ($headers as $key => $header) {
+           $column = chr(65 + $key);
+           $sheet->setCellValue($column . '1', $header);
+           $sheet->getStyle($column . '1')->applyFromArray($headerStyle);
+           $sheet->getColumnDimension($column)->setWidth($columnWidths[$column]);
+       }
+   
+       // Fetch leads with eager loading
+       $leads = generate_lead::with(['getCountry', 'getMedium', 'getUser'])->get();
+   
+       $row = 2; // Start from the second row
+       foreach ($leads as $lead) {
+           $sheet->setCellValue('A' . $row, $lead->product_name);
+           $sheet->setCellValue('B' . $row, $lead->contact_name);
+           $sheet->setCellValue('C' . $row, $lead->company_name);
+           $sheet->setCellValue('D' . $row, $lead->email);
+           $sheet->setCellValue('E' . $row, $lead->city);
+           $sheet->setCellValue('F' . $row, optional($lead->getCountry)->name ?? ''); // Using optional to prevent errors
+           $sheet->setCellValue('G' . $row, optional($lead->getUser)->name ?? '');
+           $sheet->setCellValue('H' . $row, $lead->sales_team);
+           $sheet->setCellValue('I' . $row, $lead->referred_by);
+           $sheet->setCellValue('J' . $row, optional($lead->getMedium)->name ?? '');
+           
+           // Fetch and join tags
+           $tags = $lead->tags()->pluck('name')->toArray();
+           $sheet->setCellValue('K' . $row, implode(', ', $tags));
+           $row++;
+       }
+   
+       // Create a writer instance and save the file
+       $writer = new Xlsx($spreadsheet);
+       $fileName = 'generate_leads.xlsx';
+   
+       // Set the headers to force download
+       header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+       header('Content-Disposition: attachment; filename="' . $fileName . '"');
+       header('Cache-Control: max-age=0');
+   
+       // Write the file to output
+       $writer->save('php://output');
+       exit;
     }
 
     public function importpipline()
@@ -891,15 +975,106 @@ private function getUserColor($userId)
        return view('crm.importpipeline');
     }
 
-    public function import(Request $request) {
-       $request->validate([
-           'file' => 'required|mimes:xls,xlsx,csv'
-       ]);
-    
-       Excel::import(new pipelineImport, $request->file('file')->store('files'));
-   
-       return redirect()->back()->with('success', 'File imported successfully.');
-   }
+    public function import(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx,csv'
+        ]);
+
+        // Get the uploaded file
+        $file = $request->file('file');
+
+        // Check the file extension to determine how to process the file
+        $extension = $file->getClientOriginalExtension();
+
+        if ($extension == 'csv') {
+            // Handle CSV file
+            $this->importFromCSV($file);
+        } else {
+            // Handle XLS or XLSX using PhpSpreadsheet
+            $this->importFromExcel($file);
+        }
+
+        return redirect()->route('lead.index')->with('success', 'File imported successfully.');
+    }
+
+    private function importFromCSV($file)
+    {
+        // Open the file
+        if (($handle = fopen($file->getRealPath(), 'r')) !== FALSE) {
+            // Skip the first row if it contains headers
+            $firstRow = true;
+            $stage = CrmStage::where('title', 'New')->first();
+            // Read each row of the CSV file
+            while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                if ($firstRow) {
+                    $firstRow = false;
+                    continue; // Skip header row
+                }
+
+                // Assuming your CSV columns align with the database fields
+                Sale::create([
+                    'user_id' => Auth::id(),
+                    'stage_id' => $stage->id,
+                    'opportunity' => $row[1],
+                    'company_name' => $row[2] ?? null,
+                    'contact_name' => $row[3] ?? null,
+                    'email' => $row[4] ?? null,
+                    'job_postion' => $row[5] ?? null,
+                    'phone' => $row[6] ?? null,
+                    'mobile' => $row[7] ?? null,
+                    'street_1' => $row[8] ?? null,
+                    'street_2' => $row[9] ?? null,
+                    'city' => $row[10] ?? null,
+                    'state' => $row[11] ?? null,
+                    'zip' => $row[12] ?? null,
+                    'country' => $row[13] ?? null,
+                    'website_link' => $row[14] ?? null,
+                    'internal_notes' => $row[15] ?? null,
+                ]);
+            }
+            fclose($handle);
+        }
+    }
+
+    private function importFromExcel($file)
+    {
+        // Load PhpSpreadsheet to handle Excel files
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $rows = $sheet->toArray();
+        $stage = CrmStage::where('title', 'New')->first();
+        // Skip the first row if it contains headers
+        foreach ($rows as $index => $row) {
+            if ($index == 0) {
+                continue; // Skip header row
+            }
+
+            // Insert data into the database
+            Sale::create([
+                'user_id' => Auth::id(),
+                'stage_id' => $stage->id,
+                'opportunity' => $row[1],
+                'company_name' => $row[2] ?? null,
+                'contact_name' => $row[3] ?? null,
+                'email' => $row[4] ?? null,
+                'job_postion' => $row[5] ?? null,
+                'phone' => $row[6] ?? null,
+                'mobile' => $row[7] ?? null,
+                'street_1' => $row[8] ?? null,
+                'street_2' => $row[9] ?? null,
+                'city' => $row[10] ?? null,
+                'state' => $row[11] ?? null,
+                'zip' => $row[12] ?? null,
+                'country' => $row[13] ?? null,
+                'website_link' => $row[14] ?? null,
+                'internal_notes' => $row[15] ?? null,
+            ]);
+        }
+    }
+
 
 
 
