@@ -51,7 +51,15 @@
 ])
 @endsection
 
+@section('setting_menu')
 
+    <div role="separator" class="dropdown-divider"></div>
+    <a href="{{route('crm.importpipline')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
+
+       
+
+        
+@endsection
 
 @section('content')
 
@@ -108,11 +116,40 @@
     width: 100%;
     max-height: 100%;
 }
-.o_popover {
-    width: 100%;
-    margin: 0 !important;
-}
+    .o_popover {
+        width: 100%;
+        margin: 0 !important;
+    }
+    #main_discard_btn{
+    display: none;
+    }
+    .head_breadcrumb_info {
+        gap: 0px !important;
+    }
 
+    .dropdown-menu-setting {
+        display: none;
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+        top: auto;
+        left: auto;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: .25rem;
+    }
+    .dropdown-menu-setting.show {
+        display: block !important;
+    }
+
+    .dropdown-menu-setting a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
 
 </style>
 <div class="o_content" style="height: 100%">

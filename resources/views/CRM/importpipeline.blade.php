@@ -1,7 +1,7 @@
 @extends('layout.header')
 @section('content')
 @section('head_breadcrumb_title')
-    {!! '<a href="' . route('lead.index') . '">Leads</a> <br> Import a File' !!}
+    {!! '<a href="' . route('lead.index') . '">Pipilne</a> <br> Import a File' !!}
 @endsection
 
 @section('head_new_btn_name', 'Upload File')
@@ -62,6 +62,9 @@
     .new_btn_info_cancel{
         display: block !important;
     }
+    .head_breadcrumb_info{
+        gap: 0px !important;
+    }
 </style>
 <style>
     #filePreviewTable {
@@ -77,7 +80,7 @@
     #filePreviewTable th {
         background-color: #f4f4f4;
         font-weight: bold;
-    }
+    }   
     #filePreviewTable tr:nth-child(even) {
         background-color: #f9f9f9; /* Light gray for even rows */
     }
@@ -86,7 +89,7 @@
     }
 </style>
 
-<form id="uploadForm" action="{{ route('lead.import') }}" method="POST" enctype="multipart/form-data">
+<form id="uploadForm" action="{{ route('crm.import') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <input type="file" name="file" id="fileUpload" accept=".xls,.xlsx,.csv" style="display:none;">
   
