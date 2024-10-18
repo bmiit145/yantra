@@ -9,8 +9,8 @@
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
-        "maatwebsite/excel": "^3.1",
-        "phpoffice/phpspreadsheet": "^1.29",
+        "maatwebsite/excel": "^1.1",
+        "phpoffice/phpspreadsheet": "^3.3",
         "ramsey/uuid": "^4.7",
         "spatie/laravel-permission": "^6.9",
         "yajra/laravel-datatables-oracle": "^11.1"
