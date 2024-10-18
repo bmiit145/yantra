@@ -75,6 +75,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pipeline-import', [CRMController::class, 'import'])->name('crm.import');
     
 
+    // CRM pipeline Filter
+
+    Route::get('/pipeline-filter', [CRMController::class, 'pipelineFilter'])->name('crm.pipeline.filter');
 
 
     // sale

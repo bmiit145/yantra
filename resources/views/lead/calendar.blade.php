@@ -640,6 +640,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         display: block;
         cursor: pointer;
     }
+    #dropdownMenuButton{
+        display: none;
+    }
 </style>
 
 <div class="o_content">
