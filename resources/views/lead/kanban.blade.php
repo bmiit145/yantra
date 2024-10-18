@@ -746,8 +746,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         display: none
     }
 
-    .head_breadcrumb_info {
-        display: none
+    #main_save_btn{
+        display: none; 
+    }
+
+    #main_discard_btn{
+        display: none; 
     }
 
     .dropdown-toggle::after {

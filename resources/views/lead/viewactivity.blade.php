@@ -410,6 +410,20 @@
     .feedback-discard{
         color:#017e84!important;
     }
+
+    #main_save_btn{
+        display: none; 
+    }
+
+    #main_discard_btn{
+        display: none; 
+    }
+    .redirect-button{
+        display: none !important;
+    }
+    #dropdownMenuButton{
+        display: none;
+    }
 </style>
 
 <!-- Bootstrap CSS -->
@@ -2534,6 +2548,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}'
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         if (hideDiv.length) { // Check if hideDiv exists
                             hideDiv.addClass('d-none'); // Hide the div
@@ -2622,6 +2637,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}' // Include CSRF token for security
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         button.closest('.hideDiv').addClass('d-none'); // Hide the activity after deletion
 
@@ -3985,6 +4001,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}'
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         button.closest('.hideDiv').addClass('d-none'); // Hide popover after submission
 
@@ -4089,6 +4106,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}' // Include CSRF token for security
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         button.closest('.hideDiv').addClass('d-none'); // Hide the activity after deletion
 

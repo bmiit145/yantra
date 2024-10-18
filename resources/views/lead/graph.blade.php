@@ -777,6 +777,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         display: block;
         /* Show active chart */
     }
+    .redirect-button{
+        display: none !important;
+    }
+    #dropdownMenuButton{
+        display: none;
+    }
 </style>
 
 <div class="o_content">

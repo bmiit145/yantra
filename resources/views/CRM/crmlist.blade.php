@@ -62,18 +62,18 @@
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
     <div class="o_dropdown_container o_filter_menu w-100 w-lg-auto h-100 px-3 mb-4 mb-lg-0 border-end">
-        <div class="px-3 fs-5 mb-2"><i class="me-2 fa fa-filter"></i>
+        <div class="px-3 fs-5 mb-2"><i class="me-2 fa fa-filter" style="color: #714b67;"></i>
             <input type="hidden" id="filter" name="filter" value="">
 
             <h5 class="o_dropdown_title d-inline">Filters</h5>
         </div>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate my-pipeline"
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="my-pipeline"><span
                 class="float-end checkmark" style="display:none;">✔</span>My Pipeline</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate unassigned"
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="unassigned"><span
                 class="float-end checkmark" style="display:none;">✔</span>Unassigned</span>
-        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate open_opportunities"
+        <span class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate activities"
             role="menuitemcheckbox" tabindex="0" title="" aria-checked="false" id="open_opportunities"><span
                 class="float-end checkmark" style="display:none;">✔</span>Open Opportunities</span>
         <div class="dropdown-divider" role="separator"></div>
@@ -154,12 +154,15 @@
             </div>
         </div>
         <div class="dropdown-divider" role="separator"></div><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="Won" aria-checked="false">Won</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-            tabindex="0" title="Ongoing" aria-checked="false">Ongoing</span><span
-            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate focus" role="menuitemcheckbox"
-            tabindex="0" title="Lost" aria-checked="false">Lost</span>
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            tabindex="0" title="Won" aria-checked="false"><span
+                class="float-end checkmark" style="display:none;">✔</span>Won</span><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            tabindex="0" title="Ongoing" aria-checked="false"><span
+                class="float-end checkmark" style="display:none;">✔</span>Ongoing</span><span
+            class="o-dropdown-item dropdown-item o-navigable o_menu_item text-truncate LTFActivities" role="menuitemcheckbox"
+            tabindex="0" title="Lost" aria-checked="false"><span
+                class="float-end checkmark" style="display:none;">✔</span>Lost</span>
         <div class="dropdown-divider" role="separator"></div>
         <span class="o-dropdown-item dropdown-item o-navigable o_menu_item o_add_custom_filter" role="menuitem"
             tabindex="0" style="cursor: pointer;">Add Custom Filter</span>
@@ -527,37 +530,21 @@
         /* Rotate the arrow */
     }
 
-    .tag {
+    .tag,
+    .tag1,
+    .LTFtag ,
+     .tag5,
+     .group_by_tag,
+     .CRtag,
+     .favorites-filter
+     {
         display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
+        padding: 0px 10px 0px 0;
+        background-color: #e7e9ed;
+        border-radius: 8px;
         font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
-
-    .tag1 {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
-    }
-
-    .tag5 {
-        display: inline-block;
-        padding: 5px 10px;
-        background-color: #E0E0E0;
-        border-radius: 22px;
-        margin-right: 12px;
-        font-size: 14px;
-        top: 5px;
-        left: 5px;
+        margin: 5px 0;
+        position: relative;
     }
 
     .remove-tag {
@@ -621,6 +608,72 @@
 
     .dropdown-toggle::after {
         content: none !important;
+    }
+
+    span.setting_icon i {
+        color: #fff;
+    }
+
+    span.setting_icon {
+        padding: 3px;
+        background: #714B67;
+        border-radius: 5px;
+        display: inline-block;
+        margin-right: 5px;
+        width: 27px;
+        height: 27px;
+        text-align: center;
+        position: absolute;
+    }
+
+    span.setting_icon.setting_icon_hover {
+        display: none;
+    }
+
+    a.setting-icon:hover span {
+        display: block;
+    }
+
+    span.tag-item {
+        line-height: 1.9;
+    }
+
+    a.setting-icon {
+        padding-right: 35px;
+    }
+
+    .o_accordion_toggle::after {
+        display: none;
+    }
+    .arrow-icon {
+        transition: transform 0.3s; /* Smooth transition */
+    }
+
+    .arrow-icon.open {
+        transform: rotate(180deg); /* Rotate the arrow when open */
+    }
+    .search-dropdown-item{
+        display: block;
+        width: 100%;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
+    .o_accordion_values {
+        display: none;
+        transition: all 0.3s ease;
+    }
+    .favorites_input {
+
+        border: 0 !important;
+        border-bottom: 1px solid #d8dadd !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        margin-bottom: 5px;
     }
 
 
@@ -700,77 +753,80 @@
                     <th>Tags</th>
                     <th style="width:35px !important"><a class="dropdown-btn"><i class="fa fa-list"></i></a>
                         <div class="hide-show-dropdown-menu dropdown-menu">
-                            <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="0" checked> Created On</label>
+                            <div class="dropdown-checkbox d-none">
+                                <label><input type="checkbox" data-column="0"> Index</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="1" checked> Opportunity</label>
+                                <label><input type="checkbox" data-column="1"> Created On</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="2"> Customer</label>
+                                <label><input type="checkbox" data-column="2" checked> Opportunity</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="3" checked> Contact Name</label>
+                                <label><input type="checkbox" data-column="3"> Customer</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="4" checked> Email</label>
+                                <label><input type="checkbox" data-column="4" checked> Contact Name</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="5"> Phone</label>
+                                <label><input type="checkbox" data-column="5" checked> Email</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="4"> City</label>
+                                <label><input type="checkbox" data-column="6"> Phone</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="7"> State</label>
+                                <label><input type="checkbox" data-column="7"> City</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="8"> Country</label>
+                                <label><input type="checkbox" data-column="8"> State</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="9" checked> Sales Person</label>
+                                <label><input type="checkbox" data-column="9"> Country</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="10"> Sales Team</label>
+                                <label><input type="checkbox" data-column="10" checked> Sales Person</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="11" checked> Priority</label>
+                                <label><input type="checkbox" data-column="11"> Sales Team</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="12"> Campaign</label>
+                                <label><input type="checkbox" data-column="12"> Priority</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="13"> Medium</label>
+                                <label><input type="checkbox" data-column="13"> Campaign</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="14"> Source</label>
+                                <label><input type="checkbox" data-column="14"> Medium</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="15" checked> Expected Revenue</label>
+                                <label><input type="checkbox" data-column="15"> Source</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="16"> Expected Closing</label>
+                                <label><input type="checkbox" data-column="16" checked> Expected Revenue</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="17" checked> Expected MRR</label>
+                                <label><input type="checkbox" data-column="17"> Expected Closing</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="18"> Recurring Revenues</label>
+                                <label><input type="checkbox" data-column="18" checked> Expected MRR</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="19"> Recurring Plan</label>
+                                <label><input type="checkbox" data-column="19"> Recurring Revenues</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="20" checked> Stage</label>
+                                <label><input type="checkbox" data-column="20"> Recurring Plan</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="21" checked> Probability</label>
+                                <label><input type="checkbox" data-column="21"> Stage</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="22"> Lost Reason</label>
+                                <label><input type="checkbox" data-column="22"> Probability</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="23"> Tags</label>
+                                <label><input type="checkbox" data-column="23"> Lost Reason</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="24"> Tags</label>
                             </div>
 
                         </div>
@@ -792,7 +848,7 @@
                                 <td>{{$pipeline->city ?? ''}}</td>
                                 <td>{{$pipeline->getState->name ?? ''}}</td>
                                 <td>{{$pipeline->getCountry->name ?? ''}}</td>
-                                <td>{{$pipeline->user->email ?? ''}}</td>
+                                <td>{{$pipeline->salesPerson->email ?? ''}}</td>
                                 <td>{{$pipeline->sales ?? ''}}</td>
                                 <td>
                                     <!-- Medium Priority -->
@@ -856,7 +912,7 @@
                     <th id="total_recurring_mrr"></th>
                     <th colspan="1"></th>
                     <th id="total_recurring_revenue"></th>
-                    <th colspan="5"></th>
+                    <th colspan="6"></th>
                 </tr>
             </tfoot>
         </table>
@@ -887,161 +943,1373 @@
 <script>
     $(document).ready(function () {
         var table = $('#example').DataTable({
-            "pageLength": 25,
-            searching: false,
-            "lengthChange": false,
-            "sDom": 'Rlfrtip',
-            "oColReorder": {
-                "bAddFixed": true
-            },
-            footerCallback: function (row, data, start, end, display) {
-                var api = this.api();
+        "pageLength": 25,
+        searching: false,
+        "lengthChange": false,
+        "sDom": 'Rlfrtip',
+        "oColReorder": {
+            "bAddFixed": true
+        },
+        footerCallback: function (row, data, start, end, display) {
+            var api = this.api();
 
-                var totalExpectedRevenue = api
-                    .column(15)
-                    .data()
-                    .reduce(function (a, b) {
-                        var x = parseFloat(a) || 0;
-                        var y = parseFloat(b) || 0;
-                        return x + y;
-                    }, 0);
+            var totalExpectedRevenue = api
+                .column(16)
+                .data()
+                .reduce(function (a, b) {
+                    var x = parseFloat(a) || 0;
+                    var y = parseFloat(b) || 0;
+                    return x + y;
+                }, 0);
 
-                var totalRecurringMrr = 0;
-                api.rows().every(function () {
-                    var data = this.data();
-                    var mrrValue = parseFloat(data[17]) || 0; // Use the 17th column for MRR (index 16)
+            var totalRecurringMrr = 0;
+            api.rows().every(function () {
+                var data = this.data();
+                var mrrValue = parseFloat(data[18]) || 0; // MRR is in the 18th column (index 17)
+                if (!isNaN(mrrValue)) {
+                    totalRecurringMrr += mrrValue;
+                }
+            });
 
-                    if (!isNaN(mrrValue)) { // Ensure it's a number
-                        totalRecurringMrr += mrrValue;
-                    }
-                });
+            var totalRecurringRevenue = api
+                .column(19)
+                .data()
+                .reduce(function (a, b) {
+                    var x = parseFloat(a) || 0;
+                    var y = parseFloat(b) || 0;
+                    return x + y;
+                }, 0);
 
-                var totalRecurringRevenue = api
-                    .column(18)
-                    .data()
-                    .reduce(function (a, b) {
-                        var x = parseFloat(a) || 0;
-                        var y = parseFloat(b) || 0;
-                        return x + y;
-                    }, 0);
+            $(api.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+            $(api.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+            $(api.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
+        },
+        createdRow: function (row, data, dataIndex) {
+            $(row).attr('data-id', data.id);
+        },
+    });
 
-                $(api.column(15).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
-                $(api.column(17).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
-                $(api.column(18).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
-            },
-            createdRow: function (row, data, dataIndex) {
-                $(row).attr('data-id', data.id);
-            },
+    $('#example tbody').on('click', 'tr', function () {
+        var id = $(this).data('id'); // Get the data-id attribute from the clicked row
+        var index = $(this).find('td.d-none').text();
+        if (id) {
+            window.location.href = '/pipeline-create/' + id + '/' + index;
+        }
+    });
 
-        });
+    function filterData(selectedTags) {
+    $.ajax({
+        url: '{{route('crm.pipeline.filter')}}', // Your endpoint for fetching leads
+        method: 'GET',
+        data: {
+            tags: selectedTags
+        },
+        success: function (response) {
+            console.log(response);
+            var $tableBody = $('#lead-table-body');
 
-        $('#example tbody').on('click', 'tr', function () {
-            var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-            var index = $(this).find('td.d-none').text();
-            if (id) {
-                window.location.href = '/pipeline-create/' + id + '/' + index;
+            // Clear existing table data
+            $tableBody.empty();
+
+            if (response.data.length === 0) {
+                // Display the message if no data is found
+                $tableBody.append(`<tr><td colspan="21" class="text-center">No data found!</td></tr>`);
+                return;
             }
-        });
-        // Restore column visibility from local storage
-        function saveColumnVisibility() {
-            var visibility = {};
+
+            var index = 1;
+            var totalExpectedRevenue = 0; // Initialize total expected revenue
+            var totalRecurringMrr = 0; // Initialize total recurring MRR
+            var totalRecurringRevenue = 0; // Initialize total recurring revenue
+
+            // Loop through the response and create table rows
+            response.data.forEach(function (item) {
+                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                // Append data only for the visible columns
+                if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
+                if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
+                if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
+                if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
+                if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
+                if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
+                if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
+                if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
+                if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
+                if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
+                if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
+                if (table.column(16).visible()) {
+                    rowHtml += `<td>${item.expected_revenue || ''}</td>`;
+                    totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
+                }
+                if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
+                
+                var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
+                var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
+                var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
+                
+                if (table.column(18).visible()) {
+                    rowHtml += `<td>${expertMrr}</td>`;
+                    totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
+                }
+                if (table.column(19).visible()) {
+                    rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
+                    totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
+                }
+                if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
+                if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
+                if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                
+                rowHtml += `</tr>`;
+                $tableBody.append(rowHtml);
+            });
+
+            // Update footer with totals
+            $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+            $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+            $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
+
+            // Attach click event handler to rows
+            $('#lead-table-body .lead-row').on('click', function () {
+                var leadId = $(this).data('id');
+                var index = $(this).find('td.d-none').text();
+                window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+            });
+
+            // Apply the column visibility settings
             table.columns().every(function () {
                 var column = this;
                 var index = column.index();
-                visibility[index] = column.visible();
+                var isVisible = column.visible();
+                column.visible(isVisible);
             });
-            localStorage.setItem('columnVisibility', JSON.stringify(visibility));
+
+        },
+        error: function () {
+            console.error('Failed to fetch data');
         }
-        // Restore column visibility from localStorage
-        function restoreColumnVisibility() {
-            var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
-            if (visibility) {
-                table.columns().every(function () {
-                    var column = this;
-                    var index = column.index();
-                    // Check if the column exists and visibility is defined
-                    if (visibility.hasOwnProperty(index)) {
-                        var isVisible = visibility[index];
-                        // Ensure the column exists before setting visibility
-                        if (typeof column !== 'undefined') {
-                            column.visible(isVisible);
-                            // Update the corresponding checkbox based on the visibility
-                            $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
-                        }
-                    }
-                });
-            } else {
-                // If no visibility settings in localStorage, set default visibility
-                table.column(0).visible(true);
-                table.column(1).visible(true);
-                table.column(2).visible(false);
-                table.column(3).visible(true);
+    });
+}
+
+    // Save column visibility to local storage
+    function saveColumnVisibility() {
+        var visibility = {};
+        table.columns().every(function () {
+            var column = this;
+            var index = column.index();
+            visibility[index] = column.visible();
+        });
+        localStorage.setItem('columnVisibility', JSON.stringify(visibility));
+    }
+
+    // Restore column visibility from localStorage
+    function restoreColumnVisibility() {
+        var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
+        if (visibility) {
+            table.columns().every(function () {
+                var column = this;
+                var index = column.index();
+                if (visibility.hasOwnProperty(index)) {
+                    var isVisible = visibility[index];
+                    column.visible(isVisible);
+                    $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
+                }
+            });
+        } else {
+                table.column(0).visible(false);
+                table.column(1).visible(false);
+                table.column(2).visible(true);
+                table.column(3).visible(false);
                 table.column(4).visible(true);
-                table.column(5).visible(false);
+                table.column(5).visible(true);
                 table.column(6).visible(false);
                 table.column(7).visible(false);
                 table.column(8).visible(false);
-                table.column(9).visible(true);
-                table.column(10).visible(false);
-                table.column(11).visible(true);
+                table.column(9).visible(false);
+                table.column(10).visible(true);
+                table.column(11).visible(false);
                 table.column(12).visible(false);
                 table.column(13).visible(false);
                 table.column(14).visible(false);
-                table.column(15).visible(true);
-                table.column(16).visible(false);
-                table.column(17).visible(true);
-                table.column(18).visible(false);
+                table.column(15).visible(false);
+                table.column(16).visible(true);
+                table.column(17).visible(false);
+                table.column(18).visible(true);
                 table.column(19).visible(false);
-                table.column(20).visible(true);
+                table.column(20).visible(false);
                 table.column(21).visible(false);
                 table.column(22).visible(false);
                 table.column(23).visible(false);
+                table.column(24).visible(false);
+        }
+    }
+
+    // Handle column visibility based on checkbox status
+    $('.dropdown-menu input[type="checkbox"]').on('change', function () {
+        var columnIndex = $(this).data('column');
+        var column = table.column(columnIndex);
+        column.visible(this.checked); // Show or hide the column based on the checkbox state
+        saveColumnVisibility(); // Save visibility to local storage
+    });
+
+    // Restore visibility states on page load
+    restoreColumnVisibility();
+
+    // Handle dropdown menu display
+    $(document).on('click', '.dropdown-btn', function (event) {
+        event.stopPropagation(); // Prevent click event from propagating to the document
+        $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
+        $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
+    });
+
+    $(document).on('click', function (event) {
+        if (!$(event.target).closest('.dropdown-menu').length) {
+            $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
+        }
+    });
+
+    // Remove all tags
+    $(document).on('click', '.remove-tag', function () {
+        $('.tag').remove();
+        $('.checkmark').hide();
+        $('#search-input').val('').attr('placeholder', 'Search...');
+        $('#filter').val(''); // Clear the filter value
+        table.ajax.reload();
+    });
+
+    $(document).on('click', '.custom-filter-remove', function () {
+        $('#search-input').val('').attr('placeholder', 'Search...');
+        table.ajax.reload();
+    });
+
+    // CSRF token setup for AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+
+// -------------------------------------------- Activities Start ------------------------------------------------------------------
+      
+
+
+        $(document).on('click', '.activities', function (e) {
+            e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
+            var $item = $(this);
+
+            // Clone the item, remove the checkmark span and get the trimmed text
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection2(selectedValue, $item);
+        });
+
+        function handleTagSelection2(selectedValue, $item = null) {
+
+
+            var $tag = $('.tag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // If the tag already exists, remove it            
+                $tagItem.remove();
+                updateTagSeparators2();
+
+                // If no tags left, remove the container and reset the input
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide the checkmark if it's being deselected
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                // If the tag does not exist, add it
+                var newTagHtml = '<span class="tag-item"  data-span_id="' + currentIndex + '""  data-value="' + selectedValue + '">' + selectedValue + '</span>';
+                var index = 0;
+                 var currentIndex = index++;
+                // Check if a tag container exists, if not, create one
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="tag" data-span_id="' + currentIndex + '"" >' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(' & ' + newTagHtml);
+                }
+
+                updateTagSeparators2();
+
+                // Show the checkmark on the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Collect selected tags
+            updateFilterTagsA();
+        }
+
+        // Function to clear all group-by tags
+        function clearTagsByType(type) {
+            console.log(selectedTags);
+
+            var $tag = $('.' + type + '-tag');
+            if ($tag.length > 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
             }
         }
-        // Handle column visibility based on checkbox status
-        $('.dropdown-menu input[type="checkbox"]').on('change', function () {
-            var columnIndex = $(this).data('column');
-            var column = table.column(columnIndex);
-            // Ensure the column exists before trying to set visibility
-            if (typeof column !== 'undefined') {
-                column.visible(this.checked); // Show or hide the column based on the checkbox state
-                saveColumnVisibility(); // Save visibility to local storage
+
+        function updateTagSeparators2() {
+            var $tag = $('.tag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton2();
+        }
+
+
+        function updateRemoveTagButton2() {
+            var $tag = $('.tag');
+            var index = 0;
+            // Ensure the icon appears only once at the beginning
+          if ($tag.find('.fa-list').length === 0) {
+            var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '""  class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  data-span_id="' + currentIndex + '""  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
             }
-        });
-        // Restore visibility states on page load
-        restoreColumnVisibility();
-        // Handle dropdown menu display
-        $(document).on('click', '.dropdown-btn', function (event) {
-            event.stopPropagation(); // Prevent click event from propagating to the document
-            $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
-            $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
-        });
-        $(document).on('click', function (event) {
-            if (!$(event.target).closest('.dropdown-menu').length) {
-                $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-tag').length === 0) {
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-tag').remove();
+                $('.icon_tag').remove();
             }
+        }
+
+        function updateFilterTagsA() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+            console.log(selectedTags,'jdfjdfjjdf');
+            
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+         // Remove tag and preserve "Lost" tag filter
+         $(document).on('click', '.remove-tag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            $('.tag').remove(); // Only remove the container if it's empty
+            // updateTagSeparators2();
+
+            // Reapply filters after removing "Lost" tag
+            updateFilterTagsA();
+
+            // Remove checkmark from the dropdown
+            $('.o-dropdown-item-2 .checkmark').hide();
         });
 
-        // Remove all tags
-        $(document).on('click', '.remove-tag', function () {
-            $('.tag').remove();
-            $('.checkmark').hide();
-            $('#search-input').val('').attr('placeholder', 'Search...');
-            $('#filter').val(''); // Clear the filter value
-            table.ajax.reload();
+        // -------------------------------------------- Activities End ------------------------------------------------------------------
+
+        // -------------------------------------------- Lost Span Start ------------------------------------------------------------------
+
+        $(document).on('click', '.lost_span', function (e) {
+            e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
+            var $item = $(this);
+
+            // Get the text of the clicked "Lost" span
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+
+            handleTagSelection3(selectedValue, $item);
         });
+
+        function handleTagSelection3(selectedValue, $item = null) {
+            var $tag = $('.tag1');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // Remove existing tag
+                $tagItem.remove();
+                updateTagSeparators3();
+
+                // Remove the tag container if no more tags
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide checkmark in case of deselection
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+
+            } else {
+                if ($tag.length === 0) {
+                    var index = 0;
+                    // Add both the setting icon and tag container together
+                    var currentIndex = index++;
+                    // Add both the setting icon and tag container together
+                    $('#search-input').before(
+                        '<div class="tag1" data-span_id="' + currentIndex + '"">' +
+                        '<a href="#" data-span_id="' + currentIndex + '"" class="setting-icon lostIcon_tag">' +
+                        '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                        '<span class="setting_icon setting_icon_hover"><i class="fa fa-fw fa-cog"></i></span>' +
+                        '</a>' +
+                        '<span class="tag-item" data-value="' + selectedValue + '">' +
+                        selectedValue +
+                        '<span class="remove-lost-tag" style="cursor:pointer">×</span>' +
+                        '</span>' +
+                        '</div>'
+                    );
+                } else {
+                    // Add new tag with close button
+                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' +
+                        selectedValue +
+                        '<span class="remove-lost-tag" style="cursor:pointer">×</span></span>';
+                    $tag.append(newTagHtml);
+                }
+
+                // Show the checkmark for the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Update selected tags and send to server
+            updateFilterTags();
+        }
+
+        function updateTagSeparators3() {
+            var $tag = $('.tag1');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton3();
+        }
+
+
+        function updateRemoveTagButton3() {
+            var $tag = $('.tag1');
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-lost-tag').length === 0) {
+                    $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-lost-tag').remove();
+                $('.lostIcon_tag').remove();
+            }
+        }
+
+        // Function to update filters after tag removal
+        function updateFilterTags() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+
+            console.log(selectedTags,'Lost Tag');
+
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+        // Remove tag and preserve "Lost" tag filter
+        $(document).on('click', '.remove-lost-tag', function () {
+            var $tagItem = $(this).parent('.lost-tag-item');
+            $tagItem.remove();
+            $('.tag1').remove(); // Only remove the container if it's empty
+            // updateTagSeparators3();
+
+            // Reapply filters after removing "Lost" tag
+            updateFilterTags();
+
+            // Remove checkmark from the dropdown
+            $('.lost_span:contains("Lost")').find('.checkmark').hide();
+        });
+
+       
+        // -------------------------------------------- Lost Span End ------------------------------------------------------------------
+
+
+        // ------------------------------ Late , Today and Future Activitis Start -----------------------------------------------
+
+        $(document).on('click', '.LTFActivities', function (e) {
+            e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
+            var $item = $(this);
+
+            // Clone the item, remove the checkmark span and get the trimmed text
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection4(selectedValue, $item);
+        });
+
+        function handleTagSelection4(selectedValue, $item = null) {
+            var $tag = $('.LTFtag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // If the tag already exists, remove it
+                $tagItem.remove();
+                updateTagSeparators4();
+
+                // If no tags left, remove the container and reset the input
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide the checkmark if it's being deselected
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                // If the tag does not exist, add it
+                var newTagHtml = '<span class="tag-item" data-span_id="' + currentIndex + '"" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                var index = 0;
+                var currentIndex = index++;
+
+                // Check if a tag container exists, if not, create one
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="LTFtag" data-span_id="' + currentIndex + '"" >' + newTagHtml + '</span>');
+                } else {
+                    $tag.append(' & ' + newTagHtml);
+                }
+
+                updateTagSeparators4();
+
+                // Show the checkmark on the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Collect selected tags
+            updateFilterTagsLTF();
+        }
+
+        // Function to clear all group-by tags
+        function clearTagsByType(type) {
+            console.log(selectedTags);
+
+            var $tag = $('.' + type + '-LTFtag');
+            if ($tag.length > 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+        }
+
+        function updateTagSeparators4() {
+            var $tag = $('.LTFtag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton4();
+        }
+
+
+        function updateRemoveTagButton4() {
+            var $tag = $('.LTFtag');
+            var index = 0;
+            // Ensure the icon appears only once at the beginning
+            if ($tag.find('.fa-list').length === 0) {
+                var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '"" class="setting-icon LTFIcon_tag">' +
+                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                    '<span data-span_id="' + currentIndex + '"" class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-LTFtag').length === 0) {
+                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-LTFtag').remove();
+                $('.LTFIcon_tag').remove();
+            }
+        }
+
+        // Function to update filters after tag removal
+        function updateFilterTagsLTF() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+        $(document).on('click', '.remove-LTFtag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            $('.LTFtag').remove(); // Only remove the container if it's empty
+            updateTagSeparators4();
+
+
+            // Reapply filters after removing "Lost" tag
+            updateFilterTagsLTF();
+
+            // Remove checkmark from the dropdown
+            $('.LTFActivities .checkmark').hide();
+        });
+
+
+        // ------------------------------ Late , Today and Future Activitis End -----------------------------------------------
+
+
+        // ------------------------------ Setting Icon Open Model Start  -----------------------------------------------
+
+        $(document).on('click', '.setting-icon', function(e) {
+            e.preventDefault();
+            var id = $(this).data('span_id');
+            console.log(id, 'span_id');
+            $('#span_id').val(id); 
+            $('#customFilterModal').modal('show'); 
+        });
+
+
+        // ------------------------------ Setting Icon Open Model End  -----------------------------------------------
+
+        // ------------------------------ Creation Date and Closed Date Start -----------------------------------------------
+
+        $(document).on('click', '#creationDateDropdown1 .o-dropdown-item_2 ', function (e) {
+            e.stopPropagation();
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
+            var $item = $(this);
+
+            // Clone the item, remove the checkmark span and get the trimmed text
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelection5(selectedValue, $item);
+        });
+
+        function handleTagSelection5(selectedValue, $item = null) {
+            var $tag = $('.CRtag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // If the tag already exists, remove it
+                $tagItem.remove();
+                updateTagSeparators5();
+
+                // If no tags left, remove the container and reset the input
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                // Hide the checkmark if it's being deselected
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+            } else {
+                // If the tag does not exist, add it
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                // Check if a tag container exists, if not, create one
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="CRtag">' + newTagHtml + '</span>');
+                }
+                 else {
+                    $tag.append(' / ' + newTagHtml);
+                }
+
+                updateTagSeparators5();
+
+                // Show the checkmark on the selected item
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                // Reset input and placeholder
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+            }
+
+            // Collect selected tags
+            updateFilterTagsCR();
+        }
+
+        // Function to clear all group-by tags
+        function clearTagsByType(type) {
+            console.log(selectedTags);
+
+            var $tag = $('.' + type + '-CRtag');
+            if ($tag.length > 0) {
+                $tag.remove();
+                $('#search-input').val('').attr('placeholder', 'Search...');
+            }
+        }
+
+        function updateTagSeparators5() {
+            var $tag = $('.CRtag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' / ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton5();
+        }
+
+
+        function updateRemoveTagButton5() {
+            var $tag = $('.CRtag');
+            // Ensure the icon appears only once at the beginning
+            if ($tag.find('.fa-list').length === 0) {
+                $tag.prepend('<a href="#" class="setting-icon CRIcon_tag">' +
+                    '<span class="setting_icon se_filter_icon"><i class="fa fa-filter"></i></span>' +
+                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove-CRtag').length === 0) {
+                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove-CRtag').remove();
+                $('.CRIcon_tag').remove();
+            }
+        }
+
+        // Function to update filters after tag removal
+        function updateFilterTagsCR() {
+            let selectedTags = [];
+            $('.tag-item').each(function () {
+                selectedTags.push($(this).data('value'));
+            });
+
+            // Send selected tags to the server for filtering
+            filterData(selectedTags);
+        }
+
+        $(document).on('click', '.remove-CRtag', function () {
+            var $tagItem = $(this).parent('.tag-item');
+            $tagItem.remove();
+            $('.CRtag').remove(); // Only remove the container if it's empty
+            updateTagSeparators5();
+
+
+            // Reapply filters after removing "Lost" tag
+            updateFilterTagsCR();
+
+            // Remove checkmark from the dropdown
+            $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+        });
+        
+
+        // ------------------------------ Creation Date and Closed Date End -----------------------------------------------
+
+
+            $('.add_filter').on('click', function (event) {
+                event.preventDefault();
+                var filterType = $('#customer_filter_select').val();
+                var filterValue = $('#customer_filter_input_value').val();
+                var operatesValue = $('#customer_filter_operates').val();
+                var span_id = $('#span_id').val();
+
+                $('.selected-items .o_searchview_facet').remove();
+                $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+                $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+
+                
+
+                handleTagSelection(filterType, operatesValue, filterValue, span_id);
+
+                // Prepare data to send
+                var data = {
+                    filterType: filterType,
+                    filterValue: filterValue,
+                    operatesValue: operatesValue
+                };
+
+                // Send AJAX request
+                $.ajax({
+                    url: '{{route('lead.custom.filter')}}',
+                    type: 'POST',
+                    data: data,
+                    success: function (response) {
+                        var $tableBody = $('#lead-table-body');
+
+                        // Clear existing table data
+                        $tableBody.empty();
+
+                        // Check if response contains data
+                        var index = 1;
+                        if (response.success && response.data && response.data.length > 0) {
+
+                            // Attach click event handler to rows
+                            $('#lead-table-body .lead-row').on('click', function () {
+                                var leadId = $(this).data('id');
+                                var index = parseInt($(this).find('td.d-none').text(), 10); // Ensure index is a number
+                                console.log("Lead ID:", leadId);
+                                console.log("Index:", index, '4');
+                                
+                                // Form the URL and log it for verification
+                                var url = `/lead-add/${leadId}/${index}`;
+                                console.log("Redirecting to URL:", url); // Adjust the URL as needed
+                            });
+                        } else {
+                            // If no data, show a message or keep it empty
+                            $tableBody.append('<tr><td colspan="2">No data available</td></tr>'); // Adjust colspan based on the number of columns
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+
+                $('#customFilterModal').modal('hide');
+            });
+
+        function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
+            console.log(filterType, operatesValue, filterValue, span_id);
+            var selectedValue = filterType + ' ' + operatesValue + ' ' + filterValue;
+            var $tag = $('.tag5');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            // Find the tag with the specific span_id and remove it
+            var $iconTag = $('span.tag[data-span_id="' + span_id + '"]'); // Select span with class "tag" and matching span_id
+            
+            var $icosnDiv = $('div.tag1[data-span_id="' + span_id + '"]'); // Select div with class "tag" and matching span_id
+            console.log($iconTag, 'iconTag');
+            var $iconLTFTag = $('span.LTFtag[data-span_id="' + span_id + '"]');
+
+            if ($tagItem.length > 0) {
+                $tagItem.remove();
+                updateTagSeparators();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+            } else {
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                if ($tag.length === 0) {
+                    $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
+                } else {
+                    $tag.html(newTagHtml); // Overwrite with new tag
+                }
+                $('#search-input').val('').attr('placeholder', '');
+            }
+
+            // Remove the entire span.tag element using the span_id
+            if ($iconTag.length > 0) {
+                $iconTag.remove();  // This removes the <span class="tag"> element
+            }
+            if ($icosnDiv.length > 0) {
+                $icosnDiv.remove();  // This removes the <span class="tag"> element
+            }
+            if ($iconLTFTag.length > 0) {
+                $iconLTFTag.remove();  // This removes the <span class="tag"> element
+            }
+
+            updateTagSeparators();
+        }
+
+        function updateTagSeparators() {
+            var $tag = $('.tag5');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' & ';
+                }
+            });
+            $tag.html(html);
+            updateRemoveTagButton();
+        }
+
+        function updateRemoveTagButton() {
+            var $tag = $('.tag5');
+            var index = 0;
+            if ($tag.find('.fa-list').length === 0) {
+            var currentIndex = index++;
+                $tag.prepend('<a href="#" data-span_id="' + currentIndex + '""  class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  data-span_id="' + currentIndex + '""  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }   
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.custom-filter-remove').length === 0) {
+                    $tag.append(' <span class="custom-filter-remove" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.custom-filter-remove').remove();
+                $('.icon_tag').remove();
+            }
+        }
 
         $(document).on('click', '.custom-filter-remove', function () {
-            $('#search-input').val('').attr('placeholder', 'Search...');
-            table.ajax.reload();
+            $('.tag5').remove();
+            var valueToRemove = $(this).closest('.tag-item').data('value');
+            $(this).closest('.tag-item').remove();
+            if ($('.tag5').children().length === 0) {
+                $('.tag5').remove();
+            }
+
+
+            // Optionally, you could send a request to update the filters on the server if necessary
+        });
+        
+
+        // Handle item selection from dropdown
+        $(document).on('click', '.o-dropdown-item_1', function (e) {
+            e.stopPropagation();
+            $('.tag').remove();
+            $('.o-dropdown-item-2 .checkmark').hide();
+            $('.tag1').remove();
+            $('.lost_span:contains("Lost")').find('.checkmark').hide();
+            $('.LTFtag').remove();
+            $('.LTFActivities .checkmark').hide();
+            $('.CRtag').remove();
+            $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+            var $item = $(this);
+            var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
+            handleTagSelectionGrop(selectedValue, $item);
         });
 
-        // CSRF token setup for AJAX requests
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        // Listen to changes in the select dropdown
+        $('.o_add_custom_group_menu').on('change', function (e) {
+            var selectedValue = $(this).find('option:selected').text().trim();
+            handleTagSelectionGrop(selectedValue);
+            $(this).val(''); // Reset the select after selecting an option
+        });
+
+
+        // Function to handle tag selection
+        function handleTagSelectionGrop(selectedValue, $item = null) {
+            var $tag = $('.group_by_tag');
+            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+
+            if ($tagItem.length > 0) {
+                // Remove selected value
+                $tagItem.remove();
+                updateTagSeparatorsGrop();
+
+                if ($tag.children().length === 0) {
+                    $tag.remove();
+                    $('#search-input').val('').attr('placeholder', 'Search...');
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').hide();
+                }
+
+                let selectedTags = [];
+                $('.tag-item').each(function () {
+                    selectedTags.push($(this).data('value'));
+                });
+
+                if (selectedTags.length == 0) {
+                   location.reload();
+                }
+                filter(selectedTags);
+
+            } else {
+                // Add selected value
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
+
+                // Check if the tag already exists
+                if ($('.tag-item[data-value="' + selectedValue + '"]').length === 0) {
+                    // If no tags exist, create a new group_by_tag span
+                    if ($('.group_by_tag').length === 0) {
+                        $('#search-input').before(
+                            '<span class="group_by_tag">' +
+                            '<a href="#"class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>' +
+                            newTagHtml +
+                            '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
+                            '</span>'
+                        );
+                    } else {
+                        // Append to existing group_by_tag span
+                        $('.group_by_tag').append(' ' + newTagHtml);
+                    }
+                    updateTagSeparatorsGrop();
+                }
+
+                if ($item) {
+                    $item.find('.checkmark').show();
+                }
+
+                $('#search-input').val('');
+                $('#search-input').attr('placeholder', '');
+
+                // Collect selected tags
+                let selectedTags = [];
+                $('.tag-item').each(function () {
+                    selectedTags.push($(this).data('value'));
+                });
+                filter(selectedTags);
+            }
+
+            $('#search-dropdown').hide();
+        }
+
+        // The rest of your code remains unchanged
+
+        // Update tag separators and remove button
+        function updateTagSeparatorsGrop() {
+            var $tag = $('.group_by_tag');
+            var $tagItems = $tag.find('.tag-item');
+            var html = '';
+            $tagItems.each(function (index) {
+                html += $(this).prop('outerHTML');
+                if (index < $tagItems.length - 1) {
+                    html += ' > ';
+                }
+            });
+            html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
+            $tag.html(html);
+            updateRemoveTagButtonGrop();
+        }
+
+        // Update/remove tag button
+        function updateRemoveTagButtonGrop() {
+            var $tag = $('.group_by_tag');
+
+            if ($tag.find('.fa-list').length === 0) {
+                $tag.prepend('<a href="#" class="setting-icon icon_tag">' +
+                    '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
+                    '<span  class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
+                    '</a>'
+                );
+            }
+
+            if ($tag.find('.tag-item').length > 0) {
+                if ($('.remove_tag_group_by').length === 0) {
+                    $tag.append(' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>');
+                }
+            } else {
+                $('.remove_tag_group_by').remove();
+                $('.icon_tag').remove();
+            }
+        }
+
+
+        // Remove all tags
+        $(document).on('click', '.remove_tag_group_by', function () {
+            $('.group_by_tag').remove();
+            $('.o-dropdown-item_1  .checkmark').hide();
+            $('#search-input').val('').attr('placeholder', 'Search...');
+            $('#filter').val(''); // Clear the filter value
+            location.reload();
+        });
+        // $(document).on('click', '.remove-tag', function () {
+        //     $('.tag').remove();
+        //     $('.o-dropdown-item-2 .checkmark').hide();
+        //     $('#search-input').val('').attr('placeholder', 'Search...');
+        //     $('#filter').val(''); // Clear the filter value
+        // });
+
+        // Hide dropdown when clicking outside
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('#search-input, #search-dropdown').length) {
+                $('#search-dropdown').hide();
             }
         });
+
+
+        // Send selected tags to the server and process response
+        function filter(selectedTags) {
+            $.ajax({
+                url: '/lead-filter'
+                , type: 'POST'
+                , data: {
+                    selectedTags: JSON.stringify(selectedTags)
+                }
+                , success: function (response) {
+                    console.log('Response:', response);
+
+                    var tableBody = $('#lead-table-body');
+                    tableBody.empty();
+
+                    var leads = response.data;
+
+                    function renderGroup(groupLeads, level) {
+                        $.each(groupLeads, function (groupKey, groupValue) {
+                            var groupRow = `
+                            <tr class="group-header" data-level="${level}" style="cursor:pointer;">
+                                <td colspan="20" style="padding-left:${level * 20}px;">
+                                    <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
+                                </td>
+                            </tr>
+                        `;
+                            tableBody.append(groupRow);
+
+                            
+                        });
+                    }
+
+                    renderGroup(leads, 0);
+
+                    // Toggle visibility of nested groups
+                    $('.group-header').on('click', function () {
+                        var level = $(this).data('level');
+                        var nextRow = $(this).next();
+                        while (nextRow.length && nextRow.data('level') > level) {
+                            nextRow.toggle();
+                            nextRow = nextRow.next();
+                        }
+                    });
+                }
+                , error: function (xhr, status, error) {
+                    console.error('Error applying filter:', error);
+                }
+            });
+        }
+
+        $(document).on('click', '.lead-row', function () {
+            var leadId = $(this).data('id')
+            var index = $(this).find('td.d-none').text();
+          
+    
+            if (leadId) {
+                window.location.href = '/lead-add/' + leadId + '/' + index;
+            }
+        });
+
+        // Initialize tags if any tags are present on page load
+        updateTagSeparatorsGrop(); // Ensure that the close icon is added correctly
+
+        // ------------------------------ Favorite Filter Start -----------------------------------------------
+
+        // Handle the save button click
+        $('.o_save_favorite').on('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const favoriteName = $('#lead_favorites').val(); // Ensure this matches your input field
+            const isDefault = $('#checkbox-comp-70').is(':checked');
+            const isShared = $('#checkbox-comp-71').is(':checked');
+
+            if (favoriteName) {
+                $.ajax({
+                    url: '{{ route('lead.favorites.filter') }}', // Your API endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ 
+                        favorites_name: favoriteName,
+                        is_default: isDefault,
+                        is_shared: isShared
+                    }),
+                    success: function(response) {
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                    if (xhr.status === 409) {
+                        // Handle conflict error
+                        toastr.error(xhr.responseJSON.message); // Display the conflict message
+                    } else {
+                        console.error('Error:', xhr);
+                        toastr.error('An error occurred while saving your favorite.'); // Generic error message
+                    }
+                }
+                });
+            } else {
+                alert('Please enter a favorite name.');
+            }
+        });
+
+        // Search functionality
+        $('.o_input').on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('.o-dropdown-item').each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.includes(searchTerm));
+            });
+        });
+
+        $(document).on('click', '.delete-item', function() {
+            const itemId = $(this).data('id');
+            $('#confirmDelete').data('id', itemId); // Store the ID in the confirm button
+            $('#deleteModal').modal('show'); // Show the modal
+        });
+
+        $('#confirmDelete').on('click', function() {
+            const itemId = $(this).data('id'); // Get the ID from the confirm button
+
+            $.ajax({
+                url: `/delete-lead-favorites/${itemId}`, // Your delete endpoint
+                type: 'DELETE',
+                success: function(response) {
+                    toastr.success('Favorite deleted successfully!'); // Show success message
+                    $('#deleteModal').modal('hide'); // Hide the modal
+
+                    // Remove the item from the UI
+                    $(`span[data-id="${itemId}"]`).remove();
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr);
+                    toastr.error('An error occurred while deleting the favorite.'); // Show error message
+                }
+            });
+        });
+
+        // ------------------------------ Favorite Filter End -----------------------------------------------
+               
+        $('.o-dropdown-item-3').each(function() {
+            if ($(this).attr('aria-checked') === 'true') {
+                var filterName = $(this).data('name');
+                var filterId = $(this).data('id');
+
+                // Create a container for the entire facet
+                var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap"></div>');
+
+                // Create the absolute background overlay
+                var overlay = $('<div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>');
+                container.append(overlay);
+
+                // Create the favorite button with icons
+                var facetLabel = $('<div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-favourite" style="background-color:#f3cc00" role="button">' +
+                    '<i class="small fa-fw fa fa-star" role="image"></i>' +
+                    '<span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover">' +
+                    '<i class="fa fa-fw fa-cog"></i></span></div>');
+                container.append(facetLabel);
+
+                // Create the values container with the filter name and remove button
+                var valuesContainer = $('<div class="o_facet_values position-relative d-flex flex-wrap ps-2 align-items-center rounded-end-2 text-wrap"></div>');
+                var facetValue = $('<small class="o_facet_value">' + filterName + '</small>');
+                var removeButton = $('<button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none" role="button" aria-label="Remove" title="Remove" data-id="' + filterId + '"></button>');
+
+                // Append the value and remove button to the values container
+                valuesContainer.append(facetValue);
+                valuesContainer.append(removeButton);
+
+                // Append the values container to the main container
+                container.append(valuesContainer);
+
+                // Append the entire container to the selected-items
+                $('.selected-items').append(container);
+
+                // Show the checkmark in the dropdown
+                $(this).find('.checkmark').show();
+            }
+        });
+
+        // Close icon functionality (to remove selected item)
+        $(document).on('click', '.o_facet_remove', function() {
+            var filterId = $(this).data('id');
+            $(this).closest('.o_searchview_facet').remove(); // Remove the selected item container
+
+            // Hide the checkmark in the dropdown
+            $('.o-dropdown-item-3[data-id="' + filterId + '"] .checkmark').hide();
+            $('.o-dropdown-item-3[data-id="' + filterId + '"]').attr('aria-checked', 'false'); // Reset aria-checked attribute
+        });
+
+        // Handle item click to select/deselect
+        $('.o-dropdown-item-3').on('click', function() {
+            var filterId = $(this).data('id');
+
+            // Check if the item is already selected
+            if ($(this).attr('aria-checked') === 'true') {
+                // Deselect the item
+                $(this).attr('aria-checked', 'false'); // Mark it as unchecked
+                $(this).find('.checkmark').hide(); // Hide the checkmark
+
+                // Remove the item from the selected items
+                $('.selected-items .o_searchview_facet').each(function() {
+                    if ($(this).find('.o_facet_remove').data('id') === filterId) {
+                        $(this).remove(); // Remove the selected item container
+                    }
+                });
+                return; // Exit the function
+            }
+
+            // Deselect all currently selected items
+            $('.selected-items .o_searchview_facet').remove();
+            $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+            $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+
+            // Show the selected item
+            var filterName = $(this).data('name');
+            var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap"></div>');
+
+            // Create the favorite button with icons
+            var facetLabel = $('<div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-favourite" style="background-color:#f3cc00" role="button">' +
+                '<i class="small fa-fw fa fa-star" role="image"></i>' +
+                '<span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover">' +
+                '<i class="fa fa-fw fa-cog"></i></span></div>');
+            container.append(facetLabel);
+
+            // Create the values container with the filter name and remove button
+            var valuesContainer = $('<div class="o_facet_values position-relative d-flex flex-wrap ps-2 align-items-center rounded-end-2 text-wrap"></div>');
+            var facetValue = $('<small class="o_facet_value">' + filterName + '</small>');
+            var removeButton = $('<button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none" role="button" aria-label="Remove" title="Remove" data-id="' + filterId + '"></button>');
+
+            // Append the value and remove button to the values container
+            valuesContainer.append(facetValue);
+            valuesContainer.append(removeButton);
+
+            // Append the values container to the main container
+            container.append(valuesContainer);
+
+            // Append the entire container to the selected-items
+            $('.selected-items').append(container);
+
+            // Update the dropdown item
+            $(this).attr('aria-checked', 'true'); // Mark it as checked
+            $(this).find('.checkmark').show(); // Show the checkmark
+        });
+
     });
 
 </script>

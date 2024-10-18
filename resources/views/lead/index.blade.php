@@ -778,65 +778,68 @@
                     </th>
                     <th style="width:35px !important"><a class="dropdown-btn"><i class="fa fa-list"></i></a>
                         <div class="hide-show-dropdown-menu dropdown-menu">
-                            <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="0" checked> Lead</label>
+                            <div class="dropdown-checkbox d-none">
+                                <label><input type="checkbox" data-column="0" checked> Index</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="1" checked> Email</label>
+                                <label><input type="checkbox" data-column="1" checked> Lead</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="2" checked> City</label>
+                                <label><input type="checkbox" data-column="2" checked> Email</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="3"> State</label>
+                                <label><input type="checkbox" data-column="3" checked> City</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="4" checked> Country</label>
+                                <label><input type="checkbox" data-column="4"> State</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="5"> Zip</label>
+                                <label><input type="checkbox" data-column="5" checked> Country</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="6"> Probability</label>
+                                <label><input type="checkbox" data-column="6"> Zip</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="7"> Company Name</label>
+                                <label><input type="checkbox" data-column="7"> Probability</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="8"> Address 1</label>
+                                <label><input type="checkbox" data-column="8"> Company Name</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="9"> Address 2</label>
+                                <label><input type="checkbox" data-column="9"> Address 1</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="10"> Website Link</label>
+                                <label><input type="checkbox" data-column="10"> Address 2</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="11"> Contact Name</label>
+                                <label><input type="checkbox" data-column="11"> Website Link</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="12"> Job Postion</label>
+                                <label><input type="checkbox" data-column="12"> Contact Name</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="13"> Phone</label>
+                                <label><input type="checkbox" data-column="13"> Job Postion</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="14"> Mobile</label>
+                                <label><input type="checkbox" data-column="14"> Phone</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="15"> Priority</label>
+                                <label><input type="checkbox" data-column="15"> Mobile</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="16"> Title</label>
+                                <label><input type="checkbox" data-column="16"> Priority</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="17"> Tag</label>
+                                <label><input type="checkbox" data-column="17"> Title</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="18" checked> Sales Person</label>
+                                <label><input type="checkbox" data-column="18" checked> Tag</label>
                             </div>
                             <div class="dropdown-checkbox">
-                                <label><input type="checkbox" data-column="19" checked> Sales Team</label>
+                                <label><input type="checkbox" data-column="19" checked> Sales Person</label>
+                            </div>
+                            <div class="dropdown-checkbox">
+                                <label><input type="checkbox" data-column="20" checked> Sales Team</label>
                             </div>
                         </div>
                     </th>
@@ -977,27 +980,27 @@
 
                         // Append data only for the visible columns
                         if (table.column(0).visible()) rowHtml += `<td class="d-none">${index ++}</td>`;
-                        if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
-                        if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                        if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                        if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
-                        if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
-                        if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
-                        if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                        if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
-                        if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
-                        if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
-                        if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
-                        if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                        if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
-                        if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                        if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
-                        if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                        if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
-                        if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
-                        if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
-                        if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                        if (table.column(20).visible()) rowHtml += `<td></td>`;
+                        if (table.column(1).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
+                        if (table.column(2).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                        if (table.column(3).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                        if (table.column(4).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
+                        if (table.column(5).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
+                        if (table.column(6).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
+                        if (table.column(7).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                        if (table.column(8).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
+                        if (table.column(9).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
+                        if (table.column(10).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
+                        if (table.column(11).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
+                        if (table.column(12).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                        if (table.column(13).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
+                        if (table.column(14).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                        if (table.column(15).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
+                        if (table.column(16).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                        if (table.column(17).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
+                        if (table.column(18).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
+                        if (table.column(19).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
+                        if (table.column(20).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                        if (table.column(21).visible()) rowHtml += `<td></td>`;
 
                         rowHtml += `</tr>`;
                         $tableBody.append(rowHtml);
@@ -1058,11 +1061,12 @@
                 });
             } else {
                 // If no visibility settings in localStorage, set default visibility
-                table.column(0).visible(true);
+                table.column(0).visible(false);
                 table.column(1).visible(true);
-                table.column(3).visible(false);
-                table.column(4).visible(true);
-                table.column(5).visible(false);
+                table.column(2).visible(true);
+                table.column(3).visible(true);
+                table.column(4).visible(false);
+                table.column(5).visible(true);
                 table.column(6).visible(false);
                 table.column(7).visible(false);
                 table.column(8).visible(false);
@@ -1720,27 +1724,27 @@
 
                                     // Append data only for the visible columns
                                     if (table.column(0).visible()) rowHtml += `<td class="d-none">${index ++}</td>`;
-                                    if (table.column(0).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
-                                    if (table.column(1).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                                    if (table.column(2).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                                    if (table.column(3).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
-                                    if (table.column(4).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
-                                    if (table.column(5).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
-                                    if (table.column(6).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                                    if (table.column(7).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
-                                    if (table.column(8).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
-                                    if (table.column(9).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
-                                    if (table.column(10).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
-                                    if (table.column(11).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                                    if (table.column(12).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
-                                    if (table.column(13).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                                    if (table.column(14).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
-                                    if (table.column(15).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                                    if (table.column(16).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
-                                    if (table.column(17).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
-                                    if (table.column(18).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
-                                    if (table.column(19).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                                    if (table.column(20).visible()) rowHtml += `<td></td>`;
+                                    if (table.column(1).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
+                                    if (table.column(2).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                                    if (table.column(3).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                                    if (table.column(4).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
+                                    if (table.column(5).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
+                                    if (table.column(6).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
+                                    if (table.column(7).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                                    if (table.column(8).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
+                                    if (table.column(9).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
+                                    if (table.column(10).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
+                                    if (table.column(11).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
+                                    if (table.column(12).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                                    if (table.column(13).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
+                                    if (table.column(14).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                                    if (table.column(15).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
+                                    if (table.column(16).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                                    if (table.column(17).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
+                                    if (table.column(18).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
+                                    if (table.column(19).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
+                                    if (table.column(20).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                                    if (table.column(21).visible()) rowHtml += `<td></td>`;
 
                                     rowHtml += `</tr>`;
                                     $tableBody.append(rowHtml);

@@ -270,7 +270,7 @@
         <div class="head_breadcrumb_info">
             {{-- <p class="head_breadcrumb_title">@yield('head_breadcrumb_title', 'sabsdhd')</p> --}}
             <div class="o_breadcrumb d-flex flex-row flex-md-column align-self-stretch justify-content-between min-w-0">
-                <ol class="breadcrumb flex-nowrap text-nowrap lh-sm">
+                <ol class="breadcrumb flex-nowrap text-nowrap lh-sm redirect-button">
                     <li class="breadcrumb-item d-inline-flex min-w-0 o_back_button" data-hotkey="b" style="position: relative;">
                         <a class="fw-bold text-truncate" href="@yield('redirect_button', '#')" data-tooltip="Back to &quot;Leads&quot;" title="">@yield('redirect_name')</a>
                     </li>

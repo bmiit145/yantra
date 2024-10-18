@@ -762,6 +762,120 @@ private function getUserColor($userId)
     }
 
 
+    public function pipelineFilter(Request $request)
+    {
+        // dd($request->all());
+        // Get all tags from the request
+        $tags = $request->tags ?? [];
+
+        // Normalize tags to handle "Lost & Archived" as "Lost"
+        // $normalizedTags = array_map(function ($tag) {
+        //     return $tag === 'Lost & Archived' ? 'Lost' : $tag;
+        // }, $tags);
+
+        // Initialize variables to determine which filters to apply
+        $includeMyPipeline = in_array('My Pipeline', $tags);
+        $includeUnassigned = in_array('Unassigned', $tags);
+        $includeOpenOpportunities = in_array('Open Opportunities', $tags);
+        $includeLost = in_array('Lost', $tags);
+
+        // Late, Today and Future Activities 
+        $includeWon = in_array('Won', $tags);
+        $includeOngoing = in_array('Ongoing', $tags);
+        $includeLost = in_array('Lost', $tags);
+
+        // Start building the query
+        $leadsQuery = Sale::query();
+
+        if ($includeMyPipeline || $includeUnassigned || $includeOpenOpportunities) {
+            $leadsQuery->where(function ($query) use ($includeMyPipeline, $includeUnassigned, $includeOpenOpportunities) {
+                if ($includeMyPipeline) {
+                    $query->whereHas('salesPerson');
+                }
+    
+                if ($includeUnassigned) {
+                    $query->orWhereNull('sales_person');
+                }
+    
+                if ($includeOpenOpportunities) {
+                    $query->orWhereHas('stage', function ($q) {
+                        $q->where('title', '!=', 'Won');
+                    });
+                }
+            });
+        }
+
+        if ($includeWon || $includeOngoing || $includeLost) {
+            $leadsQuery->where(function ($query) use ($includeWon, $includeOngoing, $includeLost) {
+                if ($includeWon) {
+                    $query->orWhereHas('stage', function ($q) {
+                        $q->where('title', '=', 'Won');
+                    });
+                }
+    
+                if ($includeOngoing) {
+                    $query->orWhereHas('stage', function ($q) {
+                        $q->where('title', '!=', 'Won');
+                    });
+                }
+    
+                if ($includeLost) {
+                    $query->where('is_lost','2');
+                }
+            });
+        }
+
+        // Initially assume no filters are applied
+        $dateFilterApplied = false;
+
+        foreach ($tags as $selectedDate) {
+            // Check for month names
+            if (in_array($selectedDate, [date('F'), date('F', strtotime('-1 month')), date('F', strtotime('-2 months'))])) {
+                $year = date('Y');
+                $month = date('m', strtotime($selectedDate));
+
+                $leadsQuery->orWhere(function ($query) use ($year, $month) {
+                    $query->where('is_lost', '1')
+                        ->whereYear('created_at', $year)
+                        ->whereMonth('created_at', $month);
+                });
+                $dateFilterApplied = true; // Set flag if filter is applied
+            }
+            // Check for years
+            elseif (in_array($selectedDate, [date('Y'), date('Y', strtotime('-1 year')), date('Y', strtotime('-2 year'))])) {
+                $year = (int) $selectedDate;
+                $yearExists = generate_lead::whereYear('created_at', $year)
+                    ->where('is_lost', '1')
+                    ->exists();
+
+                if ($yearExists) {
+                    $leadsQuery->orWhere(function ($query) use ($year) {
+                        $query->whereYear('created_at', $year)
+                            ->where('is_lost', '1');
+                    });
+                    $dateFilterApplied = true; // Set flag if filter is applied
+                }
+            }
+        }
+
+        // If no filters were applied, do not modify the query further
+        if ($dateFilterApplied) {
+            // If a date filter was applied, execute the query
+            $leads = $leadsQuery->get(); // Execute the query and get the results
+        }
+
+        // Always include necessary relationships
+        $leadsQuery->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson');
+
+        // Fetch results
+        $generateLeads = $leadsQuery->get();
+
+        // Return results as JSON
+        return response()->json([
+            'success' => true,
+            'data' => $generateLeads
+        ], 200);
+    }
 
 
 

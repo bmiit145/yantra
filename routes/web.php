@@ -73,6 +73,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipelineDelete', [CRMController::class, 'pipelineDelete'])->name('crm.delete');
     
 
+    // CRM pipeline Filter
+
+    Route::get('/pipeline-filter', [CRMController::class, 'pipelineFilter'])->name('crm.pipeline.filter');
 
 
     // sale
