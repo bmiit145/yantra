@@ -37,6 +37,8 @@ use League\CommonMark\Node\Block\Document;
 use App\Mail\SendMessageMail;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 use App\Exports\LeadExport;
 use App\Imports\LeadImport;
@@ -1677,10 +1679,95 @@ class LeadController extends Controller
         return response()->json(['message' => 'Lead deleted successfully.']);
     }
 
-     public function exportLead(Request $request)
-     {
-        return Excel::download(new LeadExport, 'Lead.xlsx');
-     }
+    public function exportLead()
+    {
+        // Create a new spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Set the headers
+        $headers = [
+            'Product Name',
+            'Contact Name',
+            'Company Name',
+            'Email',
+            'City',
+            'Country',
+            'Sales Person',
+            'Sales Team',
+            'Referred By',
+            'Medium',
+            'Tags',
+        ];
+    
+        // Set header values and styles
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => '000000'],
+                'size' => 12,
+            ],
+        ];
+    
+        $columnWidths = [
+            'A' => 30,
+            'B' => 30,
+            'C' => 30,
+            'D' => 30,
+            'E' => 20,
+            'F' => 20,
+            'G' => 30,
+            'H' => 20,
+            'I' => 20,
+            'J' => 20,
+            'K' => 15,
+        ];
+    
+        // Add headers to the spreadsheet
+        foreach ($headers as $key => $header) {
+            $column = chr(65 + $key);
+            $sheet->setCellValue($column . '1', $header);
+            $sheet->getStyle($column . '1')->applyFromArray($headerStyle);
+            $sheet->getColumnDimension($column)->setWidth($columnWidths[$column]);
+        }
+    
+        // Fetch leads with eager loading
+        $leads = generate_lead::with(['getCountry', 'getMedium', 'getUser'])->get();
+    
+        $row = 2; // Start from the second row
+        foreach ($leads as $lead) {
+            $sheet->setCellValue('A' . $row, $lead->product_name);
+            $sheet->setCellValue('B' . $row, $lead->contact_name);
+            $sheet->setCellValue('C' . $row, $lead->company_name);
+            $sheet->setCellValue('D' . $row, $lead->email);
+            $sheet->setCellValue('E' . $row, $lead->city);
+            $sheet->setCellValue('F' . $row, optional($lead->getCountry)->name ?? ''); // Using optional to prevent errors
+            $sheet->setCellValue('G' . $row, optional($lead->getUser)->name ?? '');
+            $sheet->setCellValue('H' . $row, $lead->sales_team);
+            $sheet->setCellValue('I' . $row, $lead->referred_by);
+            $sheet->setCellValue('J' . $row, optional($lead->getMedium)->name ?? '');
+            
+            // Fetch and join tags
+            $tags = $lead->tags()->pluck('name')->toArray();
+            $sheet->setCellValue('K' . $row, implode(', ', $tags));
+            $row++;
+        }
+    
+        // Create a writer instance and save the file
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'generate_leads.xlsx';
+    
+        // Set the headers to force download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+    
+        // Write the file to output
+        $writer->save('php://output');
+        exit;
+    }
+    
+    
 
      public function importlead()
      {
@@ -1708,7 +1795,7 @@ class LeadController extends Controller
             $this->importFromExcel($file);
         }
 
-        return redirect()->back()->with('success', 'File imported successfully.');
+        return redirect()->route('lead.index')->with('success', 'File imported successfully.');
     }
 
     private function importFromCSV($file)
