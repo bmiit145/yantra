@@ -870,7 +870,7 @@
             </thead>
             <tbody id="lead-table-body">
                 @forEach($data as $lead)
-                    <tr data-id="{{$lead->id}}" style="cursor: pointer;">
+                    <tr data-id="{{$lead->id}}" data-index="{{$loop->index + 1}}" style="cursor: pointer;">
                         <td class="d-none">{{$loop->index + 1}}</td>
                         <td>{{$lead->product_name ?? ''}}</td>
                         <td>{{$lead->email ?? ''}}</td>
@@ -966,7 +966,7 @@
 
        $('#example tbody').on('click', 'tr', function () {
             var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-            var index = $(this).find('td.d-none').text(); // Get the index number from the hidden column]
+            var index = $(this).data('index'); // Get the index number from the hidden column]
           
             
             if (id) {
@@ -998,7 +998,7 @@
                     // Loop through the response and create table rows
                     response.data.forEach(function (item) {
                             
-                        var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+                        var rowHtml = `<tr class="lead-row" data-id="${item.id}" data-index="${index ++}">`;
                       
 
                         // Append data only for the visible columns
@@ -1032,7 +1032,7 @@
                     // Attach click event handler to rows
                     $('#lead-table-body .lead-row').on('click', function () {
                         var leadId = $(this).data('id');
-                        var index = $(this).find('td.d-none').text();
+                        var index = $(this).data('index');
                         console.log(index,'3')
                         window.location.href = `/lead-add/${leadId}/${$index}`; // Adjust the URL as needed
                     });
@@ -1743,7 +1743,7 @@
                         if (response.success && response.data && response.data.length > 0) {
                             // Loop through the response and create table rows
                             response.data.forEach(function (item) {
-                                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+                                var rowHtml = `<tr class="lead-row" data-id="${item.id}" data-index="${index ++}">`;
 
                                     // Append data only for the visible columns
                                     if (table.column(0).visible()) rowHtml += `<td class="d-none">${index ++}</td>`;
@@ -1778,9 +1778,7 @@
                             // Attach click event handler to rows
                             $('#lead-table-body .lead-row').on('click', function () {
                                 var leadId = $(this).data('id');
-                                var index = parseInt($(this).find('td.d-none').text(), 10); // Ensure index is a number
-                                console.log("Lead ID:", leadId);
-                                console.log("Index:", index, '4');
+                                var index = $(this).data('index');
                                 
                                 // Form the URL and log it for verification
                                 var url = `/lead-add/${leadId}/${index}`;
@@ -2136,7 +2134,7 @@
 
         $(document).on('click', '.lead-row', function () {
             var leadId = $(this).data('id')
-            var index = $(this).find('td.d-none').text();
+            var index = $(this).data('index');
           
     
             if (leadId) {
@@ -2495,7 +2493,8 @@
 <script>
     $(document).on('click', '.lead-row', function () {
         var leadId = $(this).data('id');
-        window.location.href = "{{ route('lead.create') }}/" + leadId;
+        var index = $(this).data('index');
+        window.location.href = "{{ route('lead.create') }}/" + leadId + '/' + index;
     });
 
     function storeLead() {
