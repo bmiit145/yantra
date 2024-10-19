@@ -44,20 +44,16 @@
         <a href="{{route('configuration.lostreasons_index')}}" style="margin-left: 15px;">Lost Reasons</a>
     </div>
 </li>
+@endsection
 
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-<!-- jQuery (required for Bootstrap JS components) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <!-- DataTables CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css"
     href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
 
-@endsection
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
@@ -249,15 +245,15 @@
             </button>
             <div class="o_dropdown_content" id="conversionDate"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Conversion Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Year</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Conversion Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Conversion Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Month</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Conversion Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Week</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Conversion Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
@@ -269,15 +265,15 @@
             </button>
             <div class="o_dropdown_content" id="cxpectedClosing"
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Expected Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Year</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Expected Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Quarter</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Expected Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Month</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Expected Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Week</span>
-                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Closed Date:</span><span
+                <span class="o-dropdown-item_1 dropdown-item"><span style="display:none;">Expected Date:</span><span
                         class="float-end checkmark" style="display:none;">✔</span>Day</span>
             </div>
         </div>
@@ -319,68 +315,70 @@
         </select>
     </div>
     <div class="o_dropdown_container o_favorite_menu w-100 w-lg-auto h-100 px-3">
-        <div class="px-3 fs-5 mb-2">
-            <i class="me-2 text-favourite fa fa-star"></i>
-            <h5 class="o_dropdown_title d-inline">Favorites</h5>
-        </div>
-        @foreach ($getFavoritesFilter as $favoritesFilter)    
-            <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
-            role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
-                <span class="d-flex p-0 align-items-center justify-content-between">
-                    <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
-                        <span class="float-end checkmark" style="display:none;">✔</span>
-                    </span>
-                    <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
+    <div class="px-3 fs-5 mb-2">
+        <i class="me-2 text-favourite fa fa-star"></i>
+        <h5 class="o_dropdown_title d-inline">Favorites</h5>
+    </div>
+    @foreach ($getFavoritesFilter as $favoritesFilter)    
+        <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
+              role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" 
+              data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
+            <span class="d-flex p-0 align-items-center justify-content-between">
+                <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
+                    <span class="float-end checkmark" style="display:none;">✔</span>
                 </span>
             </span>
+        </span>
+        <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}"></i>
+    @endforeach
 
-            <!-- Delete Confirmation Modal -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-md">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure that you want to remove this filter?
-                        </div>
-                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                            <button type="button" class="btn btn-primary" style="background-color:#714B67;border: none;font-weight: 500;" id="confirmDelete">Delete Filter</button>
-                            <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-            </div>
-        @endforeach
-        <div role="separator" class="dropdown-divider"></div>
-        <div class="o_accordion position-relative">
-            <button id="save-current-search" class="o_menu_item o_accordion_toggle search-dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">
-                Save current search
-                <span class="arrow-icon" style="font-size: 10px; margin-top: 4px;">▼</span>
-            </button>
-            <div class="o_accordion_values ms-4 border-start">
-                <div class="px-3 py-2">
-                    <input type="text" class="o_input favorites_input" id="lead_favorites" name="favorites_name" value="Pipeline" placeholder="Enter favorite name">
-                    <div class="o-checkbox form-check">
-                        <input type="radio" name="filter_check" class="form-check-input" id="checkbox-comp-70">
-                        <label class="form-check-label" for="checkbox-comp-70">
-                            <span data-tooltip="Use this filter by default when opening this view">Default filter</span>
-                        </label>
-                    </div>
-                    <div class="o-checkbox form-check">
-                        <input type="radio" class="form-check-input" id="checkbox-comp-71" name="filter_check">
-                        <label class="form-check-label" for="checkbox-comp-71">
-                            <span data-tooltip="Make this filter available to other users">Shared</span>
-                        </label>
-                    </div>
+                <div class="modal-body">
+                    Are you sure that you want to remove this filter?
                 </div>
-                <div class="px-3 py-2">
-                    <button class="o_save_favorite btn-sm btn btn-primary w-100" style="background-color: #714b67; border: none;">Save</button>
+                <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                    <button type="button" class="btn btn-primary" id="confirmDelete" style="background-color:#714B67;border: none;font-weight: 500;">Delete Filter</button>
+                    <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div role="separator" class="dropdown-divider"></div>
+    <div class="o_accordion position-relative">
+        <button id="save-current-search" class="o_menu_item o_accordion_toggle search-dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">
+            Save current search
+            <span class="arrow-icon" style="font-size: 10px; margin-top: 4px;">▼</span>
+        </button>
+        <div class="o_accordion_values ms-4 border-start">
+            <div class="px-3 py-2">
+                <input type="text" class="o_input favorites_input" id="lead_favorites" name="favorites_name" value="Pipeline" placeholder="Enter favorite name">
+                <div class="o-checkbox form-check">
+                    <input type="radio" name="filter_check" class="form-check-input" id="checkbox-comp-70">
+                    <label class="form-check-label" for="checkbox-comp-70">
+                        <span data-tooltip="Use this filter by default when opening this view">Default filter</span>
+                    </label>
+                </div>
+                <div class="o-checkbox form-check">
+                    <input type="radio" class="form-check-input" id="checkbox-comp-71" name="filter_check">
+                    <label class="form-check-label" for="checkbox-comp-71">
+                        <span data-tooltip="Make this filter available to other users">Shared</span>
+                    </label>
+                </div>
+            </div>
+            <div class="px-3 py-2">
+                <button class="o_save_favorite btn-sm btn btn-primary w-100" style="background-color: #714b67; border: none;">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 @endsection
 
@@ -768,6 +766,17 @@
     .o_accordion_toggle::after {
         display: none;
     }
+
+    .o-dropdown-item-3 {
+        margin-left: -22px;
+    }
+
+    .delete-item {
+       margin-left: 133px !important;
+        cursor: pointer;
+        position: absolute;
+        margin-top: -21px;
+    }
 </style>
 
 <div class="card" style="padding: 1%">
@@ -931,12 +940,12 @@
                                 <td>{{$pipeline->deadline ?? ''}}</td>
                                 <td>
                                     @if($pipeline->recurring_revenue && $pipeline->getRecurringPlan && $pipeline->getRecurringPlan->months)
-                                                        <?php
-                                        $revenue = floatval($pipeline->recurring_revenue);
-                                        $months = floatval($pipeline->getRecurringPlan->months);
-                                        $expertMrr = ($months > 0) ? number_format($revenue / $months, 2) : 'Invalid months';
-                                                                                                                                                            ?>
-                                                        {{ $expertMrr }}
+                                        <?php
+                                            $revenue = floatval($pipeline->recurring_revenue);
+                                            $months = floatval($pipeline->getRecurringPlan->months);
+                                            $expertMrr = ($months > 0) ? number_format($revenue / $months, 2) : 'Invalid months';
+                                        ?>
+                                        {{ $expertMrr }}
                                     @else
 
                                     @endif
@@ -980,7 +989,7 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables JS -->
 <script type="text/javascript" charset="utf8"
     src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -989,8 +998,6 @@
 
 <!-- Bootstrap JS -->
 <script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
-{{--
-<script src="https://cdn.jsdelivr.net/npm/colresizable/colResizable-1.6.min.js"></script> --}}
 
 <script>
     $(document).ready(function () {
@@ -1086,7 +1093,7 @@
                     if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
                     if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
                     if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
-                    if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
+                    if (table.column(3).visible()) rowHtml += `<td>${item.contact.name || ''}</td>`;
                     if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
                     if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
                     if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
@@ -1235,13 +1242,13 @@
     });
 
     // Remove all tags
-    $(document).on('click', '.remove-tag', function () {
+    {{-- $(document).on('click', '.remove-tag', function () {
         $('.tag').remove();
         $('.checkmark').hide();
         $('#search-input').val('').attr('placeholder', 'Search...');
         $('#filter').val(''); // Clear the filter value
         table.ajax.reload();
-    });
+    }); --}}
 
     $(document).on('click', '.custom-filter-remove', function () {
         $('#search-input').val('').attr('placeholder', 'Search...');
@@ -1940,13 +1947,14 @@
                             var isVisible = column.visible();
                             column.visible(isVisible);
                         });
+                        $('#customFilterModal').removeClass('show').css('display', 'none');
                     },
                     error: function () {
                         console.error('Failed to fetch data');
+                         $('#customFilterModal').modal('hide');
                     }
                 });
-
-                $('#customFilterModal').modal('hide');
+                
             });
 
         function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
@@ -2269,7 +2277,6 @@
                     console.error('Error applying filter:', error);
                 }
             });
-        $('#customFilterModal').modal('hide');
         }
 
         $(document).on('click', '.lead-row', function () {
@@ -2297,7 +2304,7 @@
 
             if (favoriteName) {
                 $.ajax({
-                    url: '{{ route('lead.favorites.filter') }}', // Your API endpoint
+                    url: '{{ route('crm.pipeline.favorites.filter') }}', // Your API endpoint
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ 
@@ -2333,23 +2340,30 @@
         });
 
         $(document).on('click', '.delete-item', function() {
+             event.stopPropagation(); 
             const itemId = $(this).data('id');
             $('#confirmDelete').data('id', itemId); // Store the ID in the confirm button
-            $('#deleteModal').modal('show'); // Show the modal
+            var modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
         });
 
         $('#confirmDelete').on('click', function() {
             const itemId = $(this).data('id'); // Get the ID from the confirm button
 
             $.ajax({
-                url: `/delete-lead-favorites/${itemId}`, // Your delete endpoint
+                url: `/pipeline-delete-favorites/${itemId}`, // Your delete endpoint
                 type: 'DELETE',
-                success: function(response) {
+                success: function(response) {  
+                    console.log(response.favorite)                  
                     toastr.success('Favorite deleted successfully!'); // Show success message
-                    $('#deleteModal').modal('hide'); // Hide the modal
+                    $(`span[data-id="${itemId}"]`).remove();
+                    $(`i[data-id="${itemId}"]`).remove();
+                    if (response.favorite.is_default === '1') {
+                        $('.selected-items .o_searchview_facet').remove();
+                    }
+                    $('#deleteModal').removeClass('show').css('display', 'none');
 
                     // Remove the item from the UI
-                    $(`span[data-id="${itemId}"]`).remove();
                 },
                 error: function(xhr) {
                     console.error('Error:', xhr);

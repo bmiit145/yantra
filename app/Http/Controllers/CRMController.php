@@ -42,10 +42,18 @@ class CRMController extends Controller
         $data = Opportunity::all();
         $pipeline = Pipeline::all();
         $crmStages = CrmStage::with('sales.Activities')->orderBy('seq_no', 'desc')->get();
-        
-
+        $Countrs = Country::all();
+        $tages = Tag::where('tage_type', 2)->get();
+        $users = User::all();
+        $customers = Contact::all();
+        $Sources = Source::all();
+        $CrmStages = CrmStage::all();
+        $States = State::all();
+        $PersonTitle = PersonTitle::all();
+        $Campaigns = Campaign::all();
+        $getFavoritesFilter = Favorite::where('filter_type','pipeline')->get();
      
-        return view('CRM.index', compact('data', 'pipeline', 'crmStages'));
+        return view('CRM.index', compact('data', 'pipeline', 'crmStages','Countrs','tages','users','customers','Sources','CrmStages','States','PersonTitle','Campaigns','getFavoritesFilter'));
     }
 
     public function store(Request $request)
@@ -235,7 +243,7 @@ class CRMController extends Controller
         $States = State::all();
         $PersonTitle = PersonTitle::all();
         $Campaigns = Campaign::all();
-        $getFavoritesFilter = Favorite::where('filter_type','lead')->get();
+        $getFavoritesFilter = Favorite::where('filter_type','pipeline')->get();
         return view('CRM.crmlist',compact('Countrs', 'data', 'tages', 'users', 'customers', 'Sources', 'CrmStages', 'States', 'PersonTitle', 'Campaigns','getFavoritesFilter'));
     }
 
@@ -894,7 +902,7 @@ private function getUserColor($userId)
         }
 
         // Always include necessary relationships
-        $leadsQuery->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson');
+        $leadsQuery->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact');
 
         // Fetch results
         $generateLeads = $leadsQuery->get();
@@ -915,7 +923,7 @@ private function getUserColor($userId)
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = Sale::with(['salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson'])->get();
+        $leads = Sale::with(['salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {
@@ -936,6 +944,11 @@ private function getUserColor($userId)
                     'Creation Date:Month' => Carbon::parse($lead->created_at)->format('F Y'), // E.g., March 2023
                     'Creation Date:Week' => 'Week ' . Carbon::parse($lead->created_at)->weekOfYear . ' ' . Carbon::parse($lead->created_at)->year,
                     'Creation Date:Day' => Carbon::parse($lead->created_at)->format('d-m-Y'),
+                    'Expected Date:Quarter' => 'Q' . Carbon::parse($lead->deadline)->quarter . ' ' . Carbon::parse($lead->deadline)->year,
+                    'Expected Date: Year' => Carbon::parse($lead->deadline)->format('Y'),
+                    'Expected Date:Month' => Carbon::parse($lead->deadline)->format('F Y'), // E.g., March 2023
+                    'Expected Date:Week' => 'Week ' . Carbon::parse($lead->deadline)->weekOfYear . ' ' . Carbon::parse($lead->deadline)->year,
+                    'Expected Date:Day' => Carbon::parse($lead->deadline)->format('d-m-Y'),
                     'Priority' => $lead->priority,
                     'Active' => $lead->activities->count() > 0 ? 'Yes' : 'No',
                     'Company' => $lead->company_name ?? 'None',
@@ -1018,7 +1031,11 @@ private function getUserColor($userId)
                 $query->whereDate('created_at', $operatesValue, $filterValue);
                 break;
             case 'Customer':
-                $query->where('name', $operatesValue, $filterValue);
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('contact', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                });
                 break;
             case 'Email':
                 $query->where('email', $operatesValue, $filterValue);
@@ -1090,7 +1107,7 @@ private function getUserColor($userId)
                 break;
         }
         // Execute the query and get results
-        $query->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson');
+        $query->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact');
         // Fetch results
         $customFilter = $query->get();
         // dd($customFilter);
@@ -1101,6 +1118,41 @@ private function getUserColor($userId)
         ], 200);
     }
 
+
+    public function pipelineFavoritesFilter(Request $request)
+    {
+
+        $exists = Favorite::where('favorites_name', $request->favorites_name)->exists();
+
+        if ($exists) {
+            return response()->json(['message' => 'A filter with same name already exists.'], 409); // 409 Conflict
+        }
+
+        if ($request->is_default == 1) {
+            Favorite::where('is_default', 1)->update(['is_default' => 0]);
+        }
+
+        $favorite = Favorite::create([
+            'filter_type' => 'pipeline',
+            'favorites_name' => $request->favorites_name,
+            'is_default' => $request->is_default,
+            'is_shared' => $request->is_shared,
+        ]);
+
+        return response()->json(['message' => 'Favorite saved', 'favorite' => $favorite], 201);
+    }
+
+    public function pipelineDeleteFavoritesFilter($id)
+    {
+        $favorite = Favorite::find($id);
+
+        if ($favorite) {
+            $favorite->delete();
+            return response()->json(['favorite' => $favorite ,'message' => 'Favorite deleted successfully!']);
+        }
+
+        return response()->json(['message' => 'Favorite not found.'], 404);
+    }   
 
     
     public function exportpipiline(Request $request)
