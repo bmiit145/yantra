@@ -73,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipelineDelete', [CRMController::class, 'pipelineDelete'])->name('crm.delete');
     Route::get('/pipeline-importpipline', [CRMController::class, 'importpipline'])->name('crm.importpipline');
     Route::post('/pipeline-import', [CRMController::class, 'import'])->name('crm.import');
+    Route::get('/exportCrm', [CRMController::class, 'exportCrm'])->name('crm.exportCrm');
     
 
     // CRM pipeline Filter

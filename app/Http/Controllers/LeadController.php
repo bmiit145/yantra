@@ -1742,7 +1742,7 @@ class LeadController extends Controller
             $sheet->setCellValue('D' . $row, $lead->email);
             $sheet->setCellValue('E' . $row, $lead->city);
             $sheet->setCellValue('F' . $row, optional($lead->getCountry)->name ?? ''); // Using optional to prevent errors
-            $sheet->setCellValue('G' . $row, optional($lead->getUser)->name ?? '');
+            $sheet->setCellValue('G' . $row, optional($lead->getUser)->email ?? '');
             $sheet->setCellValue('H' . $row, $lead->sales_team);
             $sheet->setCellValue('I' . $row, $lead->referred_by);
             $sheet->setCellValue('J' . $row, optional($lead->getMedium)->name ?? '');

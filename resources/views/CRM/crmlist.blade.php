@@ -58,6 +58,17 @@
     href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
 
 @endsection
+
+@section('setting_menu')
+
+    <div role="separator" class="dropdown-divider"></div>
+    <a href="{{route('crm.importpipline')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
+    <a href="{{route('crm.exportCrm')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-upload me-1"></i>Export records </a>
+
+       
+
+        
+@endsection
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
     role="menu" style="position: absolute; top: 0; left: 0;">
@@ -549,6 +560,34 @@
         cursor: pointer;
     }
 
+    .dropdown-menu-setting {
+        display: none;
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+        top: auto;
+        left: auto;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: .25rem;
+    }
+    .dropdown-menu-setting.show {
+        display: block !important;
+    }
+
+    .dropdown-menu-setting a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .dropdown-menu a:hover {
+        background-color: #ddd;
+    }
+
     .dropdown-menu a:hover {
         background-color: #ddd;
     }
@@ -767,6 +806,12 @@
 
     .o_accordion_toggle::after {
         display: none;
+    }
+    .breadcrumb {
+        display: none !important;
+    } 
+    .head_breadcrumb_info{
+     gap: 0px !important;
     }
 </style>
 

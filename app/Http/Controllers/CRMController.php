@@ -1193,7 +1193,7 @@ private function getUserColor($userId)
 
     public function importpipline()
     {
-       return view('crm.importpipeline');
+       return view('CRM.importpipeline');
     }
 
     public function import(Request $request)
@@ -1296,7 +1296,104 @@ private function getUserColor($userId)
         }
     }
 
+    public function exportCrm()
+    {
+        // Create a new spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Set the headers
+        $headers = [
+            'Expected Closing',
+            'Opportunity',
+            'Contact Name',
+            'Email',
+            'Salesperson',
+            'Currency',
+            'Expected Revenue',
+            'Expected MRR',
+            'Stage',
+            'Referred By',
+            'Properties',
+        ];
+    
+        // Set header values and styles
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => '000000'],
+                'size' => 12,
+            ],
+        ];
+    
+        $columnWidths = [
+            'A' => 30,
+            'B' => 30,
+            'C' => 30,
+            'D' => 30,
+            'E' => 20,
+            'F' => 20,
+            'G' => 30,
+            'H' => 20,
+            'I' => 20,
+            'J' => 20,
+            'K' => 15,
+        ];
+    
+        // Add headers to the spreadsheet
+        foreach ($headers as $key => $header) {
+            $column = chr(65 + $key);
+            $sheet->setCellValue($column . '1', $header);
+            $sheet->getStyle($column . '1')->applyFromArray($headerStyle);
+            $sheet->getColumnDimension($column)->setWidth($columnWidths[$column]);
+        }
+    
+        // Fetch leads with eager loading
+        $leads = Sale::with(['salesPerson', 'stage','getRecurringPlan'])->where('is_lost', 1)->get();
+    
+        $row = 2; // Start from the second row
+        foreach ($leads as $lead) {
 
+            if($lead->recurring_revenue && $lead->getRecurringPlan && $lead->getRecurringPlan->months){
+            
+               
+                $revenue = floatval($lead->recurring_revenue);
+                $months = floatval($lead->getRecurringPlan->months);
+                $expertMrr = ($months > 0) ? number_format($revenue / $months, 2) : 'Invalid months';
+              
+    
+            }
+                // $expected_revenue = lead->expected_revenue 
+            $sheet->setCellValue('A' . $row, $lead->deadline);
+            $sheet->setCellValue('B' . $row, $lead->opportunity);
+            $sheet->setCellValue('C' . $row, $lead->contact_name);
+            $sheet->setCellValue('D' . $row, $lead->email);
+            $sheet->setCellValue('E' . $row, optional($lead->salesPerson)->email ?? ''); 
+            $sheet->setCellValue('F' . $row, 'INR'); 
+            $sheet->setCellValue('G' . $row, $lead->expected_revenue);
+            $sheet->setCellValue('H' . $row, $expertMrr);
+            $sheet->setCellValue('I' . $row, optional($lead->stage)->title ?? '');
+            $sheet->setCellValue('J' . $row, $lead->referred_by);
+            $sheet->setCellValue('K' . $row, $lead->priority);
+            
+        
+        
+            $row++;
+        }
+    
+        // Create a writer instance and save the file
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'LeadOpportunity(CRM.Lead).xlsx';
+    
+        // Set the headers to force download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+    
+        // Write the file to output
+        $writer->save('php://output');
+        exit;
+    }
 
 
 }
