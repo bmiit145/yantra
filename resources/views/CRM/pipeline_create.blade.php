@@ -49,13 +49,34 @@
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item archive_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 oi oi-archive"></i>Archive</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item duplicate_lead"  role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-clone"></i>Duplicate</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item delete_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-trash-o"></i>Delete</a>
-        <div role="separator" class="dropdown-divider"></div>
+        <hr style="margin: 0px 0;">
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0">Mark Lost</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0">Send email</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0">Send SMS Text Message</a>
 
         
 @endsection
+{{-- ---------------------  Archive confirmation -------------------------------------- --}}
+<div class="modal fade" id="ArchiveconfirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Are you sure that you want to archive this record?
+            </div>
+            <div class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100">
+                <button type="button" class="btn btn-primary" data-id="{{isset($data) ? $data->id : ''}}"
+                    id="archiveconfirmDelete">Archive</button>
+                <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 @section('menu_bar')
 <div class="o_control_panel_navigation flex-wrap flex-md-nowrap justify-content-end gap-1 gap-xl-3 order-1 order-lg-2 flex-grow-1">
     <div class="o_cp_pager text-nowrap" role="search">
@@ -3461,5 +3482,36 @@
 
   
 });
+</script>
+
+<script>
+  $('.archive_lead').on('click',function(){
+         $('#ArchiveconfirmationModal').modal('show');
+  });
+
+    $('#archiveconfirmDelete').on('click', function(){
+       var pipeline_id = $('#pipeline_id').val();
+        
+        
+        $.ajax({
+            url: '{{ route('crm.pipeline.markAsLost') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                pipeline_id: pipeline_id,
+                
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                $('#ArchiveconfirmationModal').modal('hide');
+                location.reload();
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+    })
+      
 </script>
 @endpush
