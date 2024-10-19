@@ -81,6 +81,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-filter', [CRMController::class, 'pipelineFilter'])->name('crm.pipeline.filter');
     Route::post('/pipeline-filter-group-by', [CRMController::class, 'pipelineFilterGroupBy'])->name('crm.pipeline.filter.group.by');
     Route::post('/pipeline-custom-filter', [CRMController::class, 'pipelineCustomFilter'])->name('crm.pipeline.custom.filter');
+    Route::post('/pipeline-favorites-filter',[CRMController::class,'pipelineFavoritesFilter'])->name('crm.pipeline.favorites.filter');
+    Route::delete('/pipeline-delete-favorites/{id}', [CRMController::class, 'pipelineDeleteFavoritesFilter']);
 
 
     // sale
