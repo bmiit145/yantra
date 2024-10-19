@@ -1008,7 +1008,7 @@
                                                             <div class="d-flex align-items-center flex-wrap mx-3 " data-id="{{ $value->id }}">
                                                               @php
                                                    
-                                                                        $user = $sale->getUser;
+                                                                        $user = $sale->user;
                                                                         $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
                                                                         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -1026,7 +1026,7 @@
                                                                     {{ $initial }}
                                                                 </span>
                                                                 <div class="mt-1 flex-grow-1">
-                                                                &nbsp;&nbsp;<small>{{ $sale->getUser->email }} - Today</small>
+                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
                                                                 </div>
                                                                 <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1051,7 +1051,7 @@
                                                             <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                               @php
                                                    
-                                                                        $user = $sale->getUser;
+                                                                        $user = $sale->user;
                                                                         $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
                                                                         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -1069,7 +1069,7 @@
                                                                     {{ $initial }}
                                                                 </span>
                                                                 <div class="mt-1 flex-grow-1">
-                                                                &nbsp;&nbsp;<small>{{ $sale->getUser->email }} - Today</small>
+                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
                                                                 </div>
                                                                 <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1094,7 +1094,7 @@
                                                             <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
                                                                @php
                                                    
-                                                                        $user = $sale->getUser;
+                                                                        $user = $sale->user;
                                                                         $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
                                                                         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -1112,7 +1112,7 @@
                                                                     {{ $initial }}
                                                                 </span>
                                                                 <div class="mt-1 flex-grow-1">
-                                                                &nbsp;&nbsp;<small>{{ $sale->getUser->email }} - Planned</small>
+                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Planned</small>
                                                                 </div>
                                                                 <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>

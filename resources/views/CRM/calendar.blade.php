@@ -844,7 +844,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
     function filterData(selectedTags) {
     $.ajax({
-        url: '{{ route('crm.kanban.pipeline.filter') }}',
+        url: '{{ route('crm.calendar.pipeline.filter') }}',
         method: 'GET',
         data: { tags: selectedTags },
         success: function (response) {
@@ -1473,7 +1473,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
                 // Send AJAX request
                 $.ajax({
-                    url: '{{route('crm.pipeline.custom.filter')}}',
+                    url: '{{route('crm.calendar.custom.pipeline.filter')}}',
                     type: 'POST',
                     data: data,
                     success: function (response) {

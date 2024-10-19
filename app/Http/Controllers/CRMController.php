@@ -447,7 +447,7 @@ class CRMController extends Controller
 
         Log::info($message, ['pipeline_id' => $pipeline->id, 'data' => $pipeline->toArray()]);
 
-        return response()->json(['message' => $message]);
+        return response()->json(['message' => $message,'pipeline' => $pipeline]);
     }
 
     public function getCustomerDetails($id)
@@ -922,7 +922,7 @@ private function getUserColor($userId)
     }
 
 
-    public function kanbanPipelineFilter(Request $request)
+    public function calendarPipelineFilter(Request $request)
 {
     // Get all tags from the request
     $tags = $request->tags ?? [];
@@ -946,11 +946,9 @@ private function getUserColor($userId)
                       ->where('is_lost', '1');
             }
 
-            if ($includeUnassigned) {
-                $query->orWhere(function ($q) {
-                    $q->whereNull('sales_person')->where('is_lost', '1');
-                });
-            }
+            $query->orWhere(function ($q) {
+                    $q->orWhereNull('sales_person');
+                })->where('is_lost', '1');
 
             if ($includeOpenOpportunities) {
                 $query->orWhereHas('stage', function ($q) {
@@ -1112,131 +1110,132 @@ private function getUserColor($userId)
     }
 
 
-    // public function pipelineCustomFilter(Request $request)
-    // {
-    //     // Retrieve the filter parameters
-    //     $filterType = $request->input('filterType');
-    //     $operatesValue = $request->input('operatesValue');
-    //     $filterValue = $request->input('filterValue');
-    //     // Create a query
-    //     $query = Sale::query();
-    //     // Apply filters based on filter type
-    //     switch ($filterType) {
-    //         case 'Country':
-    //             $query->where(function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
-    //                     $q->where('name', $operatesValue, $filterValue);
-    //                 });
-    //             });
-    //             break;
-    //         case 'Zip':
-    //             $query->where('zip', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Tags':
-    //             $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->where('name', $operatesValue, $filterValue);
-    //             });
-    //             break;
-    //         case 'Created by':
-    //             $createdByName = $filterValue;
-    //             $user = User::where('name', $createdByName)->first();
-    //             $query->whereHas('getUser', function ($q) use ($operatesValue, $createdByName) {
-    //                 $q->where('name', $operatesValue, $createdByName);
-    //             });
-    //             break;
-    //         case 'Created on':
-    //             $query->whereDate('created_at', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Customer':
-    //             $query->where(function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->whereHas('contact', function ($q) use ($operatesValue, $filterValue) {
-    //                     $q->where('name', $operatesValue, $filterValue);
-    //                 });
-    //             });
-    //             break;
-    //         case 'Email':
-    //             $query->where('email', $operatesValue, $filterValue);
-    //             break;
-    //         case 'ID':
-    //             $query->where('id', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Phone':
-    //             $query->where('phone', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Priority':
-    //             $query->where('priority', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Probability':
-    //             $query->where('probability', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Referred By':
-    //             $query->where('referred_by', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Salesperson':
-    //             $salespersonId = EncryptionService::encrypt($filterValue);
-    //             $user = User::where('email', $salespersonId)->first();
-    //             $query->whereHas('getUser', function ($q) use ($operatesValue, $salespersonId) {
-    //                 $q->where('email', $operatesValue, $salespersonId);
-    //             });
-    //             break;
-    //         case 'Source':
-    //             $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->where('name', $operatesValue, $filterValue);
-    //             });
-    //             break;
-    //         case 'Stage':
-    //             $query->where('stage', $operatesValue, $filterValue);
-    //             break;
-    //         case 'State':
-    //             $query->where(function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
-    //                     $q->where('name', $operatesValue, $filterValue);
-    //                 });
-    //             });
-    //             break;
-    //         case 'Street':
-    //             $query->where('address_1', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Street2':
-    //             $query->where('address_1', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Title':
-    //             $query->whereHas('getTilte', function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->where('title', $operatesValue, $filterValue);
-    //             });
-    //             break;
-    //         case 'Type':
-    //             $query->where('type', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Website':
-    //             $query->where('website_link', $operatesValue, $filterValue);
-    //             break;
-    //         case 'Campaign':
-    //             $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
-    //                 $q->where('name', $operatesValue, $filterValue);
-    //             });
-    //             break;
-    //         case 'City':
-    //             $query->where('city', $operatesValue, $filterValue);
-    //             break;
-    //         default:
-    //             // Handle cases where the filterType does not match any case
-    //             break;
-    //     }
-    //     // Execute the query and get results
-    //     $query->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact');
-    //     // Fetch results
-    //     $customFilter = $query->get();
-    //     // dd($customFilter);
-    //     // Return JSON response
-    //     return response()->json([
-    //         'success' => true,
-    //         'data' => $customFilter
-    //     ], 200);
-    // }
-
-
     public function pipelineCustomFilter(Request $request)
+    {
+        // Retrieve the filter parameters
+        $filterType = $request->input('filterType');
+        $operatesValue = $request->input('operatesValue');
+        $filterValue = $request->input('filterValue');
+        // Create a query
+        // $query = Sale::query();
+        $query = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'contact', 'Activities','title');
+        // Apply filters based on filter type
+        switch ($filterType) {
+            case 'Country':
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                });
+                break;
+            case 'Zip':
+                $query->where('zip', $operatesValue, $filterValue);
+                break;
+            case 'Tags':
+                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Created by':
+                $createdByName = $filterValue;
+                $user = User::where('name', $createdByName)->first();
+                $query->whereHas('salesPerson', function ($q) use ($operatesValue, $createdByName) {
+                    $q->where('name', $operatesValue, $createdByName);
+                });
+                break;
+            case 'Created on':
+                $query->whereDate('created_at', $operatesValue, $filterValue);
+                break;
+            case 'Customer':
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('contact', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                });
+                break;
+            case 'Email':
+                $query->where('email', $operatesValue, $filterValue);
+                break;
+            case 'ID':
+                $query->where('id', $operatesValue, $filterValue);
+                break;
+            case 'Phone':
+                $query->where('phone', $operatesValue, $filterValue);
+                break;
+            case 'Priority':
+                $query->where('priority', $operatesValue, $filterValue);
+                break;
+            case 'Probability':
+                $query->where('probability', $operatesValue, $filterValue);
+                break;
+            case 'Referred By':
+                $query->where('referred_by', $operatesValue, $filterValue);
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('salesPerson', function ($q) use ($operatesValue, $salespersonId) {
+                    $q->where('email', $operatesValue, $salespersonId);
+                });
+                break;
+            case 'Source':
+                $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Stage':
+                $query->where('stage', $operatesValue, $filterValue);
+                break;
+            case 'State':
+                $query->where(function ($q) use ($operatesValue, $filterValue) {
+                    $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                });
+                break;
+            case 'Street':
+                $query->where('address_1', $operatesValue, $filterValue);
+                break;
+            case 'Street2':
+                $query->where('address_1', $operatesValue, $filterValue);
+                break;
+            case 'Title':
+                $query->whereHas('title', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('title', $operatesValue, $filterValue);
+                });
+                break;
+            case 'Type':
+                $query->where('type', $operatesValue, $filterValue);
+                break;
+            case 'Website':
+                $query->where('website_link', $operatesValue, $filterValue);
+                break;
+            case 'Campaign':
+                $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
+                    $q->where('name', $operatesValue, $filterValue);
+                });
+                break;
+            case 'City':
+                $query->where('city', $operatesValue, $filterValue);
+                break;
+            default:
+                // Handle cases where the filterType does not match any case
+                break;
+        }
+        // Execute the query and get results
+        // $query->with('salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact');
+        // Fetch results
+        $customFilter = $query->get();
+        // dd($customFilter);
+        // Return JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $customFilter
+        ], 200);
+    }
+
+
+    public function calendarCustomPipelineFilter(Request $request)
 {
     // Retrieve the filter parameters
     $filterType = $request->input('filterType');
@@ -1244,7 +1243,7 @@ private function getUserColor($userId)
     $filterValue = $request->input('filterValue');
 
     // Create a query
-    $query = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'contact', 'Activities');
+    $query = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'contact', 'Activities','title');
 
     // Apply filters based on filter type
     switch ($filterType) {
@@ -1264,7 +1263,7 @@ private function getUserColor($userId)
         case 'Created by':
             $user = User::where('name', $filterValue)->first();
             if ($user) {
-                $query->whereHas('getUser', function ($q) use ($operatesValue, $user) {
+                $query->whereHas('salesPerson', function ($q) use ($operatesValue, $user) {
                     $q->where('id', $operatesValue, $user->id);
                 });
             }
@@ -1298,7 +1297,7 @@ private function getUserColor($userId)
         case 'Salesperson':
             $user = User::where('email', $filterValue)->first();
             if ($user) {
-                $query->whereHas('getUser', function ($q) use ($operatesValue, $user) {
+                $query->whereHas('salesPerson', function ($q) use ($operatesValue, $user) {
                     $q->where('id', $operatesValue, $user->id);
                 });
             }
@@ -1321,7 +1320,7 @@ private function getUserColor($userId)
             $query->where('address_1', $operatesValue, $filterValue);
             break;
         case 'Title':
-            $query->whereHas('getTitle', function ($q) use ($operatesValue, $filterValue) {
+            $query->whereHas('title', function ($q) use ($operatesValue, $filterValue) {
                 $q->where('title', $operatesValue, $filterValue);
             });
             break;
