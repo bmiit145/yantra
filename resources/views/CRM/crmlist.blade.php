@@ -54,7 +54,7 @@
 <link rel="stylesheet" type="text/css"
     href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
 
-@endsection
+
 
 @section('setting_menu')
 
@@ -1026,9 +1026,10 @@
     </div>
 </div>
 
+@endsection
 
 
-
+@push('scripts')
 
 <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
@@ -1139,7 +1140,7 @@
                     if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
                     if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
                     if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
-                    if (table.column(3).visible()) rowHtml += `<td>${item.contact.name || ''}</td>`;
+                    if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
                     if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
                     if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
                     if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
@@ -1171,7 +1172,7 @@
                         totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
                     }
                     if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
-                    if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                    if (table.column(21).visible()) rowHtml += `<td>${item.stage_id ? (item.stage.title || '') : ''}</td>`;
                     if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
                     if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
                     if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
@@ -2799,4 +2800,4 @@
 </script>
 
 
-@endsection
+@endpush

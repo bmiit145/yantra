@@ -399,6 +399,127 @@
 </div>
 @endsection
 
+<!-- Modal -->
+<div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    aria-labelledby="customFilterModalLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="customFilterModalLabel">Add Custom Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="customFilterForm">
+                <input type="hidden" id="span_id">
+                    <div class="mb-3">
+                        <div class="o_tree_editor_connector d-flex flex-grow-1 align-items-center">
+                            <span>Match</span><span class="px-1">any</span><span>of the following rules:</span>
+                        </div>
+                        <div id="rulesContainer" class="mt-2">
+                            <!-- Initial rule row -->
+                            <div class="rule-row mt-2 row">
+                                <div class="col-md-3">
+                                    <select name="" id="customer_filter_select" class="form-control">
+                                        <option value="">selecte filter</option>
+                                        <option value="Country">Country</option>
+                                        <option value="Zip">Zip</option>
+                                        <option value="Tags">Tags</option>
+                                        <option value="Created by">Created by</option>
+                                        <option value="Created on">Created on</option>
+                                        <option value="Customer">Customer</option>
+                                        <option value="Email">Email</option>
+                                        <option value="ID">ID</option>
+                                        <option value="Phone">Phone</option>
+                                        <option value="Priority">Priority</option>
+                                        <option value="Probability">Probability</option>
+                                        <option value="Referred By">Referred By</option>
+                                        <option value="Sales Team">Sales Team</option>
+                                        <option value="Salesperson">Salesperson</option>
+                                        <option value="Source">Source</option>
+                                        <option value="Stage">Stage</option>
+                                        <option value="State">State</option>
+                                        <option value="Street">Street</option>
+                                        <option value="Street2">Street2</option>
+                                        <option value="Title">Title</option>
+                                        <option value="Type">Type</option>
+                                        <option value="Website">Website</option>
+                                        <option value="Campaign">Campaign</option>
+                                        <option value="City">City</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="" id="customer_filter_operates" class="form-control">
+                                        <option value="is in">is in</option>
+                                        <option value="is not in">is not in</option>
+                                        <option value="=">=</option>
+                                        <option value="!=">!=</option>
+                                        <option value="contains">contains</option>
+                                        <option value="does not contain">does not contain</option>
+                                        <option value="is set">is set</option>
+                                        <option value="is not set">is not set</option>
+                                        <option value="matches">matches</option>
+                                        <option value="matches none of">matches none of</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5 customer_filter_input">
+
+                                </div>
+
+                            </div>
+                        </div>
+                        {{-- <div class="o_tree_editor_row d-flex align-items-center">
+                            <a id="addNewRule" style="color: #017E84;" href="#" role="button">New Rule</a>
+                        </div> --}}
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                <button type="submit" style="background-color: #714B67;border-color: #714B67;"
+                    class="btn btn-primary add_filter">Add</button>
+                <button type="button" style="background-color: #e7e9ed;border-color: #e7e9ed;color: #374151;"
+                    class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Template for new rule row -->
+<script type="text/template" id="ruleTemplate">
+    <div class="rule-row mt-2 row">
+    <div class="col-md-3">
+      <select name="" id="" class="form-control">
+        <option value="test">test</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="" id="" class="form-control">
+        <option value="is_in">is in</option>  
+        <option value="is_not_in">is not in</option>
+        <option value="=">=</option>
+        <option value="!=">!=</option>
+        <option value="contains">contains</option>
+        <option value="does_not_contain">does not contain</option>
+        <option value="is_set">is set</option>
+        <option value="is_not_set">is not set</option>
+        <option value="matches">matches</option>
+        <option value="matches_none_of">matches none of</option>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <select name="" id="" class="form-control">
+        <option value="test">test</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <div class="o_tree_editor_node_control_panel d-flex" role="toolbar" aria-label="Domain node">
+        <button class="btn px-2 fs-5 add-new-rule" role="button" title="Add New Rule" aria-label="Add New Rule"><i class="fa fa-plus"></i></button>
+        <button class="btn px-2 fs-5" role="button" title="Add branch" aria-label="Add branch"><i class="fa fa-sitemap"></i></button>
+        <button class="btn btn-link px-2 text-danger fs-5 delete-rule" role="button" title="Delete node" aria-label="Delete node"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+</script>
+
 <style>
     .o_dropdown_kanban {
         position: relative;
@@ -583,7 +704,7 @@
     }
 
     span.setting_icon {
-        padding: 3px;
+        padding: 7px;
         background: #714B67;
         border-radius: 5px;
         display: inline-block;
@@ -1149,7 +1270,7 @@
 @endsection
 
 @push('scripts')
-{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
 <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -1699,254 +1820,114 @@
 
 <script>
     $(document).ready(function () {
-        var table = $('#example').DataTable({
-        "pageLength": 25,
-        searching: false,
-        "lengthChange": false,
-        "sDom": 'Rlfrtip',
-        "oColReorder": {
-            "bAddFixed": true
-        },
-        footerCallback: function (row, data, start, end, display) {
-            var api = this.api();
 
-            var totalExpectedRevenue = api
-                .column(16)
-                .data()
-                .reduce(function (a, b) {
-                    var x = parseFloat(a) || 0;
-                    var y = parseFloat(b) || 0;
-                    return x + y;
-                }, 0);
+        function filterData(selectedTags) {
+        $.ajax({
+            url: '{{route('crm.pipeline.filter')}}', // Your endpoint for fetching leads
+            method: 'GET',
+            data: {
+                tags: selectedTags
+            },
+            success: function (response) {
+                console.log(response);
+                var $tableBody = $('#lead-table-body');
+                var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
 
-            var totalRecurringMrr = 0;
-            api.rows().every(function () {
-                var data = this.data();
-                var mrrValue = parseFloat(data[18]) || 0; // MRR is in the 18th column (index 17)
-                if (!isNaN(mrrValue)) {
-                    totalRecurringMrr += mrrValue;
+                // Clear existing table data
+                $tableBody.empty();
+
+                // Initialize total variables
+                var totalExpectedRevenue = 0; // Initialize total expected revenue
+                var totalRecurringMrr = 0; // Initialize total recurring MRR
+                var totalRecurringRevenue = 0; // Initialize total recurring revenue
+
+                if (response.data.length === 0) {
+                    // Display the message if no data is found
+                    $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
+                    
+                    // Hide the footer if no data is found
+                    $tableFooter.hide();
+                } else {
+                    var index = 1;
+
+                    // Loop through the response and create table rows
+                    response.data.forEach(function (item) {
+                        var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                        // Append data only for the visible columns
+                        if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
+                        if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
+                        if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
+                        if (table.column(3).visible()) rowHtml += `<td>${item.contact.name || ''}</td>`;
+                        if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                        if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                        if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                        if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                        if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
+                        if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
+                        if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
+                        if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
+                        if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                        if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
+                        if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
+                        if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
+                        if (table.column(16).visible()) {
+                            rowHtml += `<td>${item.expected_revenue || ''}</td>`;
+                            totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
+                        }
+                        if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
+                        
+                        var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
+                        var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
+                        var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
+                        
+                        if (table.column(18).visible()) {
+                            rowHtml += `<td>${expertMrr}</td>`;
+                            totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
+                        }
+                        if (table.column(19).visible()) {
+                            rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
+                            totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
+                        }
+                        if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
+                        if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                        if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                        if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
+                        if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                        
+                        rowHtml += `</tr>`;
+                        $tableBody.append(rowHtml);
+                    });
+
+                    // Show the footer since we have data
+                    $tableFooter.show();
                 }
-            });
 
-            var totalRecurringRevenue = api
-                .column(19)
-                .data()
-                .reduce(function (a, b) {
-                    var x = parseFloat(a) || 0;
-                    var y = parseFloat(b) || 0;
-                    return x + y;
-                }, 0);
+                // Update footer with totals
+                $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+                $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+                $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
 
-            $(api.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
-            $(api.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
-            $(api.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
-        },
-        createdRow: function (row, data, dataIndex) {
-            $(row).attr('data-id', data.id);
-        },
-    });
-
-    $('#example tbody').on('click', 'tr', function () {
-        var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-        var index = $(this).find('td.d-none').text();
-        if (id) {
-            window.location.href = '/pipeline-create/' + id + '/' + index;
-        }
-    });
-
-    function filterData(selectedTags) {
-    $.ajax({
-        url: '{{route('crm.pipeline.filter')}}', // Your endpoint for fetching leads
-        method: 'GET',
-        data: {
-            tags: selectedTags
-        },
-        success: function (response) {
-            console.log(response);
-            var $tableBody = $('#lead-table-body');
-            var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
-
-            // Clear existing table data
-            $tableBody.empty();
-
-            // Initialize total variables
-            var totalExpectedRevenue = 0; // Initialize total expected revenue
-            var totalRecurringMrr = 0; // Initialize total recurring MRR
-            var totalRecurringRevenue = 0; // Initialize total recurring revenue
-
-            if (response.data.length === 0) {
-                // Display the message if no data is found
-                $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
-                
-                // Hide the footer if no data is found
-                $tableFooter.hide();
-            } else {
-                var index = 1;
-
-                // Loop through the response and create table rows
-                response.data.forEach(function (item) {
-                    var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
-
-                    // Append data only for the visible columns
-                    if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
-                    if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
-                    if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
-                    if (table.column(3).visible()) rowHtml += `<td>${item.contact.name || ''}</td>`;
-                    if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                    if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                    if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                    if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                    if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
-                    if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
-                    if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
-                    if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
-                    if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                    if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
-                    if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
-                    if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
-                    if (table.column(16).visible()) {
-                        rowHtml += `<td>${item.expected_revenue || ''}</td>`;
-                        totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
-                    }
-                    if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
-                    
-                    var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
-                    var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
-                    var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
-                    
-                    if (table.column(18).visible()) {
-                        rowHtml += `<td>${expertMrr}</td>`;
-                        totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
-                    }
-                    if (table.column(19).visible()) {
-                        rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
-                        totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
-                    }
-                    if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
-                    if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
-                    if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                    if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
-                    if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                    
-                    rowHtml += `</tr>`;
-                    $tableBody.append(rowHtml);
+                // Attach click event handler to rows
+                $('#lead-table-body .lead-row').on('click', function () {
+                    var leadId = $(this).data('id');
+                    var index = $(this).find('td.d-none').text();
+                    window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
                 });
 
-                // Show the footer since we have data
-                $tableFooter.show();
-            }
-
-            // Update footer with totals
-            $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
-            $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
-            $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
-
-            // Attach click event handler to rows
-            $('#lead-table-body .lead-row').on('click', function () {
-                var leadId = $(this).data('id');
-                var index = $(this).find('td.d-none').text();
-                window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
-            });
-
-            // Apply the column visibility settings
-            table.columns().every(function () {
-                var column = this;
-                var index = column.index();
-                var isVisible = column.visible();
-                column.visible(isVisible);
-            });
-        },
-        error: function () {
-            console.error('Failed to fetch data');
-        }
-    });
-}
-
-    // Save column visibility to local storage
-    function saveColumnVisibility() {
-        var visibility = {};
-        table.columns().every(function () {
-            var column = this;
-            var index = column.index();
-            visibility[index] = column.visible();
-        });
-        localStorage.setItem('columnVisibility', JSON.stringify(visibility));
-    }
-
-    // Restore column visibility from localStorage
-    function restoreColumnVisibility() {
-        var visibility = JSON.parse(localStorage.getItem('columnVisibility'));
-        if (visibility) {
-            table.columns().every(function () {
-                var column = this;
-                var index = column.index();
-                if (visibility.hasOwnProperty(index)) {
-                    var isVisible = visibility[index];
+                // Apply the column visibility settings
+                table.columns().every(function () {
+                    var column = this;
+                    var index = column.index();
+                    var isVisible = column.visible();
                     column.visible(isVisible);
-                    $('.dropdown-menu input[type="checkbox"][data-column="' + index + '"]').prop('checked', isVisible);
-                }
-            });
-        } else {
-                table.column(0).visible(false);
-                table.column(1).visible(false);
-                table.column(2).visible(true);
-                table.column(3).visible(false);
-                table.column(4).visible(true);
-                table.column(5).visible(true);
-                table.column(6).visible(false);
-                table.column(7).visible(false);
-                table.column(8).visible(false);
-                table.column(9).visible(false);
-                table.column(10).visible(true);
-                table.column(11).visible(false);
-                table.column(12).visible(false);
-                table.column(13).visible(false);
-                table.column(14).visible(false);
-                table.column(15).visible(false);
-                table.column(16).visible(true);
-                table.column(17).visible(false);
-                table.column(18).visible(true);
-                table.column(19).visible(false);
-                table.column(20).visible(false);
-                table.column(21).visible(false);
-                table.column(22).visible(false);
-                table.column(23).visible(false);
-                table.column(24).visible(false);
-        }
+                });
+            },
+            error: function () {
+                console.error('Failed to fetch data');
+            }
+        });
     }
-
-    // Handle column visibility based on checkbox status
-    $('.dropdown-menu input[type="checkbox"]').on('change', function () {
-        var columnIndex = $(this).data('column');
-        var column = table.column(columnIndex);
-        column.visible(this.checked); // Show or hide the column based on the checkbox state
-        saveColumnVisibility(); // Save visibility to local storage
-    });
-
-    // Restore visibility states on page load
-    restoreColumnVisibility();
-
-    // Handle dropdown menu display
-    $(document).on('click', '.dropdown-btn', function (event) {
-        event.stopPropagation(); // Prevent click event from propagating to the document
-        $('.dropdown-menu').not($(this).next('.dropdown-menu')).hide(); // Hide other dropdowns
-        $(this).next('.dropdown-menu').toggle(); // Toggle visibility of the current dropdown
-    });
-
-    $(document).on('click', function (event) {
-        if (!$(event.target).closest('.dropdown-menu').length) {
-            $('.dropdown-menu').hide(); // Hide dropdown if click is outside of it
-        }
-    });
-
-    // Remove all tags
-    {{-- $(document).on('click', '.remove-tag', function () {
-        $('.tag').remove();
-        $('.checkmark').hide();
-        $('#search-input').val('').attr('placeholder', 'Search...');
-        $('#filter').val(''); // Clear the filter value
-        table.ajax.reload();
-    }); --}}
 
     $(document).on('click', '.custom-filter-remove', function () {
         $('#search-input').val('').attr('placeholder', 'Search...');
