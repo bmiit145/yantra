@@ -174,10 +174,8 @@ class Sale extends Model
         return $this->hasMany(Activity::class, 'pipeline_id', 'id')->where('status','0');
     }
 
-    public function getUser()
+    public function title()
     {
-        return $this->hasOne(User::class, 'id', 'sales_person');
+        return $this->hasOne(PersonTitle::class, 'id', 'title');
     }
-
-
 }
