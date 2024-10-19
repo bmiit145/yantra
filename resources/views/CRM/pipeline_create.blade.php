@@ -45,7 +45,17 @@
         </div>
     </li>
 @endsection
+@section('setting_menu')
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item archive_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 oi oi-archive"></i>Archive</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item duplicate_lead"  role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-clone"></i>Duplicate</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item delete_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-trash-o"></i>Delete</a>
+        <div role="separator" class="dropdown-divider"></div>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0">Mark Lost</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0">Send email</a>
+        <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0">Send SMS Text Message</a>
 
+        
+@endsection
 @section('menu_bar')
 <div class="o_control_panel_navigation flex-wrap flex-md-nowrap justify-content-end gap-1 gap-xl-3 order-1 order-lg-2 flex-grow-1">
     <div class="o_cp_pager text-nowrap" role="search">
@@ -278,13 +288,40 @@
     .crmright_head_main__1{
         display: none;
     }
+    .head_breadcrumb_info{
+       gap : 0px;
+    }
+    .dropdown-menu-setting {
+        display: none;
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+        top: auto;
+        left: auto;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: .25rem;
+    }
+    .dropdown-menu-setting.show {
+        display: block !important;
+    }
+
+    .dropdown-menu-setting a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
 </style>
 <style>
     .select2-container--default .select2-selection--single {
         border: none;
     }
 
-    ,
+    
     .select2-selection__clear {
         display: none;
     }
@@ -498,7 +535,7 @@
                                                         style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Lost
                                                         Reason</span>
                                                     <div class="resonse_select_hide">
-                                                        <select class="o-autocomplete--input o_input" id="lost_reasons"
+                                                        <select class=" o_input" id="lost_reasons"
                                                             style="width: 100%;">
                                                             <option value=""></option>
                                                             @foreach ($lost_reasons as $reason)

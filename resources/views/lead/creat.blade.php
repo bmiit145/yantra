@@ -54,13 +54,10 @@
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item archive_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 oi oi-archive"></i>Archive</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item duplicate_lead" data-id="{{isset($data) ? $data->id : ''}}" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-clone"></i>Duplicate</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item delete_lead" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-trash-o"></i>Delete</a>
-        {{-- <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0"><i class="fa-fw oi-fw me-1 fa fa-cogs"></i>Add Properties</a>
-        <a class="o-dropdown-item dropdown-item o-navigable o_sign_request focus" role="menuitem" tabindex="0"><i class="fa fa-file-text fa-fw"></i> Request Signature </a> --}}
         <div role="separator" class="dropdown-divider"></div>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0">Mark Lost</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0">Send email</a>
         <a class="o-dropdown-item dropdown-item o-navigable o_menu_item focus" role="menuitem" tabindex="0">Send SMS Text Message</a>
-        {{-- <span class="o-dropdown-item dropdown-item o-navigable o_menu_item" role="menuitem" tabindex="0">Enrich</span> --}}
 
         
 @endsection

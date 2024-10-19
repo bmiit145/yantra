@@ -583,7 +583,7 @@
         cursor: pointer;
     }
 
-    .dropdown-menu a:hover {
+    .dropdown-menu-setting a:hover {
         background-color: #ddd;
     }
 
@@ -944,8 +944,8 @@
 
             <tbody id="lead-table-body">
                 @forEach($data as $pipeline)
-                            <tr data-id="{{$pipeline->id}}" style="cursor: pointer;">
-                                 <td class="d-none">{{$loop->index + 1}}</td>
+                            <tr data-id="{{$pipeline->id}}" data-index="{{ $loop->index + 1 }}" style="cursor: pointer;">
+                                 <td class="d-none hidden_value">{{$loop->index + 1}}</td>
                                 <td>{{ $pipeline->created_at->format('d/m/Y H:i:s') ?? '' }}</td>
                                 <td>{{$pipeline->opportunity ?? ''}}</td>
                                 <td>{{$pipeline->contact->name ?? ''}}</td>
@@ -1097,7 +1097,7 @@
 
     $('#example tbody').on('click', 'tr', function () {
         var id = $(this).data('id'); // Get the data-id attribute from the clicked row
-        var index = $(this).find('td.d-none').text();
+       var index = $(this).data('index'); 
         if (id) {
             window.location.href = '/pipeline-create/' + id + '/' + index;
         }
@@ -1134,7 +1134,7 @@
 
                 // Loop through the response and create table rows
                 response.data.forEach(function (item) {
-                    var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+                    var rowHtml = `<tr class="lead-row" data-id="${item.id}" data-index="${index++}">`;
 
                     // Append data only for the visible columns
                     if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
@@ -1193,8 +1193,9 @@
             // Attach click event handler to rows
             $('#lead-table-body .lead-row').on('click', function () {
                 var leadId = $(this).data('id');
-                var index = $(this).find('td.d-none').text();
-                window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+               var index = $(this).data('index');
+               
+                window.location.href = `/lead-add/${leadId}/${index}`; 
             });
 
             // Apply the column visibility settings
@@ -1924,7 +1925,7 @@
 
                             // Loop through the response and create table rows
                             response.data.forEach(function (item) {
-                                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+                                var rowHtml = `<tr class="lead-row" data-id="${item.id}" data-index="${index++}">`;
 
                                 // Append data only for the visible columns
                                 if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
@@ -1983,8 +1984,8 @@
                         // Attach click event handler to rows
                         $('#lead-table-body .lead-row').on('click', function () {
                             var leadId = $(this).data('id');
-                            var index = $(this).find('td.d-none').text();
-                            window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+                             var index = $(this).data('index');
+                            window.location.href = `/lead-add/${leadId}/${index}`; 
                         });
 
                         // Apply the column visibility settings
@@ -2328,9 +2329,9 @@
 
         $(document).on('click', '.lead-row', function () {
             var leadId = $(this).data('id')
-            var index = $(this).find('td.d-none').text();
+            var index = $(this).data('index');
           
-    
+      
             if (leadId) {
                 window.location.href = '/lead-add/' + leadId + '/' + index;
             }
