@@ -461,6 +461,11 @@
     .crm_head_centerside{
         display: none;
     }
+  
+    .image-container{
+        gap:4%;
+    }
+   
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -498,7 +503,7 @@
                                     data-tooltip="Mark as lost" data-bs-toggle="modal"
                                     data-bs-target="#staticBackdrop"><span>Lost</span></button>
                                 @if($count > 1)
-                                    <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
+                                    <a href="{{ route('leads.similar', ['productName' => $data->opportunity]) }}">
                                         <button class="btn btn-secondary" type="button" data-tooltip="Show similar leads">
                                             <span>Similar Leads</span><br>
                                             <span>{{ $count ?? '' }}</span>
@@ -1336,48 +1341,244 @@
                             </div>
                         </div>
                     </div>
-                    <div class="o-mail-ChatterContainer o-mail-Form-chatter flex-column o-aside w-print-100 ">
-                        <div
-                            class="o-mail-Chatter overflow-auto o-chatter-disabled">
+                        <div class="o-mail-ChatterContainer o-mail-Form-chatter o-aside w-print-100">
+                        <div class="o-mail-Chatter w-100 h-100 flex-grow-1 d-flex flex-column overflow-auto o-chatter-disabled">
                             <div class="o-mail-Chatter-top d-print-none position-sticky top-0">
                                 <div class="o-mail-Chatter-topbar d-flex flex-shrink-0 flex-grow-0 overflow-x-auto">
-                                    <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2"
-                                        data-hotkey="m"> Send message </button><button
-                                        class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2"
-                                        data-hotkey="shift+m"> Log note </button>
-                                    <div class="flex-grow-1 d-flex"><button
-                                            class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2"
-                                            data-hotkey="shift+a" data-bs-toggle="modal"
-                                            data-bs-target="#activitiesAddModal"><span>Activities</span></button><span
-                                            class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span><button
-                                            class="btn btn-link text-action" aria-label="Search Messages"
-                                            title="Search Messages"><i class="oi oi-search"
-                                                role="img"></i></button><span style="display:contents"><button
-                                                class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2"
-                                                aria-label="Attach files"><i
-                                                    class="fa fa-paperclip fa-lg me-1"></i></button></span><input
-                                            type="file" class="o_input_file d-none o-mail-Chatter-fileUploader"
-                                            multiple="multiple" accept="*">
-                                        <div class="o-mail-Followers d-flex me-1"><button
-                                                class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown"
-                                                disabled="" title="Show Followers" aria-expanded="false"><i
-                                                    class="fa fa-user-o me-1" role="img"></i><sup
-                                                    class="o-mail-Followers-counter">0</sup></button></div><button
-                                            class="o-mail-Chatter-follow btn btn-link  px-0 text-600">
-                                            <div class="position-relative"><span
-                                                    class="d-flex invisible text-nowrap">Following</span><span
-                                                    class="position-absolute end-0 top-0"> Follow </span></div>
-                                        </button>
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m"> Send message </button>
+                                    @else
+                                        <button class="o-mail-Chatter-sendMessage btn text-nowrap me-1 btn-primary my-2 send_message_btn" data-hotkey="m" disabled> Send message </button>
+                                    @endif
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2 click_add_notes" data-hotkey="shift+m"> Log note </button>
+                                    @else
+                                        <button class="o-mail-Chatter-logNote btn text-nowrap me-1 btn-secondary my-2" data-hotkey="shift+m" disabled> Log note </button>
+                                    @endif                                    
+                                    <div class="flex-grow-1 d-flex">
+                                    @if(isset($data) && $data->id != null)
+                                        <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal"><span>Activities</span></button>
+                                    @else
+                                        <button class="o-mail-Chatter-activity btn btn-secondary text-nowrap my-2" data-hotkey="shift+a" data-bs-toggle="modal" data-bs-target="#activitiesAddModal" disabled><span>Activities</span></button>
+                                    @endif                                        
+                                        <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"></span>
+                                        <!-- <button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"><i class="oi oi-search" role="img"></i>  -->
+                                        @if(isset($data) && $data->id != null)
+                                            <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn">
+                                                <i class="fa fa-paperclip fa-lg me-1"></i>
+                                                <sup id="fileCount">{{$fileCount ?? ''}}</sup>
+                                            </button>
+                                        @else
+                                            <button class="o-mail-Chatter-attachFiles btn btn-link text-action px-1 d-flex align-items-center my-2" aria-label="Attach files" id="attachFilesBtn" disabled>
+                                                <i class="fa fa-paperclip fa-lg me-1"></i>
+                                                <sup id="fileCount">{{$fileCount ?? ''}}</sup>
+                                            </button>
+                                        @endif
+                                        <div class="o-mail-Followers d-flex me-1">
+                                            @if(isset($data) && $data->id != null)
+                                                <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false">
+                                                    <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                                </button>
+                                            @else
+                                                <button id="toggleFollowersDropdown" class="o-mail-Followers-button btn btn-link d-flex align-items-center text-action px-1 my-2 o-dropdown dropdown-toggle dropdown" title="Show Followers" aria-expanded="false" disabled>
+                                                    <i class="fa fa-user-o me-1" role="img"></i><sup class="o-mail-Followers-counter">{{$count}}</sup>
+                                                </button>
+                                            @endif                                              
+
+                                            <!-- Dropdown Menu -->
+                                            <div id="followersDropdown" class="o_popover popover mw-100 o-dropdown--menu dropdown-menu mx-0 o-mail-Followers-dropdown flex-column" role="menu" style=" display: none !important;; position: fixed; top: 137.75px; left: 1715.12px;width: 300px;">
+                                                <a class="o-dropdown-item dropdown-item o-navigable focus add_followers" role="menuitem" tabindex="0" href="#">Add Followers</a>
+                                                <div role="separator" class="dropdown-divider"></div>
+                                                @foreach($authfollowers as $auth)
+                                                <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
+                                                    <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
+                                                        <img class="o-mail-Follower-avatar me-2 rounded" alt="" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                        <span class="flex-shrink text-truncate">{{$auth->customer->email}}</span>
+                                                    </a>
+                                                    <button class="o-mail-Follower-action btn btn-icon rounded-0 remove-follower" title="Remove this follower" aria-label="Remove this follower" data-follower-id="{{ $auth->id }}">
+                                                        <i class="fa fa-remove"></i>
+                                                    </button>
+                                                </div>
+                                                <div role="separator" class="dropdown-divider"></div>
+                                                @endforeach
+                                               @foreach($followers as $follower1)
+                                                    <div class="dropdown-item o-mail-Follower d-flex justify-content-between p-0">
+                                                        <a class="o-mail-Follower-details d-flex align-items-center flex-grow-1 px-3 o-min-width-0" href="#" role="menuitem">
+                                                            <!-- Display the profile image if it exists -->
+                                                            @if(isset($follower1->customer->image))
+                                                                <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
+                                                                    src="{{ asset('uploads/' . $follower1->customer->image) }}">
+                                                            @else
+                                                                <!-- Default image if no profile image is available -->
+                                                                <img class="o-mail-Follower-avatar me-2 rounded" alt="" 
+                                                                    src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
+                                                            @endif
+
+                                                            <!-- Display the name of the customer -->
+                                                            <span class="flex-shrink text-truncate">
+                                                                {{ $follower1->customer->email ?? $follower1->customer->email ?? ''}}
+                                                            </span>
+                                                        </a>
+
+                                                        <!-- Remove buttons -->
+                                                        <button class="o-mail-Follower-action btn btn-icon rounded-0 remove-follower" title="Remove this follower" aria-label="Remove this follower" data-follower-id="{{ $follower1->id }}">
+                                                            <i class="fa fa-remove"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div role="separator" class="dropdown-divider"></div>
+                                                @endforeach
+                                            </div>
+                                            {{-- Add Followers Modal --}}
+                                            <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="followersModalLabel">Invite Follower</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form id="inviteForm" action="{{ route('lead.invite_followers') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" value="{{ $data->id ?? '' }}" name="id">
+                                                            <div class="modal-body">
+                                                                <div class="d-flex">
+                                                                    <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
+                                                                    <select class="form-control" name="user_id" required>
+                                                                        <option value=""></option>
+                                                                        @foreach($employees as $employee)
+                                                                            <option value="employee/{{ $employee->id }}">{{ $employee->name }} ({{ $employee->emial }})</option>
+                                                                        @endforeach
+                                                                        @foreach($users as $user)
+                                                                            <option value="users/{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="d-flex my-2">
+                                                                    <label for="send-notification" class="col-form-label mx-3">Send Notification: </label>
+                                                                    <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked>
+                                                                </div>
+                                                                <div class="d-flex my-2 hiden_div">
+                                                                    <label for="message" class="col-form-label mx-3">Message</label>
+                                                                    <textarea class="form-control" id="send_notification" name="message">Hello, {{ Auth::user()->email }} invited you to follow Lead/Opportunity document: {{ isset($data) ? $data->product_name : '' }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                                <button type="submit" class="btn btn-primary">Add Followers</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            @if(isset($data) && $data->id != null)
+                                                <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}">
+                                                    <div class="position-relative">
+                                                        <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                    </div>
+                                                </button>
+                                            @else
+                                                <button class="o-mail-Chatter-follow btn btn-link px-0 text-600 followers" id="follow-button" data-follow-status="{{ $isFollowing ? 'following' : 'not-following' }}" disabled>
+                                                    <div class="position-relative">
+                                                        <span class="d-flex text-nowrap">{{ $isFollowing ? 'Following' : 'Follow' }}</span>
+                                                    </div>
+                                                </button>
+                                            @endif                                            
                                     </div>
                                 </div>
                             </div>
+                            <div class="flex-shrink-0 pt-3 text-truncate small mb-2 ms-5 show1" style="display: none !important;">
+                              <style>
+                              .hidden-important {
+                                                display: none !important;
+                                            }
+                              </style>
+                                <span class="fw-bold">To:</span>
+                                    <span class="ps-1">
+                                        <span class="text-muted" id="to_mail">
+                                            @if($data)
+                                            @if($data->email)
+                                             <P>
+                                                {{$data->email}}
+                                                    @foreach($authfollowers as $auth)
+                                                       {{$auth->customer->email}}
+                                                        @endforeach
+                                                @else
+                                                No recipient
+                                                @endif
+                                                </P>
+                                            @endif
+                                        </span>
+                                    </span>
+                            
+                            </div>
+                                                    <div class="o-mail-Composer  pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
+                                            
+                                                    <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
+                                                        <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
+                                                            <div class="position-relative flex-grow-1">
+                                                                <textarea class="o-mail-Composer-input o-mail-Composer-inputStyle form-control bg-view border-0 rounded-3 shadow-none overflow-auto" style="height:40px;" id="send_message" placeholder="Send a message to followers…"></textarea>
+                                                                <textarea class="o-mail-Composer-fake o-mail-Composer-inputStyle position-absolute border-0" disabled="1"></textarea>
+                                                            </div>
+                                                            <div class="o-mail-Composer-actions d-flex bg-view mx-3 border-top p-1 rounded">
+                                                                    <div class="d-flex flex-grow-1 align-items-baseline mt-1">
+                                                                 
+                                                                        <span style="display:contents">
+                                                                            <button class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1" title="Attach files" aria-label="Attach files" type="button">
+                                                                                    <i class="fa fa-fw fa-paperclip"></i>
+                                                                            </button>
+                                                                        </span>
+                                                                        <input type="file" class="o_input_file d-none image_uplode" multiple="multiple" accept="*">
+                                                                    </div>
+                                                                    <button class="o-mail-Composer-fullComposer btn p-1 border-0 rounded-pill" title="Full composer" aria-label="Full composer" type="button" data-hotkey="shift+c" style="position: relative;">
+                                                                        <i class="fa fa-fw fa-expand"></i>
+                                                                    </button>
+                                                            </div>
+                                                        </div>
+                                                            <div class="d-flex align-items-center mt-2 gap-2">
+                                                                    <button class="o-mail-Composer-send btn btn-primary send_messag_by_email" aria-label="Send">Send</button>
+                                                                        {{-- <span><samp>CTRL-Enter</samp><i> to send</i></span> --}}
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                <div class="image_show" style="display: flex;">
+                                                </div>
+                                                 <div class="o-mail-Composer  pt-0 pb-2 o-extended show3" style="display: none !important;"> 
+                                                 
+                                                    <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
+                                                        <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
+                                                            <div class="position-relative flex-grow-1">
+                                                                <textarea class="o-mail-Composer-input o-mail-Composer-inputStyle form-control bg-view border-0 rounded-3 shadow-none overflow-auto" style="height:40px;" id="send_message1" placeholder="Log an internal note…"></textarea>
+                                                                <textarea class="o-mail-Composer-fake o-mail-Composer-inputStyle position-absolute border-0" disabled="1"></textarea>
+                                                            </div>
+                                                            <div class="o-mail-Composer-actions d-flex bg-view mx-3 border-top p-1 rounded">
+                                                                    <div class="d-flex flex-grow-1 align-items-baseline mt-1">
+                                                                 
+                                                                        <span style="display:contents">
+                                                                            <button class="o-mail-Composer-attachFiles btn border-0 rounded-pill p-1" title="Attach files" aria-label="Attach files" type="button">
+                                                                                    <i class="fa fa-fw fa-paperclip"></i>
+                                                                            </button>
+                                                                        </span>
+                                                                        <input type="file" class="o_input_file d-none image_uplode_2" multiple="multiple" accept="*">
+                                                                    </div>
+                                                                    <button class="o-mail-Composer-fullComposer btn p-1 border-0 rounded-pill" title="Full composer" aria-label="Full composer" type="button" data-hotkey="shift+c" style="position: relative;">
+                                                                        <i class="fa fa-fw fa-expand"></i>
+                                                                    </button>
+                                                            </div>
+                                                        </div>
+                                                            <div class="d-flex align-items-center mt-2 gap-2">
+                                                                    <button class="o-mail-Composer-send btn btn-primary store_log_notes" aria-label="Send">Send</button>
+                                                                        
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                <div class="image_show2" style="display: flex;">
+                                                </div>                                                                                            
                             @if($activitiesCount > 0)
-                                <div class="d-flex pt-2 cursor-pointer fw-bolder" id="toggleHeader">
+                                <div class="d-flex pt-2 cursor-pointer fw-bolder planned_activities" id="toggleHeader">
                                     <hr class="flex-grow-1 fs-3">
                                     <div class="d-flex align-items-center px-3">
-                                        <i class="fa fa-fw fa-caret-down" id="toggleIcon"></i> Planned Activities
-                                        <span class="badge rounded-pill ms-2 text-bg-success" id="badgeCount"
-                                            style="display: none;">{{$activitiesCount ?? ''}}</span>
+                                        <i class="fa fa-fw fa-caret-down" id="toggleIcon"></i> Planned Activities 
+                                        <span class="badge rounded-pill ms-2 text-bg-success" id="badgeCount" style="display: none;">{{$activitiesCount ?? ''}}</span>
                                     </div>
                                     <hr class="flex-grow-1 fs-3">
                                 </div>
@@ -1386,255 +1587,667 @@
                                 use Carbon\Carbon;
                             @endphp
                             @if($activities)
-                                                    <div id="activitiesContainer">
-                                                        @foreach ($activities as $activity) 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $dueDate = Carbon::parse($activity->due_date);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $tomorrow = $now->copy()->addDay();
+                            <div id="activitiesContainer">
+                                @foreach ($activities as $activity) 
+                                    @php
+                                        $dueDate = Carbon::parse($activity->due_date);
+                                        $now = Carbon::now()->startOfDay(); // Ensure comparison is only on date, not time
+                                        $tomorrow = $now->copy()->addDay();
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // Calculate the difference in days
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $daysRemaining = $now->diffInDays($dueDate);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $isTomorrow = $dueDate->isSameDay($tomorrow);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $isToday = $dueDate->isSameDay($now);
+                                        // Calculate the difference in days
+                                        $daysRemaining = $now->diffInDays($dueDate);
+                                        $isTomorrow = $dueDate->isSameDay($tomorrow);
+                                        $isToday = $dueDate->isSameDay($now);
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // Determine the label and styling based on due date
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if ($isToday) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Today:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'today-label'; // Customize this class as needed
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-bg-warning';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-black';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } elseif ($isTomorrow) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Tomorrow:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-white';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } elseif ($dueDate->isFuture()) {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Due in ' . $daysRemaining . ' days:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-success';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-white';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } else {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            // If the due date is in the past
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $daysOverdue = abs($daysRemaining);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $label = 'Overdue by ' . $daysOverdue . ' days:';
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $labelClass = 'text-danger'; // Class for overdue, usually red
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $iconClass = 'text-danger'; // Red icon
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            $checkClass = 'text-danger'; // Red text
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @endphp
-                                                                                    <div class="o-mail-Activity-container">
-                                                                                        <div class="o-mail-Activity d-flex py-1 mb-2"
-                                                                                            data-activity-id="{{ $activity->id }}">
-                                                                                            <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
-                                                                                                <a role="button">
-                                                                                                    <span
-                                                                                                        class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                                                                        {{ strtoupper($activity->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                                                                    </span>
-                                                                                                </a>
-                                                                                                <div
-                                                                                                    class="o-mail-Activity-iconContainer position-absolute top-100 start-100 translate-middle d-flex align-items-center justify-content-center mt-n1 ms-n1 rounded-circle w-50 h-50 {{$iconClass}}">
-                                                                                                    <b><i class="fa small fa-check {{$checkClass}}"></i></b>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                            <div class="flex-grow px-3">
-                                                                                                <div class="o-mail-Activity-info lh-1">
-                                                                                                    <span class="fw-bolder {{ $labelClass }}">
-                                                                                                        {{ $label }}
-                                                                                                    </span>
-                                                                                                    @if(!empty($activity->summary))
-                                                                                                        <!-- Show summary if it exists -->
-                                                                                                        <span
-                                                                                                            class="fw-bolder px-2 text-break">{{ $activity->summary ?? ''}}</span>
-                                                                                                    @else
-                                                                                                        <!-- Show activity type if summary does not exist -->
-                                                                                                        <span
-                                                                                                            class="fw-bolder px-2 text-break">{{ ucwords(str_replace('-', ' ', strtolower($activity->activity_type ?? ''))) }}</span>
-                                                                                                    @endif
-                                                                                                    <span class="o-mail-Activity-user px-1">for
-                                                                                                        {{$activity->getUser->email ?? ''}}</span>
-                                                                                                    <button class="btn btn-link btn-primary p-0 lh-1 border-0"
-                                                                                                        onclick="toggleDetails({{ $activity->id }})">
-                                                                                                        <i class="fa fa-info-circle" role="img" title="Info"
-                                                                                                            aria-label="Info"></i>
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                                <div id="activity-details-{{ $activity->id }}" class="d-none">
-                                                                                                    <!-- Details will be populated here -->
-                                                                                                </div>
-                                                                                                <div class="lh-lg">
-                                                                                                    <button
-                                                                                                        class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3"
-                                                                                                        data-bs-toggle="modal" data-bs-target="#markDoneModal">
-                                                                                                        <i class="fa fa-check"></i> Mark Done
-                                                                                                    </button>
-                                                                                                    @if ($activity->activity_type === 'upload_document')
-                                                                                                        <button class="btn btn-link text-action p-0 me-3"
-                                                                                                            onclick="document.getElementById('upload_overdue_file_{{ $activity->id }}').click();">
-                                                                                                            <i class="fa fa-upload"></i> Upload Document
-                                                                                                        </button>
-                                                                                                        <input type="file" class="d-none"
-                                                                                                            id="upload_overdue_file_{{ $activity->id }}" accept="*"
-                                                                                                            onchange="uploadFile('upload_overdue_file_{{ $activity->id }}', {{ $activity->id }})">
-                                                                                                    @endif
-                                                                                                    <button type="button"
-                                                                                                        class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
-                                                                                                        <i class="fa fa-pencil"></i> Edit
-                                                                                                    </button>
-                                                                                                    <button type="button"
-                                                                                                        class="btn btn-link btn-danger p-0 o-mail-Activity-delete"
-                                                                                                        data-activity-id="{{ $activity->id }}">
-                                                                                                        <i class="fa fa-times"></i> Cancel
-                                                                                                    </button>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                        // Determine the label and styling based on due date
+                                        if ($isToday) {
+                                            $label = 'Today:';
+                                            $labelClass = 'today-label'; // Customize this class as needed
+                                            $iconClass = 'text-bg-warning';
+                                            $checkClass = 'text-black';
+                                        } elseif ($isTomorrow) {
+                                            $label = 'Tomorrow:';
+                                            $labelClass = 'text-success';
+                                            $iconClass = 'text-success';
+                                            $checkClass = 'text-white';
+                                        } elseif ($dueDate->isFuture()) {
+                                            $label = 'Due in ' . $daysRemaining . ' days:';
+                                            $labelClass = 'text-success';
+                                            $iconClass = 'text-success';
+                                            $checkClass = 'text-white';
+                                        } else {
+                                            // If the due date is in the past
+                                            $daysOverdue = abs($daysRemaining);
+                                            $label = 'Overdue by ' . $daysOverdue . ' days:';
+                                            $labelClass = 'text-danger'; // Class for overdue, usually red
+                                            $iconClass = 'text-danger'; // Red icon
+                                            $checkClass = 'text-danger'; // Red text
+                                        }
+                                    @endphp                                                     
+                                    <div class="o-mail-Activity-container">
+                                        <div class="o-mail-Activity d-flex py-1 mb-2" data-activity-id="{{ $activity->id }}">
+                                            <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
+                                                <a role="button">
+                                                <span
+                                                    class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                    {{ strtoupper($activity->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                </span>
+                                                </a>
+                                                <div class="o-mail-Activity-iconContainer position-absolute top-100 start-100 translate-middle d-flex align-items-center justify-content-center mt-n1 ms-n1 rounded-circle w-50 h-50 {{$iconClass}}">
+                                                    <b><i class="fa small fa-check {{$checkClass}}"></i></b>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow px-3">
+                                                <div class="o-mail-Activity-info lh-1">
+                                                    <span class="fw-bolder {{ $labelClass }}">
+                                                        {{ $label }}
+                                                    </span>
+                                                    @if(!empty($activity->summary))
+                                                        <!-- Show summary if it exists -->
+                                                        <span class="fw-bolder px-2 text-break">{{ $activity->summary ?? ''}}</span>
+                                                    @else
+                                                        <!-- Show activity type if summary does not exist -->
+                                                        <span class="fw-bolder px-2 text-break">{{ ucwords(str_replace('-', ' ', strtolower($activity->activity_type ?? ''))) }}</span>
+                                                    @endif
+                                                    <span class="o-mail-Activity-user px-1">for {{$activity->getUser->email ?? ''}}</span>
+                                                    <button class="btn btn-link btn-primary p-0 lh-1 border-0" onclick="toggleDetails({{ $activity->id }})">
+                                                        <i class="fa fa-info-circle" role="img" title="Info" aria-label="Info"></i>
+                                                    </button>
+                                                </div>
+                                                <div id="activity-details-{{ $activity->id }}" class="d-none">
+                                                    <!-- Details will be populated here -->
+                                                </div>
+                                                <div class="lh-lg">
+                                                    <button class="o-mail-Activity-markDone btn btn-link btn-success p-0 me-3" data-bs-toggle="modal" data-bs-target="#markDoneModal">
+                                                        <i class="fa fa-check"></i> Mark Done
+                                                    </button>
+                                                    @if ($activity->activity_type === 'upload_document')
+                                                        <button class="btn btn-link text-action p-0 me-3"
+                                                            onclick="document.getElementById('upload_overdue_file_{{ $activity->id }}').click();">
+                                                            <i class="fa fa-upload"></i> Upload Document
+                                                        </button>
+                                                        <input type="file" class="d-none"
+                                                            id="upload_overdue_file_{{ $activity->id }}" accept="*"
+                                                            onchange="uploadFile('upload_overdue_file_{{ $activity->id }}', {{ $activity->id }})">
+                                                    @endif
+                                                    <button type="button" class="o-mail-Activity-edit btn btn-link text-action p-0 me-3">
+                                                        <i class="fa fa-pencil"></i> Edit
+                                                    </button>
+                                                    <button type="button" class="btn btn-link btn-danger p-0 o-mail-Activity-delete" data-activity-id="{{ $activity->id }}">
+                                                        <i class="fa fa-times"></i> Cancel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                                                    <!-- Modal -->
-                                                                                    <div class="modal fade" id="markDoneModal" tabindex="-1"
-                                                                                        aria-labelledby="markDoneModalLabel" aria-hidden="true">
-                                                                                        <div class="modal-dialog">
-                                                                                            <div class="modal-content">
-                                                                                                <div class="modal-header">
-                                                                                                    <h5 class="modal-title" id="markDoneModalLabel">Mark Done</h5>
-                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                                        aria-label="Close"></button>
-                                                                                                </div>
-                                                                                                <div class="modal-body">
-                                                                                                    <textarea class="form-control" rows="4"
-                                                                                                        placeholder="Write Feedback"></textarea>
-                                                                                                </div>
-                                                                                                <div class="modal-footer">
-                                                                                                    <button type="button" id="saveChangesButton"
-                                                                                                        class="btn btn-primary">Done</button>
-                                                                                                    <button type="button" class="btn btn-secondary"
-                                                                                                        data-bs-dismiss="modal">discard</button>
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="markDoneModal" tabindex="-1" aria-labelledby="markDoneModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="markDoneModalLabel">Mark Done</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <textarea class="form-control" rows="4" placeholder="Write Feedback"></textarea>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" id="doneAndScheduleButton" class="btn btn-primary">Done & Schedule Next</button>
+                                                    <button type="button" id="saveChangesButton" class="btn btn-primary">Done</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">discard</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                                                    <!-- Edit Modal -->
-                                                                                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
-                                                                                        aria-hidden="true">
-                                                                                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                                                            <div class="modal-content">
-                                                                                                <div class="modal-header">
-                                                                                                    <h5 class="modal-title" id="editModalLabel">Edit Activity</h5>
-                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                                                        aria-label="Close"></button>
-                                                                                                </div>
-                                                                                                <form id="editForm" action="" method="POST">
-                                                                                                    <input type="hidden" id="edit_activity_id" name="id">
-                                                                                                    <div class="modal-body">
-                                                                                                        <div class="row col-md-12">
-                                                                                                            <div class="col-md-6">
-                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                    <div class="col-md-4">
-                                                                                                                        <label for="activity_type" class="mr-2">Activity
-                                                                                                                            Type</label>
-                                                                                                                    </div>
-                                                                                                                    <div class="col-md-8 activityTypeField">
-                                                                                                                        <select class="form-control activity_type"
-                                                                                                                            id="edit_activity_type" name="activity_type"
-                                                                                                                            style="width: 100%;">
-                                                                                                                            <option value="email">Email</option>
-                                                                                                                            <option value="call">Call</option>
-                                                                                                                            <option value="meeting">Meeting</option>
-                                                                                                                            <option value="to-do" selected>To-Do</option>
-                                                                                                                            <option value="upload_document">Upload Document
-                                                                                                                            </option>
-                                                                                                                            <option value="request_signature">Request
-                                                                                                                                Signature</option>
-                                                                                                                        </select>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                            <div class="col-md-6 dueDateField">
-                                                                                                                <!-- Due Date field -->
-                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                    <div class="col-md-4">
-                                                                                                                        <label for="" class="mr-2">Due Date</label>
-                                                                                                                    </div>
-                                                                                                                    <div class="col-md-8">
-                                                                                                                        <div class="o_cell flex-grow-1 flex-sm-grow-0"
-                                                                                                                            style="width: 100%;">
-                                                                                                                            <div class="o_row o_row_readonly">
-                                                                                                                                <div name="edit_due_date"
-                                                                                                                                    class="o_field_widget">
-                                                                                                                                    <div class="d-inline-flex w-100"><input
-                                                                                                                                            class="o_input activity-datepicker"
-                                                                                                                                            name="due_date"
-                                                                                                                                            placeholder="Select Due Date"
-                                                                                                                                            style="width: 300px;"
-                                                                                                                                            type="text" id="edit_due_date">
-                                                                                                                                    </div>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </div>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                            <div class="col-md-6 mt-3 summaryField">
-                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                    <div class="col-md-4">
-                                                                                                                        <label for="edit_summary"
-                                                                                                                            class="mr-2">Summary</label>
-                                                                                                                    </div>
-                                                                                                                    <div class="col-md-8">
-                                                                                                                        <input class="form-control"
-                                                                                                                            placeholder="e.g. Discuss proposal"
-                                                                                                                            style="width: 300px;" type="text"
-                                                                                                                            id="edit_summary" name="summary">
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                            <div class="col-md-6 mt-3 assignedToField">
-                                                                                                                <div class="d-flex align-items-center">
-                                                                                                                    <div class="col-md-4">
-                                                                                                                        <label for="edit_assigned_to" class="mr-2">Assigned
-                                                                                                                            to</label>
-                                                                                                                    </div>
-                                                                                                                    <div class="col-md-8">
-                                                                                                                        <select class="form-control" id="edit_assigned_to"
-                                                                                                                            name="assigned_to" style="width: 100%;">
-                                                                                                                            @foreach ($users as $user)
-                                                                                                                                <option value="{{ $user->id }}">
-                                                                                                                                    {{ $user->email }}
-                                                                                                                                </option>
-                                                                                                                            @endforeach
-                                                                                                                        </select>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                            <div class="col-md-12 mt-3 logNoteField">
-                                                                                                                <textarea class="form-control makeMeSummernote "
-                                                                                                                    id="edit_log_note" name="log_note" rows="4"
-                                                                                                                    placeholder="Log Note"></textarea>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div class="modal-footer">
-                                                                                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                                                                        <button type="button" class="btn btn-secondary"
-                                                                                                            data-bs-dismiss="modal">Cancel</button>
-                                                                                                    </div>
-                                                                                                </form>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                    <!-- Edit Modal -->
+                                    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editModalLabel">Edit Activity</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form id="editForm" action="" method="POST">
+                                                <input type="hidden" id="edit_activity_id" name="id">
+                                                <div class="modal-body">
+                                                    <div class="row col-md-12">
+                                                        <div class="col-md-6">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="activity_type" class="mr-2">Activity Type</label>
+                                                                </div>
+                                                                <div class="col-md-8 activityTypeField">
+                                                                    <select class="form-control activity_type" id="edit_activity_type" name="activity_type" style="width: 100%;">
+                                                                        <option value="email">Email</option>
+                                                                        <option value="call">Call</option>
+                                                                        <option value="meeting">Meeting</option>
+                                                                        <option value="to-do" selected>To-Do</option>
+                                                                        <option value="upload_document">Upload Document</option>
+                                                                        <option value="request_signature">Request Signature</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 dueDateField">
+                                                            <!-- Due Date field -->
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="" class="mr-2">Due Date</label>    
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                                                        <div class="o_row o_row_readonly">
+                                                                            <div name="edit_due_date" class="o_field_widget">
+                                                                                <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;cursor: pointer;" type="text" id="edit_due_date"></div>
+                                                                            </div>                                                
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mt-3 summaryField">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="edit_summary" class="mr-2">Summary</label>  
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input class="form-control" placeholder="e.g. Discuss proposal" style="width: 300px;" type="text" id="edit_summary" name="summary">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mt-3 assignedToField">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="edit_assigned_to" class="mr-2">Assigned to</label>  
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <select class="form-control" id="edit_assigned_to" name="assigned_to" style="width: 100%;">
+                                                                        @foreach ($users as $user)
+                                                                            <option value="{{ $user->id }}">{{ $user->email }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 mt-3 logNoteField">
+                                                            <textarea class="form-control makeMeSummernote" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                        <button type="submit" class="btn btn-secondary" id="markAsDoneButton">Mark as Done</button>
+                                                        <button type="button" class="btn btn-secondary" id="editDoneAndScheduleButton">Done & Schedule Next</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @endif
+
+                            <div class="o-mail-AttachmentBox position-relative d-none"  id="attachmentBox">
+                                        <div class="d-flex align-items-center">
+                                            <hr class="flex-grow-1"><span class="p-3 fw-bold"> Files </span>
+                                            <hr class="flex-grow-1">
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                                @php
+                                                    $images = [];
+                                                    $documents = [];
+                                                @endphp
+
+                                                @foreach ($allFiles as $file)
+                                                    @php
+                                                        $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                        // Categorize files into images and documents
+                                                        if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                            $documents[] = $file;
+                                                        } else {
+                                                            $images[] = $file; // Add all other files to images
+                                                        }
+                                                    @endphp
+                                                @endforeach
+
+                                                <!-- Display Images -->
+                                                @if(count($images) > 0)
+                                                <div class="image-container d-flex flex-wrap mb-2">
+                                                @foreach ($images as $file)
+                                                    <div id="image-{{ $file }}" class="o-mail-AttachmentImage position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                        tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                        <img data-enlargable class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                            src="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                            alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+
+                                                        <div class="position-absolute top-0 start-0 p-2">
+                                                            <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                            class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -3px; position: absolute;"
+                                                            download title="Download">
+                                                                <i class="fa fa-download" role="img" style="font-size: 10px;margin-left: -5px;position: absolute;" aria-label="Download"></i>
+                                                            </a>
+                                                        </div>
+
+                                                        <div class="position-absolute bottom-0 start-0 p-2">
+                                                            <button class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -15px; position: absolute;"
+                                                                    title="Delete"
+                                                                    onclick="showDeleteConfirmation('{{ $file }}', '{{ $data->id }}')">
+                                                                <i class="fa fa-trash" style="font-size: 10px;margin-left: -5px;margin-top: -5px;position: absolute;" role="img" aria-label="Delete"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                                </div>
+                                                @endif
+
+                                                <!-- Display Documents -->
+                                                @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/uploads/attachment/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column documnet-file">
+                                                                        <a href="{{ asset('storage/uploads/attachment/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="showDeleteConfirmation('{{ $file }}','{{ $data->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         @endforeach
                                                     </div>
+                                                @endif
+                                            <div class="grid row-gap-0 column-gap-0"></div>
+                                            <span style="display:contents">
+                                            <button class="btn btn-link" type="button" id="openFileUpload">
+                                                <i class="fa fa-plus-square"></i> Attach files
+                                            </button>
+                                            <input type="file" class="o_input_file d-none o-mail-Chatter-fileUploader" multiple="multiple" accept="*">
+                                            </span>
+                                    </div>
+                                </div>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteConfirmationLabel">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this file?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
+                        
+
+                            @if(!empty($send_message) && count($send_message) > 0)
+                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Send Message</span>
+                                <hr class="o-discuss-separator flex-grow-1">
+                            </div>
+                                @foreach($send_message as $value)
+                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
+                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                            @php
+                                                    $user = $value->user;
+                                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+                                                    $colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+                                                    if ($user) {
+                                                        $colorIndex = crc32($user->email) % count($colors);
+                                                        $bgColor = $colors[$colorIndex];
+                                                    } else {
+                                                        $bgColor = '#F0F0F0';
+                                                    }
+                                                @endphp
+                                                @if(optional($user)->profile)
+                                                    <!-- If profile image exists -->
+                                                    <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                @else
+                                                    <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                    <div class="activity-avatar-initials rounded d-flex align-items-center justify-content-center" data-id="{{$value->id}}" style="background-color: {{ $bgColor }};">
+                                                        <span>{{ $initial }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="w-100 o-min-width-0" style="margin-left: 10px;">
+                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
+                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value->from_mail}}</strong>
+                                                    </span>
+                                                    <div class="mx-1">
+                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
+                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                        </span>
+                                                    </div>
+                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value->created_at}}">{{ $value->created_at->diffForHumans() }}</small>
+                                                        @if($value->is_star == 1)
+                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                            </a>
+                                                        @else
+                                                            <a class="px-1 rounded-0 send_message_star" data-id="{{ $value->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                            </a>
+                                                        @endif
+                                                            <a class="px-1 rounded-0 send_message_delete" data-id="{{$value->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
+                                                            
+                                                            @if (!is_null($value->image) && !empty(json_decode($value->image)))
+                                                                <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages({{ $value->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
+                                                            @endif
+                                                </div>
+                                                <div class="position-relative d-flex">
+                                                    <div class="o-mail-Message-content o-min-width-0">
+                                                        <div class="o-mail-Message-textContent position-relative d-flex">
+                                                            <div class="position-relative overflow-x-auto d-inline-block">
+                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
+                                                                </div>
+                                                                {{-- <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{!! $value->message !!}</p>
+                                                                </div> --}}
+                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3">
+                                                                 <p><?php echo nl2br($value->message); ?></p>
+                                                                </div>
+                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
+                                                                <div class="d-flex rounded-1 overflow-hidden">
+                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
+                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                     @php
+                                                        // Initialize the arrays
+                                                        $documents = [];
+                                                        $images = [];
+
+                                                        // Decode the JSON field if it's not empty or null
+                                                        $imageFiles = !is_null($value->image) ? json_decode($value->image, true) : [];
+
+                                                        // Ensure the decoded data is an array
+                                                        if (is_array($imageFiles)) {
+                                                            foreach ($imageFiles as $file) {
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+                                                                // Categorize files into images and documents
+                                                                if (in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx'])) {
+                                                                    $documents[] = $file;
+                                                                } else {
+                                                                    $images[] = $file; // Add all other files to images
+                                                                }
+                                                            }
+                                                        }
+                                                    @endphp
+
+
+                                                        
+                                                        <div class="o-mail-AttachmentList">
+                                                       @if(count($images) > 0)
+                                                            <div class="o-mail-AttachmentList-mas" role="menu">
+                                
+                                                                    <div class="image-grid">
+                                                                    @foreach ($images as $file)
+                                                                            <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($file) }}" title="{{ basename($file) }}" data-mimetype="image/jpeg">
+                                                                                <img data-message  class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $file) }}" alt="{{ basename($file) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $file }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $file) }}')"><i class="fa fa-download"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                            
+                                                            </div>
+                                                         @endif
+
+                                                                    {{-- @if(count($images) > 0)
+                                                                        <div class="image-container d-flex flex-wrap mb-2">
+                                                                        @foreach ($images as $file) @foreach ($images as $file)
+                                                                            <div id="image-{{ $file }}" class="o-mail-AttachmentImage position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                                tabindex="0" role="menuitem" aria-label="{{ $file }}" title="{{ $file }}">
+                                                                                <img data-enlargable class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                                    src="{{ asset('storage/' . $file) }}"
+                                                                                    alt="{{ $file }}" style="max-width: min(100%, 1920px); max-height: 100px;">
+
+                                                                                <div class="position-absolute top-0 start-0 p-2">
+                                                                                    <a href="{{ asset('storage/' . $file) }}"
+                                                                                    class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -3px; position: absolute;"
+                                                                                    download title="Download">
+                                                                                        <i class="fa fa-download" role="img" style="font-size: 10px;margin-left: -5px;position: absolute;" aria-label="Download"></i>
+                                                                                    </a>
+                                                                                </div>
+
+                                                                                <div class="position-absolute bottom-0 start-0 p-2">
+                                                                                    <button class="btn btn-sm btn-dark rounded" style="height: 20px; width: 20px;margin-left: 67px;margin-top: -15px; position: absolute;"
+                                                                                            title="Delete"
+                                                                                            onclick="deleteImage('{{ $file }}', '{{ $data->id }}')">
+                                                                                        <i class="fa fa-trash" style="font-size: 10px;margin-left: -5px;margin-top: -5px;position: absolute;" role="img" aria-label="Delete"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                        </div>
+                                                                    @endif --}}
+
+                                                                       @if(count($documents) > 0)
+                                                    <div class="document-container d-flex flex-wrap mb-2">
+                                                        @foreach ($documents as $file)
+                                                            @php
+                                                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                            @endphp
+                                                            <div class="delete_document" id="document-{{ $file }}">
+                                                                <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                    style="width: fit-content;" role="menu" title="{{ $file }}" aria-label="{{ $file }}">
+                                                                    
+                                                                    <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                        role="menuitem" aria-label="Preview" tabindex="-1" data-mimetype="{{ $extension }}">
+                                                                        @if($extension === 'pdf')
+                                                                            <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                        @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                            <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                        @elseif(in_array($extension, ['doc', 'docx']))
+                                                                            <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                        @endif
+                                                                    </div>
+                                                                    
+                                                                    <div onclick="previewFile('{{ asset('storage/' . $file) }}')"
+                                                                        class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                        <div class="text-truncate">{{ $file }}</div>
+                                                                        <small class="text-uppercase">{{ $extension }}</small>
+                                                                    </div>
+
+                                                                    <div class="flex-grow-1"></div>
+                                                                    <div class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column documnet-file">
+                                                                        <a href="{{ asset('storage/' . $file) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                        </a>
+                                                                        <button class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                                title="Delete"
+                                                                                onclick="deleteImage('{{ $file }}','{{ $value->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                                            <div class="grid row-gap-0 column-gap-0">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             @endif
+                            @if(!empty($log_notes) && count($log_notes) > 0)
+                            <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Log Note</span>
+                                <hr class="o-discuss-separator flex-grow-1">
+                            </div>
+                                @foreach($log_notes as $value2)
+                                    <div class="o-mail-Message position-relative pt-1 o-selfAuthored mt-1" role="group" aria-label="Message">
+                                        <div class="o-mail-Message-core position-relative d-flex flex-shrink-0">
+                                            <div class="o-mail-Message-sidebar d-flex flex-shrink-0 align-items-start justify-content-start">
+                                            @php
+                                                    $user = $value2->user;
+                                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+                                                    $colors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722'];
+                                                    if ($user) {
+                                                        $colorIndex = crc32($user->email) % count($colors);
+                                                        $bgColor = $colors[$colorIndex];
+                                                    } else {
+                                                        $bgColor = '#F0F0F0';
+                                                    }
+                                                @endphp
+                                                @if(optional($user)->profile)
+                                                    <!-- If profile image exists -->
+                                                    <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                @else
+                                                    <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                    <div class="activity-avatar-initials rounded d-flex align-items-center justify-content-center" data-id="{{$value2->id}}" style="background-color: {{ $bgColor }};">
+                                                        <span>{{ $initial }}</span>
+                                                    </div>
+                                                @endif
+                                                <!-- <span
+                                                    class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                    {{ strtoupper($value2->user->name[0] ?? strtoupper($value2->user[0] ?? '')) }}
+                                                </span> -->
+                                            </div>
+                                            <div class="w-100 o-min-width-0" style="margin-left: 10px;">
+                                                <div class="o-mail-Message-header d-flex flex-wrap align-items-baseline lh-1 mb-1">
+                                                    <span class="o-mail-Message-author small cursor-pointer o-hover-text-underline" aria-label="Open card">
+                                                        <strong class="me-1">{{$value2->user->email ?? ''}}</strong>
+                                                    </span>
+                                                    <div class="mx-1">
+                                                        <span class="o-mail-Message-notification cursor-pointer NaN" role="button" tabindex="0">
+                                                                <i role="img" aria-label="Delivery failure" class="fa fa-envelope-o"></i> 
+                                                        </span>
+                                                    </div>
+                                                        <small class="o-mail-Message-date text-muted smaller" title="{{$value2->created_at}}">{{ $value2->created_at->diffForHumans() }}</small>
+                                                        @if($value2->is_start == 1)
+                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="1">
+                                                                <i class="fa fa-lg fa-star o-mail-Message-starred"></i>
+                                                            </a>
+                                                        @else
+                                                            <a class="px-1 rounded-0 send_message_star1" data-id="{{ $value2->id }}" title="Mark as Todo" name="toggle-star" data-starred="0">
+                                                                <i class="fa fa-lg fa-star-o"></i>
+                                                            </a>
+                                                        @endif                                                        
+                                                            <a class="px-1 rounded-0 send_message_delete1" data-id="{{$value2->id}}" title="Delete" name="toggle-star"><i class="fa fa-lg fa-fw pe-2 fa-trash"></i></a>
+                                                            @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
+                                                                <a class="px-1 rounded-0" title="Download All Files" name="toggle-star" onclick="downloadAllImages1({{ $value2->id }})"><i class="fa fa-lg fa-fw pe-2 fa-download"></i></a>
+                                                            @endif
+                                                </div>
+                                                <div class="position-relative d-flex">
+                                                    <div class="o-mail-Message-content o-min-width-0">
+                                                        <div class="o-mail-Message-textContent position-relative d-flex">
+                                                            <div class="position-relative overflow-x-auto d-inline-block">
+                                                                <div class="o-mail-Message-bubble rounded-bottom-3 position-absolute top-0 start-0 w-100 h-100 o-green border border-success rounded-end-3">
+                                                                </div>
+                                                                <!-- <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3"><p>{{$value2->message}}</p>
+                                                                </div> -->
+                                                                <div class="position-relative text-break o-mail-Message-body mb-0 py-2 align-self-start rounded-end-3 rounded-bottom-3">
+                                                                    <p><?php echo nl2br(htmlspecialchars($value2->message)); ?></p>
+                                                                </div>
+                                                                <div class="o-mail-Message-seenContainer position-absolute bottom-0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="o-mail-Message-actions d-print-none ms-2 mt-1 invisible">
+                                                                <div class="d-flex rounded-1 overflow-hidden">
+                                                                    <button class="btn px-1 py-0 lh-1 rounded-0 rounded-start-1" tabindex="1" title="Add a Reaction" aria-label="Add a Reaction"><i class="oi fa-lg oi-smile-add"></i></button>
+                                                                    <button class="btn px-1 py-0 rounded-0" title="Mark as Todo" name="toggle-star"><i class="fa fa-lg fa-star-o"></i></button>
+                                                                        <div class="d-flex rounded-0">
+                                                                            <button class="btn px-1 py-0 rounded-0 rounded-end-1 o-dropdown dropdown-toggle dropup" title="Expand" aria-expanded="false"><i class="fa fa-lg fa-ellipsis-h" tabindex="1"></i></button>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+
+                                                        <div class="o-mail-AttachmentList">
+                                                            <div class="o-mail-AttachmentList-mas" role="menu">
+                                                                @if (!is_null($value2->image) && !empty(json_decode($value2->image)))
+                                                                    <div class="image-grid">
+                                                                        @foreach (json_decode($value2->image) as $image)
+                                                                            <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
+                                                                                <img class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage1('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
+                                                                                    <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <div class="grid row-gap-0 column-gap-0">
+                                                                <!-- Additional content goes here -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             <div class="o-mail-Chatter-content">
-                                @php
+                                @if(isset($data) && $data->lead_type == 1)
+                                    @php
                                     $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
-                                @endphp
+                                    @endphp
 
-
-                                <x-log-display :logs="$logs" />
+                                    <x-log-display :logs="$logs" />
                                     @if($activitiesDone->count() > 0)
                                         <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
                                             <hr class="o-discuss-separator flex-grow-1"><span
@@ -1703,7 +2316,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="o-mail-AttachmentList overflow-y-auto d-flex flex-column mt-1">                                                
+                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
                                                 @php
                                                     $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
                                                 @endphp
@@ -1744,7 +2357,7 @@
                                                                     <button
                                                                         class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
                                                                         title="Delete"
-                                                                        onclick="showDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
                                                                         <i class="fa fa-trash" role="img" aria-label="Delete"></i>
                                                                     </button>
                                                                 </div>
@@ -1752,10 +2365,10 @@
                                                     </div>
                                                 @else
                                                 @if($activityDone->document != null)
-                                                    <div class="o-mail-AttachmentList overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
                                                                                                         
                                                             <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
-                                                                <div class="o-mail-AttachmentImage d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
                                                                     tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
                                                                     title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
 
@@ -1767,7 +2380,7 @@
                                                                     <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
                                                                         <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
                                                                                 tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
-                                                                                onclick="showDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
                                                                             <i class="fa fa-trash"></i>
                                                                         </button>
                                                                         <a href="{{ asset('storage/'. $activityDone->document) }}"
@@ -1809,9 +2422,258 @@
                                                 </div>
                                             </div>
                                         @endforeach
-                                    @endif
-                            </div>                                               
-                        <div>
+                                    @endif  
+                                                                        
+                                @endif
+                                @if(isset($data->lead_type) && $data->lead_type == 2)
+
+
+                                @php
+                                    $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
+                                    @endphp
+
+                                    <x-log-display :logs="$logs" />
+                                    @if($activitiesDone->count() > 0)
+                                        <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
+                                            <hr class="o-discuss-separator flex-grow-1"><span
+                                                class="px-2 smaller text-muted">Activities Done</span>
+                                            <hr class="o-discuss-separator flex-grow-1">
+                                            <br>
+                                        </div>
+                                        @foreach ($activitiesDone as $activityDone)                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
+                                                <div class="o-mail-Activity d-flex py-1 mb-2">
+                                                    <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
+                                                        <a role="button">
+                                                            <span
+                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
+                                                            </span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="flex-grow px-3">
+                                                        <div class="o-mail-Activity-info lh-1">
+                                                            <b><span
+                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
+                                                            @php
+                                                                $activityTime = Carbon::parse($activityDone->updated_at);
+                                                                $currentTime = Carbon::now();
+
+                                                                // Calculate time differences
+                                                                $diffInSeconds = $activityTime->diffInSeconds($currentTime);
+                                                                $diffInMinutes = $activityTime->diffInMinutes($currentTime);
+                                                                $diffInHours = $activityTime->diffInHours($currentTime);
+                                                                $diffInDays = $activityTime->diffInDays($currentTime);
+                                                            @endphp
+
+                                                            <small class="o-mail-Message-date text-muted smaller"
+                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
+                                                                @if ($diffInSeconds < 60)
+                                                                    now
+                                                                @elseif ($diffInMinutes < 60)
+                                                                    {{ intval($diffInMinutes) }}
+                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
+                                                                @elseif ($diffInHours < 24)
+                                                                    {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
+                                                                @else
+                                                                    {{ intval($diffInDays) }} day{{ $diffInDays > 1 ? 's' : '' }} ago
+                                                                @endif
+                                                            </small>
+                                                        </div>
+                                                        <div class="lh-lg">
+                                                            <div class="o-mail-Message-body text-break mb-0 w-100">
+                                                                <p>
+                                                                    <span
+                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
+                                                                    done
+                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
+                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
+                                                                    </button>
+                                                                </p>
+                                                                @if(!empty($activityDone->feedback))
+                                                                    <div>
+                                                                        <div class="fw-bold">Feedback:</div>
+                                                                        {{$activityDone->feedback ?? ''}}
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
+                                                @php
+                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
+                                                @endphp
+
+                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
+                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
+                                                        id="document-{{ $activityDone->id }}">
+                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
+                                                                style="margin-left:60px;width: max-content;" role="menu"
+                                                                title="{{ $activityDone->document }}"
+                                                                aria-label="{{ $activityDone->document }}">
+                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
+                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
+                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
+                                                                    
+                                                                    @if($extension === 'pdf')
+                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
+                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
+                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
+                                                                    @elseif(in_array($extension, ['doc', 'docx']))
+                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
+                                                                    @endif
+                                                                </div>
+                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
+                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
+                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
+                                                                    <small class="text-uppercase">{{ $extension }}</small>
+                                                                </div>
+
+                                                                <div class="flex-grow-1"></div>
+                                                                <div
+                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
+                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        download title="Download">
+                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
+                                                                    </a>
+                                                                    <button
+                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
+                                                                        title="Delete"
+                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                                @else
+                                                @if($activityDone->document != null)
+                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
+                                                                                                        
+                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
+                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
+                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
+                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
+
+                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
+                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        alt="{{ $activityDone->document }}"
+                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
+
+                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
+                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
+                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
+                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
+                                                                            <i class="fa fa-trash"></i>
+                                                                        </button>
+                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
+                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
+                                                                        download title="Download">
+                                                                            <i class="fa fa-download"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        
+
+                                                    <div class="grid row-gap-0 column-gap-0"></div>
+                                                    </div>
+                                                    @endif
+                                                @endif
+                                            </div>
+
+                                            <!-- Confirmation Modal -->
+                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
+                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            Are you sure you want to delete this document?
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger"
+                                                                id="confirmDelete">Ok</button>
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @endif      
+                                    <br>                                                                                      
+                                <div class="main-lead-details">
+                                    <div class="lead-details">
+                                        <div class="lead-box">
+                                            <div class="lead-details-img row justify-content-between mb-3">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNj_OgfNeyTLpUGGG2O7x3-asrzFB6RLPebQ&s">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNj_OgfNeyTLpUGGG2O7x3-asrzFB6RLPebQ&s">
+                                            </div>
+                                            <h6 class="text-end me-5 mb-4" style="font-size:22px;color:#4b566f;">Buy
+                                                Lead
+                                                through indiaMART</h6>
+                                            <div class="buyer-contact">
+                                                <h5>Buyer`s Contact Details:</h5>
+                                                <ul>
+                                                    <li>Phone
+                                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368">
+                                                            <rect fill="none" height="24" width="24" />
+                                                            <path d="M22,5.18L10.59,16.6l-4.24-4.24l1.41-1.41l2.83,2.83l10-10L22,5.18z M19.79,10.22C19.92,10.79,20,11.39,20,12 c0,4.42-3.58,8-8,8s-8-3.58-8-8c0-4.42,3.58-8,8-8c1.58,0,3.04,0.46,4.28,1.25l1.44-1.44C16.1,2.67,14.13,2,12,2C6.48,2,2,6.48,2,12 c0,5.52,4.48,10,10,10s10-4.48,10-10c0-1.19-0.22-2.33-0.6-3.39L19.79,10.22z" />
+                                                        </svg>
+                                                    </li>
+                                                    <li>Email
+                                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368">
+                                                            <rect fill="none" height="24" width="24" />
+                                                            <path d="M22,5.18L10.59,16.6l-4.24-4.24l1.41-1.41l2.83,2.83l10-10L22,5.18z M19.79,10.22C19.92,10.79,20,11.39,20,12 c0,4.42-3.58,8-8,8s-8-3.58-8-8c0-4.42,3.58-8,8-8c1.58,0,3.04,0.46,4.28,1.25l1.44-1.44C16.1,2.67,14.13,2,12,2C6.48,2,2,6.48,2,12 c0,5.52,4.48,10,10,10s10-4.48,10-10c0-1.19-0.22-2.33-0.6-3.39L19.79,10.22z" />
+                                                        </svg>
+                                                    </li>
+                                                    <li>GST
+                                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368">
+                                                            <rect fill="none" height="24" width="24" />
+                                                            <path d="M22,5.18L10.59,16.6l-4.24-4.24l1.41-1.41l2.83,2.83l10-10L22,5.18z M19.79,10.22C19.92,10.79,20,11.39,20,12 c0,4.42-3.58,8-8,8s-8-3.58-8-8c0-4.42,3.58-8,8-8c1.58,0,3.04,0.46,4.28,1.25l1.44-1.44C16.1,2.67,14.13,2,12,2C6.48,2,2,6.48,2,12 c0,5.52,4.48,10,10,10s10-4.48,10-10c0-1.19-0.22-2.33-0.6-3.39L19.79,10.22z" />
+                                                        </svg>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="main-lead-user-info row">
+                                            <div class="lead-user-info">
+                                                <p>{{ isset($data) ? $data->contact_name : '' }}</p>
+                                                <p>{{isset($data) ? $data->address_1 : ''}}
+                                                </p>
+                                                <p>
+                                                    Click to Call : <a href="tel:{{ isset($data) ? $data->mobile : ''}}">{{isset($data) ? $data->mobile : ''}}</a>
+                                                </p>
+                                                <p>
+                                                    E-mail : <a href="mailto:{{isset($data) ? $data->email : ''}}">{{isset($data) ? $data->email : ''}}</a>
+                                                </p>
+                                                <span>
+                                                    <p>Member Since: </p> 7+ years
+                                                </span>
+
+                                            </div>
+                                            <div class="lead-user-img">
+                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNj_OgfNeyTLpUGGG2O7x3-asrzFB6RLPebQ&s">
+                                            </div>
+                                        </div>
+                                        <div class="buyerlead">
+                                            <h5>Buylead Details:</h5>
+                                            <h3>{{isset($data) ? $data->product_name : ''}}</h3>
+                                            <p><b>Probable Requirement Type: </b> Business Use</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1847,6 +2709,52 @@
     <div></div>
     <div class="o_notification_manager o_upload_progress_toast"></div>
     <div class="o_notification_manager"></div>
+</div>
+
+     <!-- send mail Modal -->
+<div class="modal fade" id="sendmailleadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Send email</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Recipients</span>
+            <div class="">
+                <select class="o_input" id="contact_id" style="width: 100%;">
+                    <option value=""></option>
+                    @foreach ($Contacts as $contact)
+                    <option value="{{ $contact->email }}">{{ $contact->name }} ({{$contact->email}})</option>
+                    @endforeach
+                    
+                </select>
+            </div>
+            <br>
+            <span style="font-size: 0.875rem;line-height: 1.5;font-weight: 500;">Subject</span>
+            <div class="resonse_select_hide">
+                <input type="text" id="subject" value="{{ isset($data) ? $data->opportunity : '' }}" class="o_input" style="width: 100%;" >
+            </div>
+            <br>
+            <textarea name="" id="lead_mail_message" cols="30" rows="10" class="form-control makeMeSummernote" placeholder="Write your Message here.."></textarea>
+            <br>
+            <div id="attachment_view">
+            </div>
+            <div class="oe_add">
+                <span class="o_file_input" aria-atomic="true">
+                    <span class="o_file_input_trigger">
+                        <button class="btn btn-secondary o_attach" id="attachButton" data-tooltip="Attach" title=""><span class="fa fa-paperclip" aria-label="Attach"></span> Attachments</button>
+                    </span>
+                    <input type="file" name="ufile" class="o_input_file d-none" id="attachment" multiple="" accept="*">
+                </span>
+            </div>
+        </div>
+        <div class="modal-footer justify-content-around justify-content-md-start flex-wrap gap-1 w-100">
+            <button type="button" class="btn btn-primary send_mail_by_lead" >Send</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+        </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modal -->
@@ -3516,6 +4424,691 @@
             }
         });
     })
+
+    $('.duplicate_lead').on('click',function(){
+             var pipeline_id = $('#pipeline_id').val();
+            $.ajax({
+            url: '{{ route('crm.DuplicatePipline') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                pipeline_id: pipeline_id,
+                
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                location.reload();
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+
+    });
+    $('.delete_lead').on('click',function(){
+             var pipeline_id = $('#pipeline_id').val();
+            $.ajax({
+            url: '{{ route('crm.DeletePipline') }}',
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                pipeline_id: pipeline_id,
+                
+            },
+            success: function(response) {
+                toastr.success(response.message);
+                location.href = "{{ route('crm.pipeline.list') }}";
+                
+            },
+            error: function(xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+
+    });
+    $('.mark_lost_lead').on('click', function(){
+        $('#staticBackdrop').modal('show');
+    });
+
+    $('.send_mail_lead').on('click', function(){
+            $('#sendmailleadModal').modal('show');
+    });
+
+      $('.send_mail_by_lead').on('click', function () {
+        var to_mail = $('#contact_id').val();
+        var send_message  = $('#lead_mail_message ').val();
+        var lead_id = $('#pipeline_id').val();
+        var image_uplode = $('#attachment')[0].files; // Get the file(s) from input
+
+        // Create FormData object
+        var formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('to_mail', to_mail);
+        formData.append('send_message', send_message);
+        formData.append('lead_id', lead_id);
+
+        // Append the files to the FormData
+        for (var i = 0; i < image_uplode.length; i++) {
+            formData.append('image_uplode[]', image_uplode[i]);
+        }
+
+        $.ajax({
+            url: '{{ route('crm.pipeline.send_message_by_pipline') }}',
+            type: 'POST',
+            data: formData,
+            contentType: false, // Important for file upload
+            processData: false, // Important for file upload
+            success: function (response) {
+                toastr.success(response.message);
+                $('#sendmailleadModal').modal('hide');
+                location.reload();
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Something went wrong!');
+            }
+        });
+    });
+    $('.send_message_btn').on('click', function() {
+        // Hide the notes section if it's open
+        if ($('.show3').is(':visible')) {
+            $('.show3').hide();
+        }
+        // Toggle the message section
+        $('.show1').toggle();
+        $('.show2').toggle(); 
+   });
+
+   $('.click_add_notes').on('click', function() {
+        // Hide the message sections if they're open
+        if ($('.show1').is(':visible') || $('.show2').is(':visible')) {
+            $('.show1').hide();
+            $('.show2').hide();
+        }
+        // Toggle the notes section
+        $('.show3').toggle();
+   });
+
+</script>
+<script>
+    $(document).ready(function(){
+        // When the attach button is clicked, trigger the file input click
       
+
+        // When a file is uploaded
+        $(".image_uplode").on("change", function(event){
+            var files = event.target.files;
+            $(".image_show").html(''); // Clear any previous images
+
+            // Loop through each selected file and display it
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                // Only process image files
+                if (file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+
+                    // Closure to capture the file information
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            // Append the image to the .image_show div
+                            $(".image_show").append('<img src="' + e.target.result + '" class="img-thumbnail m-2" width="100" height="100">');
+                        };
+                    })(file);
+
+                    // Read the image file as a data URL
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+        $(".image_uplode_2").on("change", function(event){
+            var files = event.target.files;
+            $(".image_show2").html(''); // Clear any previous images
+
+            // Loop through each selected file and display it
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+
+                // Only process image files
+                if (file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+
+                    // Closure to capture the file information
+                    reader.onload = (function(theFile) {
+                        return function(e) {
+                            // Append the image to the .image_show div
+                            $(".image_show2").append('<img src="' + e.target.result + '" class="img-thumbnail m-2" width="100" height="100">');
+                        };
+                    })(file);
+
+                    // Read the image file as a data URL
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+       // Collect all email addresses from the #to_mail span and inner elements
+        let emails = [];
+        $('#to_mail').find('P').each(function() {
+            emails.push($(this).text().trim());
+        });
+
+        // Check if there is an email directly in #to_mail without <P> tags
+        if ($('#to_mail').contents().not('P').text().trim()) {
+            emails.push($('#to_mail').contents().not('P').text().trim());
+        }
+
+        // Join all emails into a single string (comma separated if needed)
+        const to_mail = emails.join(', ');
+
+        console.log(to_mail,'to_mail');  // Check the collected emails
+
+        $('.send_messag_by_email').on('click', function(event){
+            var send_message = $('#send_message').val(); 
+            var image_uplode = $('.image_uplode')[0].files; // Files are objects
+            var lead_id = $('#pipeline_id').val();
+
+            $('.send_messag_by_email').prop('disabled', true);
+
+            // Create a FormData object
+            var formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('send_message', send_message);
+            formData.append('lead_id', lead_id);
+            formData.append('to_mail', to_mail); // Pass the collected emails
+
+            // Append files to FormData
+            for (var i = 0; i < image_uplode.length; i++) {
+                formData.append('image_uplode[]', image_uplode[i]); // Multiple files are added as an array
+            }
+
+            $('.show1').hide();
+            $('.show2').hide();
+
+            $.ajax({
+                url: '{{ route('crm.send_message') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false, // Important: Prevent jQuery from setting the Content-Type header
+                processData: false, // Important: Prevent jQuery from processing the data
+                success: function(response) {
+                    console.log(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+
+        $('.store_log_notes').on('click', function(event){
+            var send_message = $('#send_message1').val(); 
+            var image_uplode = $('.image_uplode_2')[0].files; // Files are objects
+            var lead_id = $('#pipeline_id').val();
+
+            // Create a FormData object
+            var formData = new FormData();
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('send_message', send_message);
+            formData.append('lead_id', lead_id);
+            // Append files to FormData
+            for (var i = 0; i < image_uplode.length; i++) {
+                formData.append('image_uplode[]', image_uplode[i]); // Multiple files are added as an array
+            }
+
+      
+
+            $.ajax({
+                url: '{{ route('crm.log_notes') }}',
+                type: 'POST',
+                data: formData,
+                contentType: false, // Important: Prevent jQuery from setting the Content-Type header
+                processData: false, // Important: Prevent jQuery from processing the data
+                success: function(response) {
+                    $('.show3').hide();
+                    console.log(response)
+                    location.reload();
+                    
+                   
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+
+       
+
+        });
+        $(document).on('click', '.add_followers', function() {
+            $('#followersModal').modal('show');
+        });
+
+        var $button = $('#follow-button');
+        var currentStatus = $button.data('follow-status');
+
+        // Check the current status and update the button text accordingly
+        if (currentStatus === 'following') {
+            $button.find('span').text('Following');
+        } else {
+            $button.find('span').text('Follow');
+        }
+
+        $('.followers').on('click', function() {
+            var id = $('#pipeline_id').val();
+            var $button = $(this); // Reference the button that was clicked
+
+            $.ajax({
+                url: '{{ route('crm.click_follow') }}',
+                type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    auth_id: '{{ Auth::user()->id }}' // Include the user ID
+                },
+                success: function(response) {
+                    // Update button text and status based on response  
+                    if (response.isFollowing) {
+                        $button.data('follow-status', 'following').find('span').text('Following');
+                    } else {
+                        $button.data('follow-status', 'not-following').find('span').text('Follow');
+                    }
+                    
+                    // Reload the page to reflect the updated state
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+
+        $(document).on('click', '.remove-follower', function() {
+            var followerId = $(this).data('follower-id'); // Get the follower ID
+            var $item = $(this).closest('.dropdown-item'); // Get the closest dropdown item
+            var $separator = $item.next('.dropdown-divider'); // Get the next separator line
+
+            $.ajax({
+                url: '{{ route('lead.remove_follower') }}', // Update with your route
+                type: 'post',
+                data: {
+                    _token: '{{ csrf_token() }}', // Include CSRF token
+                    id: followerId // Send the follower ID to the server
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Remove the follower item and separator line from the dropdown
+                        $item.remove();
+                        if ($separator.length) {
+                            $separator.remove(); // Remove the horizontal line
+                        }
+                        
+                        // Update the follower count
+                        var $countElement = $('.o-mail-Followers-counter'); // Adjust selector if needed
+                        var currentCount = parseInt($countElement.text());
+                        $countElement.text(currentCount - 1); // Decrease count
+
+                        toastr.success('Follower removed successfully.');
+                    } else {
+                        toastr.error('Failed to remove follower.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+
+        $('.send_message_delete').on('click', function(){
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route('crm.delete_send_message') }}',
+                type: 'get',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                    
+                setTimeout(function() {
+                    location.reload(); // Reloads the page
+                }, 2000);
+                    
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+            
+        });
+        $('.send_message_delete1').on('click', function(){
+            var id = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route('crm.delete_send_message_notes') }}',
+                type: 'get',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                    
+                setTimeout(function() {
+                    location.reload(); // Reloads the page
+                }, 2000);
+                    
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+            
+        });
+
+        $('.send_message_star').on('click', function() {
+            var $this = $(this); // Store the clicked element
+            var id = $this.data('id');
+            var isStarred = $this.data('starred'); // Get the current star status
+
+            $.ajax({
+                url: '{{ route('crm.click_star') }}',
+                type: 'get',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    is_star: isStarred // Send current star status
+                },
+                success: function(response) {
+                    // Toggle the star status
+                    if (isStarred == 1) {
+                        // If it was starred, unstar it
+                        $this.find('i').removeClass('fa-star o-mail-Message-starred').addClass('fa-star-o');
+                        $this.data('starred', 0); // Update data attribute
+                    } else {
+                        // If it was not starred, star it
+                        $this.find('i').removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred');
+                        $this.data('starred', 1); // Update data attribute
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+        $('.send_message_star1').on('click', function(){
+            var $this = $(this); // Store the clicked element
+            var id = $this.data('id');
+            var isStarred = $this.data('starred'); // Get the current star status
+
+            $.ajax({
+                url: '{{ route('lead.click_star_notes') }}',
+                type: 'get',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: id,
+                    is_star: isStarred // Send current star status
+                },
+                success: function(response) {
+                    // Toggle the star status
+                    if (isStarred == 1) {
+                        // If it was starred, unstar it
+                        $this.find('i').removeClass('fa-star o-mail-Message-starred').addClass('fa-star-o');
+                        $this.data('starred', 0); // Update data attribute
+                    } else {
+                        // If it was not starred, star it
+                        $this.find('i').removeClass('fa-star-o').addClass('fa-star o-mail-Message-starred');
+                        $this.data('starred', 1); // Update data attribute
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!');
+                }
+            });
+        });
+
+     
+
+    });
+    
+</script>
+<script>
+   function downloadAllImages(messageId) {
+            fetch(`/crm-downloadAllImages/${messageId}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                }
+            })
+            .then(response => response.blob())  // Handle the zip file blob
+            .then(blob => {
+                // Create a link to download the file
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "images.zip";  // Name of the downloaded file
+                link.click();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function downloadAllImages1(messageId) {
+            fetch(`/crm-downloadAllImagessend_message/${messageId}`, {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                }
+            })
+            .then(response => response.blob())  // Handle the zip file blob
+            .then(blob => {
+                // Create a link to download the file
+                const link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "images.zip";  // Name of the downloaded file
+                link.click();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('attachment').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const attachmentView = document.getElementById('attachment_view');
+            attachmentView.innerHTML = ''; // Clear the previous previews
+
+            Array.from(files).forEach((file, index) => {
+                const fileType = file.type;
+
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'file-preview';
+                fileDiv.style.position = 'relative';
+                fileDiv.style.marginBottom = '10px';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = 'Remove';
+                removeBtn.style.position = 'absolute';
+                removeBtn.style.top = '5px';
+                removeBtn.style.right = '5px';
+                removeBtn.classList.add('btn', 'btn-danger', 'btn-sm');
+
+                // Function to handle file removal
+                removeBtn.addEventListener('click', function() {
+                    // Remove the preview from the DOM
+                    fileDiv.remove();
+
+                    // Create a new FileList without the removed file
+                    const newFiles = Array.from(files).filter((_, i) => i !== index);
+                    const dataTransfer = new DataTransfer();
+
+                    newFiles.forEach((file) => {
+                        dataTransfer.items.add(file);
+                    });
+
+                    // Update the input element with the new FileList
+                    document.getElementById('attachment').files = dataTransfer.files;
+                });
+
+                fileDiv.appendChild(removeBtn);
+
+                if (fileType.startsWith('image/')) {
+                    // Display the name of the image instead of the preview
+                    const imgName = document.createElement('span');
+                    imgName.innerHTML = '🖼️ ' + file.name;
+                    imgName.style.fontSize = '16px';
+                    fileDiv.appendChild(imgName);
+                    attachmentView.appendChild(fileDiv);
+                } else if (fileType === 'application/pdf') {
+                    // Show PDF name with an icon
+                    const pdfIcon = document.createElement('span');
+                    pdfIcon.innerHTML = '📄 ' + file.name;
+                    pdfIcon.style.fontSize = '16px';
+                    fileDiv.appendChild(pdfIcon);
+                    attachmentView.appendChild(fileDiv);
+                }
+            });
+        });
+
+        document.getElementById('attachButton').addEventListener('click', function() {
+            document.getElementById('attachment').click();
+        });
+    });
+      $(document).ready(function(){
+        $("#toggleFollowersDropdown").click(function(){
+            // Toggle the visibility of the dropdown
+            $("#followersDropdown").toggle();
+        });
+
+        // Optionally, close the dropdown when clicking outside of it
+        $(document).click(function(event) { 
+            if (!$(event.target).closest("#toggleFollowersDropdown, #followersDropdown").length) {
+                $("#followersDropdown").hide();
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var lead_id = $('#pipeline_id').val();
+
+        // When the "Attach files" button is clicked, toggle the attachment box and open the file dialog
+        $('#attachFilesBtn').on('click', function() {
+            $('#attachmentBox').toggleClass('d-none'); 
+        });
+
+        $('#openFileUpload').on('click', function() {
+            $('.o-mail-Chatter-fileUploader').click(); // Open the file dialog
+        });
+
+        // When the file input changes, handle the file selection
+        $('.o-mail-Chatter-fileUploader').on('change', function(event) {
+            const files = event.target.files;
+            const fileList = Array.from(files).map(file => file.name).join(', ');
+            $('#fileList').text(`Selected files: ${fileList}`);
+
+            // Prepare form data for AJAX
+            const formData = new FormData();
+            formData.append('lead_id', lead_id); // Append lead_id
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files[]', files[i]);
+            }
+
+            // AJAX request to upload files
+            $.ajax({
+                url: '{{ route('crm.attachmentsAdd') }}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    location.reload();
+                    $('#fileCount').text(response.newFileCount); // Update file count
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert('Error uploading files: ' + textStatus);
+                }
+            });
+        });
+
+        let fileToDelete = '';
+        let leadIdToDelete = ''; // New variable for lead ID
+
+        window.showDeleteConfirmation = function(fileName, leadId, type) {
+            fileToDelete = fileName; // Store the file name to delete
+            leadIdToDelete = leadId; // Store the lead ID
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+            modal.show();
+
+            document.getElementById('confirmDeleteButton').onclick = function() {
+                deleteFile(fileName, leadIdToDelete, type); // Pass lead ID to deleteFile
+                modal.hide();
+            };
+        };
+
+        function deleteFile(fileName, leadId) {
+        $.ajax({
+            url: '/attachmentsDeleteFile', // Your delete endpoint
+            method: 'DELETE',
+            data: { file: fileName, lead_id: leadId },
+            success: function(response) {
+                console.log("Response received:", response);
+                console.log("File to delete:", fileName);
+                
+                if (response.success) {
+                    // Remove the corresponding elements from the UI
+                    $(`#image-${fileName}`).remove(); // Remove the image element
+                    $(`#document-${fileName}`).remove(); // Remove the document element if applicable
+                    
+                    // Check if the attachment box is empty
+                    if ($('.o-mail-AttachmentImage').length === 0 && $('.delete_document').length === 0) {
+                        // If there are no files left, hide the attachment box or perform any other action
+                        $('#attachmentBox').hide(); // Example action: Hide the attachment box
+                    }
+                    location.reload();
+                } else {
+                    console.log("Failed to delete file:", response.message);
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error occurred during deletion:", error);
+                alert('An error occurred while trying to delete the file.');
+            }
+        });
+    }
+
+    $('img[data-enlargable]').addClass('img-enlargable').click(function(){
+        var src = $(this).attr('src');
+        $('<div>').css({
+            background: 'RGBA(0,0,0,.5) url('+src+') no-repeat center',
+            backgroundSize: 'contain',
+            width:'100%', height:'100%',
+            position:'fixed',
+            zIndex:'10000',
+            top:'0', left:'0',
+            cursor: 'zoom-out'
+        }).click(function(){
+            $(this).remove();
+        }).appendTo('body');
+    });
+    });
+
+    $(document).ready(function() {
+        $('img[data-message]').addClass('img-message').click(function() {
+            alert('fggfg');  // This should trigger on click
+            var src = $(this).attr('src');
+            $('<div>').css({
+                background: 'RGBA(0,0,0,.5) url(' + src + ') no-repeat center',
+                backgroundSize: 'contain',
+                width: '100%', height: '100%',
+                position: 'fixed',
+                zIndex: '10000',
+                top: '0', left: '0',
+                cursor: 'zoom-out'
+            }).click(function() {
+                $(this).remove();
+            }).appendTo('body');
+        });
+    });
 </script>
 @endpush

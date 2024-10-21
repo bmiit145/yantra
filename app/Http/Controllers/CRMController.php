@@ -20,17 +20,20 @@ use App\Models\Sale;
 use App\Models\Source;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Following;
+use App\Models\Employee;
+use Illuminate\Support\Facades\Mail;
+use App\Models\send_message;
+use App\Models\send_log_notes;
+use App\Models\Attachment;
 use App\Services\LogService;
 use DB;
+use ZipArchive;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Log;
-use Maatwebsite\Excel\Facades\Excel;
-
-use App\Exports\LeadExport;
-use App\Imports\pipelineImport;
 use App\Models\Favorite;
 use App\Models\State;
 use App\Services\EncryptionService;
@@ -363,7 +366,105 @@ class CRMController extends Controller
                 // $activitiesDone = 0;
                 $activitiesDone = collect();
             }
-            return view('CRM.pipeline_create', compact('data', 'titles','index','all_sale','all_sales','currentsales', 'campaigns', 'mediums', 'sources', 'countrys', 'count', 'users', 'tags', 'activitiesCount', 'activities', 'activitiesDone', 'customers', 'recurringPlans', 'crmStages', 'checkIsWon', 'lost_reasons'));
+            $Contacts = Contact::all();
+            $followers = Following::where('type_id', $id)
+            ->where('customer_id', '!=', 'users/' . Auth::user()->id)
+            ->where('type', '2')
+            ->get()
+            ->map(function ($follower) {
+                // Parse customer_id to determine if it's for Employee or User
+                $customerParts = explode('/', $follower->customer_id);
+                $entityType = $customerParts[0];
+                $entityId = $customerParts[1];
+
+                if ($entityType === 'employee') {
+                    // Fetch related employee details
+                    $employee = Contact::find($entityId);
+                    if ($employee) {
+                        $follower->customer = $employee;
+                    }
+                } elseif ($entityType === 'users') {
+                    // Fetch related user details
+                    $user = User::find($entityId);
+                    if ($user) {
+                        $follower->customer = $user;
+                    }
+                }
+
+                return $follower;
+            });
+
+        // return $followers;
+
+        $authfollowers = Following::where('type_id', $id)
+            ->where('type', '2')
+            ->where('customer_id', 'users/' . Auth::user()->id)
+            ->get()
+            ->map(function ($follower1) {
+                // Parse customer_id to determine if it's for Employee or User
+                $customerParts = explode('/', $follower1->customer_id);
+                $entityType = $customerParts[0];
+                $entityId = $customerParts[1];
+
+                if ($entityType === 'employee') {
+                    // Fetch related employee details
+                    $employee = Employee::find($entityId);
+                    if ($employee) {
+                        $follower1->customer = $employee;
+                    }
+                } elseif ($entityType === 'users') {
+                    // Fetch related user details
+                    $user = User::find($entityId);
+                    if ($user) {
+                        $follower1->customer = $user;
+                    }
+                }
+
+                return $follower1;
+            });
+
+            $userId = Auth::user()->id;
+
+            // Check if the current user is following the lead
+            $isFollowing = Following::where('customer_id', 'users/' . $userId)
+                ->where('type_id', $id)->where('type', '2')->exists();
+                
+    
+            $followerscount = $followers->count();
+            $authfollowerscount = $authfollowers->count();
+            $count = $followerscount + $authfollowerscount;
+            $employees = Contact::all();
+            $send_message = send_message::orderBy('id', 'DESC')->where('type_id', $id)->where('type', 'pipeline')->get();
+            $log_notes = send_log_notes::with('user')->orderBy('id', 'DESC')->where('type_id', $id)->where('type', 'pipeline')->get();
+
+            $attachment = null;
+            $fileCount = ''; // Initialize variable
+    
+            if ($data) { // Check if $data is not null
+                $attachment = Attachment::where('type_id', $data->id)->where('type', 2)->first();
+    
+                if ($attachment) {
+                    $fileArray = explode(',', $attachment->files);
+                    $fileCount = count($fileArray);
+                }
+            } else {
+            }
+    
+
+         
+            $allFiles = []; // Initialize an array to hold file details
+    
+            if ($data) { // Check if $data is not null
+                $attachmentFiles = Attachment::where('type_id', $data->id)->get();
+    
+                foreach ($attachmentFiles as $attachmentFile) {
+                    $fileArray = explode(',', $attachmentFile->files);
+                    $allFiles = array_merge($allFiles, $fileArray); // Merge all files into a single array
+                }
+            } else {
+            }
+    
+            return view('CRM.pipeline_create', compact('data','allFiles','fileCount','authfollowers','send_message','log_notes','employees','count','followers','Contacts','isFollowing', 'titles','index','all_sale','all_sales','currentsales', 'campaigns', 'mediums', 'sources', 'countrys', 'count', 'users', 'tags', 'activitiesCount', 'activities', 'activitiesDone', 'customers', 'recurringPlans', 'crmStages', 'checkIsWon', 'lost_reasons'));
         } catch (Exception $e) {
             return redirect()->back()->with('error', value: 'Something went wrong!');
         }
@@ -1686,6 +1787,447 @@ private function getUserColor($userId)
         // Write the file to output
         $writer->save('php://output');
         exit;
+    }
+
+    public function DuplicatePipline(Request $request)
+    {
+        $pipeline_id = $request->pipeline_id;
+        $lead = Sale::find($pipeline_id);
+        $newLead = $lead->replicate();
+        $newLead->save();
+        return response()->json(['message' => 'Pipeline duplicated successfully.']);
+    }
+
+    public function DeletePipline(Request $request)
+    {
+        $pipeline_id = $request->pipeline_id;
+        $lead = Sale::find($pipeline_id);
+        $lead->delete();
+       return redirect()->route('crm.pipeline.list')->with('success', 'Pipeline deleted successfully.');
+    }
+
+    public function send_message_by_pipline(Request $request)
+    {
+        $data = new send_message();
+        $data->message = $request->send_message;
+        $data->to_mail = $request->to_mail; // Store as JSON array in the database
+        $data->type_id = $request->lead_id;
+        $data->type = 'pipeline';
+        $data->created_by = Auth::user()->id;
+        $data->from_mail = auth()->user()->email;
+
+        $uploadedFiles = []; // Array to hold the file paths
+
+        if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+
+        $data->save();
+
+        // Prepare message data
+        $messageData = $request->send_message;
+        $recipientEmail = $request->to_mail;
+
+        // Return JSON response immediately
+        response()->json(['message' => 'Message sent successfully'])->send();
+
+        // Defer the email sending until after the response
+        
+            $this->send_message_by_mail_pipline($uploadedFiles, $messageData, $recipientEmail);
+    
+
+        return null;
+    }
+    public function send_message_by_mail_pipline($uploadedFiles, $messageData, $recipientEmail)
+    {
+        $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
+
+        // If $messageData is a string, wrap it in an array with a key
+        if (!is_array($messageData)) {
+            $messageData = ['content' => $messageData];
+        }
+
+        // Set a default message title
+        $messageTitle = 'New Message';
+
+        // Send the email after the response has been sent
+        app()->terminating(function () use ($recipientEmail, $messageTitle, $files, $messageData) {
+            Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageTitle, $files) {
+                // Set recipient and subject
+                $message->to($recipientEmail)
+                    ->subject($messageTitle);
+
+                // Attach files if they exist
+                foreach ($files as $file) {
+                    $fullPath = storage_path('app/public/' . $file); // Construct the full path
+                    if (file_exists($fullPath)) {
+                        $message->attach($fullPath);
+                    } else {
+                        Log::error("File does not exist: " . $fullPath);
+                    }
+                }
+            });
+        });
+    }
+    
+    public function send_message(Request $request)
+    {
+        // Get the recipient emails as an array
+        $recipientEmails = preg_split('/[\r\n,]+/', $request->to_mail); // Split by new line or comma
+
+        $data = new send_message();
+        $data->message = $request->send_message;
+        $data->to_mail = json_encode($recipientEmails); // Store as JSON array in the database
+        $data->type_id = $request->lead_id;
+        $data->type = 'pipeline';
+        $data->created_by = Auth::user()->id;
+        $data->from_mail = auth()->user()->email;
+
+        $uploadedFiles = []; // Array to hold the file paths
+
+        if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+
+        $data->save();
+
+        // Prepare message data
+        $messageData = $request->send_message;
+
+        // Return JSON response immediately
+        response()->json(['message' => 'Message sent successfully'])->send();
+
+        // Defer the email sending until after the response
+        foreach ($recipientEmails as $recipientEmail) {
+            $this->send_message_by_mail($uploadedFiles, $messageData, $recipientEmail);
+        }
+
+        return null;
+    }
+
+    public function send_message_by_mail($uploadedFiles, $messageData, $recipientEmail)
+    {
+        $files = is_array($uploadedFiles) ? $uploadedFiles : [$uploadedFiles];
+
+        // If $messageData is a string, wrap it in an array with a key
+        if (!is_array($messageData)) {
+            $messageData = ['content' => $messageData];
+        }
+
+        // Set a default message title
+        $messageTitle = 'New Message';
+
+        // Send the email after the response has been sent
+        app()->terminating(function () use ($recipientEmail, $messageTitle, $files, $messageData) {
+            Mail::send('mail.users.send_message', ['messageData' => $messageData, 'recipientEmail' => $recipientEmail], function ($message) use ($recipientEmail, $messageTitle, $files) {
+                // Set recipient and subject
+                $message->to($recipientEmail)
+                    ->subject($messageTitle);
+
+                // Attach files if they exist
+                foreach ($files as $file) {
+                    $fullPath = storage_path('app/public/' . $file); // Construct the full path
+                    if (file_exists($fullPath)) {
+                        $message->attach($fullPath);
+                    } else {
+                        Log::error("File does not exist: " . $fullPath);
+                    }
+                }
+            });
+        });
+    }
+    public function invite_followers(Request $request)
+    {
+        $leadId = $request->id;
+        $userId = $request->user_id; // The ID of the user to be followed
+
+        // Check if the user is already following the lead
+        $existingFollow = Following::where('customer_id', $userId)
+            ->where('type_id', $leadId)
+            ->where('type', 2)
+            ->first();
+
+        if ($existingFollow) {
+            // If they are already following, delete the existing record
+            $existingFollow->delete();
+        }
+
+        // Create a new follow record
+        $newFollow = new Following();
+        $newFollow->customer_id = $userId; // This is the new follower
+        $newFollow->type_id = $leadId;
+        $newFollow->type = 2; // Assuming '1' indicates a follow
+        $newFollow->save();
+
+        return redirect()->back()->with('success', 'Followers updated successfully.');
+    }
+
+    public function click_follow(Request $request)
+    {
+        $leadId = $request->id;
+        $userId = Auth::user()->id; // Current user ID
+
+        // Check if the user is already following the lead
+        $followRecord = Following::where('customer_id', 'users/' . $userId)
+            ->where('type_id', $leadId)->where('type', 2)->first();
+
+        if ($followRecord) {
+            // If the record exists, we are unfollowing
+            $followRecord->delete();
+            $isFollowing = false; // Update status
+        } else {
+            // If no record exists, we are following
+            $newFollow = new Following();
+            $newFollow->customer_id = 'users/' . $userId; // Ensure it references the user
+            $newFollow->type_id = $leadId;
+            $newFollow->type = 2; // Assuming '1' indicates a follow
+            $newFollow->save();
+            $isFollowing = true; // Update status
+        }
+
+        return response()->json([
+            'isFollowing' => $isFollowing,
+        ]);
+    }
+
+    public function log_notes(Request $request)
+    {
+        $data = new send_log_notes();
+        $data->message = $request->send_message;
+        $data->type_id = $request->lead_id;
+        $data->type = 'pipeline';
+        $data->created_by = Auth::user()->id;
+
+        $uploadedFiles = []; // Array to hold the file paths
+
+        if ($request->hasFile('image_uplode')) {
+            foreach ($request->file('image_uplode') as $file) {
+                // Get the original file name
+                $fileName = time() . '_' . $file->getClientOriginalName();
+
+                // Store the file in the 'public/uploads' directory
+                $filePath = $file->storeAs('uploads', $fileName, 'public'); // Specify disk
+
+                $uploadedFiles[] = $filePath; // Store the path
+            }
+
+            // Convert the array to a JSON string
+            $data->image = json_encode($uploadedFiles);
+        }
+
+        $data->save();
+        return response()->json(['message' => 'Notes Add deleted successfully.']);
+
+
+    }
+
+    public function delete_send_message(Request $request)
+    {
+        $message = send_message::where('id', $request->id)->where('type', 'pipeline')->first();
+        $message->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
+
+    public function click_star(Request $request)
+    {
+        $lead = send_message::where('id', $request->id)->where('type', 'pipeline')->first();
+
+        // Toggle the is_star status
+        if ($request->is_star == '1') {
+            $lead->is_star = '0'; // Unstar
+        } else {
+            $lead->is_star = '1'; // Star
+        }
+
+        $lead->save();
+
+        return response()->json($lead);
+    }
+
+    public function delete_send_message_notes(Request $request)
+    {
+        $message = send_log_notes::where('id', $request->id)->where('type', 'pipeline')->first();
+        $message->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
+
+    public function click_star_notes(Request $request)
+    {
+        $lead = send_log_notes::where('id', $request->id)->where('type', 'pipeline')->first();
+
+        // Toggle the is_star status
+        if ($request->is_star == '1') {
+            $lead->is_start = '0'; // Unstar
+        } else {
+            $lead->is_start = '1'; // Star
+        }
+
+        $lead->save();
+
+        return response()->json($lead);
+    }
+
+    public function downloadAllImagessend_message($id)
+    {
+
+        $message = send_log_notes::whwr('id', $id)->where('type', 'pipeline')->first();
+
+        // Get the images from the 'image' field
+        $images = json_decode($message->image);
+
+        // Create a temporary file for the zip
+        $zipFileName = 'images_' . time() . '.zip';
+        $zipFilePath = storage_path($zipFileName);
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            // Add each image to the zip
+            foreach ($images as $image) {
+                // Get the image path from the 'storage' directory
+                $imagePath = storage_path('app/public/' . $image);
+                if (file_exists($imagePath)) {
+                    $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+                }
+            }
+            $zip->close();
+        }
+
+        // Return the zip file for download
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
+    }
+
+    
+    public function downloadAllImages($id)
+    {
+
+        $message = send_message::where('id', $id)->where('type', 'pipeline')->first();
+
+        // Get the images from the 'image' field
+        $images = json_decode($message->image);
+
+        // Create a temporary file for the zip
+        $zipFileName = 'images_' . time() . '.zip';
+        $zipFilePath = storage_path($zipFileName);
+
+        $zip = new ZipArchive;
+        if ($zip->open($zipFilePath, ZipArchive::CREATE) === TRUE) {
+            // Add each image to the zip
+            foreach ($images as $image) {
+                // Get the image path from the 'storage' directory
+                $imagePath = storage_path('app/public/' . $image);
+                if (file_exists($imagePath)) {
+                    $zip->addFile($imagePath, basename($imagePath));  // Add image to the zip
+                }
+            }
+            $zip->close();
+        }
+
+        // Return the zip file for download
+        return response()->download($zipFilePath)->deleteFileAfterSend(true);  // Delete after sending
+    }
+
+    
+    public function attachmentsAdd(Request $request)
+    {
+        // $leadId = $request->input('lead_id');
+        $leadId = $request->lead_id;
+        $storedFileNames = []; // Array to hold stored file names
+
+        // Check if files are uploaded
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                // Store file in 'uploads' directory under 'public' storage
+                $path = $file->store('uploads/attachment', 'public');
+
+                // Collect the stored file name (this is the name used in the folder)
+                $storedFileNames[] = basename($path); // Use basename to get just the file name
+            }
+
+            // Fetch existing attachment record
+            $attachment = Attachment::where('type_id', $leadId)->where('type', 2)->first();
+
+            if ($attachment) {
+                // If record exists, append new file names
+                $existingFiles = explode(',', $attachment->files);
+                $allFileNames = array_merge($existingFiles, $storedFileNames);
+                $fileNamesImploded = implode(',', $allFileNames);
+                // Update the existing record
+                $attachment->update(['files' => $fileNamesImploded]);
+            } else {
+                // If no record exists, create a new one
+                $fileNamesImploded = implode(',', $storedFileNames);
+                Attachment::create([
+                    'type_id' => $leadId,
+                    'type' => 2,
+                    'files' => $fileNamesImploded, // Store imploded string
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Files uploaded successfully.']);
+    }
+
+    public function attachmentsDeleteFile(Request $request)
+    {
+        $leadId = $request->input('lead_id'); // Get lead ID from request
+        $fileNameToDelete = $request->input('file'); // Get file name from request
+
+        // Find the attachment record by lead ID
+        $attachment = Attachment::where('type_id', $leadId)->where('type', 2)->first();
+
+        if ($attachment) {
+            // Get the existing file names
+            $existingFiles = explode(',', $attachment->files);
+
+            // Remove the specified file
+            $updatedFiles = array_filter($existingFiles, function ($file) use ($fileNameToDelete) {
+                return $file !== $fileNameToDelete;
+            });
+
+            // Delete the file from storage
+            $filePath = 'uploads/attachment/' . $fileNameToDelete;
+            if (Storage::disk('public')->exists($filePath)) {
+                Storage::disk('public')->delete($filePath);
+            }
+
+            // Check if there are no files left
+            if (empty($updatedFiles)) {
+                // If no files left, delete the entire record
+                $attachment->delete();
+            } else {
+                // Update the attachment record
+                $attachment->files = implode(',', $updatedFiles);
+                $attachment->save();
+            }
+
+            return response()->json(['success' => true, 'message' => 'File deleted successfully.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Attachment not found.'], 404);
     }
 
 }

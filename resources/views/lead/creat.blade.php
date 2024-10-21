@@ -1398,44 +1398,44 @@
                                             </div>
                                             {{-- Add Followers Modal --}}
                                             <div class="modal fade" id="followersModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="followersModalLabel">Invite Follower</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="followersModalLabel">Invite Follower</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <form id="inviteForm" action="{{ route('lead.invite_followers') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" value="{{ $data->id ?? '' }}" name="id">
+                                                            <div class="modal-body">
+                                                                <div class="d-flex">
+                                                                    <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
+                                                                    <select class="form-control" name="user_id" required>
+                                                                        <option value=""></option>
+                                                                        @foreach($employees as $employee)
+                                                                            <option value="employee/{{ $employee->id }}">{{ $employee->name }} ({{ $employee->emial }})</option>
+                                                                        @endforeach
+                                                                        @foreach($users as $user)
+                                                                            <option value="users/{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="d-flex my-2">
+                                                                    <label for="send-notification" class="col-form-label mx-3">Send Notification: </label>
+                                                                    <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked>
+                                                                </div>
+                                                                <div class="d-flex my-2 hiden_div">
+                                                                    <label for="message" class="col-form-label mx-3">Message</label>
+                                                                    <textarea class="form-control" id="send_notification" name="message">Hello, {{ Auth::user()->email }} invited you to follow Lead/Opportunity document: {{ isset($data) ? $data->product_name : '' }}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                                <button type="submit" class="btn btn-primary">Add Followers</button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </div>
-                                                <form id="inviteForm" action="{{ route('lead.invite_followers') }}" method="POST">
-                                                    @csrf
-                                                    <input type="hidden" value="{{ $data->id ?? '' }}" name="id">
-                                                    <div class="modal-body">
-                                                        <div class="d-flex">
-                                                            <label for="recipient-name" class="col-form-label mx-3">Recipients: </label>
-                                                            <select class="form-control" name="user_id" required>
-                                                                <option value=""></option>
-                                                                @foreach($employees as $employee)
-                                                                    <option value="employee/{{ $employee->id }}">{{ $employee->name }} ({{ $employee->emial }})</option>
-                                                                @endforeach
-                                                                @foreach($users as $user)
-                                                                    <option value="users/{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="d-flex my-2">
-                                                            <label for="send-notification" class="col-form-label mx-3">Send Notification: </label>
-                                                            <input type="checkbox" id="send_notofiction_chekbox" style="width: 15px;" checked>
-                                                        </div>
-                                                        <div class="d-flex my-2 hiden_div">
-                                                            <label for="message" class="col-form-label mx-3">Message</label>
-                                                            <textarea class="form-control" id="send_notification" name="message">Hello, {{ Auth::user()->email }} invited you to follow Lead/Opportunity document: {{ isset($data) ? $data->product_name : '' }}</textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                                                        <button type="submit" class="btn btn-primary">Add Followers</button>
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                            </div>
                                             </div>
                                             </div>
                                             @if(isset($data) && $data->id != null)
@@ -1480,9 +1480,7 @@
                             
                             </div>
                                                     <div class="o-mail-Composer  pt-0 pb-2 o-extended show2" style="    display: none !important;"> 
-                                                    {{-- <div class="o-mail-Composer-sidebarMain flex-shrink-0" >
-                                                        <img class="o-mail-Composer-avatar o_avatar rounded" alt="Avatar of user" src="https://yantra-design4.odoo.com/web/image/res.partner/3/avatar_128?unique=1726120529000">
-                                                    </div> --}}
+                                            
                                                     <div class="o-mail-Composer-coreMain d-flex flex-nowrap align-items-start flex-grow-1 flex-column">
                                                         <div class="d-flex bg-view flex-grow-1 border rounded-3 align-self-stretch flex-column">
                                                             <div class="position-relative flex-grow-1">
@@ -1888,10 +1886,7 @@
                                         </div>
                                     </div>
                                 </div>  
-                            <!-- <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                <hr class="o-discuss-separator flex-grow-1"><span class="px-2 smaller text-muted">Today</span>
-                                <hr class="o-discuss-separator flex-grow-1">
-                            </div> -->
+                        
 
                             @if(!empty($send_message) && count($send_message) > 0)
                             <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
@@ -4138,7 +4133,7 @@
                 })
                 .catch(error => console.error('Fetch error:', error));
         } else {
-            // Hide the details if already shown
+            // Hide the details if already shown    
             detailsDiv.classList.add('d-none');
         }
     }
@@ -4329,6 +4324,7 @@
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
     }
 
     function deleteImage1(imagePath, messageId) {
@@ -4390,56 +4386,56 @@
         .catch(error => console.error('Error:', error));
     }
 
-    $('.send_message_delete').on('click', function(){
-        var id = $(this).data('id');
+$('.send_message_delete').on('click', function(){
+    var id = $(this).data('id');
 
-        $.ajax({
-            url: '{{ route('lead.delete_send_message') }}',
-            type: 'get',
-            data: {
-                _token: '{{ csrf_token() }}',
-                id: id,
-            },
-            success: function(response) {
-                toastr.success(response.message);
-                
-            setTimeout(function() {
-                location.reload(); // Reloads the page
-            }, 2000);
-                
-            },
-            error: function(xhr, status, error) {
-                toastr.error('Something went wrong!');
-            }
-        });
-        
+    $.ajax({
+        url: '{{ route('lead.delete_send_message') }}',
+        type: 'get',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id: id,
+        },
+        success: function(response) {
+            toastr.success(response.message);
+            
+        setTimeout(function() {
+            location.reload(); // Reloads the page
+        }, 2000);
+            
+        },
+        error: function(xhr, status, error) {
+            toastr.error('Something went wrong!');
+        }
     });
-    $('.send_message_delete1').on('click', function(){
-        var id = $(this).data('id');
+    
+});
+$('.send_message_delete1').on('click', function(){
+    var id = $(this).data('id');
 
-        $.ajax({
-            url: '{{ route('lead.delete_send_message_notes') }}',
-            type: 'get',
-            data: {
-                _token: '{{ csrf_token() }}',
-                id: id,
-            },
-            success: function(response) {
-                toastr.success(response.message);
-                
-            setTimeout(function() {
-                location.reload(); // Reloads the page
-            }, 2000);
-                
-            },
-            error: function(xhr, status, error) {
-                toastr.error('Something went wrong!');
-            }
-        });
-        
+    $.ajax({
+        url: '{{ route('lead.delete_send_message_notes') }}',
+        type: 'get',
+        data: {
+            _token: '{{ csrf_token() }}',
+            id: id,
+        },
+        success: function(response) {
+            toastr.success(response.message);
+            
+        setTimeout(function() {
+            location.reload(); // Reloads the page
+        }, 2000);
+            
+        },
+        error: function(xhr, status, error) {
+            toastr.error('Something went wrong!');
+        }
     });
+    
+});
 
-    $('.send_message_star').on('click', function() {
+$('.send_message_star').on('click', function() {
     var $this = $(this); // Store the clicked element
     var id = $this.data('id');
     var isStarred = $this.data('starred'); // Get the current star status
