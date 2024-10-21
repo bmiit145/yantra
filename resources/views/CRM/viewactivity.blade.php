@@ -208,18 +208,44 @@
                 <tr class="o_data_row h-100">
                     <td class="o_activity_record p-2 cursor-pointer">
                         <div>
-                            <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
-                                <div class="d-flex align-items-center gap-1" data-tooltip="info@yantradesign.co.in">
-                                    <span class="o_avatar o_m2o_avatar d-flex">
-                                        <img class="rounded" src="/web/image/res.users/2/avatar_128">
-                                    </span>
-                                </div>
+                        <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
+                            <div class="d-flex align-items-center gap-1"
+                                data-tooltip="{{$pipeline->getPipelineLeadTitle->email ?? ''}}">
+                                @php
+
+                                    $user = $pipeline->getPipelineLeadTitle;
+                                    $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+
+                                    $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+
+                                    if ($user) {
+                                        $colorIndex = crc32($user->email) % count($colors);
+                                        $bgColor = $colors[$colorIndex];
+                                    } else {
+                                        $bgColor = '#f0f0f0';
+                                    }
+                                @endphp
+                                <span class="o_avatar o_m2o_avatar d-flex">
+                                    @if(optional($user)->profile)
+                                        <!-- If profile image exists -->
+                                        <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                    @else
+                                        <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                        <div class="placeholder-circle rounded d-flex align-items-center justify-content-center"
+                                            data-id="{{$pipeline->id}}"
+                                            style="background-color: {{ $bgColor }}; width:32px;height:32px;color:white">
+                                            <span>{{ $initial }}</span>
+                                        </div>
+                                    @endif
+                                </span>
                             </div>
+                        </div>
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-block text-truncate o_text_block o_text_bold">{{ $pipeline->opportunity }}</div>
                                     <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
-                                        <span>₹{{$pipeline->probability ?? '0.00'}}</span>
+                                        <span>₹{{$pipeline->getPipelineLeadTitle->expected_revenue ?? '0.00'}}</span>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">

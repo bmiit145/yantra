@@ -287,34 +287,35 @@
         </div>
         @foreach ($getFavoritesFilter as $favoritesFilter)    
             <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
-            role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
+                role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" 
+                data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
                 <span class="d-flex p-0 align-items-center justify-content-between">
                     <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
-                        <span class="float-end checkmark" style="display:none;">✔</span>
+                        <span class="checkmark" style="display:none;">✔</span>
                     </span>
-                    <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
                 </span>
             </span>
+            <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}"></i>
+        @endforeach
 
-            <!-- Delete Confirmation Modal -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-md">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure that you want to remove this filter?
-                        </div>
-                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                            <button type="button" class="btn btn-primary" style="background-color:#714B67;border: none;font-weight: 500;" id="confirmDelete">Delete Filter</button>
-                            <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
-                        </div>
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure that you want to remove this filter?
+                    </div>
+                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                        <button type="button" class="btn btn-primary" id="confirmDelete" style="background-color:#714B67;border: none;font-weight: 500;">Delete Filter</button>
+                        <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
-        @endforeach
+        </div>
         <div role="separator" class="dropdown-divider"></div>
         <div class="o_accordion position-relative">
             <button id="save-current-search" class="o_menu_item o_accordion_toggle search-dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">
@@ -767,6 +768,17 @@
     }
     .head_breadcrumb_info{
         gap : 0px !important;
+    }
+
+    .o-dropdown-item-3 {
+        margin-left: -22px;
+    }
+
+    .delete-item {
+       margin-left: 133px !important;
+        cursor: pointer;
+        position: absolute;
+        margin-top: -21px;
     }
 </style>
 
@@ -2206,10 +2218,14 @@
                 type: 'DELETE',
                 success: function(response) {
                     toastr.success('Favorite deleted successfully!'); // Show success message
+                    $(`span[data-id="${itemId}"]`).remove();
+                    $(`i[data-id="${itemId}"]`).remove();
+                    if (response.favorite.is_default === '1') {
+                        $('.selected-items .o_searchview_facet').remove();
+                    }
                     $('#deleteModal').modal('hide'); // Hide the modal
 
                     // Remove the item from the UI
-                    $(`span[data-id="${itemId}"]`).remove();
                 },
                 error: function(xhr) {
                     console.error('Error:', xhr);

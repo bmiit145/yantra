@@ -743,7 +743,18 @@ class CRMController extends Controller
         ];
     }
 
-    return view('CRM.graph', compact('datasets', 'stages'));
+    $getFavoritesFilter = Favorite::where('filter_type','pipeline')->get();
+    $Countrs = Country::all();
+    $tages = Tag::where('tage_type', 2)->get();
+    $users = User::all();
+    $customers = Contact::all();
+    $Sources = Source::all();
+    $CrmStages = CrmStage::all();
+    $States = State::all();
+    $PersonTitle = PersonTitle::all();
+    $Campaigns = Campaign::all();
+
+    return view('CRM.graph', compact('datasets', 'stages','getFavoritesFilter','Countrs','tages','users','customers', 'Sources','CrmStages','States','PersonTitle','Campaigns'));
 }
 
 private function getUserColor($userId)
@@ -1394,6 +1405,157 @@ private function getUserColor($userId)
         return response()->json(['message' => 'Favorite not found.'], 404);
     }   
 
+
+    public function graphPipelineFilter(Request $request)
+    {
+        // Get the selected tags from the request
+        $tags = $request->tags ?? [];
+
+        // Normalize tags
+        $includeMyPipeline = in_array('My Pipeline', $tags);
+        $includeUnassigned = in_array('Unassigned', $tags);
+        $includeOpenOpportunities = in_array('Open Opportunities', $tags);
+        $includeWon = in_array('Won', $tags);
+        $includeOngoing = in_array('Ongoing', $tags);
+        $includeLost = in_array('Lost', $tags);
+
+        // Start the query for sales data
+        $salesQuery = Sale::with('salesPerson', 'stage')
+            ->select('stage_id', 'sales_person', DB::raw('count(*) as total'))
+            ->groupBy('stage_id', 'sales_person');
+
+        // Apply filters for My Pipeline, Unassigned, Open Opportunities, and the selected tags
+        $salesQuery->where(function ($query) use ($includeMyPipeline, $includeUnassigned, $includeOpenOpportunities, $includeWon, $includeOngoing, $includeLost) {
+            if ($includeMyPipeline) {
+                $query->whereHas('salesPerson')->where('is_lost', '1');
+            }
+
+            if ($includeUnassigned) {
+                $query->orWhereNull('sales_person')->where('is_lost', '1');
+            }
+
+            if ($includeOpenOpportunities) {
+                $query->orWhereHas('stage', function ($q) {
+                    $q->where('title', '!=', 'Won');
+                })->where('is_lost', '1');
+            }
+
+            if ($includeWon) {
+                $query->orWhereHas('stage', function ($q) {
+                    $q->where('title', '=', 'Won');
+                })->where('is_lost', '1');
+            }
+
+            if ($includeOngoing) {
+                $query->orWhereHas('stage', function ($q) {
+                    $q->where('title', '!=', 'Won');
+                })->where('is_lost', '1');
+            }
+
+            if ($includeLost) {
+                $query->orWhere('is_lost', '2');
+            }
+        });
+
+        // Fetch sales data
+        $salesData = $salesQuery->get();
+
+        // Fetch all stages and key by ID
+        $stages = CrmStage::all()->keyBy('id');
+
+        // Prepare datasets for the chart
+        $datasets = [];
+
+        foreach ($salesData as $data) {
+            if (!isset($stages[$data->stage_id])) {
+                error_log("Stage ID not found: " . $data->stage_id);
+                continue;
+            }
+
+            $user = $data->salesPerson;
+            $userName = $user->name ?? 'Unknown User';
+            $userEmail = $user->email ?? 'No Email';
+            $userColor = $this->getUserColor($data->sales_person);
+
+            // Ensure unique entries for each stage and user
+            $datasets[$data->stage_id]['data'][$data->sales_person] = [
+                'label' => "$userName ($userEmail)",
+                'total' => $data->total,
+                'backgroundColor' => $userColor,
+            ];
+        }
+
+        // Return the prepared datasets in JSON format
+        return response()->json(['datasets' => $datasets, 'stages' => $stages]);
+    }
+
+
+    public function leadGrapgGroupPipelineFilter(Request $request)
+    {
+        // Decode the selectedTags from the query string
+        $selectedTags = json_decode($request->input('selectedTags'), true);
+        if (!is_array($selectedTags)) {
+            return response()->json(['error' => 'Invalid tags format'], 400);
+        }
+
+        // Fetch leads with related models
+        $leads = Sale::with(['salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium'])->get();
+        $leadCounts = [];
+
+        foreach ($leads as $lead) {
+            foreach ($selectedTags as $tag) {
+                $key = match ($tag) {
+                    'City' => $lead->city ?? 'None',
+                    'Country' => $lead->getCountry->name ?? ($lead->getAutoCountry->name ?? 'None'),
+                    'State' => $lead->getState->name ?? ($lead->getAutoState->name ?? 'None'),
+                    'Salesperson' => $lead->salesPerson->email ?? 'None',
+                    'Source' => $lead->getSource->name ?? 'None',
+                    'Campaign' => $lead->getCampaign->name ?? 'None',
+                    'Medium' => $lead->getMedium->name ?? 'None',
+                    'Sales Team' => 'Sales',
+                    'Creation Date:Quarter' => 'Q' . Carbon::parse($lead->created_at)->quarter . ' ' . Carbon::parse($lead->created_at)->year,
+                    'Creation Date: Year' => Carbon::parse($lead->created_at)->format('Y'),
+                    'Creation Date:Month' => Carbon::parse($lead->created_at)->format('F Y'),
+                    'Creation Date:Week' => 'Week ' . Carbon::parse($lead->created_at)->weekOfYear . ' ' . Carbon::parse($lead->created_at)->year,
+                    'Creation Date:Day' => Carbon::parse($lead->created_at)->format('d-m-Y'),
+                    'Priority' => $lead->priority,
+                    'Active' => $lead->activities->count() > 0 ? 'Yes' : 'No',
+                    'Company' => $lead->company_name ?? 'None',
+                    'Contact Name' => $lead->contact_name ?? 'None',
+                    'Created by' => $lead->salesPerson->name ?? 'None',
+                    'Created on' => Carbon::parse($lead->assignment_date)->format('d-m-Y') ?? 'None',
+                    'Email' => $lead->email ?? 'None',
+                    'Lost Reason' => $lead->lost_reason ?? 'None',
+                    'Mobile' => $lead->mobile ?? 'None',
+                    'Phone' => $lead->phone ?? 'None',
+                    'Referred' => $lead->referred_by->count() > 0 ? 'Yes' : 'No',
+                    'Stage' => $lead->stage->name ?? 'None',
+                    'Street' => $lead->address_1 ?? 'None',
+                    'Street2' => $lead->address_2 ?? 'None',
+                    'Tags' => $lead->tags ?? 'None',
+                    'Website' => $lead->website_link ?? 'None',
+                    'Zip' => $lead->zip ?? 'None',
+                    default => 'None',
+                };
+
+                if (!isset($leadCounts[$key])) {
+                    $leadCounts[$key] = 0;
+                }
+                $leadCounts[$key]++;
+            }
+        }
+
+        // Convert leadCounts associative array into an array of objects
+        $formattedCounts = [];
+        foreach ($leadCounts as $key => $count) {
+            $formattedCounts[] = [
+                'sales_person' => $key,
+                'lead_count' => $count
+            ];
+        }
+
+        return response()->json(['counts' => $formattedCounts]);
+    }
     
     public function exportpipiline(Request $request)
     {

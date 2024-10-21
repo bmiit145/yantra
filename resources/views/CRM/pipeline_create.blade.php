@@ -2667,9 +2667,7 @@
                                 console.log(response.pipeline.id);
                                 
                                 setTimeout(function () {
-                                    // window.location.href = "{{ route('crm.pipeline.list') }}";
-                                    // window.location.href = '/pipeline-create/' + response.pipeline.id;
-                                    window.location.href = '/pipeline-create/' + response.pipeline.id + '/';
+                                    window.location.href = '/pipeline-create/' + response.pipeline.id + '/1';
                                 }, 2000);
                             },
                             error: function (xhr, status, error) {

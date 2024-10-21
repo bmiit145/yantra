@@ -1474,7 +1474,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 // Send AJAX request
                 $.ajax({
                     url: '{{route('crm.calendar.custom.pipeline.filter')}}',
-                    type: 'POST',
+                    type: 'GET',
                     data: data,
                     success: function (response) {
             console.log('Response:', response);

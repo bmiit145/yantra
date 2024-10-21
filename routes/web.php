@@ -87,6 +87,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/calendar-pipeline-filter', [CRMController::class, 'calendarPipelineFilter'])->name('crm.calendar.pipeline.filter');
     Route::get('/calendar-custom-pipeline-filter', [CRMController::class, 'calendarCustomPipelineFilter'])->name('crm.calendar.custom.pipeline.filter');
 
+    Route::get('/graph-pipeline-filter', [CRMController::class, 'graphPipelineFilter'])->name('crm.graph.pipeline.filter');
+    Route::get('/lead-graph-group-pipeline-filter', [CRMController::class, 'leadGrapgGroupPipelineFilter'])->name('lead.lead.grapg.group.pipeline.filter');
+
 
 
     // sale

@@ -1656,7 +1656,7 @@ class LeadController extends Controller
 
         if ($favorite) {
             $favorite->delete();
-            return response()->json(['message' => 'Favorite deleted successfully!']);
+            return response()->json(['favorite' => $favorite , 'message' => 'Favorite deleted successfully!']);
         }
 
         return response()->json(['message' => 'Favorite not found.'], 404);
