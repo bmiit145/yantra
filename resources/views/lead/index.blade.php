@@ -347,6 +347,25 @@
 </div>
 @endsection
 
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Lead</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
+
+@endsection
+
 <!-- Modal -->
 <div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
     aria-labelledby="customFilterModalLabel" aria-hidden="true">
@@ -536,6 +555,28 @@
         right: auto;
         left: 6%;
         overflow-y: scroll;
+    }
+
+    .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 685px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: auto;
+        right: auto;
+        left: 6%;
+        overflow-y: scroll;
+        text-decoration: none;
+        color: black;
+    }
+
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+
+    .search-result{
+        color: #714B67;
     }
 
     .dropdown-menu a {
@@ -780,6 +821,24 @@
         position: absolute;
         margin-top: -21px;
     }
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
+    }
+    
 </style>
 
 
@@ -2651,5 +2710,147 @@
     accordionValues.style.display = 'none';
 });
 </script>
+
+<script>
+   $(document).ready(function() {
+    
+    // Initialize the DataTable and assign it to the variable 'table'
+    var table = $('#example').DataTable();
+
+    $('.dropdown-item').on('click', function() {
+
+        var searchType = $(this).find('b.get-value').text();
+
+        var currentValue = $(this).find('.search-result').text().trim();
+
+
+        $.ajax({
+            url: '{{route('lead.search.filter')}}',
+            type: 'GET',
+            data: { 
+                searchType: searchType,
+                currentValue: currentValue
+            },
+            success: function(response) {
+                var $tableBody = $('#lead-table-body');
+
+                // Clear existing table data
+                $tableBody.empty();
+
+                if (response.length === 0) {
+                    // Display the message if no data is found
+                    $tableBody.append(`<tr><td colspan="21" class="text-center">No data found!</td></tr>`);
+                    return;
+                }
+
+                // Loop through the response and create table rows
+                var index = 1;
+                response.forEach(function(item) {
+                    var rowHtml = `<tr class="lead-row" data-id="${item.id}" data-index="${index++}">`;
+
+                    // Append data only for the visible columns
+                    if (table.column(0).visible()) rowHtml += `<td class="d-none">${index}</td>`;
+                    if (table.column(1).visible()) rowHtml += `<td>${item.product_name || ''}</td>`;
+                    if (table.column(2).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                    if (table.column(3).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                    if (table.column(4).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || item.get_auto_state?.name || '') : ''}</td>`;
+                    if (table.column(5).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || item.get_auto_country?.name || '') : ''}</td>`;
+                    if (table.column(6).visible()) rowHtml += `<td>${item.zip || ''}</td>`;
+                    if (table.column(7).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                    if (table.column(8).visible()) rowHtml += `<td>${item.company_name || ''}</td>`;
+                    if (table.column(9).visible()) rowHtml += `<td>${item.address1 || ''}</td>`;
+                    if (table.column(10).visible()) rowHtml += `<td>${item.address2 || ''}</td>`;
+                    if (table.column(11).visible()) rowHtml += `<td><a href="${item.website_link || '#'}" target="_blank">${item.website_link || ''}</a></td>`;
+                    if (table.column(12).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                    if (table.column(13).visible()) rowHtml += `<td>${item.job_position || ''}</td>`;
+                    if (table.column(14).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                    if (table.column(15).visible()) rowHtml += `<td>${item.mobile || ''}</td>`;
+                    if (table.column(16).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                    if (table.column(17).visible()) rowHtml += `<td>${item.title ? (item.get_title?.title || '') : ''}</td>`;
+                    if (table.column(18).visible()) rowHtml += `<td>${item.tag || ''}</td>`;
+                    if (table.column(19).visible()) rowHtml += `<td>${item.get_user?.email || ''}</td>`;
+                    if (table.column(20).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                    if (table.column(21).visible()) rowHtml += `<td></td>`;
+
+                    rowHtml += `</tr>`;
+                    $tableBody.append(rowHtml);
+                });
+
+                // Attach click event handler to rows
+                $('#lead-table-body .lead-row').on('click', function() {
+                    var leadId = $(this).data('id');
+                    var index = $(this).data('index');
+                    console.log(index, '3');
+                    window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+                });
+
+                // Optionally clear the search input or manage it differently
+                $('#search-input').val(''); // Clear the search input, if needed
+
+                // Apply the column visibility settings
+                table.columns().every(function() {
+                    var column = this;
+                    var isVisible = column.visible();
+                    column.visible(isVisible);
+                });
+            },
+            error: function() {
+                console.error('Failed to fetch data');
+            }
+        });
+        $('.input_search_menu_wapper').hide();
+    });
+
+    $('.input-filter-click li').on('click', function() {
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain" data-span_id="${currentIndex}">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> <!-- Display searchType -->
+                    <span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i> <!-- Optional icon -->
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small> <!-- Display selectedValue -->
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+    // Handle removal of tags
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).closest('.tag1').remove(); // Remove the tag on click
+    });
+});
+
+</script>
+
+<script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
+</script>
+
 
 @endsection

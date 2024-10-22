@@ -2683,11 +2683,10 @@ public function pipelineFavoritesFilter(Request $request)
 
     public function pipelineShowSimilarLeads($opportunityName)
     {
-        // Fetch all leads with the same product_name
-        $similarLeads = Sale::where('opportunity', $opportunityName)->get();
-
-        // Return a view with the similar leads
-        return view('CRM.similar_lead', compact('similarLeads', 'opportunityName'));
+        $crmStages = CrmStage::with('sales')->orderBy('seq_no', 'asc')->get();
+        $similarLeads = Sale::with('stage')->where('opportunity', $opportunityName)->get();
+    
+        return view('CRM.similar_lead', compact('crmStages', 'similarLeads', 'opportunityName'));
     }
 
 }

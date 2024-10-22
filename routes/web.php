@@ -224,6 +224,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lead-favorites-filter',[LeadController::class,'favoritesFilter'])->name('lead.favorites.filter');
     Route::delete('/delete-lead-favorites/{id}', [LeadController::class, 'deleteFavoritesFilter']);
 
+    Route::get('/leads/search', [LeadController::class, 'leadSearchFilter'])->name('lead.search.filter');
+
 
 
     Route::get('/leads/similar/{productName}', [LeadController::class, 'showSimilarLeads'])->name('leads.similar');

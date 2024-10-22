@@ -336,6 +336,25 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 </div>
 @endsection
 
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Lead</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
+
+@endsection
+
 <!-- Modal -->
 <div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
     aria-labelledby="customFilterModalLabel" aria-hidden="true">
@@ -852,6 +871,45 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         cursor: pointer;
         position: absolute;
         margin-top: -21px;
+    }
+
+    .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 685px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: auto;
+        right: auto;
+        left: 6%;
+        overflow-y: scroll;
+        text-decoration: none;
+        color: black;
+    }
+
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+
+    .search-result{
+        color: #714B67;
+    }
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
     }
 </style>
 
@@ -2656,6 +2714,194 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     // Initially hide the accordion values
     accordionValues.style.display = 'none';
 });
+</script>
+
+<script>
+   $(document).ready(function() {
+    
+    // Initialize the DataTable and assign it to the variable 'table'
+    // var table = $('#example').DataTable();
+
+    $('.dropdown-item').on('click', function() {
+
+        var searchType = $(this).find('b.get-value').text();
+
+        var currentValue = $(this).find('.search-result').text().trim();
+
+
+        $.ajax({
+            url: '{{route('lead.search.filter')}}',
+            type: 'GET',
+            data: { 
+                searchType: searchType,
+                currentValue: currentValue
+            },
+            success: function (response) {
+                    console.log('Response:', response);
+                    // Clear existing content
+                    $('.o_kanban_renderer').empty();
+                    
+                    // Remove the 'flex-wrap' class from the lead-container
+                    $('#lead-container').removeClass('flex-wrap');
+
+                    // Assuming leads is an object where keys are group names
+                    const leadsData = response.data;
+
+                    // Render each lead in the kanban style
+                    $.each(leadsData, function (groupName, leads) {
+                        const groupHtml = `
+                            <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0" data-id="${groupName}">
+                                <div class="o_kanban_header lead-kanban-position-sticky top-0 z-1 py-2 pt-print-0">
+                                    <div class="o_kanban_header_title position-relative d-flex lh-lg">
+                                        <div class="o_column_title flex-grow-1 min-w-0 mw-100 gap-1 d-flex fs-4 fw-bold align-top text-900">
+                                            <span class="text-truncate">${groupName}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                ${leads.map(lead => `
+                                    <article class="o_kanban_record d-flex o_draggable cursor-pointer" data-id="${lead.id}" tabindex="0">
+                                        <div class="oe_kanban_details d-flex flex-column justify-content-between">
+                                            <div>
+                                                <strong class="o_kanban_record_title oe_partner_heading">
+                                                    <span>${lead.product_name || ''}</span>
+                                                </strong>
+                                                <div class="o_kanban_tags_section oe_kanban_partner_categories">
+                                                    <span class="oe_kanban_list_many2many">
+                                                        <div name="category_id" class="o_field_widget o_field_many2many_tags">
+                                                            <div class="d-flex flex-wrap gap-1"></div>
+                                                        </div>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <span class="o_kanban_record_subtitle text-black"><span>${lead.contact_name || ''}</span></span>
+                                            </div>
+                                            <div class="o_kanban_record_bottom">
+                                                <div class="oe_kanban_bottom_left">
+                                                    <div name="priority" class="o_field_widget o_field_priority">
+                                                        <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                                            <a href="#" class="o_priority_star fa ${lead.priority === 'medium' || lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
+                                                            <a href="#" class="o_priority_star fa ${lead.priority === 'high' || lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
+                                                            <a href="#" class="o_priority_star fa ${lead.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                                        </div>
+                                                    </div>
+                                                    <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
+                                                        <a class="o-mail-ActivityButton" role="button" aria-label="Show activities" title="Show activities">
+                                                            <i class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark" role="img"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="oe_kanban_bottom_right">
+                                                    <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
+                                                        <div class="d-flex align-items-center gap-1 user-icon" data-tooltip="">
+                                                            <li class="nav-item header-bg-btn dropdown">
+                                                                <a class="nav-link" href="#" id="notificationDropdown${lead.id}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <span class="kanban-avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                        ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                    </span>
+                                                                </a>
+                                                                <!-- Dropdown Menu -->
+                                                                <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationDropdown${lead.id}" style="width: 300px; height: 143px;">
+                                                                    <div class="o_avatar_card">
+                                                                        <div class="card-body">
+                                                                            <div class="d-flex align-items-start gap-2">
+                                                                                <span class="o_avatar pt-1 position-relative o_card_avatar">
+                                                                                    <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                                        ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
+                                                                                    </span>
+                                                                                    <span name="icon" class="o_card_avatar_im_status position-absolute d-flex align-items-center justify-content-center">
+                                                                                        <i class="fa fa-fw fa-circle text-success" title="Online" role="img" aria-label="User is online"></i>
+                                                                                    </span>
+                                                                                </span>
+                                                                                <div class="d-flex flex-column o_card_user_infos overflow-hidden">
+                                                                                    <span class="fw-bold">${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}</span>
+                                                                                    <span class="text-muted text-truncate" data-tooltip="Department" title="Administration">${lead.get_user && lead.get_user.name ? lead.get_user.name : ''}</span>
+                                                                                    <a class="text-truncate" href="mailto:${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}" title="${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}">
+                                                                                        <i class="fa fa-fw fa-envelope me-1"></i>${lead.get_user && lead.get_user.email ? lead.get_user.email : ''}
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="flex-wrap gap-2 mt-2">
+                                                                                <div class="justify-content-end d-flex align-items-baseline">
+                                                                                    <div class="d-flex gap-2 o_avatar_card_buttons">
+                                                                                        <button class="btn btn-secondary btn-sm">Send message</button>
+                                                                                        <button class="btn btn-secondary btn-sm">View Profile</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                `).join('')}
+                            </div>
+                        `;
+                        $('.o_kanban_renderer').append(groupHtml);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error applying filter:', error);
+                    // Optionally display a user-friendly message
+                }
+        });
+        $('.input_search_menu_wapper').hide();
+    });
+
+    $('.input-filter-click li').on('click', function() {
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain" data-span_id="${currentIndex}">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> <!-- Display searchType -->
+                    <span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i> <!-- Optional icon -->
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small> <!-- Display selectedValue -->
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+    // Handle removal of tags
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).closest('.tag1').remove(); // Remove the tag on click
+    });
+});
+
+</script>
+
+<script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
 </script>
 
 @endpush
