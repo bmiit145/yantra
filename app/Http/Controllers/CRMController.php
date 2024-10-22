@@ -1083,7 +1083,7 @@ private function getUserColor($userId)
     $includeLost = in_array('Lost', $tags);
 
     // Start building the query
-    $leadsQuery = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'salesPerson', 'contact', 'Activities');
+    $leadsQuery = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'salesPerson', 'contact', 'Activities','tags');
 
     // Apply filters for My Pipeline, Unassigned, and Open Opportunities
     if ($includeMyPipeline || $includeUnassigned || $includeOpenOpportunities) {

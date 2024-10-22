@@ -178,4 +178,6 @@ class Sale extends Model
     {
         return $this->hasOne(PersonTitle::class, 'id', 'title');
     }
+
+   
 }
