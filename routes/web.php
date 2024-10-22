@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/crm-downloadAllImages', [CRMController::class, 'downloadAllImages'])->name('crm.downloadAllImages');
     Route::POST('/attachmentsAdd', [CRMController::class, 'attachmentsAdd'])->name('crm.attachmentsAdd');
     Route::delete('/attachmentsDeleteFile', [CRMController::class, 'attachmentsDeleteFile'])->name('crm.attachmentsDeleteFile');
+    Route::get('/pipeline/similar/{opportunityName}', [CRMController::class, 'pipelineShowSimilarLeads'])->name('crm.pipeline.similar');
     
 
     // CRM pipeline Filter
@@ -105,6 +106,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/graph-pipeline-filter', [CRMController::class, 'graphPipelineFilter'])->name('crm.graph.pipeline.filter');
     Route::get('/lead-graph-group-pipeline-filter', [CRMController::class, 'leadGrapgGroupPipelineFilter'])->name('lead.lead.grapg.group.pipeline.filter');
 
+    Route::get('/pipeline-filter-activities', [CRMController::class, 'pipelineFilterActivities'])->name('crm.pipeline.filter.activities');
+    Route::post('/pipeline-activity-custom-filter', [CRMController::class, 'pipelineActivityCustomFilter'])->name('crm.pipeline.activity.custom.filter');
 
 
     // sale

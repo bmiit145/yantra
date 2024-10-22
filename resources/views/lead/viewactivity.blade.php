@@ -2595,6 +2595,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
            
 
             $(document).on('click', '.filter-edit-btn', function () {
+                $('.popover').hide();
                 var activityId = $(this).closest('.hideDiv').data('id');
 
                 // Fetch activity details using AJAX
@@ -4044,6 +4045,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });            
 
             $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function () {
+                $('.popover').hide();
                 var activityId = $(this).closest('.hideDiv').data('id');
 
                 // Fetch activity details using AJAX
