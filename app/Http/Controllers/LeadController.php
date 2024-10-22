@@ -582,7 +582,6 @@ class LeadController extends Controller
             $activity = new Activity();
             if ($request->action == 'schedule') {
                 $activity->lead_id = $request->lead_id;
-                $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
                 $activity->due_date = $request->due_date;
                 $activity->summary = $request->summary;
@@ -592,7 +591,6 @@ class LeadController extends Controller
                 $activity->save();
             } else if ($request->action == 'done') {
                 $activity->lead_id = $request->lead_id;
-                $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
                 $activity->due_date = $request->due_date;
                 $activity->summary = $request->summary;
@@ -602,7 +600,6 @@ class LeadController extends Controller
                 $activity->save();
             } else if ($request->action == 'next') {
                 $activity->lead_id = $request->lead_id;
-                $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
                 $activity->due_date = $request->due_date;
                 $activity->summary = $request->summary;
@@ -1629,15 +1626,19 @@ class LeadController extends Controller
 
     public function favoritesFilter(Request $request)
     {
-
-        $exists = Favorite::where('favorites_name', $request->favorites_name)->exists();
+        
+        $exists = Favorite::where('favorites_name', $request->favorites_name)
+                      ->where('filter_type', 'lead') // Ensure it checks within the pipeline type
+                      ->exists();
 
         if ($exists) {
             return response()->json(['message' => 'A filter with same name already exists.'], 409); // 409 Conflict
         }
 
         if ($request->is_default == 1) {
-            Favorite::where('is_default', 1)->update(['is_default' => 0]);
+            Favorite::where('is_default', 1)
+                    ->where('filter_type', 'lead') // Ensure it only affects pipeline favorites
+                    ->update(['is_default' => 0]);
         }
 
         $favorite = Favorite::create([

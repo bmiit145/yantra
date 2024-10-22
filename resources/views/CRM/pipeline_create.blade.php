@@ -99,6 +99,41 @@
 </div>
 @endsection
 
+@section('similar_lead_div')
+    @if(isset($data->is_lost) && $data->is_lost == 1)
+        <div class="o_control_panel_actions d-empty-none d-flex align-items-center justify-content-start justify-content-lg-around order-2 order-lg-1 w-100 w-lg-auto">
+            <div class="o-form-buttonbox d-print-none position-relative d-flex w-md-auto o_not_full"><button
+                    invisible="not id or type == 'lead'"
+                    class="btn oe_stat_button btn-outline-secondary flex-grow-1 flex-lg-grow-0" name="action_schedule_meeting"
+                    type="object"><i class="o_button_icon fa fa-fw fa-calendar"></i>
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">
+                            <div name="meeting_display_label" class="o_field_widget o_readonly_modifier o_field_char"><span>No
+                                    Meeting</span></div>
+                        </span>
+                    </div>
+                </button>
+                <button invisible="type == 'lead'"
+                    class="btn oe_stat_button btn-outline-secondary flex-grow-1 flex-lg-grow-0"
+                    name="action_view_sale_quotation" type="object"><i class="o_button_icon fa fa-fw fa-pencil-square-o"></i>
+                    <div name="quotation_count" class="o_field_widget o_readonly_modifier o_field_statinfo"><span
+                            class="o_stat_info o_stat_value">0</span><span class="o_stat_text">Quotations</span></div>
+                </button>
+                @if(isset($allData) && $allData > 1)
+                <a href="{{ route('crm.pipeline.similar', ['opportunityName' => $data->opportunity]) }}">
+                    <button invisible="duplicate_lead_count < 1" class="btn oe_stat_button btn-outline-secondary flex-grow-1 flex-lg-grow-0" name="action_show_potential_duplicates" type="object"><i class="o_button_icon fa fa-fw fa-star"></i>
+                        <div class="o_stat_info">
+                            <div name="duplicate_lead_count" class="o_field_widget o_readonly_modifier o_field_integer o_stat_value">
+                                <span>{{ $allData ?? '' }}</span></div><span class="o_stat_text">Similar Leads</span>
+                        </div>
+                    </button>
+                </a>
+                @endif
+            </div>
+        </div>
+    @endif
+@endsection
+
 
 @section('head')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
@@ -465,7 +500,41 @@
     .image-container{
         gap:4%;
     }
+
+    .o-mail-ChatterContainer.o-mail-Form-chatter.o-aside.w-print-100{
+        flex-wrap: wrap !important;
+        height: 100vh;
+    }
+    .o_form_view.o_xxl_form_view .o_form_sheet_bg {
+        overflow-y: scroll;
+        height: 100vh;
+    }
+    .o_action_manager {
+        overflow: hidden;
+        height: 100vh;
+        width: 100%;
+    }
+    body {
+        overflow: hidden;
+    }
    
+    .o-mail-AttachmentList-mas {
+        display: flex;
+    }
+    .o-mail-AttachmentImage {
+        width: 20%;
+        padding: 0 10px;
+    }
+    .o-mail-AttachmentList {
+        max-width: 90%;
+    }
+
+    .image-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Adjust the spacing as needed */
+    }
+
 </style>
 
 @vite(['resources/css/crm_2.css'])
@@ -2032,7 +2101,7 @@
                                                                     <div class="image-grid">
                                                                     @foreach ($images as $file)
                                                                             <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($file) }}" title="{{ basename($file) }}" data-mimetype="image/jpeg">
-                                                                                <img data-message  class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $file) }}" alt="{{ basename($file) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <img data-message  class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $file) }}" alt="{{ basename($file) }}" style="max-width: 100%; max-height: 300px;height: 135px;">
                                                                                 <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
                                                                                     <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage('{{ $file }}', {{ $value->id }})"><i class="fa fa-trash"></i></button>
                                                                                     <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $file) }}')"><i class="fa fa-download"></i></button>
@@ -2219,7 +2288,7 @@
                                                                     <div class="image-grid">
                                                                         @foreach (json_decode($value2->image) as $image)
                                                                             <div class="image-item d-flex position-relative flex-shrink-0 mb-1 me-1" tabindex="0" role="menuitem" aria-label="{{ basename($image) }}" title="{{ basename($image) }}" data-mimetype="image/jpeg">
-                                                                                <img class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: 100%; max-height: 300px;">
+                                                                                <img class="img img-fluid o-viewable rounded" src="{{ asset('storage/' . $image) }}" alt="{{ basename($image) }}" style="max-width: 100%; max-height: 300px;height: 135px;">
                                                                                 <div class="image-overlay position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-column">
                                                                                     <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover" tabindex="0" aria-label="Remove" role="menuitem" title="Remove" onclick="deleteImage1('{{ $image }}', {{ $value2->id }})"><i class="fa fa-trash"></i></button>
                                                                                     <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto" title="Download" onclick="downloadImage('{{ asset('storage/' . $image) }}')"><i class="fa fa-download"></i></button>
@@ -2242,7 +2311,6 @@
                             @endif
 
                             <div class="o-mail-Chatter-content">
-                                @if(isset($data) && $data->lead_type == 1)
                                     @php
                                     $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
                                     @endphp
@@ -2423,254 +2491,7 @@
                                             </div>
                                         @endforeach
                                     @endif  
-                                                                        
-                                @endif
-                                @if(isset($data->lead_type) && $data->lead_type == 2)
-
-
-                                @php
-                                    $logs = isset($data) ? $data->logs : collect(); // Ensure $logs is always a collection
-                                    @endphp
-
-                                    <x-log-display :logs="$logs" />
-                                    @if($activitiesDone->count() > 0)
-                                        <div class="o-mail-DateSection d-flex align-items-center w-100 fw-bold z-1 pt-2">
-                                            <hr class="o-discuss-separator flex-grow-1"><span
-                                                class="px-2 smaller text-muted">Activities Done</span>
-                                            <hr class="o-discuss-separator flex-grow-1">
-                                            <br>
-                                        </div>
-                                        @foreach ($activitiesDone as $activityDone)                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          <div class="o-mail-Activity-container">
-                                                <div class="o-mail-Activity d-flex py-1 mb-2">
-                                                    <div class="o-mail-Activity-sidebar flex-shrink-0 position-relative">
-                                                        <a role="button">
-                                                            <span
-                                                                class="activity-avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                                {{ strtoupper($activityDone->getUser->name[0] ?? strtoupper($activityDone->name[0] ?? '')) }}
-                                                            </span>
-                                                        </a>
-                                                    </div>
-                                                    <div class="flex-grow px-3">
-                                                        <div class="o-mail-Activity-info lh-1">
-                                                            <b><span
-                                                                    class="o-mail-Activity-user px-1">{{$activityDone->getUser->email ?? ''}}</span></b>
-                                                            @php
-                                                                $activityTime = Carbon::parse($activityDone->updated_at);
-                                                                $currentTime = Carbon::now();
-
-                                                                // Calculate time differences
-                                                                $diffInSeconds = $activityTime->diffInSeconds($currentTime);
-                                                                $diffInMinutes = $activityTime->diffInMinutes($currentTime);
-                                                                $diffInHours = $activityTime->diffInHours($currentTime);
-                                                                $diffInDays = $activityTime->diffInDays($currentTime);
-                                                            @endphp
-
-                                                            <small class="o-mail-Message-date text-muted smaller"
-                                                                title="{{ $activityTime->format('n/j/Y, g:i:s a') }}">
-                                                                @if ($diffInSeconds < 60)
-                                                                    now
-                                                                @elseif ($diffInMinutes < 60)
-                                                                    {{ intval($diffInMinutes) }}
-                                                                    minute{{ $diffInMinutes > 1 ? 's' : '' }} ago
-                                                                @elseif ($diffInHours < 24)
-                                                                    {{ intval($diffInHours) }} hour{{ $diffInHours > 1 ? 's' : '' }} ago
-                                                                @else
-                                                                    {{ intval($diffInDays) }} day{{ $diffInDays > 1 ? 's' : '' }} ago
-                                                                @endif
-                                                            </small>
-                                                        </div>
-                                                        <div class="lh-lg">
-                                                            <div class="o-mail-Message-body text-break mb-0 w-100">
-                                                                <p>
-                                                                    <span
-                                                                        class="fa fa-check fa-fw"></span><span>{{ ucwords(str_replace('-', ' ', strtolower($activityDone->activity_type ?? ''))) }}</span>
-                                                                    done
-                                                                    <button class="btn px-1 py-0 rounded-0 rounded-end-1 toggle-star" title="Mark as Todo" data-id="{{ $activityDone->id }}">
-                                                                        <i class="fa fa-lg {{ $activityDone->is_star ? 'fa-star selected-star' : 'fa-star-o not-selected' }}"></i>
-                                                                    </button>
-                                                                </p>
-                                                                @if(!empty($activityDone->feedback))
-                                                                    <div>
-                                                                        <div class="fw-bold">Feedback:</div>
-                                                                        {{$activityDone->feedback ?? ''}}
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="overflow-y-auto d-flex flex-column mt-1">                                                
-                                                @php
-                                                    $extension = strtolower(pathinfo($activityDone->document, PATHINFO_EXTENSION));
-                                                @endphp
-
-                                                @if(isset($activityDone) && $activityDone->document != null && in_array($extension, ['pdf', 'xls', 'xlsx', 'doc', 'docx']))
-                                                    <div class="grid row-gap-0 column-gap-0 delete_document"
-                                                        id="document-{{ $activityDone->id }}">
-                                                            <div class="o-mail-AttachmentCard d-flex rounded mb-1 me-1 mw-100 overflow-auto g-col-4 o-viewable bg-300"
-                                                                style="margin-left:60px;width: max-content;" role="menu"
-                                                                title="{{ $activityDone->document }}"
-                                                                aria-label="{{ $activityDone->document }}">
-                                                                <div class="o-mail-AttachmentCard-image o_image flex-shrink-0 m-1"
-                                                                    role="menuitem" aria-label="Preview" tabindex="-1"
-                                                                    data-mimetype="{{ pathinfo($activityDone->document, PATHINFO_EXTENSION) }}">
-                                                                    
-                                                                    @if($extension === 'pdf')
-                                                                        <img src="{{ asset('images/pdf.svg') }}" alt="PDF Icon">
-                                                                    @elseif(in_array($extension, ['xls', 'xlsx']))
-                                                                        <img src="{{ asset('images/spreadsheet.svg') }}" alt="Excel Icon">
-                                                                    @elseif(in_array($extension, ['doc', 'docx']))
-                                                                        <img src="{{ asset('images/document.svg') }}" alt="Word Icon">
-                                                                    @endif
-                                                                </div>
-                                                                <div onclick="previewFile('{{ asset('storage/'. $activityDone->document) }}')"
-                                                                    class="overflow-auto d-flex justify-content-center flex-column px-1">
-                                                                    <div class="text-truncate">{{ $activityDone->document ?? '' }}</div>
-                                                                    <small class="text-uppercase">{{ $extension }}</small>
-                                                                </div>
-
-                                                                <div class="flex-grow-1"></div>
-                                                                <div
-                                                                    class="o-mail-AttachmentCard-aside position-relative rounded-end overflow-hidden d-flex o-hasMultipleActions flex-column">
-                                                                    <a href="{{ asset('storage/'. $activityDone->document) }}"
-                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
-                                                                        download title="Download">
-                                                                        <i class="fa fa-download" role="img" aria-label="Download"></i>
-                                                                    </a>
-                                                                    <button
-                                                                        class="btn d-flex align-items-center justify-content-center w-100 h-100 rounded-0 bg-300"
-                                                                        title="Delete"
-                                                                        onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
-                                                                        <i class="fa fa-trash" role="img" aria-label="Delete"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                    </div>
-                                                @else
-                                                @if($activityDone->document != null)
-                                                    <div class="overflow-y-auto d-flex flex-column mt-1" id="document-{{ $activityDone->id }}">
-                                                                                                        
-                                                            <div class="d-flex flex-grow-1 flex-wrap mx-1 align-items-center" role="menu">
-                                                                <div class="d-flex position-relative flex-shrink-0 mw-100 mb-1 me-1"
-                                                                    tabindex="0" role="menuitem" aria-label="{{ $activityDone->document }}"
-                                                                    title="{{ $activityDone->document }}" data-mimetype="image/jpeg">
-
-                                                                    <img class="img img-fluid my-0 mx-auto o-viewable rounded"
-                                                                        src="{{ asset('storage/'. $activityDone->document) }}"
-                                                                        alt="{{ $activityDone->document }}"
-                                                                        style="max-width: min(100%, 1920px); max-height: 300px">
-
-                                                                    <div class="position-absolute top-0 bottom-0 start-0 end-0 p-2 text-white o-opacity-hoverable opacity-0 opacity-100-hover d-flex align-items-end flex-wrap flex-column">
-                                                                        <button class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover"
-                                                                                tabindex="0" aria-label="Remove" role="menuitem" title="Remove"
-                                                                                onclick="activityDoneShowDeleteConfirmation('{{ $activityDone->id }}')">
-                                                                            <i class="fa fa-trash"></i>
-                                                                        </button>
-                                                                        <a href="{{ asset('storage/'. $activityDone->document) }}"
-                                                                        class="btn btn-sm btn-dark rounded opacity-75 opacity-100-hover mt-auto"
-                                                                        download title="Download">
-                                                                            <i class="fa fa-download"></i>
-                                                                        </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        
-
-                                                    <div class="grid row-gap-0 column-gap-0"></div>
-                                                    </div>
-                                                    @endif
-                                                @endif
-                                            </div>
-
-                                            <!-- Confirmation Modal -->
-                                            <div class="modal fade" id="confirmationModal" tabindex="-1"
-                                                aria-labelledby="confirmationModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            Are you sure you want to delete this document?
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger"
-                                                                id="confirmDelete">Ok</button>
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Cancel</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    @endif      
-                                    <br>                                                                                      
-                                <div class="main-lead-details">
-                                    <div class="lead-details">
-                                        <div class="lead-box">
-                                            <div class="lead-details-img row justify-content-between mb-3">
-                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNj_OgfNeyTLpUGGG2O7x3-asrzFB6RLPebQ&s">
-                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNj_OgfNeyTLpUGGG2O7x3-asrzFB6RLPebQ&s">
-                                            </div>
-                                            <h6 class="text-end me-5 mb-4" style="font-size:22px;color:#4b566f;">Buy
-                                                Lead
-                                                through indiaMART</h6>
-                                            <div class="buyer-contact">
-                                                <h5>Buyer`s Contact Details:</h5>
-                                                <ul>
-                                                    <li>Phone
-                                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368">
-                                                            <rect fill="none" height="24" width="24" />
-                                                            <path d="M22,5.18L10.59,16.6l-4.24-4.24l1.41-1.41l2.83,2.83l10-10L22,5.18z M19.79,10.22C19.92,10.79,20,11.39,20,12 c0,4.42-3.58,8-8,8s-8-3.58-8-8c0-4.42,3.58-8,8-8c1.58,0,3.04,0.46,4.28,1.25l1.44-1.44C16.1,2.67,14.13,2,12,2C6.48,2,2,6.48,2,12 c0,5.52,4.48,10,10,10s10-4.48,10-10c0-1.19-0.22-2.33-0.6-3.39L19.79,10.22z" />
-                                                        </svg>
-                                                    </li>
-                                                    <li>Email
-                                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368">
-                                                            <rect fill="none" height="24" width="24" />
-                                                            <path d="M22,5.18L10.59,16.6l-4.24-4.24l1.41-1.41l2.83,2.83l10-10L22,5.18z M19.79,10.22C19.92,10.79,20,11.39,20,12 c0,4.42-3.58,8-8,8s-8-3.58-8-8c0-4.42,3.58-8,8-8c1.58,0,3.04,0.46,4.28,1.25l1.44-1.44C16.1,2.67,14.13,2,12,2C6.48,2,2,6.48,2,12 c0,5.52,4.48,10,10,10s10-4.48,10-10c0-1.19-0.22-2.33-0.6-3.39L19.79,10.22z" />
-                                                        </svg>
-                                                    </li>
-                                                    <li>GST
-                                                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368">
-                                                            <rect fill="none" height="24" width="24" />
-                                                            <path d="M22,5.18L10.59,16.6l-4.24-4.24l1.41-1.41l2.83,2.83l10-10L22,5.18z M19.79,10.22C19.92,10.79,20,11.39,20,12 c0,4.42-3.58,8-8,8s-8-3.58-8-8c0-4.42,3.58-8,8-8c1.58,0,3.04,0.46,4.28,1.25l1.44-1.44C16.1,2.67,14.13,2,12,2C6.48,2,2,6.48,2,12 c0,5.52,4.48,10,10,10s10-4.48,10-10c0-1.19-0.22-2.33-0.6-3.39L19.79,10.22z" />
-                                                        </svg>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="main-lead-user-info row">
-                                            <div class="lead-user-info">
-                                                <p>{{ isset($data) ? $data->contact_name : '' }}</p>
-                                                <p>{{isset($data) ? $data->address_1 : ''}}
-                                                </p>
-                                                <p>
-                                                    Click to Call : <a href="tel:{{ isset($data) ? $data->mobile : ''}}">{{isset($data) ? $data->mobile : ''}}</a>
-                                                </p>
-                                                <p>
-                                                    E-mail : <a href="mailto:{{isset($data) ? $data->email : ''}}">{{isset($data) ? $data->email : ''}}</a>
-                                                </p>
-                                                <span>
-                                                    <p>Member Since: </p> 7+ years
-                                                </span>
-
-                                            </div>
-                                            <div class="lead-user-img">
-                                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNj_OgfNeyTLpUGGG2O7x3-asrzFB6RLPebQ&s">
-                                            </div>
-                                        </div>
-                                        <div class="buyerlead">
-                                            <h5>Buylead Details:</h5>
-                                            <h3>{{isset($data) ? $data->product_name : ''}}</h3>
-                                            <p><b>Probable Requirement Type: </b> Business Use</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
+                               
 
                             </div>
                         </div>
@@ -2842,9 +2663,9 @@
                     </div>
                 </div>
                 <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                    <button type="submit" class="btn btn-primary">Schedule</button>
-                    <!-- <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
-            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button> -->
+                    <button type="submit" class="btn btn-primary" id="schedule">Schedule</button>
+                    <button type="submit" class="btn btn-secondary" id="schedule_and_mark_done">Schedule & Mark as Done</button>
+                    <button type="submit" class="btn btn-secondary" id="done_and_schedule_next">Done & Schedule Next</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -3826,28 +3647,80 @@
 
         </script>
 
-        <script>
-            $(document).ready(function () {
+<script>
+    $(document).ready(function() {       
+        
+        $('#schedule').on('click', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'schedule'; // Set the action for the "Schedule" button
 
-                $('#scheduleForm').on('submit', function (e) {
-                    e.preventDefault(); // Prevent the default form submission
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        method: 'POST',
-                        data: $(this).serialize(),
-                        success: function (response) {
-                            toastr.success(response.message);
-                            $('#activitiesAddModal').modal('hide'); // Hide the modal
-                            location.reload();
-                        },
-                        error: function (xhr) {
-                            // Handle any errors
-                            alert('An error occurred while scheduling the activity.');
-                        }
-                    });
-                });
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#activitiesAddModal').modal('hide'); // Hide the modal
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
             });
-        </script>
+        });
+
+        $('#schedule_and_mark_done').on('click', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'done'; // Set the action for the "Schedule & Mark as Done" button
+
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    $('#activitiesAddModal').modal('hide'); // Hide the modal
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
+        });
+
+        $('#done_and_schedule_next').on('click', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            let action = 'next'; // Set the action for the "Done & Schedule Next" button
+
+            // Perform AJAX request
+            $.ajax({
+                url: $('#scheduleForm').attr('action'), // Use the form's action
+                method: 'POST',
+                data: $('#scheduleForm').serialize() + '&action=' + action, // Serialize form data and append action
+                success: function(response) {
+                    toastr.success(response.message);
+                    // Store a flag in localStorage to indicate the modal should reopen
+                    localStorage.setItem('reopenModal', 'true');
+                    location.reload(); // Reload the page
+                },
+                error: function(xhr) {
+                    // Handle any errors
+                    alert('An error occurred while scheduling the activity.');
+                }
+            });
+        });
+
+        // Check localStorage on page load to reopen the modal if needed
+        if (localStorage.getItem('reopenModal') === 'true') {
+            $('#activitiesAddModal').modal('show'); // Show the modal
+            localStorage.removeItem('reopenModal'); // Clear the flag
+        }
+    });
+</script>
         <script>
             $(document).ready(function () {
 
@@ -3922,32 +3795,92 @@
                 });
 
                 // Handle form submission
-                $('#editForm').on('submit', function (e) {
+                $('#editForm').on('submit', function(e) {
+                    console.log('jjjjjjjjjjj');
+                    
                     e.preventDefault();
 
                     const formData = $(this).serializeArray();
-                    // const editorData = editorInstance ? editorInstance.getData() : '';
 
                     const formObject = {};
                     formData.forEach(field => {
                         formObject[field.name] = field.value;
                     });
 
-                    // formObject.log_note = editorData;
-
                     $.ajax({
                         url: updateUrl,
                         method: 'POST',
                         data: formObject,
-                        success: function (response) {
+                        success: function(response) {
                             toastr.success(response.message);
                             $('#editModal').modal('hide');
                             location.reload();
                         },
-                        error: function (xhr) {
+                        error: function(xhr) {
                             console.error('Error updating activity:', xhr.responseText);
                         }
                     });
+                });
+
+                // Handle the "Mark as Done" button click
+                $('#markAsDoneButton').on('click', function() {
+                    const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+                    $.ajax({
+                        url: '{{route('crm.pipeline.activitiesUpdateStatus')}}', // Your actual route
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}', // CSRF token for security
+                            id: activityId,
+                            status: 1 // Mark as done
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                $('#editModal').modal('hide');
+                                $('div[data-activity-id="' + activityId + '"]').remove(); // Remove from UI
+                            } else {
+                                alert('Failed to mark activity as done.');
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+
+                // Handle the "Done & Schedule Next" button click
+                $('#editDoneAndScheduleButton').on('click', function() {
+                    const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+                    $.ajax({
+                        url: '{{route('crm.pipeline.activitiesUpdateStatus')}}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: activityId,
+                            status: 1 // Mark as done
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Set a flag in local storage to indicate the modal should open after reload
+                                localStorage.setItem('openSchedulingModal', 'true');
+                                location.reload(); // Reload the page
+                            } else {
+                                alert('Failed to mark activity as done.');
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+
+                // Check if the flag is set in local storage and open the modal
+                $(document).ready(function() {
+                    if (localStorage.getItem('openSchedulingModal') === 'true') {
+                        $('#activitiesAddModal').modal('show'); // Show the scheduling modal
+                        localStorage.removeItem('openSchedulingModal'); // Remove the flag
+                    }
                 });
 
                 // Handle the Delete button click
@@ -4870,6 +4803,65 @@
 
     });
     
+</script>
+
+<script>
+   function deleteImage(imagePath, messageId) {
+        if (confirm('Are you sure you want to delete this image?')) {
+            // Send AJAX request to delete the image
+            fetch('/lead-deleteImage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                body: JSON.stringify({ image: imagePath, message_id: messageId }) // Pass message_id along with image path
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to see the changes
+                } else {
+                    alert('Failed to delete the image.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function downloadImage(imageUrl) {
+        // Create a link and trigger a download
+        const link = document.createElement('a');
+        link.href = imageUrl;
+        link.download = ''; // Optional: specify the filename here
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+    }
+
+    function deleteImage1(imagePath, messageId) {
+        if (confirm('Are you sure you want to delete this image?')) {
+            // Send AJAX request to delete the image
+            fetch('/lead-deleteImage1', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                body: JSON.stringify({ image: imagePath, message_id: messageId }) // Pass message_id along with image path
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to see the changes
+                } else {
+                    alert('Failed to delete the image.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
 </script>
 <script>
    function downloadAllImages(messageId) {

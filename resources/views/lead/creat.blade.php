@@ -206,6 +206,21 @@
 </div>
 @endsection
 
+@section('similar_lead_div')
+    @if(isset($data->is_lost) && $data->is_lost == 1)
+        @if(isset($allData) && $allData > 1)
+            <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
+                <button invisible="duplicate_lead_count < 1" class="btn oe_stat_button btn-outline-secondary flex-grow-1 flex-lg-grow-0" name="action_show_potential_duplicates" type="object"><i class="o_button_icon fa fa-fw fa-star"></i>
+                    <div class="o_stat_info">
+                        <div name="duplicate_lead_count" class="o_field_widget o_readonly_modifier o_field_integer o_stat_value">
+                            <span>{{ $allData ?? '' }}</span></div><span class="o_stat_text">Similar Leads</span>
+                    </div>
+                </button>
+            </a>
+        @endif
+    @endif
+@endsection
+
 @section('head')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"> --}}
