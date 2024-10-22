@@ -1009,11 +1009,11 @@ var chartColors = {
 };
 
 // Handle chart type switching and canvas visibility toggling
-$('.o_graph_button').on('click', function () {    
+$('.o_graph_button').on('click', function () {
     $('.o_graph_button').removeClass('active');
     $(this).addClass('active');
 
-    const selectedChartType = $(this).data('mode');
+    const selectedChartType = $(this).data('mode');  // 'line' or 'bar' will be set here
 
     if (selectedChartType === 'pie') {
         $('#leadChart').hide();
@@ -1021,20 +1021,28 @@ $('.o_graph_button').on('click', function () {
     } else {
         $('#pieChart').hide();
         $('#leadChart').show();
-        leadChart.destroy();
+
+        // Destroy the previous chart instance
+        if (leadChart) {
+            leadChart.destroy();
+        }
+
+        // Recreate the chart with the selected chart type
         leadChart = new Chart(leadCtx, {
-            type: selectedChartType,
-            data: prepareChartData(),
+            type: selectedChartType,  // This will now be 'line' when you click the line chart button
+            data: prepareChartData(),  // Prepare the chart data
             options: {
                 responsive: true,
                 scales: {
                     y: { beginAtZero: true },
-                    x: { stacked: selectedChartType === 'bar' }
+                    x: { 
+                        stacked: selectedChartType === 'bar'  // Stack bars if it's a bar chart
+                    }
                 },
                 elements: {
                     line: {
-                        tension: 0.4,
-                        fill: true,
+                        tension: 0.4,  // Smooth line for the line chart
+                        fill: true,  // Fill under the line
                         backgroundColor: chartColors.lineBackground,
                         borderColor: chartColors.lineBorder
                     },
@@ -1056,7 +1064,12 @@ $('.o_graph_button').on('click', function () {
             }
         });
     }
+
+    // Update the chart with the filtered data (if any)
+    updateChart3(filteredData);
 });
+
+
 
 // Initialize selectedTags for filtering
 let selectedTags = [];
@@ -1079,32 +1092,32 @@ function updateChart3(newData) {
         return;
     }
 
-    const existingLabels = leadChart.data.labels.slice();
-    const existingData = leadChart.data.datasets[0].data.slice();
+    // Reset the chart data to start fresh
+    const newLabels = [];
+    const newDatasetData = [];
 
+    // Populate the chart with the new data from the response
     newData.forEach(item => {
         const salesperson = item.sales_person || 'Unassigned';
         const leadCount = item.lead_count;
 
-        const index = existingLabels.indexOf(salesperson);
-        if (index !== -1) {
-            existingData[index] += leadCount; // Increment existing count
-        } else {
-            existingLabels.push(salesperson); // Add new salesperson
-            existingData.push(leadCount); // Add new count
-        }
+        newLabels.push(salesperson);
+        newDatasetData.push(leadCount);
     });
 
-    leadChart.data.labels = existingLabels;
-    leadChart.data.datasets[0].data = existingData;
+    // Update the bar chart data
+    leadChart.data.labels = newLabels;
+    leadChart.data.datasets[0].data = newDatasetData;
     leadChart.update();
 
+    // Also update the pie chart if it exists
     if (pieChart) {
-        pieChart.data.labels = existingLabels;
-        pieChart.data.datasets[0].data = existingData;
+        pieChart.data.labels = newLabels;
+        pieChart.data.datasets[0].data = newDatasetData;
         pieChart.update();
     }
 }
+
 
 // Filter data function
 function filterData(selectedTags) {
@@ -1128,6 +1141,11 @@ function filterData(selectedTags) {
 
 // Function to filter based on selected tags
 function filter(selectedTags) {
+    if (!selectedTags.length) {
+        console.warn('No tags selected for filtering.');
+        return;
+    }
+
     $.ajax({
         url: '{{ route('lead.lead.grapg.group.pipeline.filter') }}',
         type: 'GET',
@@ -1135,10 +1153,9 @@ function filter(selectedTags) {
             selectedTags: JSON.stringify(selectedTags)
         },
         success: function (response) {
-            if (response.counts) {
-                updateChart3(response.counts); // Update lead chart
-                pieChart.data = preparePieChartData(); // Prepare pie chart data based on the new dataset
-                pieChart.update();
+            if (response && response.counts) {
+                filteredData = response.counts; // Store filtered data globally
+                updateChart3(filteredData);  // Update the chart with the new data
             } else {
                 console.error('Invalid response structure:', response);
             }
@@ -1148,7 +1165,6 @@ function filter(selectedTags) {
         }
     });
 }
-
     $(document).on('click', '.custom-filter-remove', function () {
         $('#search-input').val('').attr('placeholder', 'Search...');
         table.ajax.reload();

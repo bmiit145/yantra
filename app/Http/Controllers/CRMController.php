@@ -44,7 +44,7 @@ class CRMController extends Controller
     {
         $data = Opportunity::all();
         $pipeline = Pipeline::all();
-        $crmStages = CrmStage::with('sales.Activities')->orderBy('seq_no', 'desc')->get();
+        $crmStages = CrmStage::with('sales.Activities')->orderBy('seq_no', 'asc')->get();
         $Countrs = Country::all();
         $tages = Tag::where('tage_type', 2)->get();
         $users = User::all();
@@ -1150,7 +1150,7 @@ private function getUserColor($userId)
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = Sale::with(['salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact'])->get();
+        $leads = Sale::with(['Activities','salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {

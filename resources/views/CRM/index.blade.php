@@ -813,7 +813,9 @@
         position: absolute;
         margin-top: -21px;
     }
-
+ a.group-setting-icon {
+        padding-right: 35px;
+    }
 </style>
 <div class="o_content" style="height: 100%">
     <div class="o_kanban_renderer o_renderer d-flex o_kanban_grouped align-content-stretch">
@@ -832,11 +834,78 @@
 
                     <div class="o_kanban_counter position-relative d-flex align-items-center justify-content-between {{ $stage->sales->count() > 0 ? '' : 'opacity-25' }}">
                         <div class="o_column_progress progress bg-300 w-50">
-                            @if($stage->sales->count() > 0)
-                            <div role="progressbar" class="progress-bar o_bar_has_records cursor-pointer bg-200" aria-valuemin="0" aria-label="Progress bar" data-tooltip-delay="0" style="width: 100%;" aria-valuemax="2" aria-valuenow="2" data-tooltip="2 Other" title="">
-                            </div>
-                            @endif
+
+
+                                    <?php
+
+                                        $overdueCount = 0;
+                                        $todayCount = 0;
+                                        $plannedCount = 0;
+                                        $totalCount = 0; 
+                                    ?>
+
+                                    @foreach($stage->sales as $sale)
+                                        @php
+                                            $now = \Carbon\Carbon::now();
+                                            $startOfToday = $now->copy()->startOfDay();
+
+                                            // Filter activities for overdue, today, and planned
+                                            $overdueActivities = $sale->activities->filter(function ($activity) use ($startOfToday) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $dueDate->lessThan($startOfToday);
+                                            });
+
+                                            $todayActivities = $sale->activities->filter(function ($activity) use ($now) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $now->isSameDay($dueDate);
+                                            });
+
+                                            $plannedActivities = $sale->activities->filter(function ($activity) use ($now) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $now->lt($dueDate);
+                                            });
+
+                                            // Increment the counters
+                                            $overdueCount += $overdueActivities->count();
+                                            $todayCount += $todayActivities->count();
+                                            $plannedCount += $plannedActivities->count();
+                                            $totalCount = $overdueCount + $todayCount + $plannedCount; // Update total count
+                                        @endphp
+                                    @endforeach
+
+                                    <!-- Prevent division by zero by checking if totalCount is greater than zero -->
+                                    @php
+                                        $overduePercentage = $totalCount > 0 ? ($overdueCount / $totalCount) * 100 : 0;
+                                        $todayPercentage = $totalCount > 0 ? ($todayCount / $totalCount) * 100 : 0;
+                                        $plannedPercentage = $totalCount > 0 ? ($plannedCount / $totalCount) * 100 : 0;
+                                    @endphp
+
+                                    <div class="progress">
+                                        <div id="overdue" role="progressbar" class="progress-bar bg-danger" style="width: {{ $overduePercentage }}px" aria-label="Overdue" title="Overdue ({{$overdueCount}})"></div>
+                                        <div id="today" role="progressbar" class="progress-bar bg-warning" style="width: {{ $todayPercentage }}px" aria-label="Today" title="Today ({{$todayCount}})"></div>
+                                        <div id="planned" role="progressbar" class="progress-bar bg-success" style="width: {{ $plannedPercentage }}px" aria-label="Planned" title="Planned ({{$plannedCount}})"></div>
+                                    </div>
+
+
+                         
                         </div>
+                         <?php
+                        $totalExpertMrr = 0; // Initialize total sum variable                                                                                                                                                                                                                       
+                        ?>
+
+                        @foreach($stage->sales as $sale) 
+                            @if($sale->recurring_revenue && $sale->getRecurringPlan && $sale->getRecurringPlan->months)
+                                <?php
+                                    $revenue = floatval($sale->recurring_revenue);
+                                    $months = floatval($sale->getRecurringPlan->months);
+                                    $expertMrr = ($months > 0) ? $revenue / $months : 0; // Set to 0 if months are invalid
+
+                                    // Add to total
+                                    $totalExpertMrr += $expertMrr; 
+                                ?>
+                            @endif
+                        @endforeach
+                        <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false" title="Expected Revenue" data-target="{{ number_format($totalExpertMrr, 00) }}"><b> {{ number_format($totalExpertMrr, 2) }}</b></div>
                         <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false" title="Expected Revenue" data-target="{{ $stage->totalExpectedRevenue() }}"><b>0</b></div>
                     </div>
                 </div>
@@ -858,8 +927,15 @@
                         <div class="oe_kanban_content flex-grow-1" data-id="{{ $sale->id }}" >
                             <div class="oe_kanban_details"><strong class="o_kanban_record_title"><span>{{ $sale->opportunity }}</span></strong></div>
                             <div class="o_kanban_record_subtitle">
-                                @if($sale->expected_revenue != null)
-                                <div name="expected_revenue" class="o_field_widget o_field_monetary"><span>₹&nbsp;{{ number_format($sale->expected_revenue, 2) }}</span></div>
+                               @if($sale->expected_revenue != '0.00')
+                                    <div name="expected_revenue" class="o_field_widget o_field_monetary">
+                                        <span>₹&nbsp;{{ number_format($sale->expected_revenue, 2) }}</span> &nbsp; + &nbsp;
+                                        <span>₹&nbsp;{{ number_format($sale->recurring_revenue, 2) }}</span>
+                                        @if($sale->getRecurringPlan) 
+                                            &nbsp; <span>{{ $sale->getRecurringPlan->plan_name ?? ''}}</span>
+                            
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                             @if($sale->contact)
@@ -995,7 +1071,7 @@
                                             </a>
                                         </div>
                                         <div class="o_popover popover mw-100 o-popover--with-arrow bs-popover-bottom o-popover-bottom o-popover--bs d-none activityPopover" data-id="{{$sale->id}}" id="activityPopover" style="    top: 86px;
-    left: 105.75px;">
+                                                             left: 105.75px;">
                                             <div class="o-mail-ActivityListPopover d-flex flex-column">
                                                 <div class="overflow-y-auto d-flex flex-column flex-grow-1">
 
@@ -2505,136 +2581,136 @@
         // ------------------------------ Creation Date and Closed Date End -----------------------------------------------
 
 
-            $('.add_filter').on('click', function (event) {
-                event.preventDefault();
-                var filterType = $('#customer_filter_select').val();
-                var filterValue = $('#customer_filter_input_value').val();
-                var operatesValue = $('#customer_filter_operates').val();
-                var span_id = $('#span_id').val();
+        $('.add_filter').on('click', function (event) {
+            event.preventDefault();
+            var filterType = $('#customer_filter_select').val();
+            var filterValue = $('#customer_filter_input_value').val();
+            var operatesValue = $('#customer_filter_operates').val();
+            var span_id = $('#span_id').val();
 
-                $('.selected-items .o_searchview_facet').remove();
-                $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
-                $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+            $('.selected-items .o_searchview_facet').remove();
+            $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+            $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
 
-                
+            
 
-                handleTagSelection(filterType, operatesValue, filterValue, span_id);
+            handleTagSelection(filterType, operatesValue, filterValue, span_id);
 
-                // Prepare data to send
-                var data = {
-                    filterType: filterType,
-                    filterValue: filterValue,
-                    operatesValue: operatesValue
-                };
+            // Prepare data to send
+            var data = {
+                filterType: filterType,
+                filterValue: filterValue,
+                operatesValue: operatesValue
+            };
 
-                // Send AJAX request
-                $.ajax({
-                    url: '{{route('crm.pipeline.custom.filter')}}',
-                    type: 'POST',
-                    data: data,
-                    success: function (response) {
-                        console.log(response);
-                        var $tableBody = $('#lead-table-body');
-                        var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
+            // Send AJAX request
+            $.ajax({
+                url: '{{route('crm.pipeline.custom.filter')}}',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    console.log(response);
+                    var $tableBody = $('#lead-table-body');
+                    var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
 
-                        // Clear existing table data
-                        $tableBody.empty();
+                    // Clear existing table data
+                    $tableBody.empty();
 
-                        // Initialize total variables
-                        var totalExpectedRevenue = 0; // Initialize total expected revenue
-                        var totalRecurringMrr = 0; // Initialize total recurring MRR
-                        var totalRecurringRevenue = 0; // Initialize total recurring revenue
+                    // Initialize total variables
+                    var totalExpectedRevenue = 0; // Initialize total expected revenue
+                    var totalRecurringMrr = 0; // Initialize total recurring MRR
+                    var totalRecurringRevenue = 0; // Initialize total recurring revenue
 
-                        if (response.data.length === 0) {
-                            // Display the message if no data is found
-                            $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
+                    if (response.data.length === 0) {
+                        // Display the message if no data is found
+                        $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
+                        
+                        // Hide the footer if no data is found
+                        $tableFooter.hide();
+                    } else {
+                        var index = 1;
+
+                        // Loop through the response and create table rows
+                        response.data.forEach(function (item) {
+                            var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
+
+                            // Append data only for the visible columns
+                            if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
+                            if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
+                            if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
+                            if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
+                            if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                            if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                            if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                            if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                            if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
+                            if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
+                            if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
+                            if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
+                            if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                            if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
+                            if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
+                            if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
+                            if (table.column(16).visible()) {
+                                rowHtml += `<td>${item.expected_revenue || ''}</td>`;
+                                totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
+                            }
+                            if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
                             
-                            // Hide the footer if no data is found
-                            $tableFooter.hide();
-                        } else {
-                            var index = 1;
-
-                            // Loop through the response and create table rows
-                            response.data.forEach(function (item) {
-                                var rowHtml = `<tr class="lead-row" data-id="${item.id}">`;
-
-                                // Append data only for the visible columns
-                                if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
-                                if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
-                                if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
-                                if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
-                                if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
-                                if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
-                                if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
-                                if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
-                                if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
-                                if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
-                                if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
-                                if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
-                                if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
-                                if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
-                                if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
-                                if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
-                                if (table.column(16).visible()) {
-                                    rowHtml += `<td>${item.expected_revenue || ''}</td>`;
-                                    totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
-                                }
-                                if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
-                                
-                                var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
-                                var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
-                                var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
-                                
-                                if (table.column(18).visible()) {
-                                    rowHtml += `<td>${expertMrr}</td>`;
-                                    totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
-                                }
-                                if (table.column(19).visible()) {
-                                    rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
-                                    totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
-                                }
-                                if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
-                                if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
-                                if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
-                                if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
-                                if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
-                                
-                                rowHtml += `</tr>`;
-                                $tableBody.append(rowHtml);
-                            });
-
-                            // Show the footer since we have data
-                            $tableFooter.show();
-                        }
-
-                        // Update footer with totals
-                        $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
-                        $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
-                        $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
-
-                        // Attach click event handler to rows
-                        $('#lead-table-body .lead-row').on('click', function () {
-                            var leadId = $(this).data('id');
-                            var index = $(this).find('td.d-none').text();
-                            window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+                            var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
+                            var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
+                            var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
+                            
+                            if (table.column(18).visible()) {
+                                rowHtml += `<td>${expertMrr}</td>`;
+                                totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
+                            }
+                            if (table.column(19).visible()) {
+                                rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
+                                totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
+                            }
+                            if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
+                            if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                            if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                            if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
+                            if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                            
+                            rowHtml += `</tr>`;
+                            $tableBody.append(rowHtml);
                         });
 
-                        // Apply the column visibility settings
-                        table.columns().every(function () {
-                            var column = this;
-                            var index = column.index();
-                            var isVisible = column.visible();
-                            column.visible(isVisible);
-                        });
-                        $('#customFilterModal').removeClass('show').css('display', 'none');
-                    },
-                    error: function () {
-                        console.error('Failed to fetch data');
-                         $('#customFilterModal').modal('hide');
+                        // Show the footer since we have data
+                        $tableFooter.show();
                     }
-                });
-                
+
+                    // Update footer with totals
+                    $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+                    $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+                    $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
+
+                    // Attach click event handler to rows
+                    $('#lead-table-body .lead-row').on('click', function () {
+                        var leadId = $(this).data('id');
+                        var index = $(this).find('td.d-none').text();
+                        window.location.href = `/lead-add/${leadId}/${index}`; // Adjust the URL as needed
+                    });
+
+                    // Apply the column visibility settings
+                    table.columns().every(function () {
+                        var column = this;
+                        var index = column.index();
+                        var isVisible = column.visible();
+                        column.visible(isVisible);
+                    });
+                    $('#customFilterModal').removeClass('show').css('display', 'none');
+                },
+                error: function () {
+                    console.error('Failed to fetch data');
+                        $('#customFilterModal').modal('hide');
+                }
             });
+            
+        });
 
         function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
             console.log(filterType, operatesValue, filterValue, span_id);
@@ -2730,19 +2806,40 @@
         
 
         // Handle item selection from dropdown
-        $(document).on('click', '.o-dropdown-item_1', function (e) {
-            e.stopPropagation();
-            $('.tag').remove();
+          $(document).on('click', '.o-dropdown-item_1', function (e) {
+            $('.o-dropdown-item_1  .checkmark').hide();
             $('.o-dropdown-item-2 .checkmark').hide();
-            $('.tag1').remove();
             $('.lost_span:contains("Lost")').find('.checkmark').hide();
-            $('.LTFtag').remove();
             $('.LTFActivities .checkmark').hide();
-            $('.CRtag').remove();
             $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+            e.stopPropagation();
+
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
-            handleTagSelectionGrop(selectedValue, $item);
+            
+            // Toggle checkmark visibility
+            var $checkmark = $item.find('.checkmark');
+            if ($checkmark.is(':visible')) {
+                // Uncheck and remove the tag if it's already checked
+                $checkmark.hide();
+                $item.removeClass('selected'); // Optionally, you can add a class for styling
+                $('.tag-item[data-value="' + selectedValue + '"]').parent().remove(); // Remove the tag
+            } else {
+                // Clear previous tags and hide other checkmarks
+                $('.tag-item').parent().remove();
+                $('.o-dropdown-item_1 .checkmark').hide();
+                $('.lost_span:contains("Lost") .checkmark').hide();
+                
+                // Show checkmark for the selected item
+                $checkmark.show();
+                $item.addClass('selected'); // Optionally, you can add a class for styling
+                
+                // Create and append new tag
+                handleTagSelectionGrop(selectedValue, $item);
+            }
+
+            // Clear search input
+            $('#search-input').val('').attr('placeholder', 'Search...');
         });
 
         // Listen to changes in the select dropdown
@@ -2754,76 +2851,36 @@
 
 
         // Function to handle tag selection
-        function handleTagSelectionGrop(selectedValue, $item = null) {
-            var $tag = $('.group_by_tag');
-            var $tagItem = $('.tag-item[data-value="' + selectedValue + '"]');
+      // Function to handle tag selection
+          function handleTagSelectionGrop(selectedValue, $item = null) {
+            // Remove any existing tags
+            $('.tag-item').parent().remove();
 
-            if ($tagItem.length > 0) {
-                // Remove selected value
-                $tagItem.remove();
-                updateTagSeparatorsGrop();
+            // Create new tag with an icon
+            var newTagHtml = `
+            <span class="tag-item" data-value="${selectedValue}">
+                <a href="#" class="group-setting-icon icon_tag" style="cursor: default;">
+                    <span class="setting_icon" style="padding:6px !important;background-color: rgb(1 126 132) !important;"><i class="fa-solid fa-layer-group"></i></span>
+                </a> 
+                ${selectedValue}
+            </span>
+            `;
+            var $tag = $(`<span class="group_by_tag">${newTagHtml} <span class="remove_tag_group_by" style="cursor:pointer">×</span></span>`);
 
-                if ($tag.children().length === 0) {
-                    $tag.remove();
-                    $('#search-input').val('').attr('placeholder', 'Search...');
-                }
+            // Append the new tag
+            $('#search-input').before($tag);
+            updateTagSeparatorsGrop(); // Call to update separators
 
-                if ($item) {
-                    $item.find('.checkmark').hide();
-                }
-
-                let selectedTags = [];
-                $('.tag-item').each(function () {
-                    selectedTags.push($(this).data('value'));
-                });
-
-                if (selectedTags.length == 0) {
-                   location.reload();
-                }
-                filter(selectedTags);
-
-            } else {
-                // Add selected value
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '</span>';
-
-                // Check if the tag already exists
-                if ($('.tag-item[data-value="' + selectedValue + '"]').length === 0) {
-                    // If no tags exist, create a new group_by_tag span
-                    if ($('.group_by_tag').length === 0) {
-                        $('#search-input').before(
-                            '<span class="group_by_tag">' +
-                            '<a href="#"class="setting-icon icon_tag">' +
-                            '<span class="setting_icon se_filter_icon setting-icon"><i class="fa fa-filter"></i></span>' +
-                            '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
-                            '</a>' +
-                            newTagHtml +
-                            '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
-                            '</span>'
-                        );
-                    } else {
-                        // Append to existing group_by_tag span
-                        $('.group_by_tag').append(' ' + newTagHtml);
-                    }
-                    updateTagSeparatorsGrop();
-                }
-
-                if ($item) {
-                    $item.find('.checkmark').show();
-                }
-
-                $('#search-input').val('');
-                $('#search-input').attr('placeholder', '');
-
-                // Collect selected tags
-                let selectedTags = [];
-                $('.tag-item').each(function () {
-                    selectedTags.push($(this).data('value'));
-                });
-                filter(selectedTags);
+            if ($item) {
+                $item.find('.checkmark').show();
             }
 
+            // Collect selected tags
+            let selectedTags = [selectedValue]; // Only one tag now
+            filter(selectedTags);
             $('#search-dropdown').hide();
         }
+
 
         // The rest of your code remains unchanged
 
@@ -2832,15 +2889,17 @@
             var $tag = $('.group_by_tag');
             var $tagItems = $tag.find('.tag-item');
             var html = '';
+
             $tagItems.each(function (index) {
                 html += $(this).prop('outerHTML');
                 if (index < $tagItems.length - 1) {
-                    html += ' > ';
+                    html += ' > '; // Add separator if more than one tag
                 }
             });
+
+            // Always add the remove button
             html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
             $tag.html(html);
-            updateRemoveTagButtonGrop();
         }
 
         // Update/remove tag button
@@ -2900,57 +2959,462 @@
                 success: function (response) {
                     console.log('Response:', response);
 
-                    var tableBody = $('#lead-table-body');
-                    tableBody.empty();
+                    $('.o_kanban_renderer').empty();
+                    $('#lead-container').removeClass('flex-wrap');
+                    const leadsData = response.data;
+                    $.each(leadsData, function (groupName, leads) {
+                        $.each(leads, function(index, lead) {
+                                let overdueCount = 0;
+                                let todayCount = 0;
+                                let plannedCount = 0;
+                                let totalCount = 0;
 
-                    var leads = response.data;
+                                let totalExpertMrr = 0;
+                                if(lead.recurring_revenue && lead.getRecurringPlan && lead.getRecurringPlan.months){
+                                    let revenue = floatval(lead.recurring_revenue);
+                                    let months = floatval(lead.getRecurringPlan.months);
+                                    let expertMrr = (months > 0) ? revenue / months : 0; // Set to 0 if months are invalid
 
-                    function renderGroup(groupLeads, level) {
-                        $.each(groupLeads, function (groupKey, groupValue) {
-                            var groupRow = `
-                                <tr class="group-header" data-level="${level}" style="cursor:pointer;">
-                                    <td colspan="20" style="padding-left:${level * 20}px;">
-                                        <b>${groupKey} (${$.isArray(groupValue) ? groupValue.length : Object.keys(groupValue).length})</b>
-                                    </td>
-                                </tr>
-                            `;
-                            tableBody.append(groupRow);
+                                    // Add to total
+                                    totalExpertMrr += expertMrr; 
+                                }
 
-                            // Render nested items if applicable
-                            if ($.isArray(groupValue)) {
-                                groupValue.forEach(function (item) {
-                                    // Adjust this part according to your actual data structure
-                                    var detailRow = `
-                                        <tr class="group-detail" data-level="${level + 1}" style="display:none;">
-                                            <td style="padding-left:${(level + 1) * 20}px;">${item.name || item.opportunity || ''}</td>
-                                            <td>${item.created_at || ''}</td>
-                                            <td>${item.email || ''}</td>
-                                            <td>${item.phone || ''}</td>
-                                            <!-- Add more columns as needed -->
-                                        </tr>
-                                    `;
-                                    tableBody.append(detailRow);
-                                });
-                            } else if (typeof groupValue === 'object') {
-                                // Handle cases where groupValue is an object with nested groups
-                                renderGroup(groupValue, level + 1);
-                            }
+                                  console.log(totalExpertMrr, 'totalExpertMrr');
+                                
+
+                                 // Assuming that leads.activities contain the list of activities
+                                    if (lead.activities && Array.isArray(lead.activities)) {
+                                            // Iterate through activities
+                                            $.each(lead.activities, function (index, activity) {
+
+                                                let dueDate = new Date(activity.due_date);
+                                                console.log(dueDate, 'dueDate');
+
+                                                let now = new Date();
+                                                let startOfToday = new Date();
+                                                startOfToday.setHours(0, 0, 0, 0); // Set to start of today
+
+                                                if (dueDate < startOfToday) {
+                                                    overdueCount++;
+                                                } else if (now.toDateString() === dueDate.toDateString()) {
+                                                    todayCount++;
+                                                } else if (dueDate > now) {
+                                                    plannedCount++;
+                                                }
+                                            });
+                                        } else {
+                                            console.log('No activities found for this lead.');
+                                        }
+
+                                    totalCount = overdueCount + todayCount + plannedCount;
+
+                                    // Calculate the percentages
+                                    let overduePercentage = totalCount > 0 ? (overdueCount / totalCount) * 100 : 0;
+                                    let todayPercentage = totalCount > 0 ? (todayCount / totalCount) * 100 : 0;
+                                    let plannedPercentage = totalCount > 0 ? (plannedCount / totalCount) * 100 : 0;
+                                    console.log(overduePercentage,todayPercentage,plannedPercentage)
+                         const groupHtml = `
+                           <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable" data-id="${leads.id}">
+                         <div class="o_kanban_header position-sticky top-0 z-index-1 py-2">
+                    <div class="o_kanban_header_title position-relative d-flex lh-lg">
+                        <span class="o_column_title flex-grow-1 d-inline-block mw-100 text-truncate fs-4 fw-bold align-top text-900">${groupName}</span>
+                        <div class="o_kanban_config"><button class="btn px-2 o-dropdown dropdown-toggle dropdown" aria-expanded="false"><i class="fa fa-gear opacity-50 opacity-100-hover" role="img" aria-label="Settings" title="Settings"></i></button></div>
+                        <button class="o_kanban_quick_add new-lead-btn btn pe-2 me-n2">
+                            <i class="fa fa-plus opacity-75 opacity-100-hover" role="img" aria-label="Quick add" title="Quick add"></i>
+                        </button>
+                    </div>
+
+                    <div class="o_kanban_counter position-relative d-flex align-items-center justify-content-between">
+                        <div class="o_column_progress progress bg-300 w-50">
+
+
+                                  
+                                    <div class="progress">
+                                      <div id="overdue" role="progressbar" class="progress-bar bg-danger" style="width: ${overduePercentage}px" aria-label="Overdue" title="Overdue (${overdueCount})"></div>
+                            <div id="today" role="progressbar" class="progress-bar bg-warning" style="width: ${todayPercentage}px" aria-label="Today" title="Today (${todayCount})"></div>
+                            <div id="planned" role="progressbar" class="progress-bar bg-success" style="width: ${plannedPercentage}px" aria-label="Planned" title="Planned (${plannedCount})"></div>
+                                    </div>
+
+
+                         
+                        </div>
+                        
+                        <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false" title="Expected Revenue" data-target="{{ number_format($totalExpertMrr, 00) }}"><b> {{ number_format($totalExpertMrr, 2) }}</b></div>
+                        <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false" title="Expected Revenue" data-target="{{ $stage->totalExpectedRevenue() }}"><b>0</b></div>
+                    </div>
+                </div>
+
+                <div id="append-container-new"  class="append-container-new"></div>
+
+                @foreach($stage->sales as $sale)
+             
+                <div role="article" class="o_kanban_record sale-card d-flex o_draggable oe_kanban_card_undefined o_legacy_kanban_record" data-id="{{$sale->id}}" tabindex="0">
+                    <div class="oe_kanban_color_0 oe_kanban_global_click oe_kanban_card d-flex flex-column">
+                        <div class="oe_kanban_color w-5 " data-id="{{$sale->id}}" style="width: 3px;background: {{$sale->is_side_colour}};height: 100%;position: absolute;top: 0;left: 0;"></div>
+                        @if(isset($sale) && $sale->is_lost == 2)
+                        <div class="o_widget o_widget_web_ribbon">
+                            <div class="ribbon ribbon-top-right">
+                                <span class="text-bg-danger" title="">Lost</span>
+                            </div>
+                        </div>
+                        @endif
+                        <div class="oe_kanban_content flex-grow-1" data-id="{{ $sale->id }}" >
+                            <div class="oe_kanban_details"><strong class="o_kanban_record_title"><span>{{ $sale->opportunity }}</span></strong></div>
+                            <div class="o_kanban_record_subtitle">
+                               @if($sale->expected_revenue != '0.00')
+                                    <div name="expected_revenue" class="o_field_widget o_field_monetary">
+                                        <span>₹&nbsp;{{ number_format($sale->expected_revenue, 2) }}</span> &nbsp; + &nbsp;
+                                        <span>₹&nbsp;{{ number_format($sale->recurring_revenue, 2) }}</span>
+                                        @if($sale->getRecurringPlan) 
+                                            &nbsp; <span>{{ $sale->getRecurringPlan->plan_name ?? ''}}</span>
+                            
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+                            @if($sale->contact)
+                            <div>
+                                <span class="o_text_overflow">{{ optional($sale->contact)->name }}</span>
+                            </div>
+                            @endif
+                            <div>
+                                <div name="tag_ids" class="o_field_widget o_field_many2many_tags">
+                                  
+                                    <div class="d-flex flex-wrap gap-1"> 
+                                     @foreach($sale->tags() as $tag)  
+                                      <span class="badge badge-primary" style="background:{{$tag->color}};border-radius: 23px">{{ $tag->name }}</span>
+                                        @endforeach
+                                        
+                                   
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div name="lead_properties" class="o_field_widget o_field_properties">
+                                    <div class="w-100 fw-normal text-muted"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oe_kanban_footer">
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <div name="priority" class="o_field_widget o_field_priority">
+                                        <div class="o_priority set-priority" role="radiogroup" name="priority" aria-label="Priority">
+                                            <a href="#" class="o_priority_star fa {{ $sale->priority == 'medium' || $sale->priority == 'high' || $sale->priority == 'very_high' ? 'fa-star' : 'fa-star-o' }}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a><a href="#" class="o_priority_star fa {{ $sale->priority == 'high' || $sale->priority == 'very_high' ? 'fa-star' : 'fa-star-o' }}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a><a href="#" class="o_priority_star fa {{ $sale->priority == 'very_high' ? 'fa-star' : 'fa-star-o' }}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                        </div>
+                                    </div>
+                                     {{-- @foreach($sale->activities as $activity) --}}
+                                        @php
+                                            $now = \Carbon\Carbon::now();
+                                            $startOfToday = $now->copy()->startOfDay();
+
+                                          
+                                            // Calculate the counts for each status
+                                            $overdueActivities = $sale->activities->filter(function ($activity) use ($startOfToday) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $dueDate->lessThan($startOfToday);
+                                            });
+
+                                            $todayActivities = $sale->activities->filter(function ($activity) use ($now) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $now->isSameDay($dueDate);
+                                            });
+
+                                            $plannedActivities = $sale->activities->filter(function ($activity) use ($now) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $now->lt($dueDate);
+                                            });
+
+                                            $overdueCount = $overdueActivities->count();
+                                            $todayCount = $todayActivities->count();
+                                            $plannedCount = $plannedActivities->count();
+                                        @endphp
+                                        @php
+                                            $now = \Carbon\Carbon::now();
+                                            $startOfToday = $now->copy()->startOfDay();
+
+                                            // Get the first overdue activity
+                                            $firstOverdueActivity = $sale->activities->filter(function ($activity) use ($startOfToday) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $dueDate->lessThan($startOfToday); // Activity is overdue
+                                            })->first();
+
+                                            // Get the first activity due today
+                                            $firstTodayActivity = $sale->activities->filter(function ($activity) use ($now) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $now->isSameDay($dueDate); // Activity is due today
+                                            })->first();
+
+                                            // Get the first planned activity
+                                            $firstPlannedActivity = $sale->activities->filter(function ($activity) use ($now) {
+                                                $dueDate = \Carbon\Carbon::parse($activity->due_date);
+                                                return $now->lt($dueDate); // Activity is planned (in the future)
+                                            })->first();
+
+                                            // Determine the first relevant activity (prefer overdue, then today, then planned)
+                                            $firstActivity = $firstOverdueActivity ?? $firstTodayActivity ?? $firstPlannedActivity;
+
+                                            // Default icon when no activities exist
+                                            $iconClass = 'fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark';
+
+                                            if ($firstActivity) {
+                                                // Determine the icon based on the activity's due date
+                                                $dueDate = \Carbon\Carbon::parse($firstActivity->due_date);
+
+                                                if ($dueDate->lessThan($startOfToday)) {
+                                                    // Overdue activity
+                                                    $iconClass = 'fa fa-fw fa-lg text-danger fa-exclamation-triangle'; // Overdue
+                                                } elseif ($now->isSameDay($dueDate)) {
+                                                    // Due today
+                                                    $iconClass = 'fa fa-fw fa-lg text-success fa-check'; // Due today
+                                                } elseif ($now->lt($dueDate)) {
+                                                    // Planned activity
+                                                    $iconClass = 'fa fa-fw fa-lg text-primary fa-clock-o'; // Planned
+                                                }
+
+                                                // Adjust icon based on the activity type
+                                                switch ($firstActivity->activity_type) {
+                                                    case 'email':
+                                                        $iconClass = 'fa fa-fw fa-lg text-danger fa-envelope';
+                                                        break;
+                                                    case 'request_signature':
+                                                        $iconClass = 'fa fa-fw fa-lg text-success fa-pencil-square-o';
+                                                        break;
+                                                    case 'meeting':
+                                                        $iconClass = 'fa fa-fw fa-lg text-success fa-users';
+                                                        break;
+                                                    case 'upload_document':
+                                                        $iconClass = 'fa fa-fw fa-lg text-success fa-upload';
+                                                        break;
+                                                    case 'call':
+                                                        $iconClass = 'fa fa-fw fa-lg text-success fa-phone';
+                                                        break;
+                                                    case 'to-do':
+                                                        $iconClass = 'fa fa-fw fa-lg text-success fa-check';
+                                                        break;
+                                                }
+                                            }
+                                        @endphp
+
+
+
+                                        <!-- Display icon for the first relevant activity -->
+                                        <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
+                                            <a class="o-mail-ActivityButton activityButton" role="button" aria-label="Show activities" id="activityButton" data-id="{{$sale->id}}" title="Show activities">
+                                                <i class="{{ $iconClass }}" role="img"></i>
+                                            </a>
+                                        </div>
+                                        <div class="o_popover popover mw-100 o-popover--with-arrow bs-popover-bottom o-popover-bottom o-popover--bs d-none activityPopover" data-id="{{$sale->id}}" id="activityPopover" style="    top: 86px;
+                                                             left: 105.75px;">
+                                            <div class="o-mail-ActivityListPopover d-flex flex-column">
+                                                <div class="overflow-y-auto d-flex flex-column flex-grow-1">
+
+                                                    <!-- Overdue Section -->
+                                                    <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                                        <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                                            <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
+                                                        </div>
+                                                        @foreach($overdueActivities as $value)
+                                                            <div class="d-flex align-items-center flex-wrap mx-3 " data-id="{{ $value->id }}">
+                                                              @php
+                                                   
+                                                                        $user = $sale->user;
+                                                                        $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+
+                                                                        $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+                                                                
+                                                                        if ($user) {
+                                                                            $colorIndex = crc32($user->email) % count($colors);
+                                                                            $bgColor = $colors[$colorIndex];
+                                                                        } else {
+                                                                            $bgColor = '#f0f0f0'; 
+                                                                        }
+                                                                    @endphp
+                                                                 <span
+                                                                    class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
+                                                                    {{ $initial }}
+                                                                </span>
+                                                                <div class="mt-1 flex-grow-1">
+                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
+                                                                </div>
+                                                                <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
+                                                                <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                                <div class="py-2 px-3 d-none" id="overdue_feedback_{{ $value->id }}">
+                                                                    <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
+                                                                    <div class="mt-2">
+                                                                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
+                                                                        <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#overdue_feedback_{{ $value->id }}">Discard </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                    <!-- Today Section -->
+                                                    <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                                        <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                                            <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
+                                                        </div>
+                                                        @foreach($todayActivities as $value)
+                                                            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                                              @php
+                                                   
+                                                                        $user = $sale->user;
+                                                                        $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+
+                                                                        $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+                                                                
+                                                                        if ($user) {
+                                                                            $colorIndex = crc32($user->email) % count($colors);
+                                                                            $bgColor = $colors[$colorIndex];
+                                                                        } else {
+                                                                            $bgColor = '#f0f0f0'; 
+                                                                        }
+                                                                    @endphp
+                                                                 <span
+                                                                    class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
+                                                                    {{ $initial }}
+                                                                </span>
+                                                                <div class="mt-1 flex-grow-1">
+                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
+                                                                </div>
+                                                                <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
+                                                                <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                                <div class="py-2 px-3 d-none" id="today_feedback_{{ $value->id }}">
+                                                                    <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
+                                                                    <div class="mt-2">
+                                                                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
+                                                                        <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#today_feedback_{{ $value->id }}">Discard </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+
+                                                    <!-- Planned Section -->
+                                                    <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                                        <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                                            <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
+                                                        </div>
+                                                        @foreach($plannedActivities as $value)
+                                                            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                                               @php
+                                                   
+                                                                        $user = $sale->user;
+                                                                        $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+
+                                                                        $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+                                                                
+                                                                        if ($user) {
+                                                                            $colorIndex = crc32($user->email) % count($colors);
+                                                                            $bgColor = $colors[$colorIndex];
+                                                                        } else {
+                                                                            $bgColor = '#f0f0f0'; 
+                                                                        }
+                                                                    @endphp
+                                                                 <span
+                                                                    class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
+                                                                    {{ $initial }}
+                                                                </span>
+                                                                <div class="mt-1 flex-grow-1">
+                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Planned</small>
+                                                                </div>
+                                                                <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
+                                                                <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                                <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                                <div class="py-2 px-3 d-none" id="planned_feedback_{{ $value->id }}">
+                                                                    <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
+                                                                    <div class="mt-2">
+                                                                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
+                                                                        <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#planned_feedback_{{ $value->id }}">Discard </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="popover-arrow end-auto"></div>
+                                        </div>
+                                </div>
+
+                                <div class="oe_kanban_bottom_right">
+                                    <div name="user_id" class="o_field_widget o_field_many2one_avatar_user o_field_many2one_avatar_kanban o_field_many2one_avatar">
+                                            <div class="d-flex align-items-center gap-1" data-tooltip="{{ $sale->email ?? '' }}"><span class="o_avatar o_m2o_avatar d-flex">
+                                                    @php
+                                                    
+                                                        $user = $sale->salesPerson;
+                                                        $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
+
+                                                        $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+                                                
+                                                        if ($user) {
+                                                            $colorIndex = crc32($user->email) % count($colors);
+                                                            $bgColor = $colors[$colorIndex];
+                                                        } else {
+                                                            $bgColor = '#f0f0f0'; 
+                                                        }
+                                                    @endphp
+                                                    @if(optional($user)->profile)
+                                                        <!-- If profile image exists -->
+                                                        <img class="rounded" src="{{ $user->profile }}" alt="User Profile">
+                                                    @else
+                                                        <!-- If no profile image, display the first letter of email with dynamic background color -->
+                                                        <div class="placeholder-circle rounded d-flex align-items-center justify-content-center" data-id="{{$sale->id}}" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
+                                                            <span>{{ $initial }}</span>
+                                                        </div>
+                                                    @endif
+
+                                                </span>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="o_dropdown_kanban bg-transparent position-absolute end-0">
+                        <button class="btn o-no-caret rounded-0 o-dropdown dropdown-toggle dropdown" title="Dropdown menu" aria-expanded="false">
+                            <span class="fa fa-ellipsis-v"></span>
+                        </button>
+
+                        <div class="dropdown-menu custom-dropdown" style="display:none;">
+                            <div class="dropdown-item op_edit" data-id="{{$sale->id}}">Edit</div>
+                            <div class="dropdown-item op_delete" data-id="{{$sale->id}}">Delete</div>
+                            <div class="dropdown-divider"></div>
+                            <div class="color-options">
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#ffffff" style="background-color:#ffffff;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#ee2d2d" style="background-color:#ee2d2d;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#dc8534" style="background-color:#dc8534;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#e8bb1d" style="background-color:#e8bb1d;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#5794dd" style="background-color:#5794dd;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#9f628f" style="background-color:#9f628f;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#db8865" style="background-color:#db8865;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#41a9a2" style="background-color:#41a9a2;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#304be0" style="background-color:#304be0;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#ee2f8a" style="background-color:#ee2f8a;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#61c36e" style="background-color:#61c36e;"></span>
+                                <span class="color-box" data-id="{{$sale->id}}" data-color="#9872e6" style="background-color:#9872e6;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+
+            </div>
+                          `;
+                           $('.o_kanban_renderer').append(groupHtml);
                         });
-                    }
-
-                    renderGroup(leads, 0);
-
-                    // Toggle visibility of nested groups
-                    $('.group-header').on('click', function () {
-                        var level = $(this).data('level');
-                        var nextRow = $(this).next();
-
-                        // Toggle the visibility of the rows that have a greater level than the clicked group
-                        while (nextRow.length && nextRow.data('level') > level) {
-                            nextRow.toggle(); // Toggle the visibility of the next row
-                            nextRow = nextRow.next(); // Move to the next row
-                        }
                     });
+
+                   
                 },
                 error: function (xhr, status, error) {
                     console.error('Error applying filter:', error);
