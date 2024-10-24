@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('products_new_items', function (Blueprint $table) {
             $table->id();
-            $table->string('product_name')->nullable();
+            $table->string('name')->nullable();
             $table->string('image')->nullable();
             $table->string('product_type')->nullable();
             $table->string('track_inventory')->nullable();
@@ -36,10 +36,11 @@ return new class extends Migration
             $table->longtext('del_des')->nullable();
             $table->string('income_ac')->nullable();
             $table->string('expense_ac')->nullable();
-             // Add new columns after the third column
-             $table->unsignedBigInteger('sales_tax_id')->nullable()->after('product_type');
-             $table->json('purchase_taxes')->nullable()->after('sales_tax_id');
-             $table->unsignedBigInteger('category_id')->nullable()->after('purchase_taxes');
+             $table->string('sales_tax_id')->nullable();
+             $table->json('purchase_taxes')->nullable();
+             $table->string('category_id')->nullable();
+             $table->string('tags_id')->nullable();
+             $table->string('invoicing_policy_service_id')->nullable();
              
             $table->timestamps();
         });

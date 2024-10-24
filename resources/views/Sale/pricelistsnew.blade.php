@@ -520,28 +520,16 @@
                                                                                                                     <select
                                                                                                                         class="o-autocomplete--input o_input product_drop_edit"
                                                                                                                         id="product_id_50">
-                                                                                                                        <option
-                                                                                                                            value="">
-                                                                                                                            Select
-                                                                                                                            Products
-                                                                                                                        </option>
+                                                                                                                        
                                                                                                                         @foreach ($products as $prod)
                                                                                                                             <option id="product_id_50"
                                                                                                                                 value="{{ $prod->name }}">
                                                                                                                                 {{ $prod->name }}
                                                                                                                             </option>
                                                                                                                         @endforeach
-                                                                                                                        <option
-                                                                                                                            value="add_product_typing">
-                                                                                                                            Start
-                                                                                                                            typing...
-                                                                                                                        </option>
+                                                                                                                        
                                                                                                                     </select>
-                                                                                                                    <input
-                                                                                                                        type="text"
-                                                                                                                        id="new_product_type_here"
-                                                                                                                        placeholder="Enter new Products"
-                                                                                                                        style="display: none;">
+                                                                                                                  
                                                                                                                 </div>
                                                                                                                 <span
                                                                                                                     class="o_dropdown_button"></span>
@@ -591,17 +579,9 @@
                                                                                                                                 {{ $categorie->categories_name }}
                                                                                                                             </option>
                                                                                                                         @endforeach
-                                                                                                                        <option
-                                                                                                                            value="add_category_typing">
-                                                                                                                            Start
-                                                                                                                            typing...
-                                                                                                                        </option>
+                                                                                                                       
                                                                                                                     </select>
-                                                                                                                    <input
-                                                                                                                        type="text"
-                                                                                                                        id="new_category_type_here"
-                                                                                                                        style="display: none;"
-                                                                                                                        placeholder="Enter new Cetegory">
+                                                                                                                
                                                                                                                 </div>
                                                                                                                 <span
                                                                                                                     class="o_dropdown_button"></span>
@@ -1272,17 +1252,9 @@
                                                                                                                 {{ $prod->name }}
                                                                                                             </option>
                                                                                                         @endforeach
-                                                                                                        <option
-                                                                                                            value="add_product_typing">
-                                                                                                            Start
-                                                                                                            typing...
-                                                                                                        </option>
+                                                                                                       
                                                                                                     </select>
-                                                                                                    <input
-                                                                                                        type="text"
-                                                                                                        id="new_product_type_here"
-                                                                                                        placeholder="Enter new Products"
-                                                                                                        style="display: none;">
+                                                                                                  
                                                                                                 </div>
                                                                                                 <span
                                                                                                     class="o_dropdown_button"></span>
@@ -1331,17 +1303,9 @@
                                                                                                                 {{ $categorie->categories_name }}
                                                                                                             </option>
                                                                                                         @endforeach
-                                                                                                        <option
-                                                                                                            value="add_category_typing">
-                                                                                                            Start
-                                                                                                            typing...
-                                                                                                        </option>
+                                                                                                       
                                                                                                     </select>
-                                                                                                    <input
-                                                                                                        type="text"
-                                                                                                        id="new_category_type_here"
-                                                                                                        style="display: none;"
-                                                                                                        placeholder="Enter new Cetegory">
+                                                                                                   
                                                                                                 </div>
                                                                                                 <span
                                                                                                     class="o_dropdown_button"></span>
@@ -2798,12 +2762,12 @@
         $('.product_drop_edit').on('change', function() {
             if ($(this).val() === 'add_product_typing') {
                 $(this).hide(); // Hide the dropdown
-                $('#new_product_type_here').show().focus(); // Show the text input and focus on it
+                $('#new_product_type_here_edit').show().focus(); // Show the text input and focus on it
             }
         });
 
         // Handle blur event for the product text input
-        $('#new_product_type_here').on('blur', function() {
+        $('#new_product_type_here_edit').on('blur', function() {
             var newProduct = $(this).val().trim(); // Get the new product name
             if (newProduct !== '') {
                 // Add the new product to the dropdown dynamically
@@ -2826,12 +2790,32 @@
         $('.category_drop_down_edit').on('change', function() {
             if ($(this).val() === 'add_category_typing') {
                 $(this).hide(); // Hide the dropdown
-                $('#new_category_type_here').show().focus(); // Show the text input and focus on it
+                $('#new_category_type_here_edit').show().focus(); // Show the text input and focus on it
             }
         });
 
+           $('#new_category_type_here_edit').on('blur', function() {
+            var newCategory = $(this).val().trim(); // Get the new category name
+            if (newCategory !== '') {
+                // Add the new category to the dropdown dynamically
+                $('.category_drop_down').append(
+                    `<option value="${newCategory}" selected>${newCategory}</option>`);
+                // Hide the text input and show the dropdown
+                $(this).hide();
+                $('.category_drop_down').show();
+            } else {
+                // If no category is typed, revert to showing the dropdown
+                $(this).hide();
+                $('.category_drop_down').show();
+                $('.category_drop_down').val(''); // Reset dropdown selection
+            }
+        });
+
+
+        
+
         // Handle blur event for the category text input
-        $('#new_category_type_here').on('blur', function() {
+        $('#new_product_type_here_edit').on('blur', function() {
             var newCategory = $(this).val().trim(); // Get the new category name
             if (newCategory !== '') {
                 // Add the new category to the dropdown dynamically
@@ -2874,7 +2858,6 @@
                 const fixedPrice = $(this).data('fixed_price');
                 const minQty = $(this).data('min_oty');
                 const strat_date = $(this).data('strat_date');
-                alert("Start Date:", strat_date); // Check the value
                 const end_date = $(this).data('end_date');
 
                 // Populate modal fields
