@@ -560,13 +560,12 @@
     .input-filter-dropdown-menu{
         position: absolute;
         background-color: #F9F9F9;
-        min-width: 685px !important;
+        min-width: 586px !important;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
+        z-index: 999;
         top: auto;
         right: auto;
-        left: 6%;
-        overflow-y: scroll;
+        overflow-y: hidden;
         text-decoration: none;
         color: black;
     }
@@ -839,6 +838,9 @@
         cursor: pointer;
     }
     
+    .fa-star{
+        color: black;
+    }
 </style>
 
 
@@ -1226,6 +1228,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1363,6 +1366,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Get the text of the clicked "Lost" span
@@ -1495,6 +1499,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1786,6 +1791,7 @@
                 $('.selected-items .o_searchview_facet').remove();
                 $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
                 $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+                $('.remove-input-filter').remove();
 
                 
 
@@ -1971,6 +1977,7 @@
             $('.LTFtag').remove();
             $('.LTFActivities .checkmark').hide();
             $('.CRtag').remove();
+            $('.remove-input-filter').remove();
             $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
@@ -2802,22 +2809,36 @@
     });
 
     $('.input-filter-click li').on('click', function() {
+        $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+        $('.o-dropdown-item_1  .checkmark').hide();
+        $('.remove-input-filter').remove();
+        $('.o-dropdown-item-2 .checkmark').hide();
+        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+        $('.LTFActivities .checkmark').hide();
+        $('.tag').hide();
+        $('.tag1').hide();
+        $('.LTFtag').hide();
+        $('.group_by_tag').hide();
+        $('.CRtag').hide();
+        $('.tag5').hide();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
         var searchType = $(this).find('b.get-value').text();
         var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
         var currentIndex = $('.tag1').length; // Count current tags for the new index
 
         // Append the tag with searchType and selectedValue
         $('#search-input').before(
-            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain" data-span_id="${currentIndex}">
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}" style="height:25px;margin-top:auto;">
                 <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
                 <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
-                    <small class="px-1">${searchType}</small> <!-- Display searchType -->
-                    <span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
-                        <i class="fa fa-fw fa-cog"></i> <!-- Optional icon -->
+                    <small class="px-1">${searchType}</small> 
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i>
                     </span>
                 </div>
                 <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
-                    <small class="o_facet_value">${selectedValue}</small> <!-- Display selectedValue -->
+                    <small class="o_facet_value">${selectedValue}</small>
                     <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
                 </div>
             </div>`

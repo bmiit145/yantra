@@ -1185,7 +1185,7 @@ private function getUserColor($userId)
             return response()->json(['error' => 'Invalid tags format'], 400);
         }
 
-        $leads = Sale::with(['Activities','salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact'])->get();
+        $leads = Sale::with(['Activities','salesPerson','stage','getState','getCountry','getSource','getCampaign','getMedium','getRecurringPlan','salesPerson','contact','Activities.getUser'])->get();
         $mappedLeads = [];
 
         foreach ($leads as $lead) {
