@@ -1605,7 +1605,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-LTFtag').length === 0) {
-                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-LTFtag').remove();
@@ -1753,7 +1753,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-CRtag').length === 0) {
-                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-CRtag').remove();
@@ -1956,7 +1956,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     $('#search-input').val('').attr('placeholder', 'Search...');
                 }
             } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span></span>';
                 if ($tag.length === 0) {
                     $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                 } else {
@@ -2114,7 +2114,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });
 
             // Always add the remove button
-            html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
+            html += ' <span class="remove_tag_group_by" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>';
             $tag.html(html);
         }
 

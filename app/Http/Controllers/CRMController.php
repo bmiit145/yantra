@@ -1083,7 +1083,7 @@ private function getUserColor($userId)
     $includeLost = in_array('Lost', $tags);
 
     // Start building the query
-    $leadsQuery = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'salesPerson', 'contact', 'Activities','tags');
+    $leadsQuery = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'salesPerson', 'contact', 'Activities');
 
     // Apply filters for My Pipeline, Unassigned, and Open Opportunities
     if ($includeMyPipeline || $includeUnassigned || $includeOpenOpportunities) {
@@ -1157,7 +1157,7 @@ private function getUserColor($userId)
     }
 
     // Ensure only leads with related activities are retrieved
-    $leadsQuery->whereHas('activities', function ($query) {
+    $leadsQuery->whereHas('Activities', function ($query) {
         $query->where('status', '0'); // Only include activities with status '0'
     });
 
@@ -1548,88 +1548,7 @@ public function pipelineFavoritesFilter(Request $request)
     }   
 
 
-    public function graphPipelineFilter(Request $request)
-    {
-        // Get the selected tags from the request
-        $tags = $request->tags ?? [];
-
-        // Normalize tags
-        $includeMyPipeline = in_array('My Pipeline', $tags);
-        $includeUnassigned = in_array('Unassigned', $tags);
-        $includeOpenOpportunities = in_array('Open Opportunities', $tags);
-        $includeWon = in_array('Won', $tags);
-        $includeOngoing = in_array('Ongoing', $tags);
-        $includeLost = in_array('Lost', $tags);
-
-        // Start the query for sales data
-        $salesQuery = Sale::with('salesPerson', 'stage')
-            ->select('stage_id', 'sales_person', DB::raw('count(*) as total'))
-            ->groupBy('stage_id', 'sales_person');
-
-        // Apply filters for My Pipeline, Unassigned, Open Opportunities, and the selected tags
-        $salesQuery->where(function ($query) use ($includeMyPipeline, $includeUnassigned, $includeOpenOpportunities, $includeWon, $includeOngoing, $includeLost) {
-            if ($includeMyPipeline) {
-                $query->whereHas('salesPerson')->where('is_lost', '1');
-            }
-
-            if ($includeUnassigned) {
-                $query->orWhereNull('sales_person')->where('is_lost', '1');
-            }
-
-            if ($includeOpenOpportunities) {
-                $query->orWhereHas('stage', function ($q) {
-                    $q->where('title', '!=', 'Won');
-                })->where('is_lost', '1');
-            }
-
-            if ($includeWon) {
-                $query->orWhereHas('stage', function ($q) {
-                    $q->where('title', '=', 'Won');
-                })->where('is_lost', '1');
-            }
-
-            if ($includeOngoing) {
-                $query->orWhereHas('stage', function ($q) {
-                    $q->where('title', '!=', 'Won');
-                })->where('is_lost', '1');
-            }
-
-            if ($includeLost) {
-                $query->orWhere('is_lost', '2');
-            }
-        });
-
-        // Fetch sales data
-        $salesData = $salesQuery->get();
-
-        // Fetch all stages and key by ID
-        $stages = CrmStage::all()->keyBy('id');
-
-        // Prepare datasets for the chart
-        $datasets = [];
-
-        foreach ($salesData as $data) {
-            if (!isset($stages[$data->stage_id])) {
-                error_log("Stage ID not found: " . $data->stage_id);
-                continue;
-            }
-
-            $user = $data->salesPerson;
-            $userName = $user->name ?? 'Unknown User';
-            $userEmail = $user->email ?? 'No Email';
-            $userColor = $this->getUserColor($data->sales_person);
-
-            // Ensure unique entries for each stage and user
-            $datasets[$data->stage_id]['data'][$data->sales_person] = [
-                'label' => "$userName ($userEmail)",
-                'total' => $data->total,
-                'backgroundColor' => $userColor,
-            ];
-        }
-
-        // Return the prepared datasets in JSON format
-        return response()->json(['datasets' => $datasets, 'stages' => $stages]);
-    }
+   
 
 
     public function leadGrapgGroupPipelineFilter(Request $request)
@@ -2687,6 +2606,644 @@ public function pipelineFavoritesFilter(Request $request)
         $similarLeads = Sale::with('stage')->where('opportunity', $opportunityName)->get();
     
         return view('CRM.similar_lead', compact('crmStages', 'similarLeads', 'opportunityName'));
+    }
+
+    public function pipelineInputFilter(Request $request)
+    {
+        $operatesValue = $request->input('searchType');
+        $filterValue = $request->input('currentValue');
+    
+        $query = CrmStage::leftJoin('sales', 'crm_stages.id', '=', 'sales.stage_id')
+        ->select('crm_stages.id', 'crm_stages.title as crm_title', 'sales.*') // Explicitly select fields
+        ->orderBy('seq_no', 'asc');
+    
+        switch ($operatesValue) {
+            case 'Opportunity':
+                    $query->where('sales.opportunity', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Tag':
+                $query->where('sales.tag', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Salesperson':
+                // $query->where('sales.salesPerson.email', 'like', '%' . $filterValue . '%');
+                $query->whereHas('sales.salesPerson', function ($query) use ($filterValue) {
+                    $query->where('email', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Sales Team':
+                $query->where('sales.sales', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Country':
+                $query->where('sales.getCountry.name', 'like', '%' . $filterValue . '%');
+
+                break;
+            case 'State':
+                $query->where('sales.getState.name', 'like', '%' . $filterValue . '%');
+
+                break;
+            case 'City':
+                $query->where('sales.city', 'like', '%' . $filterValue . '%');
+
+                break;
+            case 'Phone/Mobile':
+                $query->where('sales.phone', 'like', '%' . $filterValue . '%')
+                ->orWhere('sales.mobile', 'like', '%' . $filterValue . '%');
+
+                break;
+            case 'Source':
+                $query->whereHas('sales.getSource', function ($query) use ($filterValue) {
+                    $query->where('name', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Medium':
+                $query->whereHas('sales.getMedium', function ($query) use ($filterValue) {
+                    $query->where('name', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Campaign':
+                $query->whereHas('sales.getCampaign', function ($query) use ($filterValue) {
+                    $query->where('name', 'like', '%' . $filterValue . '%');
+                });
+
+                break;
+            case 'Properties':
+                $query->where('sales.priority', 'like', '%' . $filterValue . '%');
+
+                break;
+            default:
+                break;
+        }
+    
+        $leads = $query->get();
+        // dd($leads);
+    
+        // Log the leads for debugging
+        \Log::info('Leads:', $leads->toArray());
+    
+        return response()->json([
+            'success' => true,
+            'data' => $leads
+        ]);
+    }
+
+
+    public function pipelineListInputFilter(Request $request)
+    {
+        $operatesValue = $request->input('searchType');
+        $filterValue = $request->input('currentValue');
+
+        $query = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'contact', 'Activities','title');
+
+        switch ($operatesValue) {
+            case 'Opportunity':
+                $query->where('opportunity', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Tag':
+                $query->where('tag_id', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('salesPerson', function ($q) use ($salespersonId) {
+                    $q->where('email', 'like', '%' . $salespersonId . '%');
+                });
+                break;
+            case 'Sales Team':
+                $query->where('sales', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Country':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'State':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getState', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'City':
+                $query->where('city', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Phone/Mobile':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->where('phone', 'like', '%' . $filterValue . '%')
+                        ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Source':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getSource', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Medium':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getMedium', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Campaign':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCampaign', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Properties':
+                $query->where('priority', 'like', '%' . $filterValue . '%');
+                break;
+
+            default:
+            // Handle cases where the filterType does not match any case
+            break;
+        }
+
+        $customFilter = $query->get();
+        // dd($customFilter);
+        // Return JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $customFilter
+        ], 200);
+    }
+
+    public function pipelineCalendarInputFilter(Request $request)
+    {
+        // Retrieve the filter parameters
+        $operatesValue = $request->input('searchType');
+            $filterValue = $request->input('currentValue');
+
+            $query = Sale::query()->with('salesPerson', 'stage', 'getState', 'getCountry', 'getSource', 'getCampaign', 'getMedium', 'getRecurringPlan', 'contact', 'Activities','title');
+
+        // Apply filters based on filter type
+        switch ($operatesValue) {
+            case 'Opportunity':
+                $query->where('opportunity', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Tag':
+                $query->where('tag_id', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('salesPerson', function ($q) use ($salespersonId) {
+                    $q->where('email', 'like', '%' . $salespersonId . '%');
+                });
+                break;
+            case 'Sales Team':
+                $query->where('sales', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Country':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'State':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getState', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'City':
+                $query->where('city', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Phone/Mobile':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->where('phone', 'like', '%' . $filterValue . '%')
+                        ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Source':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getSource', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Medium':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getMedium', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Campaign':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCampaign', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Properties':
+                $query->where('priority', 'like', '%' . $filterValue . '%');
+                break;
+
+            default:
+            // Handle cases where the filterType does not match any case
+            break;
+        }
+
+        // Include only activities with status '0'
+        $query->whereHas('Activities', function ($q) {
+            $q->where('status', '0');
+        });
+
+        // Fetch results
+        $generateLeads = $query->get();
+
+        // Return results as JSON
+        return response()->json([
+            'success' => true,
+            'data' => $generateLeads
+        ], 200);
+    }
+
+    public function pipelineActivityInputFilter(Request $request)
+    {
+        // Extract input values
+        $operatesValue = $request->input('searchType');
+        $filterValue = $request->input('currentValue');
+
+        // Create a query starting with activities
+        $query = Activity::with('getPipelineLeadTitle')->where('status','0')
+        ->leftJoin('sales', 'activities.pipeline_id', '=', 'sales.id')
+        ->select('activities.*', 'sales.opportunity', 'sales.probability', 'activities.activity_type');
+
+        // Apply filters based on filter type
+        switch ($operatesValue) {
+            case 'Opportunity':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getPipelineLeadTitle', function ($q) use ($filterValue) {
+                        $q->where('opportunity', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+
+            case 'Tag':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getPipelineLeadTitle', function ($q) use ($filterValue) {
+                        $q->where('opportunity', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+
+                case 'Salesperson':
+                    $salespersonId = EncryptionService::encrypt($filterValue);
+                    $user = User::where('email', $salespersonId)->first();
+                    $query->whereHas('getPipelineLeadTitle.salesPerson', function ($q) use ($salespersonId) {
+                        $q->where('email', 'like', '%' . $salespersonId . '%');
+                    });
+                    break;
+                case 'Sales Team':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle', function ($q) use ($filterValue) {
+                            $q->where('sales', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'Country':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle.getCountry', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'State':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle.getState', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'City':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle', function ($q) use ($filterValue) {
+                            $q->where('city', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'Phone/Mobile':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle', function ($q) use ($filterValue) {
+                            $q->where('phone', 'like', '%' . $filterValue . '%')
+                            ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'Source':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle.getSource', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'Medium':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle.getMedium', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'Campaign':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle.getCampaign', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+                case 'Properties':
+                    $query->where(function ($q) use ($filterValue) {
+                        $q->whereHas('getPipelineLeadTitle', function ($q) use ($filterValue) {
+                            $q->where('priority', 'like', '%' . $filterValue . '%');
+                        });
+                    });
+                    break;
+
+            default:
+                // Handle cases where the filterType does not match any case
+                break;
+        }
+
+        // Eager load relationships before fetching results
+        $activities = $query->with([
+            'getUser', 
+            'getCountry', 
+            'getState', 
+            'getPipelineLeadTitle.salesPerson',
+        ])->get();
+
+        // Return JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $activities
+        ], 200);
+    }
+
+    public function pipelineGraphInputFilter(Request $request)
+    {
+        $operatesValue = $request->input('searchType');
+        $filterValue = $request->input('currentValue');
+
+        // Start the query for sales data
+        $query = Sale::with('salesPerson', 'stage')
+            ->select('stage_id', 'sales_person', DB::raw('count(*) as total'))
+            ->groupBy('stage_id', 'sales_person');
+
+        switch ($operatesValue) {
+            case 'Opportunity':
+                $query->where('opportunity', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Tag':
+                $query->where('tag_id', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('salesPerson', function ($q) use ($salespersonId) {
+                    $q->where('email', 'like', '%' . $salespersonId . '%');
+                });
+                break;
+            case 'Sales Team':
+                $query->where('sales', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Country':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'State':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getState', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'City':
+                $query->where('city', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Phone/Mobile':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->where('phone', 'like', '%' . $filterValue . '%')
+                        ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Source':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getSource', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Medium':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getMedium', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Campaign':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCampaign', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Properties':
+                $query->where('priority', 'like', '%' . $filterValue . '%');
+                break;
+
+            default:
+            // Handle cases where the filterType does not match any case
+            break;
+        }
+
+        // Fetch sales data
+        $salesData = $query->get();
+
+        // Fetch all stages and key by ID
+        $stages = CrmStage::all()->keyBy('id');
+
+        // Prepare datasets for the chart
+        $datasets = [];
+
+        foreach ($salesData as $data) {
+            if (!isset($stages[$data->stage_id])) {
+                error_log("Stage ID not found: " . $data->stage_id);
+                continue;
+            }
+
+            $user = $data->salesPerson;
+            $userName = $user->name ?? 'Unknown User';
+            $userEmail = $user->email ?? 'No Email';
+            $userColor = $this->getUserColor($data->sales_person);
+
+            // Ensure unique entries for each stage and user
+            $datasets[$data->stage_id]['data'][$data->sales_person] = [
+                'label' => "$userName ($userEmail)",
+                'total' => $data->total,
+                'backgroundColor' => $userColor,
+            ];
+        }
+
+        // Return the prepared datasets in JSON format
+        return response()->json(['datasets' => $datasets, 'stages' => $stages]);
+    }
+
+    public function pipelineCustomInputFilter(Request $request)
+    {
+        $filterType = $request->input('filterType');
+        $operatesValue = $request->input('operatesValue');
+        $filterValue = $request->input('filterValue');
+
+        // Start the query for sales data
+        $query = Sale::with('salesPerson', 'stage')
+            ->select('stage_id', 'sales_person', DB::raw('count(*) as total'))
+            ->groupBy('stage_id', 'sales_person');
+
+            switch ($filterType) {
+                case 'Country':
+                    $query->where(function ($q) use ($operatesValue, $filterValue) {
+                        $q->whereHas('getCountry', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
+                    });
+                    break;
+                case 'Zip':
+                    $query->where('zip', $operatesValue, $filterValue);
+                    break;
+                case 'Tags':
+                    $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                    break;
+                case 'Created by':
+                    $createdByName = $filterValue;
+                    $user = User::where('name', $createdByName)->first();
+                    $query->whereHas('salesPerson', function ($q) use ($operatesValue, $createdByName) {
+                        $q->where('name', $operatesValue, $createdByName);
+                    });
+                    break;
+                case 'Created on':
+                    $query->whereDate('created_at', $operatesValue, $filterValue);
+                    break;
+                case 'Customer':
+                    $query->where(function ($q) use ($operatesValue, $filterValue) {
+                        $q->whereHas('contact', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
+                    });
+                    break;
+                case 'Email':
+                    $query->where('email', $operatesValue, $filterValue);
+                    break;
+                case 'ID':
+                    $query->where('id', $operatesValue, $filterValue);
+                    break;
+                case 'Phone':
+                    $query->where('phone', $operatesValue, $filterValue);
+                    break;
+                case 'Priority':
+                    $query->where('priority', $operatesValue, $filterValue);
+                    break;
+                case 'Probability':
+                    $query->where('probability', $operatesValue, $filterValue);
+                    break;
+                case 'Referred By':
+                    $query->where('referred_by', $operatesValue, $filterValue);
+                    break;
+                case 'Salesperson':
+                    $salespersonId = EncryptionService::encrypt($filterValue);
+                    $user = User::where('email', $salespersonId)->first();
+                    $query->whereHas('salesPerson', function ($q) use ($operatesValue, $salespersonId) {
+                        $q->where('email', $operatesValue, $salespersonId);
+                    });
+                    break;
+                case 'Source':
+                    $query->whereHas('getSource', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                    break;
+                case 'Stage':
+                    $query->where('stage', $operatesValue, $filterValue);
+                    break;
+                case 'State':
+                    $query->where(function ($q) use ($operatesValue, $filterValue) {
+                        $q->whereHas('getState', function ($q) use ($operatesValue, $filterValue) {
+                            $q->where('name', $operatesValue, $filterValue);
+                        });
+                    });
+                    break;
+                case 'Street':
+                    $query->where('address_1', $operatesValue, $filterValue);
+                    break;
+                case 'Street2':
+                    $query->where('address_1', $operatesValue, $filterValue);
+                    break;
+                case 'Title':
+                    $query->whereHas('title', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('title', $operatesValue, $filterValue);
+                    });
+                    break;
+                case 'Type':
+                    $query->where('type', $operatesValue, $filterValue);
+                    break;
+                case 'Website':
+                    $query->where('website_link', $operatesValue, $filterValue);
+                    break;
+                case 'Campaign':
+                    $query->whereHas('getCampaign', function ($q) use ($operatesValue, $filterValue) {
+                        $q->where('name', $operatesValue, $filterValue);
+                    });
+                    break;
+                case 'City':
+                    $query->where('city', $operatesValue, $filterValue);
+                    break;
+                default:
+                    // Handle cases where the filterType does not match any case
+                    break;
+            }
+
+        // Fetch sales data
+        $salesData = $query->get();
+
+        // Fetch all stages and key by ID
+        $stages = CrmStage::all()->keyBy('id');
+
+        // Prepare datasets for the chart
+        $datasets = [];
+
+        foreach ($salesData as $data) {
+            if (!isset($stages[$data->stage_id])) {
+                error_log("Stage ID not found: " . $data->stage_id);
+                continue;
+            }
+
+            $user = $data->salesPerson;
+            $userName = $user->name ?? 'Unknown User';
+            $userEmail = $user->email ?? 'No Email';
+            $userColor = $this->getUserColor($data->sales_person);
+
+            // Ensure unique entries for each stage and user
+            $datasets[$data->stage_id]['data'][$data->sales_person] = [
+                'label' => "$userName ($userEmail)",
+                'total' => $data->total,
+                'backgroundColor' => $userColor,
+            ];
+        }
+
+        // Return the prepared datasets in JSON format
+        return response()->json(['datasets' => $datasets, 'stages' => $stages]);
     }
 
 }

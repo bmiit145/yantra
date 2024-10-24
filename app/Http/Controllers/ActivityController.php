@@ -300,6 +300,92 @@ class ActivityController extends Controller
     ], 200);
 }
 
+public function leadActivitySearchFilter(Request $request)
+{
+    $operatesValue = $request->input('searchType');
+    $filterValue = $request->input('currentValue');
+
+    $query = Activity::query()
+        ->leftJoin('generate_lead', 'generate_lead.id', '=', 'activities.lead_id')
+        ->select('activities.*', 'generate_lead.product_name', 'generate_lead.probability', 'activities.activity_type');
+
+    switch ($operatesValue) {
+        case 'Lead':
+            $query->where('generate_lead.product_name', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Tag':
+            $query->where('tag_id', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Salesperson':
+            $salespersonId = EncryptionService::encrypt($filterValue);
+            $query->whereHas('getLead.getUser', function ($q) use ($salespersonId) {
+                $q->where('email', $salespersonId);
+            });
+            break;
+        case 'Sales Team':
+            $query->where('generate_lead.sales_team', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Country':
+            $query->where(function ($q) use ($filterValue) {
+                $q->whereHas('getLead.getCountry', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                })
+                ->orWhereHas('getLead.getAutoCountry', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                });
+            });
+            break;
+        case 'State':
+            $query->where(function ($q) use ($filterValue) {
+                $q->whereHas('getLead.getState', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                })
+                ->orWhereHas('getLead.getAutoState', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                });
+            });
+            break;
+        case 'City':
+            $query->where('generate_lead.city', $filterValue);
+            break;
+        case 'Phone/Mobile':
+            $query->where(function ($q) use ($filterValue) {
+                $q->where('generate_lead.phone', 'like', '%' . $filterValue . '%')
+                    ->orWhere('generate_lead.mobile', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Source':
+            $query->whereHas('getLead.getSource', function ($q) use ($filterValue) {
+                $q->where('name', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Medium':
+            $query->whereHas('getLead.getMedium', function ($q) use ($filterValue) {
+                $q->where('name', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Campaign':
+            $query->whereHas('getLead.getCampaign', function ($q) use ($filterValue) {
+                $q->where('name', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Properties':
+            $query->where('generate_lead.priority', 'like', '%' . $filterValue . '%');
+            break;
+        default:
+            break;
+    }
+
+    $query->with('getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getUser','getLeadTitle.getUser');
+
+    $leads = $query->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $leads
+    ]);
+}
+
 
 
     public function create()

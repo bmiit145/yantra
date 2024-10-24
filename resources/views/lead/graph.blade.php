@@ -112,6 +112,12 @@
     .input-filter-dropdown-menu li a{
         color: black;
     }
+    .fa-star{
+        color: black;
+    }
+    .search-result{
+        color: #714B67;
+    }
     </style>
 
 @section('search_div')
@@ -1183,6 +1189,7 @@
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Clone the item, remove the checkmark span and get the trimmed text
@@ -1320,6 +1327,7 @@
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Get the text of the clicked "Lost" span
@@ -1452,6 +1460,7 @@
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Clone the item, remove the checkmark span and get the trimmed text
@@ -1548,7 +1557,7 @@
                 }
                 if ($tag.find('.tag-item').length > 0) {
                     if ($('.remove-LTFtag').length === 0) {
-                        $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                        $tag.append(' <span class="remove-LTFtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                     }
                 } else {
                     $('.remove-LTFtag').remove();
@@ -1604,6 +1613,7 @@
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Clone the item, remove the checkmark span and get the trimmed text
@@ -1696,7 +1706,7 @@
                 }
                 if ($tag.find('.tag-item').length > 0) {
                     if ($('.remove-CRtag').length === 0) {
-                        $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                        $tag.append(' <span class="remove-CRtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                     }
                 } else {
                     $('.remove-CRtag').remove();
@@ -1740,11 +1750,12 @@
                 var operatesValue = $('#customer_filter_operates').val();
                 var span_id = $('#span_id').val();
 
-                $('.selected-items .o_searchview_facet').remove();
+                // $('.selected-items .o_searchview_facet').remove();
                 $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
                 $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
 
 
 
@@ -1796,7 +1807,7 @@
                         $('#search-input').val('').attr('placeholder', 'Search...');
                     }
                 } else {
-                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span></span>';
                     if ($tag.length === 0) {
                         $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                     } else {
@@ -1974,7 +1985,7 @@
                         html += ' > ';
                     }
                 });
-                html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
+                html += ' <span class="remove_tag_group_by" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>';
                 $tag.html(html);
                 updateRemoveTagButtonGrop();
             }
@@ -2555,17 +2566,33 @@
         });
 
         $('.input-filter-click li').on('click', function() {
+
+            $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item-3 .checkmark').remove(); // Hide all checkmarks
+        $('.o-dropdown-item_1  .checkmark').remove();
+        $('.o-dropdown-item-2  .checkmark').remove();
+        $('.remove-input-filter').remove();
+        $('.lost_span:contains("Lost")').find('.checkmark').remove();
+        $('.LTFActivities .checkmark').remove();
+        $('.tag').remove();
+        $('.tag1').remove();
+        $('.LTFtag').remove();
+        $('.group_by_tag').remove();
+        $('.CRtag').remove();
+        $('.tag5').remove();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').remove();
+
         var searchType = $(this).find('b.get-value').text();
         var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
         var currentIndex = $('.tag1').length; // Count current tags for the new index
 
         // Append the tag with searchType and selectedValue
         $('#search-input').before(
-            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain" data-span_id="${currentIndex}">
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}">
                 <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
                 <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
                     <small class="px-1">${searchType}</small> <!-- Display searchType -->
-                    <span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
                         <i class="fa fa-fw fa-cog"></i> <!-- Optional icon -->
                     </span>
                 </div>

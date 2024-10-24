@@ -401,6 +401,25 @@
 </div>
 @endsection
 
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Opportunity</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
+
+@endsection
+
 <!-- Modal -->
 <div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
     aria-labelledby="customFilterModalLabel" aria-hidden="true">
@@ -817,6 +836,50 @@
     }
  a.group-setting-icon {
         padding-right: 35px;
+    }
+    .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 586px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        top: auto;
+        right: auto;
+        overflow-y: hidden;
+        text-decoration: none;
+        color: black;
+    }
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+
+    .search-result{
+        color: #714B67;
+    }
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
+    }
+    
+    .fa-star{
+        color: black;
+        margin-top: 2px;
+    }
+    .fa-cog{
+        margin-top: 2px;
     }
 </style>
 <div class="o_content" style="height: 100%">
@@ -1996,6 +2059,7 @@
 <script>
     $(document).ready(function () {
 
+        var table = $('#example').DataTable();
         function filterData(selectedTags) {
         $.ajax({
             url: '{{route('crm.pipeline.filter')}}', // Your endpoint for fetching leads
@@ -2033,7 +2097,7 @@
                         if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
                         if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
                         if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
-                        if (table.column(3).visible()) rowHtml += `<td>${item.contact.name || ''}</td>`;
+                        if (table.column(3).visible()) rowHtml += `<td>${item.contact && item.contact.name ? item.contact.name : ''}</td>`;
                         if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
                         if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
                         if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
@@ -2105,8 +2169,7 @@
     }
 
     $(document).on('click', '.custom-filter-remove', function () {
-        $('#search-input').val('').attr('placeholder', 'Search...');
-        table.ajax.reload();
+        $('#search-input').val('').attr('placeholder', 'Search...');        
     });
 
     // CSRF token setup for AJAX requests
@@ -2125,6 +2188,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -2221,7 +2285,7 @@
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-tag').length === 0) {
-                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-tag').remove();
@@ -2262,6 +2326,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Get the text of the clicked "Lost" span
@@ -2394,6 +2459,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -2490,7 +2556,7 @@
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-LTFtag').length === 0) {
-                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-LTFtag').remove();
@@ -2551,6 +2617,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -2643,7 +2710,7 @@
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-CRtag').length === 0) {
-                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-CRtag').remove();
@@ -2687,9 +2754,10 @@
             var operatesValue = $('#customer_filter_operates').val();
             var span_id = $('#span_id').val();
 
-            $('.selected-items .o_searchview_facet').remove();
+            // $('.selected-items .o_searchview_facet').remove();
             $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
             $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+            $('.remove-input-filter').hide();
 
             
 
@@ -2833,7 +2901,7 @@
                     $('#search-input').val('').attr('placeholder', 'Search...');
                 }
             } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;margin-left: 6px;"><i class="fa fa-close"></span></span>';
                 if ($tag.length === 0) {
                     $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                 } else {
@@ -2898,6 +2966,7 @@
             if ($('.tag5').children().length === 0) {
                 $('.tag5').remove();
             }
+            location.reload();
 
 
             // Optionally, you could send a request to update the filters on the server if necessary
@@ -2911,6 +2980,7 @@
             $('.lost_span:contains("Lost")').find('.checkmark').hide();
             $('.LTFActivities .checkmark').hide();
             $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+            $('.remove-input-filter').remove();
             e.stopPropagation();
 
             var $item = $(this);
@@ -2997,7 +3067,7 @@
             });
 
             // Always add the remove button
-            html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
+            html += ' <span class="remove_tag_group_by" style="cursor:pointer"><i class="fa fa-close"></span>';
             $tag.html(html);
         }
 
@@ -4120,6 +4190,207 @@
     // Initially hide the accordion values
     accordionValues.style.display = 'none';
 });
+</script>
+
+<script>
+   $(document).ready(function() {
+    
+    // Initialize the DataTable and assign it to the variable 'table'
+    // var table = $('#example').DataTable();
+
+    $('.dropdown-item').on('click', function() {
+    function number_format(number, decimals = 2, decPoint = '.', thousandsSep = ',') {
+        number = parseFloat(number);
+        if (isNaN(number)) return '0.00';
+
+        let n = Math.abs(number).toFixed(decimals);
+        let splitNum = n.split('.');
+        let integerPart = splitNum[0].replace(/\B(?=(\d{3})+(?!\B))/g, thousandsSep);
+        let decimalPart = splitNum.length > 1 ? decPoint + splitNum[1] : '';
+
+        return (number < 0 ? '-' : '') + integerPart + decimalPart;
+    }
+
+    var searchType = $(this).find('b.get-value').text();
+    var currentValue = $(this).find('.search-result').text().trim();
+
+    $.ajax({
+        url: '{{ route('crm.pipeline.input.filter') }}',
+        type: 'GET',
+        data: { 
+            searchType: searchType,
+            currentValue: currentValue
+        },
+        success: function(response) {
+            console.log('Response:', response);
+            console.log('Data:', response.data); // Log data for debugging
+
+            // Clear existing kanban content
+            $('.o_kanban_renderer').empty();
+
+            // Group data by crm_title
+            const groupedData = response.data.reduce((acc, stage) => {
+                if (!acc[stage.crm_title]) {
+                    acc[stage.crm_title] = [];
+                }
+                acc[stage.crm_title].push(stage);
+                return acc;
+            }, {});
+
+            for (const [crmTitle, stages] of Object.entries(groupedData)) {
+                let stageHtml = `
+                <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0 o_group_draggable" data-title="${crmTitle}">
+                    <div class="o_kanban_header position-sticky top-0 z-index-1 py-2">
+                        <div class="o_kanban_header_title position-relative d-flex lh-lg">
+                            <span class="o_column_title flex-grow-1 d-inline-block mw-100 text-truncate fs-4 fw-bold align-top text-900">${crmTitle}</span>
+                            <div class="o_kanban_config">
+                                <button class="btn px-2 o-dropdown dropdown-toggle dropdown" aria-expanded="false">
+                                    <i class="fa fa-gear opacity-50 opacity-100-hover" role="img" aria-label="Settings" title="Settings"></i>
+                                </button>
+                            </div>
+                            <button class="o_kanban_quick_add new-lead-btn btn pe-2 me-n2">
+                                <i class="fa fa-plus opacity-75 opacity-100-hover" role="img" aria-label="Quick add" title="Quick add"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="o_kanban_counter position-relative d-flex align-items-center justify-content-between">
+                        <div class="o_column_progress progress bg-300 w-50">
+                            <div class="progress">
+                                <div id="overdue" role="progressbar" class="progress-bar bg-danger" style="width: ${stages[0].overduePercentage}%" aria-label="Overdue" title="Overdue (${stages[0].overdueCount})"></div>
+                                <div id="today" role="progressbar" class="progress-bar bg-warning" style="width: ${stages[0].todayPercentage}%" aria-label="Today" title="Today (${stages[0].todayCount})"></div>
+                                <div id="planned" role="progressbar" class="progress-bar bg-success" style="width: ${stages[0].plannedPercentage}%" aria-label="Planned" title="Planned (${stages[0].plannedCount})"></div>
+                            </div>
+                        </div>
+                        <div class="o_animated_number ms-2 text-900 text-nowrap cursor-default false" title="Expected Revenue" data-target="${stages[0].totalExpectedRevenue}">
+                            <b>${number_format(stages[0].totalExpectedRevenue, 2)}</b>
+                        </div>
+                    </div>
+                    <div class="append-container-new"></div>`;
+
+                stages.forEach(stage => {
+                    stageHtml += `
+                    <div role="article" class="o_kanban_record sale-card d-flex o_draggable" data-id="${stage.id}" tabindex="0">
+                        <div class="oe_kanban_color_0 d-flex flex-column">
+                            <div class="oe_kanban_color w-5" data-id="${stage.id}" style="background: ${stage.is_side_colour};"></div>
+                            ${stage.is_lost == 2 ? '<div class="o_widget o_widget_web_ribbon"><div class="ribbon ribbon-top-right"><span class="text-bg-danger">Lost</span></div></div>' : ''}
+                            <div class="oe_kanban_content flex-grow-1" data-id="${stage.id}">
+                                <div class="oe_kanban_details"><strong class="o_kanban_record_title">${stage.opportunity}</strong></div>
+                                <div class="oe_kanban_record_subtitle">
+                                    ${stage.expected_revenue !== '0.00' ? `<span>₹ ${number_format(stage.expected_revenue, 2)}</span>` : ''}
+                                    ${stage.recurring_revenue !== '0.00' ? `<span> + ₹ ${number_format(stage.recurring_revenue, 2)}</span>` : ''}
+                                    ${stage.recurring_plan ? `&nbsp; <span>${stage.recurring_plan.plan_name || ''}</span>` : ''}
+                                </div>
+                                ${stage.contact ? `<div><span class="o_text_overflow">${stage.contact.name}</span></div>` : ''}
+                                <div class="o_field_widget o_field_many2many_tags">
+                                    <div class="d-flex flex-wrap gap-1">
+                                        ${Array.isArray(stage.tags) ? stage.tags.map(tag => `<span class="badge badge-primary" style="background:${tag.color};">${tag.name}</span>`).join('') : ''}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div name="lead_properties" class="o_field_widget o_field_properties">
+                                        <div class="w-100 fw-normal text-muted"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_footer">
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <div name="priority" class="o_field_widget o_field_priority">
+                                            <div class="o_priority set-priority" role="radiogroup" aria-label="Priority">
+                                                <a href="#" class="o_priority_star fa ${stage.priority === 'medium' || stage.priority === 'high' || stage.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="medium" data-tooltip="Priority: Medium" aria-label="Medium"></a>
+                                                <a href="#" class="o_priority_star fa ${stage.priority === 'high' || stage.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="high" data-tooltip="Priority: High" aria-label="High"></a>
+                                                <a href="#" class="o_priority_star fa ${stage.priority === 'very_high' ? 'fa-star' : 'fa-star-o'}" role="radio" tabindex="-1" data-value="very_high" data-tooltip="Priority: Very High" aria-label="Very High"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div name="activity_ids" class="o_field_widget o_field_kanban_activity">
+                                        <a class="o-mail-ActivityButton activityButton" role="button" aria-label="Show activities" id="activityButton" data-id="1" title="Show activities">
+                                            <i class="fa fa-fw fa-lg text-muted fa-clock-o btn-link text-dark" role="img"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                stageHtml += `</div>`; // Close the o_kanban_group div
+                $('.o_kanban_renderer').append(stageHtml);
+            }
+        },
+        error: function(xhr) {
+            console.error('AJAX Error:', xhr);
+        }
+    });
+
+    // Hide the search menu wrapper after making the selection
+    $('.input_search_menu_wapper').hide();
+});
+
+    $('.input-filter-click li').on('click', function() {
+        $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+        $('.o-dropdown-item_1  .checkmark').hide();
+        $('.remove-input-filter').remove();
+        $('.o-dropdown-item-2 .checkmark').hide();
+        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+        $('.LTFActivities .checkmark').hide();
+        $('.tag').hide();
+        $('.tag1').hide();
+        $('.LTFtag').hide();
+        $('.group_by_tag').hide();
+        $('.CRtag').hide();
+        $('.tag5').hide();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}" style="height:25px;margin-top:auto;">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> 
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i>
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small>
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+    // Handle removal of tags
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).closest('.tag1').remove(); // Remove the tag on click
+        location.reload();
+    });
+});
+
+</script>
+
+<script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
 </script>
 
 @endpush
