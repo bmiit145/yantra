@@ -1,8 +1,8 @@
 @extends('layout.header')
 @section('content')
 @section('title', 'Sales')
-@section('head_breadcrumb_title', '')
-@section('head_new_btn_link', route('quotations.create'))
+@section('head_breadcrumb_title', 'Product Categories')
+@section('head_new_btn_link', route('categories.create'))
 @section('image_url', asset('images/Sales.png'))
 @section('navbar_menu')
     <li class="dropdown">
@@ -56,21 +56,4 @@
             <a href="#" style="margin-left: 15px;">Activities Plans</a>
         </div>
     </li>
-@endsection
-
-
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#example').DataTable();
-    });
-
-    
-</script>
-
-
-
 @endsection

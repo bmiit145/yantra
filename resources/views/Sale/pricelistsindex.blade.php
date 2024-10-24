@@ -111,20 +111,7 @@
         border: 1px dashed #e3dfdf; /* Optional: Add a border */
     }
 
-    /* Button Styles */
-    .btn {
-        background-color: #007bff; /* Button color */
-        color: white; /* Button text color */
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer; /* Pointer on hover */
-        transition: background-color 0.3s ease; /* Smooth transition */
-    }
-
-    .btn:hover {
-        background-color: #0056b3; /* Darker shade on hover */
-    }
+    
 
     /* Modal Styles */
     #pricelistModal {

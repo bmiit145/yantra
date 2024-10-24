@@ -11,7 +11,7 @@ class product_categories extends Model
 
         protected $table = 'product_categories';
 
-        protected $fillable = ['categories_name', 'categories_image'];
+        protected $fillable = ['categories_name', 'categories_image', 'parent_category'];
     
         public $timestamps = true;
 }

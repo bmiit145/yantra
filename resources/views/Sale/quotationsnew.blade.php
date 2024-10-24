@@ -50,7 +50,7 @@
             <a href="#"><b>Sales Orders</b></a>
             <a href="#" style="margin-left: 15px;">Tags</a>
             <a href="#"><b>Product</b></a>
-            <a href="#" style="margin-left: 15px;">Product Category</a>
+            <a href="{{ route('categories.index') }}">Product Category</a>
             <a href="#" style="margin-left: 15px;">Product Tags</a>
             <a href="#"><b>Online Pyament</b></a>
             <a href="#" style="margin-left: 15px;">Payment Provide</a>
@@ -71,6 +71,28 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
 
+<style>
+    .daterangepicker select.monthselect {
+    margin-right: 2%;
+    width: 92%;
+    border-color: lightblue;
+    text-align: center;
+}
+
+element.style {
+    top: 250px;
+    left: 755.219px;
+    right: auto;
+    display: block;
+    width: 300px;
+}
+.daterangepicker select.yearselect {
+    width: 92%;
+    border-color: lightblue;
+    top: auto;
+    text-align: center;
+}
+</style>
 
 
 <div class="o_action_manager">

@@ -50,7 +50,7 @@
             <a href="#"><b>Sales Orders</b></a>
             <a href="#" style="margin-left: 15px;">Tags</a>
             <a href="#"><b>Product</b></a>
-            <a href="#" style="margin-left: 15px;">Product Category</a>
+            <a href="{{ route('categories.index') }}">Product Category</a>
             <a href="#" style="margin-left: 15px;">Product Tags</a>
             <a href="#"><b>Online Pyament</b></a>
             <a href="#" style="margin-left: 15px;">Payment Provide</a>
@@ -980,127 +980,6 @@
 
 <script>
     $(document).ready(function() {
-        var modelIds = [];
-
-        // Event listener for the first save button
-        $('#list_save_button_1').click(function(event) {
-            event.preventDefault();
-
-            var formData = new FormData();
-            var id = $('#pricelist_id_hidden').val();
-            var apply_to = $('#radio_field_4').val();
-            var product_Name = $('#product_id_10').val(); // Declare here
-            var category_name = $('#category_id_0').val(); // Declare here
-            var price_type = $('#radio_field_5').val();
-            var discount = $('#percent_price_0').val();
-            var sale_price_name = $('#sales_id_10').val();
-            var based_price = $('#basedlist_10').val();
-            var discount_sales = $('#price_discount_0').val();
-            var markup = $('#markup_100').val();
-            var other_pricelist = $('#base_pricelist_id_1').val();
-            var round_of_to = $('#rounding_10').val();
-            var extra_fee = $('#price_surcharge_10').val();
-            var fixed_price = $('#fix_price_10').val();
-            var min_qty = $('#min_quantity_00').val();
-            var strat_date = $('#start_date_10').val();
-            var end_date = $('#end_date_10').val();
-
-            var formData = new FormData();
-            formData.append('id', id);
-            formData.append('apply_to', $('input[name="radio_field_4"]:checked').data("value"));
-            formData.append('product_Name', product_Name);
-            formData.append('category_name', category_name);
-            formData.append('price_type', $('input[name="radio_field_5"]:checked').data("value"));
-            formData.append('discount', discount);
-            formData.append('sale_price_name', sale_price_name);
-            formData.append('based_price', $('#base_0').val());
-            formData.append('markup', markup);
-            formData.append('discount_sales', discount_sales);
-            formData.append('other_pricelist', $('#base_pricelist_id_1').val());
-            formData.append('round_of_to', $('#rounding_0').val());
-            formData.append('extra_fee', extra_fee);
-            formData.append('fixed_price', fixed_price);
-            formData.append('min_qty', min_qty);
-            formData.append('strat_date', strat_date);
-            formData.append('end_date', end_date);
-            formData.append('_token', '{{ csrf_token() }}');
-
-            $.ajax({
-                url: '{{ route('pricelist.store') }}',
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    console.log(response);
-                    var savedPricelistId = response.id;
-                    modelIds.push(savedPricelistId);
-
-                    $('#model_id').val(modelIds.join(','));
-
-                    // Create the "applyOn" variable
-                    var applyOn = product_Name ? product_Name : category_name ?
-                        `Category: ${category_name}` : '';
-
-                    // Determine the "price" column value
-                    var price = '';
-                    if (discount) price += `${discount}% Discount`;
-                    if (fixed_price) price += `${fixed_price} Fixed Price`;
-                    if (markup) price += (price ? ' AND ' : '') + `${markup}% Markup`;
-                    if (discount_sales) price += (price ? ' AND ' : '') + `${discount_sales}% Discount`;
-                    if (extra_fee) price += (price ? ' AND ' : '') + `${extra_fee}% Surcharge`;
-                    price = price || '00.00';
-
-                    // Build the new row with a data attribute
-                    var newRow =
-                        `<tr data-index="${modelIds.length - 1}">
-                        <td>${applyOn}</td>
-                        <td>${price}</td>
-                        <td>${min_qty || '00.00'}</td>
-                        <td>${strat_date || ''}</td>
-                        <td>${end_date || ''}</td>
-                        <td>
-                            <button class="index-edit-btn button-small" style="border: none; background: transparent; data-id="${savedPricelistId}"
-                            data-apply_to="${apply_to}"
-                            data-product_Name="${product_Name}"
-                            data-category="${category_name}"
-                            data-price_type="${price_type}"
-                            data-discount="${discount}"
-                            data-sale_price_name="${sale_price_name}"
-                            data-based_price="${based_price}"
-                            data-discount_sales="${discount_sales}"
-                            data-markup="${markup}"
-                            data-other_pricelist="${other_pricelist}"
-                            data-round_of_to="${round_of_to}"
-                            data-extra_fee="${extra_fee}"
-                            data-fixed_price="${fixed_price}"
-                            data-min_oty="${min_qty}"
-                            data-strat_date="${strat_date }"
-                            data-end_date="${end_date}">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <button class="delete-btn button-small" style="border: none; background: transparent; data-id="${savedPricelistId}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>`;
-
-                    $('.Add_line_09_new').parent().before(newRow);
-
-                    clearFields();
-                    $('#priceRuleModal_1').modal('hide');
-
-                },
-                error: function() {
-                    toastr.error('Something went wrong!');
-                }
-            });
-        });
-
-
-
         // Event listener for the second save button
         $('#main_save_btn').click(function(event) {
             event.preventDefault(); // Prevent default form submission

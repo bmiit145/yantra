@@ -146,7 +146,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/salesteam-store', [SalesController::class, 'teams_store'])->name('salesteam.store');
     Route::delete('/delete-member', [SalesController::class, 'deleteMember'])->name('salesteam.destroy');
 
-
+    Route::get('products-categories' , [SalesController::class, 'categories_index'])->name('categories.index');
+    Route::get('products-categories/new' , [SalesController::class, 'categories_create'])->name('categories.create');
 
     Route::get('configuration/activity-types' , [ConfigurationController::class, 'index'])->name('configuration.activitytype');
     Route::post('configuration/Store_activity_types' , [ConfigurationController::class, 'Store_activity_types'])->name('configuration.Store_activity_types');

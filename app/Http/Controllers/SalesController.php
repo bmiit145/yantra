@@ -126,11 +126,7 @@ class SalesController extends Controller
 
     public function product_store(Request $request)
     {
-        // Validate incoming request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+
 
         // Handle image upload
         $path = null;
@@ -445,4 +441,17 @@ class SalesController extends Controller
         return response()->json(['message' => 'Team not found'], 404);
     }
 
+
+    public function categories_index()
+    {
+        
+        return view('Sale.categoriesindex');
+    } 
+
+    public function categories_create()
+    {
+        $category = product_categories::select('id','categories_name')->get();
+
+        return view('Sale.categoriesnew', compact('category'));
+    }
 }
