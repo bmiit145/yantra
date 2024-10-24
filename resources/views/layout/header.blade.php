@@ -284,14 +284,14 @@
                             <div class="lh-1">
                                 <button class="d-print-none btn p-0 ms-1 lh-sm border-0" id="dropdownMenuButton" aria-expanded="false" title="">
                                     <i class="fa fa-cog"></i>
-                                    <div class="dropdown-menu-setting" aria-labelledby="dropdownMenuButton">
+                                          <div class="dropdown-menu-setting" aria-labelledby="dropdownMenuButton">
 
-                                        @yield('setting_menu')
-                               
-                                     
-                                    </div>
+                                    @yield('setting_menu')
+                           
+                                 
+                                </div>
                                 </button>
-                                
+                          
                                 @if(isset($data->id))
                                 <button style="display: none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
                                     <i class="fa fa-cloud-upload fa-fw"></i>

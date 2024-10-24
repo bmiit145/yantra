@@ -19,7 +19,6 @@
     <li class="dropdown">
         <a href="#">To Invoice</a>
         <div class="dropdown-content">
-            <!-- Dropdown content for Reporting -->
             <a href="#">Orders to Invoice</a>
             <a href="#">Orders to Upsell</a>
         </div>
@@ -42,203 +41,144 @@
     </li>
 @endsection
 
+@section('setting_menu')
+
+    <div role="separator" class="dropdown-divider"></div>
+    <a href="{{route('lead.importlead')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item mark_lost_lead" role="menuitem" tabindex="0"><i class= "fa fa-fw fa-download me-1"></i>Import records </a>
+    <a href="{{route('lead.exportLead')}}" class="o-dropdown-item dropdown-item o-navigable o_menu_item send_mail_lead" role="menuitem" tabindex="0"><i class="fa fa-fw fa-upload me-1"></i>Export All </a>
+    
+       
+
+        
+@endsection
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
 <style>
-    /* General Styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa; /* Light background */
-        margin: 0;
-        padding: 20px;
+ .o_form_button_save {
+    display: none;
+ }
+
+ .dropdown-menu-setting {
+        display: none;
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: auto;
+        left: auto;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: .25rem;
+    }
+    .dropdown-menu-setting.show {
+        display: block !important;
     }
 
-    /* Table Styles */
-    .table {
-        width: 100%;
-        margin-bottom: 1rem;
-        color: #212529;
-        border-collapse: collapse;
+    .dropdown-menu-setting a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+        .head_breadcrumb_info{
+        gap : 0px !important;
+    }
+    .redirect-button{
+        display: none;
+    }
+    .crm_head_leftside{
+        gap: 7px;
+    }
+    tbody#lead-table-body tr:hover {
+        background-color: #FAFAFA !important;
     }
 
-    th.sorting.sorting_asc {
-        width: max-content !important;
+    tbody#lead-table-body tr:hover td {
+        background-color: #FAFAFA !important;
     }
 
     table.dataTable thead th,
     table.dataTable thead td {
-        padding: 8px 10px;
-        border-bottom: 1px solid #111;
+        padding: 10px 18px;
+        border-bottom: 1px solid #11111147;
+        border-top: 1px solid #11111147;
+        background: #F1F1F1;
     }
 
-    th.sorting {
-        width: 50% !important;
+    .dataTables_length label {
+        display: flex;
+        gap: 10px;
+        margin: 0 !important;
     }
 
-    .ui-sortable {
-        border-bottom: 1px solid #d8dadd !important;
-    }
-
-    table.dataTable tbody tr {
-        background-color: #f9f9f9;
-    }
-
-    table.dataTable.stripe tbody tr.odd,
-    table.dataTable.display tbody tr.odd {
-        background-color: #f9f9f9;
-    }
-
-    tbody,
-    td,
-    tfoot,
-    th,
-    thead,
-    tr {
-        border-color: inherit;
-        border-style: solid;
-        border-width: 0;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .pricelist-row {
-        cursor: move; /* Change cursor to indicate draggable rows */
-    }
-
-    .ui-state-highlight {
-        height: 10px; /* Adjust height to match table rows */
-        background-color: #cec7c7; /* Change to your preferred color */
-        border: 1px dashed #e3dfdf; /* Optional: Add a border */
-    }
-
-    
-
-    /* Modal Styles */
-    #pricelistModal {
-        display: none; /* Hide by default */
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto; /* Enable scroll if needed */
-        background-color: rgba(0, 0, 0, 0.5); /* Overlay */
-    }
-
-    .modal-content {
-        background-color: #fefefe; /* Modal background */
-        margin: 15% auto; /* 15% from the top and centered */
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%; /* Could be more or less, depending on screen size */
+    .dataTables_wrapper .dataTables_length select {
+        text-align: center;
         border-radius: 5px;
+        border: 1px solid #2222;
     }
 
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-        .table {
-            font-size: 14px; /* Smaller font on mobile */
-        }
-
-        .btn {
-            width: 100%; /* Full-width buttons on mobile */
-        }
-
-        .modal-content {
-            width: 90%; /* Make modal content smaller on mobile */
-        }
+    table.dataTable tbody tr,
+    table.dataTable.display tbody tr.odd>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd>.sorting_1,
+    table.dataTable.display tbody tr.even>.sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even>.sorting_1 {
+        background-color: #FFFFFF !important;
     }
+
 </style>
 
 
-<div class="o_content">
-    <div class="o_list_renderer o_renderer table-responsive" tabindex="-1">
-        <table id="pricelistTable" class="o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped" style="table-layout: fixed;">
+<div class="card" style="padding: 1%">
+    <div class="table-responsive text-nowrap">
+
+        <table id="example" class="stripe row-border order-column" cellspacing="0" width="100%">
             <thead>
                 <tr>
-                    <th class="o_list_record_selector o_list_controller align-middle pe-1 cursor-pointer" tabindex="-1" style="width: 40px;">
-                        <div class="o-checkbox form-check d-flex m-0">
-                            <input type="checkbox" class="form-check-input" id="select-all">
-                            <label class="form-check-label" for="select-all"></label>
-                        </div>
-                    </th>
-                    <th data-tooltip-delay="1000" tabindex="-1" data-name="sequence" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_handle_cell opacity-trigger-hover w-print-auto" style="width: 29px;"></th>
-                    <th data-tooltip-delay="1000" tabindex="-1" data-name="name" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" style="width: 917px;">
-                        <div class="d-flex" title="">
-                            <span class="d-block min-w-0 text-truncate flex-grow-1">Pricelist Name</span>
-                            <i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                        </div>
-                    </th>
-                    <th data-tooltip-delay="1000" tabindex="-1" data-name="country_group_ids" class="align-middle cursor-default o_many2many_tags_cell opacity-trigger-hover w-print-auto" style="width: 900px;">
-                        <div class="d-flex" title="">
-                            <span class="d-block min-w-0 text-truncate flex-grow-1">Country Groups</span>
-                            <i class="d-none fa-angle-down opacity-0 opacity-75-hover"></i>
-                        </div>
-                    </th>
-                    <th class="o_list_controller o_list_actions_header w-print-0 p-print-0 position-sticky end-0" style="width: 32px;">
-                        <div class="o_optional_columns_dropdown d-print-none text-center border-top-0">
-                            <button class="btn p-0 o-dropdown dropdown-toggle dropdown" tabindex="-1" aria-expanded="false">
-                                <i class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i>
-                            </button>
-                        </div>
-                    </th>
+                    <th>Pricelist Name</th>
+                    <th>Country Groups</th>
+                    
+                  
                 </tr>
             </thead>
-            <tbody class="ui-sortable">
-                @foreach ($pricelists as $pricelist)
-                <tr class="o_data_row o_row_draggable pricelist-row" data-id="{{ $pricelist->id }}">
-                    <td class="o_list_record_selector user-select-none" tabindex="-1">
-                        <div class="o-checkbox form-check">
-                            <input type="checkbox" class="form-check-input pricelist-checkbox" value="{{ $pricelist->id }}">
-                            <label class="form-check-label" for="checkbox-comp-{{ $pricelist->id }}"></label>
-                        </div>
-                    </td>
-                    <td class="o_data_cell cursor-pointer o_field_cell o_list_number o_handle_cell" data-tooltip-delay="1000" tabindex="-1" name="sequence">
-                        <div name="sequence" class="o_field_widget o_field_handle">
-                            <span class="o_row_handle oi oi-draggable ui-sortable-handle"></span>
-                        </div>
-                    </td>
-                    <td class="o_data_cell cursor-pointer o_field_cell o_list_char o_required_modifier" data-tooltip-delay="1000" tabindex="-1" name="name" title="{{ $pricelist->pricelist_name }}">
-                        {{ $pricelist->pricelist_name }}
-                    </td>
-                    <td class="o_data_cell cursor-pointer o_field_cell o_many2many_tags_cell" data-tooltip-delay="1000" tabindex="-1" name="country_group_ids">
-                        <div name="country_group_ids" class="o_field_widget o_field_many2many_tags">
-                            <div class="o_field_tags d-inline-flex flex-wrap gap-1 mw-100">
-                                @if ($pricelist->getCountry)
+            <tbody id="lead-table-body">
+                 @foreach ($pricelists as $pricelist)
+                    <tr class="pricelist-row" data-id="{{$pricelist->id}}" data-index="{{$loop->index + 1}}" style="cursor: pointer;">
+                        <td>  {{ $pricelist->pricelist_name }}</td>
+                        <td>  @if ($pricelist->getCountry)
                                 <span class="o_tag position-relative d-inline-flex align-items-center user-select-none mw-100 o_badge badge rounded-pill lh-1 o_tag_color_0" tabindex="-1" title="{{ $pricelist->getCountry->name }}">
                                     <div class="o_tag_badge_text text-truncate">{{ $pricelist->getCountry->name }}</div>
                                 </span>
                                 @endif
-                            </div>
-                        </div>
-                    </td>
-                    <td tabindex="-1" class="w-print-0 p-print-0"></td>
-                </tr>
-                @endforeach
+                        </td>
+                        
+                    </tr>
+                  @endforeach
             </tbody>
-            <tfoot class="o_list_footer cursor-default">
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="w-print-0 p-print-0"></td>
-                </tr>
-            </tfoot>
         </table>
+
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8"
+    src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+<!-- Bootstrap JS -->
+<script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
 
-
-<script>
+{{-- <script>
     $(document).ready(function() {
+
+        
         // Make table rows sortable
         $(".ui-sortable").sortable({
             cursor: 'move',
@@ -263,10 +203,7 @@
         });
 
         // Redirect to the edit page on row click
-        $(document).on('click', '.pricelist-row', function() {
-            var id = $(this).data('id');
-            window.location.href = "{{ url('pricelists/new') }}/" + id; // Redirect to edit page
-        });
+      
 
         // Handle form submission for adding/updating pricelists
         $('#pricelistForm').on('submit', function(e) {
@@ -330,6 +267,29 @@
             }
         });
     });
+</script> --}}
+
+<script>
+  $(document).ready(function () {
+        var table = $('#example').DataTable({
+            "pageLength": 25,
+            searching: false,
+            "lengthChange": false,
+            "sDom": 'Rlfrtip',
+            "oColReorder": {
+                "bAddFixed": true
+            },
+            columnDefs: [
+                { orderable: false, targets: -1 } // Disable sorting for the last column
+            ],
+
+        });
+
+          $(document).on('click', '.pricelist-row', function() {
+            var id = $(this).data('id');
+            window.location.href = "{{ url('pricelists/new') }}/" + id; // Redirect to edit page
+        });
+  });
 </script>
 
 

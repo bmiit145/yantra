@@ -45,7 +45,7 @@ class SalesController extends Controller
     public function quotations_create()
     {
         $customer = Contact::select('id','name')->get();
-        $pricelist = sales_price::select('id','sale_price_name')->get();
+        $pricelist = pricelist_all::all();
         $payment = payment_terms::select('id', 'name')->get();
         $user = User::select('id', 'name')->get();
         $Sale = SaleTeam::select('id', 'name')->get();
@@ -126,7 +126,8 @@ class SalesController extends Controller
 
     public function product_store(Request $request)
     {
-
+        // Validate incoming request
+       
 
         // Handle image upload
         $path = null;
