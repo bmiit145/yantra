@@ -50,6 +50,8 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
 <link rel="stylesheet" type="text/css"
     href="https://cdn.datatables.net/colreorder/1.3.2/css/colReorder.dataTables.min.cssive.dataTables.min.css">
+    <!-- summernote link -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
 
 @section('head_breadcrumb_title', 'Pipeline')
 @section('head')
@@ -1078,13 +1080,13 @@
                                                     <!-- Overdue Section -->
                                                     <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
                                                         <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                            <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
+                                                            <b class="text-900 me-2 text-truncate flex-grow-1 today-count">Overdue ({{ $overdueCount }})</b>
                                                         </div>
                                                         @foreach($overdueActivities as $value)
-                                                            <div class="d-flex align-items-center flex-wrap mx-3 " data-id="{{ $value->id }}">
+                                                            <div class="o-mail-Activity d-flex align-items-center flex-wrap mx-3 " data-activity-id="{{ $value->id }}">
                                                               @php
                                                    
-                                                                        $user = $sale->user;
+                                                                        $user = $value->getUser;     
                                                                         $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
                                                                         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -1102,7 +1104,7 @@
                                                                     {{ $initial }}
                                                                 </span>
                                                                 <div class="mt-1 flex-grow-1">
-                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
+                                                                &nbsp;&nbsp;<small>{{ $value->getUser->email }} - Today</small>
                                                                 </div>
                                                                 <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1121,13 +1123,13 @@
                                                     <!-- Today Section -->
                                                     <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
                                                         <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                            <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
+                                                            <b class="text-900 me-2 text-truncate flex-grow-1 today-count">Today ({{ $todayCount }})</b>
                                                         </div>
                                                         @foreach($todayActivities as $value)
-                                                            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                                        <div class="o-mail-Activity d-flex align-items-center flex-wrap mx-3 " data-activity-id="{{ $value->id }}">
                                                               @php
                                                    
-                                                                        $user = $sale->user;
+                                                                        $user = $value->getUser;
                                                                         $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
                                                                         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -1145,7 +1147,7 @@
                                                                     {{ $initial }}
                                                                 </span>
                                                                 <div class="mt-1 flex-grow-1">
-                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
+                                                                &nbsp;&nbsp;<small>{{ $value->getUser->email }} - Today</small>
                                                                 </div>
                                                                 <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1164,13 +1166,13 @@
                                                     <!-- Planned Section -->
                                                     <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
                                                         <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                            <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
+                                                            <b class="text-900 me-2 text-truncate flex-grow-1 today-count">Planned ({{ $plannedCount }})</b>
                                                         </div>
                                                         @foreach($plannedActivities as $value)
-                                                            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
+                                                        <div class="o-mail-Activity d-flex align-items-center flex-wrap mx-3 " data-activity-id="{{ $value->id }}">
                                                                @php
                                                    
-                                                                        $user = $sale->user;
+                                                                        $user = $value->getUser;
                                                                         $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
                                                                         $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
@@ -1188,7 +1190,7 @@
                                                                     {{ $initial }}
                                                                 </span>
                                                                 <div class="mt-1 flex-grow-1">
-                                                                &nbsp;&nbsp;<small>{{ $sale->user->email }} - Planned</small>
+                                                                &nbsp;&nbsp;<small>{{ $value->getUser->email }} - Planned</small>
                                                                 </div>
                                                                 <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
                                                                 <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
@@ -1343,6 +1345,93 @@
     <div class="o_notification_manager"></div>
 </div>
 
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editModalLabel">Edit Activity</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form id="editForm" action="" method="POST">
+                                                <input type="hidden" id="edit_activity_id" name="id">
+                                                <div class="modal-body">
+                                                    <div class="row col-md-12">
+                                                        <div class="col-md-6">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="activity_type" class="mr-2">Activity Type</label>
+                                                                </div>
+                                                                <div class="col-md-8 activityTypeField">
+                                                                    <select class="form-control activity_type" id="edit_activity_type" name="activity_type" style="width: 100%;">
+                                                                        <option value="email">Email</option>
+                                                                        <option value="call">Call</option>
+                                                                        <option value="meeting">Meeting</option>
+                                                                        <option value="to-do" selected>To-Do</option>
+                                                                        <option value="upload_document">Upload Document</option>
+                                                                        <option value="request_signature">Request Signature</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 dueDateField">
+                                                            <!-- Due Date field -->
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="" class="mr-2">Due Date</label>    
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
+                                                                        <div class="o_row o_row_readonly">
+                                                                            <div name="edit_due_date" class="o_field_widget">
+                                                                                <div class="d-inline-flex w-100"><input class="o_input datepicker" name="due_date" placeholder="Select Due Date" style="width: 300px;cursor: pointer;" type="text" id="edit_due_date"></div>
+                                                                            </div>                                                
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mt-3 summaryField">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="edit_summary" class="mr-2">Summary</label>  
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input class="form-control" placeholder="e.g. Discuss proposal" style="width: 300px;" type="text" id="edit_summary" name="summary">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 mt-3 assignedToField">
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <label for="edit_assigned_to" class="mr-2">Assigned to</label>  
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <select class="form-control" id="edit_assigned_to" name="assigned_to" style="width: 100%;">
+                                                                        @foreach ($users as $user)
+                                                                            <option value="{{ $user->id }}">{{ $user->email }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-12 mt-3 logNoteField">
+                                                            <textarea class="form-control makeMeSummernote" id="edit_log_note" name="log_note" rows="4" placeholder="Log Note"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                                                        <button type="submit" class="btn btn-primary">Save</button>
+                                                        <button type="submit" class="btn btn-secondary" id="markAsDoneButton">Mark as Done</button>
+                                                        <button type="button" class="btn btn-secondary" id="editDoneAndScheduleButton">Done & Schedule Next</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Discard</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+
 @endsection
 
 @push('scripts')
@@ -1358,6 +1447,13 @@
 
 <!-- Bootstrap JS -->
 <script src="https://legacy.datatables.net/extras/thirdparty/ColReorderWithResize/ColReorderWithResize.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+<script>
+            $(document).ready(function () {
+                $(".makeMeSummernote").summernote();
+            });
+        </script>
 
 <script>
     function appendContent($this) {
@@ -1816,7 +1912,6 @@
 
         
         $(document).on('click', '.activityButton', function(e) {
-            
             e.preventDefault(); // Prevent any default action
             
             var activityId = $(this).data('id'); // Get the data-id of the clicked button
@@ -1843,18 +1938,18 @@
         }
 
         // Handling "Mark as Done" for all activities
-        $('.o-mail-ActivityListPopoverItem-markAsDone').on('click', function(event) {
+        $(document).on('click', '.o-mail-ActivityListPopoverItem-markAsDone', function (event) {
             event.stopPropagation(); // Prevent click from closing the popover
             var targetDiv = $(this).data('target');
             toggleFeedback(targetDiv);
         });
 
-        $('.feedback-textarea').on('click', function(event) {
+        $(document).on('click','.feedback-textarea', function(event) {
             event.stopPropagation(); // Prevent click from closing the popover
         });
 
         // Feedback submission
-        $('.feedback-submit').on('click', function() {
+        $(document).on('click','.feedback-submit', function() {
             var feedbackText = $(this).closest('.py-2').find('textarea').val();
             var activityId = $(this).data('id');
             var countElement = $(this).closest('.o-mail-ActivityListPopoverItem').find('b'); // Locate the count element
@@ -1889,12 +1984,12 @@
             $(targetDiv).addClass('d-none');
         });
 
-        $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function(event) {
-            event.stopPropagation(); // Prevent click from closing the popover
-            var activityId = $(this).closest('[data-id]').data('id'); // Get the ID from the parent
-            console.log('Edit activity ID:', activityId);
-            // Here you could open a modal or an edit form for this activity
-        });
+        // $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function(event) {
+        //     event.stopPropagation(); // Prevent click from closing the popover
+        //     var activityId = $(this).closest('[data-id]').data('id'); // Get the ID from the parent
+        //     console.log('Edit activity ID:', activityId);
+        //     // Here you could open a modal or an edit form for this activity
+        // });
     });
 </script>
 
@@ -2950,6 +3045,7 @@
                 $('#search-dropdown').hide();
             }
         });
+        
 
 
         // Send selected tags to the server and process response
@@ -3059,8 +3155,9 @@
                                              <div id="append-container-new"  class="append-container-new"></div>
 
                                             ${leads.map(lead => {
-
-                                                         const now = new Date();
+                                                console.log(lead);
+                                                
+                                                         const now = new Date();    
                                                                 const startOfToday = new Date();
                                                                 startOfToday.setHours(0, 0, 0, 0); // Reset to the start of the day
 
@@ -3189,133 +3286,85 @@
                                                                                     <div class="overflow-y-auto d-flex flex-column flex-grow-1">
 
                                                                                         <!-- Overdue Section -->
-                                                                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                                                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                                                                <b class="text-900 me-2 text-truncate flex-grow-1">Overdue ({{ $overdueCount }})</b>
-                                                                                            </div>
-                                                                                            @foreach($overdueActivities as $value)
-                                                                                                <div class="d-flex align-items-center flex-wrap mx-3 " data-id="{{ $value->id }}">
-                                                                                                @php
-                                                                                    
-                                                                                                            $user = $sale->user;
-                                                                                                            $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
-
-                                                                                                            $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
-
-                                                                                                    
-                                                                                                            if ($user) {
-                                                                                                                $colorIndex = crc32($user->email) % count($colors);
-                                                                                                                $bgColor = $colors[$colorIndex];
-                                                                                                            } else {
-                                                                                                                $bgColor = '#f0f0f0'; 
-                                                                                                            }
-                                                                                                        @endphp
-                                                                                                    <span
-                                                                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
-                                                                                                        {{ $initial }}
-                                                                                                    </span>
-                                                                                                    <div class="mt-1 flex-grow-1">
-                                                                                                    &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
-                                                                                                    </div>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                                                                    <div class="py-2 px-3 d-none" id="overdue_feedback_{{ $value->id }}">
-                                                                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                                                                        <div class="mt-2">
-                                                                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#overdue_feedback_{{ $value->id }}">Discard </button>
+                                                                                            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                                                                                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                                                                                    <b class="text-900 me-2 text-truncate flex-grow-1">Overdue (${overdueCount})</b>
+                                                                                                </div>
+                                                                                                ${overdueActivities.map(activity => `
+                                                                                                    <div class="o-mail-Activity d-flex align-items-center flex-wrap mx-3" data-activity-id="${activity.id}">
+                                                                                                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: ${getUserColor(activity.get_user.email)}; width:25px;height:24px;color:white">
+                                                                                                            ${activity.get_user.email.charAt(0).toUpperCase()}
+                                                                                                        </span>
+                                                                                                        <div class="mt-1 flex-grow-1">
+                                                                                                            &nbsp;&nbsp;<small>${activity.get_user?.email} - Overdue</small>
+                                                                                                        </div>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#overdue_feedback_${activity.id}"><i class="fa fa-check"></i></button>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-editbtn filter-edit btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                                                                        <div class="py-2 px-3 d-none" id="overdue_feedback_${activity.id }">
+                                                                                                            <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
+                                                                                                            <div class="mt-2">
+                                                                                                                <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="${activity.id }"> Done </button>
+                                                                                                                <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#overdue_feedback_${activity.id }">Discard </button>
+                                                                                                            </div>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                                </div>
-                                                                                            @endforeach
-                                                                                        </div>
-
-                                                                                        <!-- Today Section -->
-                                                                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                                                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                                                                <b class="text-900 me-2 text-truncate flex-grow-1">Today ({{ $todayCount }})</b>
+                                                                                                `).join('')}
                                                                                             </div>
-                                                                                            @foreach($todayActivities as $value)
-                                                                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                                                                @php
-                                                                                    
-                                                                                                            $user = $sale->user;
-                                                                                                            $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
 
-                                                                                                            $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+                                                                                            <!-- Today Section -->
+                                                                                            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                                                                                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                                                                                    <b class="text-900 me-2 text-truncate flex-grow-1">Today (${todayCount})</b>
+                                                                                                </div>
+                                                                                                ${todayActivities.map(activity => `
+                                                                                                    <div class="o-mail-Activity d-flex align-items-center flex-wrap mx-3" data-activity-id="${activity.id}">
+                                                                                                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: ${getUserColor(activity.get_user.email)}; width:25px;height:24px;color:white">
+                                                                                                            ${activity.get_user.email.charAt(0).toUpperCase()}
+                                                                                                        </span>
+                                                                                                        <div class="mt-1 flex-grow-1">
+                                                                                                            &nbsp;&nbsp;<small>${activity.get_user?.email} - Today</small>
+                                                                                                        </div>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_${activity.id}"><i class="fa fa-check"></i></button>
+                                                                                                        <button   class="o-mail-ActivityListPopoverItem-editbtn filter-edit btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                                                                        <div class="py-2 px-3 d-none" id="today_feedback_${activity.id}">
+                                                                                                                    <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
+                                                                                                                    <div class="mt-2">
+                                                                                                                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="${activity.id}"> Done </button>
+                                                                                                                        <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#today_feedback_${activity.id }">Discard </button>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                        </div>
+                                                                                                `).join('')}
+                                                                                            </div>
 
-                                                                                                    
-                                                                                                            if ($user) {
-                                                                                                                $colorIndex = crc32($user->email) % count($colors);
-                                                                                                                $bgColor = $colors[$colorIndex];
-                                                                                                            } else {
-                                                                                                                $bgColor = '#f0f0f0'; 
-                                                                                                            }
-                                                                                                        @endphp
-                                                                                                    <span
-                                                                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
-                                                                                                        {{ $initial }}
-                                                                                                    </span>
-                                                                                                    <div class="mt-1 flex-grow-1">
-                                                                                                    &nbsp;&nbsp;<small>{{ $sale->user->email }} - Today</small>
-                                                                                                    </div>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#today_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                                                                    <div class="py-2 px-3 d-none" id="today_feedback_{{ $value->id }}">
+                                                                                            <!-- Planned Section -->
+                                                                                            <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
+                                                                                                <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
+                                                                                                    <b class="text-900 me-2 text-truncate flex-grow-1">Planned (${plannedCount})</b>
+                                                                                                </div>
+                                                                                                ${plannedActivities.map(activity => `
+                                                                                                    <div class="o-mail-Activity d-flex align-items-center flex-wrap mx-3" data-activity-id="${activity.id}">
+                                                                                                        <span class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: ${getUserColor(activity.get_user.email)}; width:25px;height:24px;color:white">
+                                                                                                            ${activity.get_user.email.charAt(0).toUpperCase()}
+                                                                                                        </span>
+                                                                                                        <div class="mt-1 flex-grow-1">
+                                                                                                            &nbsp;&nbsp;<small>${activity.get_user?.email} - Planned</small>
+                                                                                                        </div>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_${activity.id}"><i class="fa fa-check"></i></button>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-editbtn filter-edit btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
+                                                                                                        <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
+                                                                                                        <div class="py-2 px-3 d-none" id="planned_feedback_${activity.id }">
                                                                                                         <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
                                                                                                         <div class="mt-2">
-                                                                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#today_feedback_{{ $value->id }}">Discard </button>
+                                                                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="${activity.id }"> Done </button>
+                                                                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#planned_feedback_${activity.id }">Discard </button>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                                </div>
-                                                                                            @endforeach
-                                                                                        </div>
-
-                                                                                        <!-- Planned Section -->
-                                                                                        <div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">
-                                                                                            <div class="overflow-auto d-flex align-items-baseline ms-3 me-1">
-                                                                                                <b class="text-900 me-2 text-truncate flex-grow-1">Planned ({{ $plannedCount }})</b>
+                                                                                                    </div>
+                                                                                                `).join('')}
                                                                                             </div>
-                                                                                            @foreach($plannedActivities as $value)
-                                                                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="{{ $value->id }}">
-                                                                                                @php
-                                                                                    
-                                                                                                            $user = $sale->user;
-                                                                                                            $initial = $user ? strtoupper(substr($user->email, 0, 1)) : '';
-
-                                                                                                            $colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
-
-                                                                                                    
-                                                                                                            if ($user) {
-                                                                                                                $colorIndex = crc32($user->email) % count($colors);
-                                                                                                                $bgColor = $colors[$colorIndex];
-                                                                                                            } else {
-                                                                                                                $bgColor = '#f0f0f0'; 
-                                                                                                            }
-                                                                                                        @endphp
-                                                                                                    <span
-                                                                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center" style="background-color: {{ $bgColor }}; width:25px;height:24px;color:white">
-                                                                                                        {{ $initial }}
-                                                                                                    </span>
-                                                                                                    <div class="mt-1 flex-grow-1">
-                                                                                                    &nbsp;&nbsp;<small>{{ $sale->user->email }} - Planned</small>
-                                                                                                    </div>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link" data-target="#planned_feedback_{{ $value->id }}"><i class="fa fa-check"></i></button>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i class="fa fa-pencil"></i></button>
-                                                                                                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i class="fa fa-times"></i></button>
-                                                                                                    <div class="py-2 px-3 d-none" id="planned_feedback_{{ $value->id }}">
-                                                                                                        <textarea class="form-control feedback-textarea" style="min-height: 70px;width:300px" rows="3" placeholder="Write Feedback"></textarea>
-                                                                                                        <div class="mt-2">
-                                                                                                            <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" data-id="{{ $value->id }}"> Done </button>
-                                                                                                            <button type="button" class="btn btn-sm btn-link feedback-discard" data-target="#planned_feedback_{{ $value->id }}">Discard </button>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                            @endforeach
-                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                                 <div class="popover-arrow end-auto"></div>
@@ -3404,6 +3453,24 @@
             });
             
         }
+
+        function crc32(str) {
+            let crc = 0xffffffff;
+            for (let i = 0; i < str.length; i++) {
+                crc ^= str.charCodeAt(i);
+                for (let j = 0; j < 8; j++) {
+                    crc = (crc >>> 1) ^ ((crc & 1) ? 0xedb88320 : 0);
+                }
+            }
+            return crc >>> 0;
+        }
+        function getUserColor(email) {
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            if (!email) return '#f0f0f0'; // Default color if no email
+
+            const colorIndex = crc32(email) % colors.length; // Use CRC32 hash of email for color index
+            return colors[colorIndex];
+        }
         
 
         $(document).on('click', '.lead-row', function () {
@@ -3415,6 +3482,182 @@
                 window.location.href = '/lead-add/' + leadId + '/' + index;
             }
         });
+
+        const baseUrl = "{{ route('crm.pipeline.activitiesEdit', ['id' => '']) }}";
+        const updateUrl = "{{ route('crm.pipeline.activitiesUpdate') }}"; // Assuming this is your update URL
+                const deleteUrl = "{{ route('crm.pipeline.activitiesDelete', ['id' => '']) }}";
+
+        $(document).on('click', '.o-mail-ActivityListPopoverItem-editbtn', function () {
+            $('.activityPopover').addClass('d-none');
+            const activityId = $(this).closest('.o-mail-Activity').data('activity-id');
+                    if (!activityId) {
+                        console.error('Activity ID not found.');
+                        return;
+                    }
+
+                    const url = baseUrl + '/' + activityId;
+                    console.log('Fetching data from URL:', url);
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                        success: function (response) {
+                            console.log('Response data:', response);
+
+                            $('#edit_activity_id').val(response.activity.id);
+                            $('#edit_activity_type').val(response.activity.activity_type);
+                            $('#edit_due_date').val(response.activity.due_date);
+                            $('#edit_summary').val(response.activity.summary);
+                            $('#edit_assigned_to').val(response.activity.assigned_to);
+                            $('#edit_log_note').summernote({
+                                height: 200,  // Set editor height
+                                focus: true,  // Set focus to editable area after modal shown
+                                tabsize: 2    // Set tab size
+                            });
+
+                            // Set the content of the Summernote editor with the fetched note
+                            $('#edit_log_note').summernote('code', response.activity.note);
+
+                            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                            editModal.show();
+                        },
+                        error: function (xhr) {
+                            console.error('Error fetching activity data:', xhr.responseText);
+                        }
+                    });
+        });
+
+                $('#editForm').on('submit', function(e) {
+                    console.log('jjjjjjjjjjj');
+                    
+                    e.preventDefault();
+
+                    const formData = $(this).serializeArray();
+
+                    const formObject = {};
+                    formData.forEach(field => {
+                        formObject[field.name] = field.value;
+                    });
+
+                    $.ajax({
+                        url: updateUrl,
+                        method: 'POST',
+                        data: formObject,
+                        success: function(response) {
+                            toastr.success(response.message);
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            console.error('Error updating activity:', xhr.responseText);
+                        }
+                    });
+                });
+
+                // Handle the "Mark as Done" button click
+                $('#markAsDoneButton').on('click', function() {
+                    const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+                    $.ajax({
+                        url: '{{route('crm.pipeline.activitiesUpdateStatus')}}', // Your actual route
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}', // CSRF token for security
+                            id: activityId,
+                            status: 1 // Mark as done
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                $('#editModal').modal('hide');
+                                $('div[data-activity-id="' + activityId + '"]').remove(); // Remove from UI
+                            } else {
+                                alert('Failed to mark activity as done.');
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+
+                // Handle the "Done & Schedule Next" button click
+                $('#editDoneAndScheduleButton').on('click', function() {
+                    const activityId = $('#edit_activity_id').val(); // Get the activity ID
+
+                    $.ajax({
+                        url: '{{route('crm.pipeline.activitiesUpdateStatus')}}',
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: activityId,
+                            status: 1 // Mark as done
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Set a flag in local storage to indicate the modal should open after reload
+                                localStorage.setItem('openSchedulingModal', 'true');
+                                location.reload(); // Reload the page
+                            } else {
+                                alert('Failed to mark activity as done.');
+                            }
+                        },
+                        error: function() {
+                            alert('An error occurred.');
+                        }
+                    });
+                });
+
+                // Check if the flag is set in local storage and open the modal
+                $(document).ready(function() {
+                    if (localStorage.getItem('openSchedulingModal') === 'true') {
+                        $('#activitiesAddModal').modal('show'); // Show the scheduling modal
+                        localStorage.removeItem('openSchedulingModal'); // Remove the flag
+                    }
+                });
+
+                    $(document).on('click', '.o-mail-ActivityListPopoverItem-cancel', function () {
+            event.stopPropagation(); // Prevent closing of popover
+            var activityId = $(this).closest('.o-mail-Activity').data('activity-id'); // Get the activity ID
+            var countElement = $(this).closest('.o-mail-ActivityListPopoverItem').find('b'); // Locate the count element
+            var status = countElement.text().split(' ')[0]; // Get the current status (Overdue, Today, Planned)
+                deleteActivity(activityId, $(this), countElement, status);
+        });
+
+        // Function to delete activity via AJAX
+        function deleteActivity(activityId, button, countElement, status) {
+            $.ajax({
+                url: '/feedback-activity-delete/' + activityId, // Use your delete route
+                method: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}' // Include CSRF token for security
+                },
+                success: function(response) {
+                    toastr.success(response.message);
+                    button.closest('.o-mail-Activity').addClass('d-none'); // Hide the activity after deletion
+
+                    // Decrease the count by 1
+                    var currentCount = parseInt(countElement.text().match(/\d+/)[0]); // Get the current count
+                    countElement.text(`${status} (${currentCount - 1})`); // Update the count with status
+
+                    // Check if all activities in Overdue, Today, and Planned are deleted
+                    var overdueCount = $('b.today-count').text();
+                    var todayText = $('b.today-count').text();
+                    var plannedCount = $('b.today-count').text();
+
+                    var remainingActivities = overdueCount + todayText + plannedCount;
+
+                    // If all activities are deleted, reload the page
+                    if (remainingActivities === 0) {
+                        location.reload(); // Reload the page
+                    }
+                    // location.reload();
+                },
+                error: function(xhr) {
+                    console.error(xhr.responseText);
+                    toastr.error('An error occurred while deleting the activity. Please try again.');
+                }
+            });
+        }
 
         // Initialize tags if any tags are present on page load
         updateTagSeparatorsGrop(); // Ensure that the close icon is added correctly

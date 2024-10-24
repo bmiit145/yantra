@@ -876,13 +876,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     .input-filter-dropdown-menu{
         position: absolute;
         background-color: #F9F9F9;
-        min-width: 685px !important;
+        min-width: 586px !important;
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 1;
+        z-index: 999;
         top: auto;
         right: auto;
-        left: 6%;
-        overflow-y: scroll;
+        overflow-y: hidden;
         text-decoration: none;
         color: black;
     }
@@ -910,6 +909,13 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
     .o_facet_remove {
         cursor: pointer;
+    }
+    .lead-separator {
+        height: 10px; /* Adjust height as needed */
+        background-color: transparent; /* Change to any color if you want a visible line */
+    }
+    .fa-star{
+        color: black;
     }
 </style>
 
@@ -1231,6 +1237,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1368,6 +1375,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Get the text of the clicked "Lost" span
@@ -1500,6 +1508,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1788,11 +1797,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 var operatesValue = $('#customer_filter_operates').val();
                 var span_id = $('#span_id').val();
 
-                $('.selected-items .o_searchview_facet').remove();
+                // $('.selected-items .o_searchview_facet').remove();
                 $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
                 $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
 
                 
 
@@ -2022,6 +2032,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             $('.lost_span:contains("Lost")').find('.checkmark').hide();
             $('.LTFActivities .checkmark').hide();
             $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+            $('.remove-input-filter').remove();
             e.stopPropagation();
 
             var $item = $(this);
@@ -2340,7 +2351,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 var filterId = $(this).data('id');
 
                 // Create a container for the entire facet
-                var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap"></div>');
+                var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap fav-filter"></div>');
 
                 // Create the absolute background overlay
                 var overlay = $('<div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>');
@@ -2403,13 +2414,13 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
 
             // Deselect all currently selected items
-            $('.selected-items .o_searchview_facet').remove();
+            // $('.selected-items .o_searchview_facet').remove();
             $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
             $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
 
             // Show the selected item
             var filterName = $(this).data('name');
-            var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap"></div>');
+            var container = $('<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap fav-filter"></div>');
 
             // Create the favorite button with icons
             var facetLabel = $('<div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-favourite" style="background-color:#f3cc00" role="button">' +
@@ -2723,34 +2734,28 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     // var table = $('#example').DataTable();
 
     $('.dropdown-item').on('click', function() {
+    var searchType = $(this).find('b.get-value').text();
+    var currentValue = $(this).find('.search-result').text().trim();
 
-        var searchType = $(this).find('b.get-value').text();
+    $.ajax({
+        url: '{{route('lead.kanban.search.filter')}}',
+        type: 'GET',
+        data: { 
+            searchType: searchType,
+            currentValue: currentValue
+        },
+        success: function(response) {
+            console.log('Response:', response);
+            // Clear existing content
+            $('.o_kanban_renderer').empty();
+            $('#lead-container').removeClass('flex-wrap');
 
-        var currentValue = $(this).find('.search-result').text().trim();
-
-
-        $.ajax({
-            url: '{{route('lead.search.filter')}}',
-            type: 'GET',
-            data: { 
-                searchType: searchType,
-                currentValue: currentValue
-            },
-            success: function (response) {
-                    console.log('Response:', response);
-                    // Clear existing content
-                    $('.o_kanban_renderer').empty();
-                    
-                    // Remove the 'flex-wrap' class from the lead-container
-                    $('#lead-container').removeClass('flex-wrap');
-
-                    // Assuming leads is an object where keys are group names
-                    const leadsData = response.data;
-
-                    // Render each lead in the kanban style
-                    $.each(leadsData, function (groupName, leads) {
+            // Check if response.data is an object
+            if (typeof response.data === 'object') {
+                $.each(response.data, function(groupName, leads) {
+                    if (Array.isArray(leads) && leads.length > 0) {
                         const groupHtml = `
-                            <div class="o_kanban_group flex-shrink-0 flex-grow-1 flex-md-grow-0" data-id="${groupName}">
+                            <div class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start lead-container d-flex" data-id="${groupName}">
                                 <div class="o_kanban_header lead-kanban-position-sticky top-0 z-1 py-2 pt-print-0">
                                     <div class="o_kanban_header_title position-relative d-flex lh-lg">
                                         <div class="o_column_title flex-grow-1 min-w-0 mw-100 gap-1 d-flex fs-4 fw-bold align-top text-900">
@@ -2758,6 +2763,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         </div>
                                     </div>
                                 </div>
+
                                 ${leads.map(lead => `
                                     <article class="o_kanban_record d-flex o_draggable cursor-pointer" data-id="${lead.id}" tabindex="0">
                                         <div class="oe_kanban_details d-flex flex-column justify-content-between">
@@ -2765,13 +2771,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                                 <strong class="o_kanban_record_title oe_partner_heading">
                                                     <span>${lead.product_name || ''}</span>
                                                 </strong>
-                                                <div class="o_kanban_tags_section oe_kanban_partner_categories">
-                                                    <span class="oe_kanban_list_many2many">
-                                                        <div name="category_id" class="o_field_widget o_field_many2many_tags">
-                                                            <div class="d-flex flex-wrap gap-1"></div>
-                                                        </div>
-                                                    </span>
-                                                </div>
                                             </div>
                                             <div>
                                                 <span class="o_kanban_record_subtitle text-black"><span>${lead.contact_name || ''}</span></span>
@@ -2800,7 +2799,6 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                                                         ${lead.get_user && lead.get_user.name ? lead.get_user.name[0].toUpperCase() : ''}
                                                                     </span>
                                                                 </a>
-                                                                <!-- Dropdown Menu -->
                                                                 <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="notificationDropdown${lead.id}" style="width: 300px; height: 143px;">
                                                                     <div class="o_avatar_card">
                                                                         <div class="card-body">
@@ -2839,37 +2837,58 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                             </div>
                                         </div>
                                     </article>
+                                    <div class="lead-separator"></div> <!-- This line creates a separator after each lead -->
                                 `).join('')}
                             </div>
                         `;
                         $('.o_kanban_renderer').append(groupHtml);
-                    });
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error applying filter:', error);
-                    // Optionally display a user-friendly message
-                }
-        });
-        $('.input_search_menu_wapper').hide();
+                    } else {
+                        console.error(`Expected an array for leads in group "${groupName}", but got:`, leads);
+                    }
+                });
+            } else {
+                console.error('Expected response.data to be an object, but got:', response.data);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error applying filter:', error);
+        }
     });
 
+    $('.input_search_menu_wapper').hide();
+});
+
     $('.input-filter-click li').on('click', function() {
+        $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+        $('.o-dropdown-item_1  .checkmark').hide();
+        $('.remove-input-filter').hide();
+        $('.o-dropdown-item-2 .checkmark').hide();
+        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+        $('.LTFActivities .checkmark').hide();
+        $('.tag').hide();
+        $('.tag1').hide();
+        $('.LTFtag').hide();
+        $('.group_by_tag').hide();
+        $('.CRtag').hide();
+        $('.tag5').hide();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
         var searchType = $(this).find('b.get-value').text();
         var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
         var currentIndex = $('.tag1').length; // Count current tags for the new index
 
         // Append the tag with searchType and selectedValue
         $('#search-input').before(
-            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain" data-span_id="${currentIndex}">
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}" style="height:25px;margin-top:auto;">
                 <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
                 <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
-                    <small class="px-1">${searchType}</small> <!-- Display searchType -->
-                    <span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
-                        <i class="fa fa-fw fa-cog"></i> <!-- Optional icon -->
+                    <small class="px-1">${searchType}</small> 
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i>
                     </span>
                 </div>
                 <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
-                    <small class="o_facet_value">${selectedValue}</small> <!-- Display selectedValue -->
+                    <small class="o_facet_value">${selectedValue}</small>
                     <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
                 </div>
             </div>`
