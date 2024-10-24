@@ -1,9 +1,11 @@
 @extends('layout.header')
 @section('content')
 @section('title', 'Sales')
-@section('head_breadcrumb_title', 'Orders')
+@section('head_breadcrumb_title')
+        <a href="{{ route('quotations.index') }}">Quotations</a>
+     @endsection
 @vite(['resources/css/salesadd.css'])
-@section('head_new_btn_link', route('orders.create'))
+@section('head_new_btn_link', route('quotations.create'))
 @section('image_url', asset('images/Sales.png'))
 @section('navbar_menu')
     <li class="dropdown">
@@ -58,8 +60,15 @@
         </div>
     </li>
 @endsection
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Stylesheets -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
 
 
@@ -99,7 +108,7 @@
                                         disabled="" aria-expanded="false">Quotation</button></div>
                             </div>
                         </div>
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                             <div class="oe_title">
                                 <h1>
                                     <div name="name"
@@ -113,8 +122,7 @@
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div
                                             class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label"
-                                                for="partner_id_0">Customer</label>
+                                            <label class="o_form_label" for="partner_id_0">Customer</label>
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
@@ -122,14 +130,18 @@
                                                 class="o_field_widget o_required_modifier o_field_res_partner_many2one">
                                                 <div class="o_field_many2one_selection">
                                                     <div class="o_input_dropdown">
-                                                        <div class="o-autocomplete dropdown"><input type="text"
-                                                                class="o-autocomplete--input o_input"
-                                                                autocomplete="off" role="combobox"
-                                                                aria-autocomplete="list" aria-haspopup="listbox"
-                                                                id="partner_id_0"
-                                                                placeholder="Type to find a customer..."
-                                                                aria-expanded="false"></div><span
-                                                            class="o_dropdown_button"></span>
+                                                        <div class="o-autocomplete dropdown">
+                                                            <select class="o-autocomplete--input o_input"
+                                                                id="partner_id_0" style="width: 350px">
+                                                                <option value="">Type to find a customer...
+                                                                </option>
+                                                                @foreach ($customer as $cus)
+                                                                    <option value="{{ $cus->id }}">
+                                                                        {{ $cus->name }}</option>
+                                                                @endforeach
+                                                                
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="o_field_many2one_extra"></div>
@@ -184,7 +196,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                    {{-- <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
                                             style=""><label class="o_form_label" for="plan_id_0">Recurring
                                                 Plan</label></div>
@@ -206,26 +218,31 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
                                             style=""><label class="o_form_label"
                                                 for="pricelist_id_0">Pricelist<sup class="text-info p-1"
                                                     data-tooltip-template="web.FieldTooltip"
                                                     data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;If you change the pricelist, only newly added lines will be affected.&quot;}}"
-                                                    data-tooltip-touch-tap-to-show="true">?</sup></label></div>
+                                                    data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                        </div>
                                         <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                             <div class="o_row">
                                                 <div name="pricelist_id" class="o_field_widget o_field_many2one">
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
-                                                            <div class="o-autocomplete dropdown"><input type="text"
-                                                                    class="o-autocomplete--input o_input"
-                                                                    autocomplete="off" role="combobox"
-                                                                    aria-autocomplete="list" aria-haspopup="listbox"
-                                                                    id="pricelist_id_0" placeholder=""
-                                                                    aria-expanded="false"></div>
-                                                            <span class="o_dropdown_button"></span>
+                                                            <div class="o-autocomplete dropdown">
+                                                                <select class="o-autocomplete--input o_input"
+                                                                    id="pricelist_id_0">
+                                                                    <option value=""></option>
+                                                                    @foreach ($pricelist as $price)
+                                                                        <option value="{{ $price->id }}">
+                                                                            {{ $price->sale_price_name }}</option>
+                                                                    @endforeach
+                                                                    {{-- <span class="o_dropdown_button"></span> --}}
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="o_field_many2one_extra"></div>
@@ -236,21 +253,23 @@
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
                                         <div
                                             class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                            <label class="o_form_label" for="payment_term_id_0">Payment
-                                                Terms</label>
+                                            <label class="o_form_label" for="payment_term_id_0">Payment Terms</label>
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
                                             style="width: 100%;">
                                             <div name="payment_term_id" class="o_field_widget o_field_many2one">
                                                 <div class="o_field_many2one_selection">
                                                     <div class="o_input_dropdown">
-                                                        <div class="o-autocomplete dropdown"><input type="text"
-                                                                class="o-autocomplete--input o_input"
-                                                                autocomplete="off" role="combobox"
-                                                                aria-autocomplete="list" aria-haspopup="listbox"
-                                                                id="payment_term_id_0" placeholder=""
-                                                                aria-expanded="false"></div><span
-                                                            class="o_dropdown_button"></span>
+                                                        <div class="o-autocomplete dropdown">
+                                                            <select class="o-autocomplete--input o_input"
+                                                                id="payment_term_id_0">
+                                                                <option value=""></option>
+                                                                @foreach ($payment as $pay)
+                                                                    <option value="{{ $pay->id }}">
+                                                                        {{ $pay->name }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="o_field_many2one_extra"></div>
@@ -429,6 +448,7 @@
                                                     <tr>
                                                         <td colspan="11">&ZeroWidthSpace;</td>
                                                     </tr>
+
                                                 </tbody>
                                                 <tfoot class="o_list_footer cursor-default">
                                                     <tr>
@@ -446,6 +466,37 @@
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                            <div class="note-editable odoo-editor-editable odoo-editor-qweb"
+                                                id="note_0" contenteditable="true" dir="ltr">
+                                                <p placeholder="Terms and conditions..."
+                                                    class="oe-hint oe-command-temporary-hint"><br>
+                                                </p>
+                                            </div>
+                                            <div></div>
+                                        </div>
+                                        <div
+                                            class="o_inner_group grid oe_subtotal_footer d-flex order-0 order-lg-1 flex-column gap-0 gap-sm-3 col-lg-4">
+                                            <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                <div class="o_cell flex-grow-1 flex-sm-grow-0"
+                                                    style="grid-column: span 2;width: 100%;">
+                                                    <div name="tax_totals"
+                                                        class="o_field_widget o_readonly_modifier o_field_account-tax-totals-field">
+                                                        <table class="float-end">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="o_td_label"><label
+                                                                            class="o_form_label o_tax_total_label">Total</label>
+                                                                    </td>
+                                                                    <td class="o_list_monetary"><span
+                                                                            name="amount_total"
+                                                                            style="font-size: 1.3em; font-weight: bold; white-space: nowrap;">₹&nbsp;0.00</span>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div id="optional_products" class="tab-pane fade">
@@ -496,43 +547,9 @@
                                                             </div><span
                                                                 class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="uom_id"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;uom_id&quot;,&quot;label&quot;:&quot;Unit of Measure&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;domain&quot;:&quot;[('category_id', '=', product_uom_category_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;uom.uom&quot;}}"
-                                                            style="width: 182px;">
-                                                            <div class="d-flex"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1">UoM</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="price_unit"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;price_unit&quot;,&quot;label&quot;:&quot;Unit Price&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 145px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Unit
-                                                                    Price</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1"
-                                                            data-name="discount"
-                                                            class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto"
-                                                            data-tooltip-template="web.ListHeaderTooltip"
-                                                            data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.option&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;discount&quot;,&quot;label&quot;:&quot;Discount (%)&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}"
-                                                            style="width: 145px;">
-                                                            <div class="d-flex flex-row-reverse"><span
-                                                                    class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Disc.%</span><i
-                                                                    class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span
-                                                                class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
-                                                        </th>
+                                                        <th> </th>
+                                                        <th> </th>
+                                                        <th> </th>
                                                         <th class="o_list_button w-print-0 p-print-0"
                                                             style="width: 182px;"></th>
                                                         <th class="o_list_controller o_list_actions_header w-print-0 p-print-0 position-sticky end-0"
@@ -545,6 +562,8 @@
                                                                         class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i></button>
                                                             </div>
                                                         </th>
+
+
                                                     </tr>
                                                 </thead>
                                                 <tbody class="ui-sortable">
@@ -607,16 +626,21 @@
                                                                         <div class="o_field_many2one_selection">
                                                                             <div class="o_input_dropdown">
                                                                                 <div class="o-autocomplete dropdown">
-                                                                                    <input type="text"
+                                                                                    <select
                                                                                         class="o-autocomplete--input o_input"
-                                                                                        autocomplete="off"
-                                                                                        role="combobox"
-                                                                                        aria-autocomplete="list"
-                                                                                        aria-haspopup="listbox"
-                                                                                        id="user_id_0" placeholder=""
-                                                                                        aria-expanded="false">
+                                                                                        id="user_id_0"
+                                                                                        style="width: 200px;">
+                                                                                        <option value="">
+                                                                                        </option>
+                                                                                        @foreach ($user as $users)
+                                                                                            <option
+                                                                                                value="{{ $users->id }}">
+                                                                                                {{ $users->name }}
+                                                                                            </option>
+                                                                                        @endforeach
+
+                                                                                    </select>
                                                                                 </div>
-                                                                                <span class="o_dropdown_button"></span>
                                                                             </div>
                                                                         </div>
                                                                         <div class="o_field_many2one_extra"></div>
@@ -637,20 +661,21 @@
                                                                     class="o_field_widget o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select
                                                                                     class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="team_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
-                                                                        </div><button type="button"
-                                                                            class="btn btn-link text-action oi o_external_button oi-arrow-right"
-                                                                            tabindex="-1" draggable="false"
-                                                                            aria-label="Internal link"
-                                                                            data-tooltip="Internal link"></button>
+                                                                                    id="team_id_0"
+                                                                                    style="width: 200px;">
+                                                                                    <option value=""></option>
+                                                                                    @foreach ($Sale as $Sales)
+                                                                                        <option
+                                                                                            value="{{ $Sales->id }}">
+                                                                                            {{ $Sales->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
                                                                 </div>
@@ -685,28 +710,28 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                                style=""><label class="o_form_label"
-                                                                    for="require_payment_0">Online payment<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Request a online payment from the customer to confirm the order.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900">
+                                                                <label class="o_form_label" for="require_payment_0">
+                                                                    Online payment
+                                                                    <sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" 
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Request an online payment from the customer to confirm the order.&quot;}}" 
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup>
+                                                                </label>
                                                             </div>
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
-                                                                style="width: 100%;">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                                                 <div id="require_payment">
-                                                                    <div name="require_payment"
-                                                                        class="o_field_widget o_field_boolean">
-                                                                        <div
-                                                                            class="o-checkbox form-check d-inline-block">
-                                                                            <input type="checkbox"
-                                                                                class="form-check-input"
-                                                                                id="require_payment_0"><label
-                                                                                class="form-check-label"
-                                                                                for="require_payment_0"></label>
+                                                                    <div name="require_payment" class="o_field_widget o_field_boolean">
+                                                                        <div class="o-checkbox form-check d-inline-block">
+                                                                            <input type="checkbox" class="form-check-input" id="require_payment_0">
+                                                                            <label class="form-check-label" for="require_payment_0"></label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <span class="mx-3">of</span>
+                                                                    <div name="prepayment_percent" class="o_field_widget o_field_percentage" style="width: 3rem; display: none;">
+                                                                        <div class="d-flex">
+                                                                            <input type="text" inputmode="decimal" autocomplete="off" class="o_input" id="prepayment_input" value="100">
+                                                                            <span>%</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -744,16 +769,19 @@
                                                                             class="o_field_many2many_selection d-inline-flex w-100">
                                                                             <div class="o_input_dropdown">
                                                                                 <div class="o-autocomplete dropdown">
-                                                                                    <input type="text"
+                                                                                    <select
                                                                                         class="o-autocomplete--input o_input"
-                                                                                        autocomplete="off"
-                                                                                        role="combobox"
-                                                                                        aria-autocomplete="list"
-                                                                                        aria-haspopup="listbox"
-                                                                                        id="tag_ids_0" placeholder=""
-                                                                                        aria-expanded="false">
+                                                                                        id="tag_ids_0"
+                                                                                        style="width: 200px;">
+                                                                                        <option value=""></option>
+                                                                                        @foreach ($tags as $tag)
+                                                                                            <option
+                                                                                                value="{{ $tag->id }}">
+                                                                                                {{ $tag->name }}
+                                                                                            </option>
+                                                                                        @endforeach
+                                                                                    </select>
                                                                                 </div>
-                                                                                <span class="o_dropdown_button"></span>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -767,33 +795,32 @@
                                                                 class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
                                                                 Invoicing</div>
                                                         </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                                style=""><label class="o_form_label"
-                                                                    for="fiscal_position_id_0">Fiscal Position<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
-                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Fiscal positions are used to adapt taxes and accounts for particular customers or sales orders/invoices.The default value comes from the customer.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900">
+                                                                <label class="o_form_label" for="fiscal_position_id_0">Fiscal Position
+                                                                    <sup class="text-info p-1" data-tooltip-template="web.FieldTooltip"
+                                                                        data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Fiscal positions are used to adapt taxes and accounts for particular customers or sales orders/invoices. The default value comes from the customer.&quot;}}"
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup>
+                                                                </label>
                                                             </div>
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
-                                                                style="width: 100%;">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                                                 <div class="o_row">
-                                                                    <div name="fiscal_position_id"
-                                                                        class="o_field_widget o_field_many2one">
+                                                                    <div name="fiscal_position_id" class="o_field_widget o_field_many2one">
                                                                         <div class="o_field_many2one_selection">
                                                                             <div class="o_input_dropdown">
                                                                                 <div class="o-autocomplete dropdown">
-                                                                                    <input type="text"
-                                                                                        class="o-autocomplete--input o_input"
-                                                                                        autocomplete="off"
-                                                                                        role="combobox"
-                                                                                        aria-autocomplete="list"
-                                                                                        aria-haspopup="listbox"
-                                                                                        id="fiscal_position_id_0"
-                                                                                        placeholder=""
-                                                                                        aria-expanded="false">
+                                                                                    <input type="text" class="o-autocomplete--input o_input" autocomplete="off"
+                                                                                        role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
+                                                                                        id="fiscal_position_id_0" placeholder="" aria-expanded="false">
+                                                                                    <div class="dropdown-menu" aria-labelledby="fiscal_position_id_0" style="display: none;">
+                                                                                        <a class="dropdown-item" href="#" data-value="">None.....</a>
+                                                                                        <a class="dropdown-item" href="#" data-value="Intra State">Intra State</a>
+                                                                                        <a class="dropdown-item" href="#" data-value="Inter State">Inter State</a>
+                                                                                        <a class="dropdown-item" href="#" data-value="Export/SEZ">Export/SEZ</a>
+                                                                                        <a class="dropdown-item" href="#" data-value="LUT - Export/SEZ">LUT - Export/SEZ</a>
+                                                                                        <a class="dropdown-item" href="#" data-value="Reverse charge Intra State">Reverse charge Intra State</a>
+                                                                                        <a class="dropdown-item" href="#" data-value="Reverse charge Inter State">Reverse charge Inter State</a>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <span class="o_dropdown_button"></span>
                                                                             </div>
@@ -810,32 +837,35 @@
                                                                 class="o_horizontal_separator mt-4 mb-3 text-uppercase fw-bolder small">
                                                                 Delivery</div>
                                                         </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div
-                                                                class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
-                                                                <label class="o_form_label"
-                                                                    for="incoterm_0">Incoterm<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
+                                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900">
+                                                                <label class="o_form_label" for="incoterm_0">Incoterm
+                                                                    <sup class="text-info p-1" data-tooltip-template="web.FieldTooltip"
                                                                         data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;International Commercial Terms are a series of predefined commercial terms used in international transactions.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup>
+                                                                </label>
                                                             </div>
-                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break"
-                                                                style="width: 100%;">
-                                                                <div name="incoterm"
-                                                                    class="o_field_widget o_field_many2one">
+                                                            <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
+                                                                <div name="incoterm" class="o_field_widget o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
-                                                                                    class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="incoterm_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <input type="text" class="o-autocomplete--input o_input" autocomplete="off"
+                                                                                    role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
+                                                                                    id="incoterm_0" placeholder="" aria-expanded="false" value="">
+                                                                                <div class="dropdown-menu" aria-labelledby="incoterm_0" style="display: none;">
+                                                                                    <a class="dropdown-item" href="#" data-value="">None....</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[EXW] EX WORKS">[EXW] EX WORKS</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[FCA] FREE CARRIER">[FCA] FREE CARRIER</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[FAS] FREE ALONGSIDE SHIP">[FAS] FREE ALONGSIDE SHIP</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[FOB] FREE ON BOARD">[FOB] FREE ON BOARD</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[CFR] COST AND FREIGHT">[CFR] COST AND FREIGHT</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[CIF] COST, INSURANCE AND FREIGHT">[CIF] COST, INSURANCE AND FREIGHT</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[CPT] CARRIAGE PAID TO">[CPT] CARRIAGE PAID TO</a>
+                                                                                    <a class="dropdown-item" href="#" data-value="[CIP] CARRIAGE AND INSURANCE PAID TO">[CIP] CARRIAGE AND INSURANCE PAID TO</a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <span class="o_dropdown_button"></span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
@@ -884,36 +914,34 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div
-                                                            class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900"
-                                                                style=""><label class="o_form_label"
-                                                                    for="commitment_date_0">Delivery Date<sup
-                                                                        class="text-info p-1"
-                                                                        data-tooltip-template="web.FieldTooltip"
+                                                        <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0 o_wrap_label w-100 text-break text-900">
+                                                                <label class="o_form_label" for="commitment_date_0">Delivery Date
+                                                                    <sup class="text-info p-1" data-tooltip-template="web.FieldTooltip"
                                                                         data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;This is the delivery date promised to the customer. If set, the delivery order will be scheduled based on this date rather than product lead times.&quot;}}"
-                                                                        data-tooltip-touch-tap-to-show="true">?</sup></label>
+                                                                        data-tooltip-touch-tap-to-show="true">?</sup>
+                                                                </label>
                                                             </div>
-                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0"
-                                                                style="width: 100%;">
+                                                            <div class="o_cell flex-grow-1 flex-sm-grow-0" style="width: 100%;">
                                                                 <div class="o_row">
-                                                                    <div name="commitment_date"
-                                                                        class="o_field_widget o_field_datetime">
+                                                                    <div name="commitment_date" class="o_field_widget o_field_datetime">
                                                                         <div class="d-flex gap-2 align-items-center">
-                                                                            <input type="text"
-                                                                                class="o_input cursor-pointer"
-                                                                                autocomplete="off"
-                                                                                id="commitment_date_0"
-                                                                                data-field="commitment_date">
+                                                                            <div class='input-group date' id='datetimepicker1'>
+                                                                                <input type='text' class="form-control o_input cursor-pointer" autocomplete="off"
+                                                                                       id="commitment_date_0" data-field="commitment_date" placeholder="Select delivery date" />
+                                                                                <span class="input-group-addon">
+                                                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                                                </span>
+                                                                            </div>
                                                                         </div>
-                                                                    </div><span class="text-muted">Expected: <div
-                                                                            name="expected_date"
-                                                                            class="o_field_widget o_readonly_modifier o_field_datetime oe_inline">
-                                                                            <div
-                                                                                class="d-flex gap-2 align-items-center">
+                                                                    </div>
+                                                                    <span class="text-muted">Expected:
+                                                                        <div name="expected_date" class="o_field_widget o_readonly_modifier o_field_datetime oe_inline">
+                                                                            <div class="d-flex gap-2 align-items-center">
                                                                                 <span class="text-truncate"></span>
                                                                             </div>
-                                                                        </div></span>
+                                                                        </div>
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -955,16 +983,20 @@
                                                                     class="o_field_widget o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select
                                                                                     class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
                                                                                     id="opportunity_id_0"
-                                                                                    placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
+                                                                                    style="width: 200px;">
+                                                                                    <option value=""></option>
+                                                                                    @foreach ($opportunitys as $oppor)
+                                                                                        <option
+                                                                                            value="{{ $oppor->id }}">
+                                                                                            {{ $oppor->organization }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
@@ -988,15 +1020,20 @@
                                                                     class="o_field_widget o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select
                                                                                     class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="campaign_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
+                                                                                    id="campaign_id_0"
+                                                                                    style="width: 200px;">
+                                                                                    <option value=""></option>
+                                                                                    @foreach ($campaigns as $camp)
+                                                                                        <option
+                                                                                            value="{{ $camp->id }}">
+                                                                                            {{ $camp->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
@@ -1019,15 +1056,20 @@
                                                                     class="o_field_widget o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select
                                                                                     class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="medium_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
+                                                                                    id="medium_id_0"
+                                                                                    style="width: 200px;">
+                                                                                    <option value=""></option>
+                                                                                    @foreach ($mediums as $medi)
+                                                                                        <option
+                                                                                            value="{{ $medi->id }}">
+                                                                                            {{ $medi->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
@@ -1050,15 +1092,20 @@
                                                                     class="o_field_widget o_field_many2one">
                                                                     <div class="o_field_many2one_selection">
                                                                         <div class="o_input_dropdown">
-                                                                            <div class="o-autocomplete dropdown"><input
-                                                                                    type="text"
+                                                                            <div class="o-autocomplete dropdown">
+                                                                                <select
                                                                                     class="o-autocomplete--input o_input"
-                                                                                    autocomplete="off" role="combobox"
-                                                                                    aria-autocomplete="list"
-                                                                                    aria-haspopup="listbox"
-                                                                                    id="source_id_0" placeholder=""
-                                                                                    aria-expanded="false"></div><span
-                                                                                class="o_dropdown_button"></span>
+                                                                                    id="source_id_0"
+                                                                                    style="width: 200px;">
+                                                                                    <option value=""></option>
+                                                                                    @foreach ($source as $sou)
+                                                                                        <option
+                                                                                            value="{{ $sou->id }}">
+                                                                                            {{ $sou->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                </select>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="o_field_many2one_extra"></div>
@@ -1186,6 +1233,7 @@
         </div>
     </div>
 </div>
+
 <div class="o-main-components-container">
     <div class="o-discuss-CallInvitations position-absolute top-0 end-0 d-flex flex-column p-2"></div>
     <div class="o-mail-ChatHub">
@@ -1199,6 +1247,7 @@
     <div class="o_notification_manager o_upload_progress_toast"></div>
     <div class="o_notification_manager"></div>
 </div>
+
 <div class="o_we_crop_widget d-none" contenteditable="false" xml:space="preserve">
     <div class="o_we_cropper_wrapper"><img class="o_we_cropper_img">
         <div class="o_we_crop_buttons text-center mt16 position-fixed o_we_no_overlay" contenteditable="false">
@@ -1216,13 +1265,13 @@
                     data-value="-90"><i class="fa fa-fw fa-rotate-left"></i></button><button type="button"
                     title="Rotate Right" data-action="rotate" data-value="90"><i
                         class="fa fa-fw fa-rotate-right"></i></button></div>
-            <div class="btn-group" role="group"><button type="button" title="Flip Horizontal"
-                    data-action="flip" data-scale-direction="scaleX"><i
-                        class="oi oi-fw oi-arrows-h"></i></button><button type="button" title="Flip Vertical"
-                    data-action="flip" data-scale-direction="scaleY"><i class="oi oi-fw oi-arrows-v"></i></button>
+            <div class="btn-group" role="group"><button type="button" title="Flip Horizontal" data-action="flip"
+                    data-scale-direction="scaleX"><i class="oi oi-fw oi-arrows-h"></i></button><button type="button"
+                    title="Flip Vertical" data-action="flip" data-scale-direction="scaleY"><i
+                        class="oi oi-fw oi-arrows-v"></i></button>
             </div>
-            <div class="btn-group" role="group"><button type="button" title="Reset Image"
-                    data-action="reset"><i class="fa fa-refresh"></i> Reset Image</button></div>
+            <div class="btn-group" role="group"><button type="button" title="Reset Image" data-action="reset"><i
+                        class="fa fa-refresh"></i> Reset Image</button></div>
             <div class="btn-group" role="group"><button type="button" title="Apply" data-action="apply"
                     class="btn btn-primary"><i class="fa fa-check"></i> Apply</button><button type="button"
                     title="Discard" data-action="discard" class="btn btn-danger"><i class="fa fa-times"></i>
@@ -1230,14 +1279,18 @@
         </div>
     </div>
 </div>
+
 <div class="oe-qweb-select" style="display: none;"></div>
+
 <div class="oe-tablepicker-wrapper oe-floating" style="position: absolute; display: none;">
     <div class="oe-tablepicker"></div>
     <div class="oe-tablepicker-size"></div>
 </div>
+
 <div class="oe-powerbox-wrapper position-absolute overflow-hidden" style="display: none;">
     <div class="oe-powerbox-mainWrapper flex-skrink-1 overflow-auto py-2"></div>
 </div>
+
 <div id="toolbar" class="oe-toolbar oe-floating d-print-none"
     style="--we-cp-primary: #714B67; --we-cp-secondary: #D8DADD; --we-cp-success: #28A745; --we-cp-info: #17A2B8; --we-cp-warning: #E99D00; --we-cp-danger: #D44C59; --we-cp-o-color-1: #714B67; --we-cp-o-cc1-bg: #FFFFFF; --we-cp-o-cc1-headings: #000; --we-cp-o-cc1-text: #000; --we-cp-o-cc1-btn-primary: #714B67; --we-cp-o-cc1-btn-primary-text: #FFF; --we-cp-o-cc1-btn-secondary: #D8DADD; --we-cp-o-cc1-btn-secondary-text: #000; --we-cp-o-cc1-btn-primary-border: #714B67; --we-cp-o-cc1-btn-secondary-border: #D8DADD; --we-cp-o-color-2: #8595A2; --we-cp-o-cc2-bg: #F3F2F2; --we-cp-o-cc2-headings: #111827; --we-cp-o-cc2-text: #000; --we-cp-o-cc2-btn-primary: #714B67; --we-cp-o-cc2-btn-primary-text: #FFF; --we-cp-o-cc2-btn-secondary: #D8DADD; --we-cp-o-cc2-btn-secondary-text: #000; --we-cp-o-cc2-btn-primary-border: #714B67; --we-cp-o-cc2-btn-secondary-border: #D8DADD; --we-cp-o-color-3: #F3F2F2; --we-cp-o-cc3-bg: #8595A2; --we-cp-o-cc3-headings: #FFF; --we-cp-o-cc3-text: #FFF; --we-cp-o-cc3-btn-primary: #714B67; --we-cp-o-cc3-btn-primary-text: #FFF; --we-cp-o-cc3-btn-secondary: #F3F2F2; --we-cp-o-cc3-btn-secondary-text: #000; --we-cp-o-cc3-btn-primary-border: #714B67; --we-cp-o-cc3-btn-secondary-border: #F3F2F2; --we-cp-o-color-4: #FFFFFF; --we-cp-o-cc4-bg: #714B67; --we-cp-o-cc4-headings: #FFF; --we-cp-o-cc4-text: #FFF; --we-cp-o-cc4-btn-primary: #111827; --we-cp-o-cc4-btn-primary-text: #FFF; --we-cp-o-cc4-btn-secondary: #F3F2F2; --we-cp-o-cc4-btn-secondary-text: #000; --we-cp-o-cc4-btn-primary-border: #111827; --we-cp-o-cc4-btn-secondary-border: #F3F2F2; --we-cp-o-color-5: #111827; --we-cp-o-cc5-bg: #111827; --we-cp-o-cc5-headings: #FFFFFF; --we-cp-o-cc5-text: #FFF; --we-cp-o-cc5-btn-primary: #714B67; --we-cp-o-cc5-btn-primary-text: #FFF; --we-cp-o-cc5-btn-secondary: #F3F2F2; --we-cp-o-cc5-btn-secondary-text: #000; --we-cp-o-cc5-btn-primary-border: #714B67; --we-cp-o-cc5-btn-secondary-border: #F3F2F2; --we-cp-100: #F9FAFB; --we-cp-200: #E7E9ED; --we-cp-300: #D8DADD; --we-cp-400: #9A9CA5; --we-cp-500: #7C7F89; --we-cp-600: #5F636F; --we-cp-700: #374151; --we-cp-800: #1F2937; --we-cp-900: #111827; visibility: hidden;">
     <div id="style" class="btn-group dropdown"><button type="button" class="btn dropdown-toggle"
@@ -2364,3 +2417,219 @@
 
 
 @endsection
+
+@push('scripts')
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script src=https://code.jquery.com/jquery-3.5.1.slim.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js></script>
+<script src=https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script> --}}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        // On checkbox toggle
+        $('#require_payment_0').on('change', function() {
+            if ($(this).is(':checked')) {
+                // Show percentage input and set value to 100
+                $('div[name="prepayment_percent"]').show();
+                $('#prepayment_input').val(100);
+            } else {
+                // Hide percentage input and clear the value
+                $('div[name="prepayment_percent"]').hide();
+                $('#prepayment_input').val('');
+            }
+        });
+    });
+
+</script>
+<!-- Main Save Button Show Hide -->
+<script>
+    $(document).ready(function() {
+        const form = $('#myForm');
+        const saveButton = $('#main_save_btn');
+        const discardButton = $('#main_discard_btn');
+
+        // Initialize default values for inputs
+        const inputs = form.find('input, select, textarea');
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                $(this).data('defaultChecked', $(this).is(':checked'));
+            } else {
+                $(this).data('defaultValue', $(this).val());
+            }
+        });
+
+        // Function to check for changes
+        function checkChanges() {
+            let hasChanged = false;
+
+            inputs.each(function() {
+                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                    if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                        hasChanged = true;
+                    }
+                } else if ($(this).is('select')) {
+                    if ($(this).val() !== $(this).data('defaultValue')) {
+                        hasChanged = true;
+                    }
+                } else {
+                    if ($(this).val() !== $(this).data('defaultValue')) {
+                        hasChanged = true;
+                    }
+                }
+            });
+
+            saveButton.toggle(hasChanged);
+            discardButton.toggle(hasChanged);
+        }
+
+        // Event listeners for input and change events
+        form.on('input change', checkChanges);
+
+        // Handle paste and drop events on the textarea
+        $('textarea#description').on('paste', function(event) {
+            const clipboardData = event.originalEvent.clipboardData;
+            const items = clipboardData.items;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    alert('Image pasted!');
+                    saveButton.show(); // Show the save button
+                    break; // Exit after finding the first image
+                }
+            }
+
+            checkChanges(); // Check for changes when pasting
+        });
+
+        // Handle drop event
+        $('textarea#description').on('drop', function(event) {
+            event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+            const dataTransfer = event.originalEvent.dataTransfer;
+            const items = dataTransfer.items;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    alert('Image dropped!');
+                    saveButton.show(); // Show the save button
+                    break; // Exit after finding the first image
+                }
+            }
+
+            checkChanges(); // Check for changes when dropping
+        });
+
+        // Handle star selection for priority
+        $('.o_priority_star').on('click', function(e) {
+            e.preventDefault();
+            const selectedValue = $(this).data('value');
+
+            // Remove 'fa-star' class from all stars and add 'fa-star-o'
+            $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+            // Add 'fa-star' class to the selected star and all stars before it
+            $(this).addClass('fa-star');
+            $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+            // Update the default value for change detection
+            inputs.each(function() {
+                if ($(this).attr('data-value') === selectedValue) {
+                    $(this).data('defaultValue',
+                        selectedValue); // Update default value for change detection
+                }
+            });
+
+            checkChanges(); // Check for changes after updating the priority
+        });
+
+        discardButton.on('click', function() {
+            location.reload();
+        });
+
+        // Select2 initialization
+        $('.o-autocomplete--input').select2();
+
+        // Reset button visibility on form load
+        saveButton.hide();
+        discardButton.hide();
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        // Show dropdown options on input focus for both fields
+        $('#fiscal_position_id_0, #incoterm_0').on('focus', function() {
+            $(this).siblings('.dropdown-menu').show();
+        });
+    
+        // Hide dropdown options when clicking outside
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.o-autocomplete').length) {
+                $('.dropdown-menu').hide();
+            }
+        });
+    
+        // Handle option click for both dropdowns
+        $('.dropdown-item').on('click', function(e) {
+            e.preventDefault(); // Prevent the default action
+            var selectedValue = $(this).data('value');
+            $(this).closest('.o_field_widget').find('.o-autocomplete--input').val(selectedValue); // Set input value
+            $('.dropdown-menu').hide(); // Hide dropdown after selection
+        });
+    });
+</script>
+
+<!-- Initialize the datetimepicker -->
+<script>
+    $(document).ready(function() {
+        // Initialize the daterangepicker on the correct inputs
+        $('#commitment_date_0, #validity_date_0').daterangepicker({
+            singleDatePicker: true,  // Single date selection
+            timePicker: true,        // Enable time picker
+            timePicker24Hour: true,  // 24-hour time format
+            timePickerIncrement: 1,  // Time increment
+            showDropdowns: true,     // Enable dropdowns for month and year
+            locale: {
+                format: "YYYY-MM-DD HH:mm"  // Display format
+            }
+        });
+
+        // Function to set the current date and time if the input is empty
+        function setCurrentDateTime() {
+            var currentDateTime = moment().format("YYYY-MM-DD HH:mm");
+            if ($('#commitment_date_0').val() === '') {
+                $('#commitment_date_0').val(currentDateTime);
+            }
+            if ($('#validity_date_0').val() === '') {
+                $('#validity_date_0').val(currentDateTime);
+            }
+        }
+
+        // Call setCurrentDateTime on page load
+        setCurrentDateTime();
+
+        // Optionally set the date-time on focus if the field is still empty
+        $('#commitment_date_0, #validity_date_0').on('focus', function() {
+            if ($(this).val() === '') {
+                $(this).val(moment().format("YYYY-MM-DD HH:mm"));
+            }
+        });
+    });
+</script>
+@endpush

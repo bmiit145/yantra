@@ -43,6 +43,23 @@
             <a href="#">Customers</a>
         </div>
     </li>
+    <li class="dropdown">
+        <a href="#">Configuration</a>
+        <div class="dropdown-content">
+            <a href="#"><b>Settings</b></a>
+            <a href="#"><b>Sales Teams</b></a>
+            <a href="#"><b>Sales Orders</b></a>
+            <a href="#" style="margin-left: 15px;">Tags</a>
+            <a href="#"><b>Product</b></a>
+            <a href="#" style="margin-left: 15px;">Product Category</a>
+            <a href="#" style="margin-left: 15px;">Product Tags</a>
+            <a href="#"><b>Online Pyament</b></a>
+            <a href="#" style="margin-left: 15px;">Payment Provide</a>
+            <a href="#" style="margin-left: 15px;">Payment Methods</a>
+            <a href="#"><b>Activities</b></a>
+            <a href="#" style="margin-left: 15px;">Activities Plans</a>
+        </div>
+    </li>
 @endsection
 
 

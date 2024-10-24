@@ -14,7 +14,6 @@
             <a href="{{ route('contact.index', ['tab' => 'customers']) }}">Customers</a>
         </div>
     </li>
-
     <li class="dropdown">
         <a href="#">To Invoice</a>
         <div class="dropdown-content">
@@ -39,14 +38,37 @@
             <a href="#">Customers</a>
         </div>
     </li>
+    <li class="dropdown">
+        <a href="#">Configuration</a>
+        <div class="dropdown-content">
+            <a href="#"><b>Settings</b></a>
+            <a href="{{route('salesteam.index')}}"><b>Sales Teams</b></a>
+            <a href="#"><b>Sales Orders</b></a>
+            <a href="#" style="margin-left: 15px;">Tags</a>
+            <a href="#"><b>Product</b></a>
+            <a href="#" style="margin-left: 15px;">Product Category</a>
+            <a href="#" style="margin-left: 15px;">Product Tags</a>
+            <a href="#"><b>Online Pyament</b></a>
+            <a href="#" style="margin-left: 15px;">Payment Provide</a>
+            <a href="#" style="margin-left: 15px;">Payment Methods</a>
+            <a href="#"><b>Activities</b></a>
+            <a href="#" style="margin-left: 15px;">Activities Plans</a>
+        </div>
+    </li>
 
 @endsection
 
 
 @section('head')
+<head>
     @vite(['resources/css/pricelists.css'])
     <!-- Select2 CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+</head>
+
 @endsection
 
 
@@ -161,7 +183,7 @@
                     <input type="hidden" id="pricelist_ids" value="{{ isset($data) ? $data->id : '' }}"
                         name="pricelist_ids">
                     <div class="o_form_sheet_bg">
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                             <div class="oe_title">
                                 <h1>
                                     <div class="product_flex d-flex align-items-center">
@@ -2108,7 +2130,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 </div>
 
 <div class="o-main-components-container">
@@ -2141,14 +2163,22 @@
     <div class="o_notification_manager"></div>
 </div>
 
+@push('scripts')
 <!-- Bootstrap JS and dependencies -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+
+
 
 <!-- Product Category Radio Buttons -->
 <script>
@@ -2948,5 +2978,117 @@
     });
 </script>
 
+<script>
+    $(document).ready(function() {
+    const form = $('#myForm');
+    const saveButton = $('#main_save_btn');
+    const discardButton = $('#main_discard_btn');
 
+    // Initialize default values for inputs
+    const inputs = form.find('input, select, textarea');
+    inputs.each(function() {
+        if ($(this).is(':checkbox') || $(this).is(':radio')) {
+            $(this).data('defaultChecked', $(this).is(':checked'));
+        } else {
+            $(this).data('defaultValue', $(this).val());
+        }
+    });
+
+    // Function to check for changes
+    function checkChanges() {
+        let hasChanged = false;
+
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                    hasChanged = true;
+                }
+            } else if ($(this).is('select')) {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            } else {
+                if ($(this).val() !== $(this).data('defaultValue')) {
+                    hasChanged = true;
+                }
+            }
+        });
+
+        saveButton.toggle(hasChanged);
+        discardButton.toggle(hasChanged);
+    }
+
+    // Event listeners for input and change events
+    form.on('input change', checkChanges);
+
+    // Handle paste and drop events on the textarea
+    $('textarea#description').on('paste', function(event) {
+        const clipboardData = event.originalEvent.clipboardData;
+        const items = clipboardData.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image pasted!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when pasting
+    });
+
+    // Handle drop event
+    $('textarea#description').on('drop', function(event) {
+        event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+        const dataTransfer = event.originalEvent.dataTransfer;
+        const items = dataTransfer.items;
+
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.kind === 'file' && item.type.startsWith('image/')) {
+                alert('Image dropped!');
+                saveButton.show(); // Show the save button
+                break; // Exit after finding the first image
+            }
+        }
+
+        checkChanges(); // Check for changes when dropping
+    });
+
+    // Handle star selection for priority
+    $('.o_priority_star').on('click', function(e) {
+        e.preventDefault();
+        const selectedValue = $(this).data('value');
+
+        // Remove 'fa-star' class from all stars and add 'fa-star-o'
+        $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+        // Add 'fa-star' class to the selected star and all stars before it
+        $(this).addClass('fa-star');
+        $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+        // Update the default value for change detection
+        inputs.each(function() {
+            if ($(this).attr('data-value') === selectedValue) {
+                $(this).data('defaultValue', selectedValue); // Update default value for change detection
+            }
+        });
+
+        checkChanges(); // Check for changes after updating the priority
+    });
+
+    discardButton.on('click', function() {
+        location.reload();
+    });
+
+    // Select2 initialization
+    $('.o-autocomplete--input').select2();
+
+    // Reset button visibility on form load
+    saveButton.hide();
+    discardButton.hide();
+});
+</script>
+@endpush
 @endsection

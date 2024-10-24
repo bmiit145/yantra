@@ -16,6 +16,19 @@ class SaleTeam extends Model
         'email',
         'accept_emails_from',
         'invoicing_target',
-        'member_id'
+        'member_id',
     ];
+
+    public function user(){
+        return $this->hasOne(User::class,'id','team_leader');
+    }
+
+    public function getPriceList()
+    {
+        // Explode the comma-separated string into an array
+        $memberIDs = explode(',', $this->member_id);
+    
+        // Retrieve the related User records
+        return User::whereIn('id', $memberIDs)->get();
+    }
 }

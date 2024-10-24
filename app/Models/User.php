@@ -28,6 +28,7 @@ class User extends Authenticatable
         'role',
         'id',
         'is_confirmed',
+        'user_image',
     ];
 
     /**
@@ -142,4 +143,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(CrmStage::class);
     }
+
+    public function saleTeam()
+    {
+        return $this->hasOne(SaleTeam::class, 'member_id', 'id');
+    }
+                
 }

@@ -14,7 +14,13 @@ use App\Models\invoicing_policies;
 use App\Models\optional_product;
 use App\Models\price_list_pop;
 use App\Models\sales_price;
+use App\Models\Contact;
+use App\Models\payment_terms;
 use App\Models\Country;
+use App\Models\Opportunity;
+use App\Models\Campaign;
+use App\Models\Medium;
+use App\Models\Source;
 use App\Models\pricelist_all;
 use Illuminate\Http\Request;
 use App\Models\Activity;
@@ -29,6 +35,28 @@ class SalesController extends Controller
     public function create()
     {
         return view('Sale.ordernew');
+    }
+
+    public function quotations_index()
+    {
+        return view('Sale.quotationsindex');
+    } 
+
+    public function quotations_create()
+    {
+        $customer = Contact::select('id','name')->get();
+        $pricelist = sales_price::select('id','sale_price_name')->get();
+        $payment = payment_terms::select('id', 'name')->get();
+        $user = User::select('id', 'name')->get();
+        $Sale = SaleTeam::select('id', 'name')->get();
+        $tags = Tag::select('id', 'name')->get();
+        $opportunitys = Opportunity::select('id', 'organization')->get();
+        $campaigns = Campaign::select('id', 'name')->get();
+        $mediums = Medium::select('id', 'name')->get();
+        $source = Source::select('id', 'name')->get();
+        
+
+        return view('Sale.quotationsnew', compact('customer', 'pricelist', 'payment','user','Sale','tags','opportunitys','campaigns','mediums','source'));
     }
 
 
@@ -205,152 +233,176 @@ class SalesController extends Controller
 
     }
   
-// Price List Page.......................
 
-        public function Pricelists_index()
-        {
-            // Fetch pricelist data
-            $pricelists = pricelist_all::orderBy('id', 'asc')->get();
-            
-            // Return the view with pricelists data
-            return view('Sale.pricelistsindex', compact('pricelists'));
-        }
+// Price List Page....................
 
-        public function Pricelists_create($id = null)
-        {
-            $products = products_new_items::select('id', 'name')->get();
-            $categories = product_categories::select('id', 'categories_name')->get();
-            $sale_price = sales_price::select('id', 'sale_price_name')->get();
-            $country = Country::select('id', 'name')->get();
-            $data = pricelist_all::find($id);
-            if($data){
-                $priceLists = $data->getPriceList();
-            }
-            else{
-                $priceLists = [];
-            }
-
-            return view('Sale.Pricelistsnew', compact('products', 'categories', 'sale_price', 'country', 'data','priceLists'));
-        }
-
-        public function pricelist_store_main(Request $request)
-        {
-            // Prepare the data array with the pricelist name and country
-            $data = [
-                'pricelist_name' => $request->pricelist_name,
-                'country' => $request->country,
-            ];
-
-            // Check if pricelist_id is provided
-            if ($request->pricelist_id) {
-                // Retrieve the existing pricelist
-                $product = pricelist_all::findOrFail($request->pricelist_id);
-                
-                // Get the existing model IDs and ensure it's an array
-                $existingIds = is_array($product->pricelistes_id) ? $product->pricelistes_id : explode(',', $product->pricelistes_id);
-                
-                // Get new IDs and ensure it's an array
-                $newIds = is_array($request->modelIds) ? $request->modelIds : explode(',', $request->modelIds);
-
-                // Merge and filter unique IDs
-                $mergedIds = array_unique(array_merge($existingIds, $newIds));
-                $data['pricelistes_id'] = implode(',', $mergedIds); // Store as a comma-separated string
-
-                // Update the product
-                $product->update($data);
-                $message = "Pricelist updated successfully!";
-            } else {
-                // If no pricelist_id, create a new pricelist with the provided model IDs
-                $data['pricelistes_id'] = is_array($request->modelIds) ? implode(',', $request->modelIds) : $request->modelIds;
-                $product = pricelist_all::create($data);
-                $message = "Pricelist created successfully!";
-            }
-
-            return response()->json(['message' => $message, 'product' => $product]);
-        }
-
-        public function pricelist_store(Request $request)
-        {
-             
-            $data = [
-                'apply_to' => $request->apply_to,
-                'product_Name' => $request->product_Name,
-                'category' => $request->category_name,
-                'price_type' => $request->price_type,
-                'discount' => $request->discount,
-                'sale_price_name'=> $request->sale_price_name,
-                'based_price' => $request->based_price,
-                'discount_sales' => $request->discount_sales,
-                'markup' => $request->markup,
-                'other_pricelist' => $request->other_pricelist,
-                'round_of_to' => $request->round_of_to,
-                'extra_fee' => $request->extra_fee,
-                'fixed_price' => $request->fixed_price,
-                'min_oty' => $request->min_qty,
-                'strat_date' => $request->strat_date,
-                'end_date' => $request->end_date,
-            ];
-
-            // Store the data and return the ID
-             $product = price_list_pop::create($data);
-
-            return response()->json(['id' => $product->id]);
-        }  
-
-        public function pricelist_destroy($id)
-        {
-            $pricelist = price_list_pop::find($id);
-            if ($pricelist) {
-                $pricelist->delete();
-                return response()->json(['success' => true]);
-            }
-            return response()->json(['success' => false], 404);
-        }
-
-        public function pricelist_edit(Request $request, $id)
-        {
-            // Find the specific product entry by its ID
-            $product = price_list_pop::findOrFail($id);
-
-            // Data to be updated based on request input
-            $data = [
-                'apply_to' => $request->apply_to,
-                'product_Name' => $request->product_Name,
-                'category' => $request->category,
-                'price_type' => $request->price_type,
-                'discount' => $request->discount,
-                'sale_price_name' => $request->sale_price_name,
-                'based_price' => $request->based_price,
-                'discount_sales' => $request->discount_sales,
-                'markup' => $request->markup,
-                'other_pricelist' => $request->other_pricelist,
-                'round_of_to' => $request->round_of_to,
-                'extra_fee' => $request->extra_fee,
-                'fixed_price' => $request->fixed_price,
-                'min_oty' => $request->min_oty,
-                'strat_date' => $request->strat_date,
-                'end_date' => $request->end_date,
-            ];
-
-            // Update the product entry with the new data
-            $product->update($data);
-
-            // Return a JSON response with the product ID on success
-            return response()->json(['id' => $product->id]);
-        }
+    public function Pricelists_index()
+    {
+        // Fetch pricelist data
+        $pricelists = pricelist_all::orderBy('id', 'asc')->get();
         
+        // Return the view with pricelists data
+        return view('Sale.pricelistsindex', compact('pricelists'));
+    }
+
+    public function Pricelists_create($id = null)
+    {
+        $products = products_new_items::select('id', 'name')->get();
+        $categories = product_categories::select('id', 'categories_name')->get();
+        $sale_price = sales_price::select('id', 'sale_price_name')->get();
+        $country = Country::select('id', 'name')->get();
+        $data = pricelist_all::find($id);
+        if($data){
+            $priceLists = $data->getPriceList();
+        }
+        else{
+            $priceLists = [];
+        }
+
+        return view('Sale.Pricelistsnew', compact('products', 'categories', 'sale_price', 'country', 'data','priceLists'));
+    }
+
+    public function pricelist_store_main(Request $request)
+    {
+        // Prepare the data array with the pricelist name and country
+        $data = [
+            'pricelist_name' => $request->pricelist_name,
+            'country' => $request->country,
+        ];
+
+        // Check if pricelist_id is provided
+        if ($request->pricelist_id) {
+            // Retrieve the existing pricelist
+            $product = pricelist_all::findOrFail($request->pricelist_id);
+            
+            // Get the existing model IDs and ensure it's an array
+            $existingIds = is_array($product->pricelistes_id) ? $product->pricelistes_id : explode(',', $product->pricelistes_id);
+            
+            // Get new IDs and ensure it's an array
+            $newIds = is_array($request->modelIds) ? $request->modelIds : explode(',', $request->modelIds);
+
+            // Merge and filter unique IDs
+            $mergedIds = array_unique(array_merge($existingIds, $newIds));
+            $data['pricelistes_id'] = implode(',', $mergedIds); // Store as a comma-separated string
+
+            // Update the product
+            $product->update($data);
+            $message = "Pricelist updated successfully!";
+        } else {
+            // If no pricelist_id, create a new pricelist with the provided model IDs
+            $data['pricelistes_id'] = is_array($request->modelIds) ? implode(',', $request->modelIds) : $request->modelIds;
+            $product = pricelist_all::create($data);
+            $message = "Pricelist created successfully!";
+        }
+
+        return response()->json(['message' => $message, 'product' => $product]);
+    }
+
+    public function pricelist_store(Request $request)
+    {
+            
+        $data = [
+            'apply_to' => $request->apply_to,
+            'product_Name' => $request->product_Name,
+            'category' => $request->category_name,
+            'price_type' => $request->price_type,
+            'discount' => $request->discount,
+            'sale_price_name'=> $request->sale_price_name,
+            'based_price' => $request->based_price,
+            'discount_sales' => $request->discount_sales,
+            'markup' => $request->markup,
+            'other_pricelist' => $request->other_pricelist,
+            'round_of_to' => $request->round_of_to,
+            'extra_fee' => $request->extra_fee,
+            'fixed_price' => $request->fixed_price,
+            'min_oty' => $request->min_qty,
+            'strat_date' => $request->strat_date,
+            'end_date' => $request->end_date,
+        ];
+
+        // Store the data and return the ID
+            $product = price_list_pop::create($data);
+
+        return response()->json(['id' => $product->id]);
+    }  
+
+    public function pricelist_destroy($id)
+    {
+        $pricelist = price_list_pop::find($id);
+        if ($pricelist) {
+            $pricelist->delete();
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 404);
+    }
+
+    public function pricelist_edit(Request $request, $id)
+    {
+        // Find the specific product entry by its ID
+        $product = price_list_pop::findOrFail($id);
+
+        // Data to be updated based on request input
+        $data = [
+            'apply_to' => $request->apply_to,
+            'product_Name' => $request->product_Name,
+            'category' => $request->category,
+            'price_type' => $request->price_type,
+            'discount' => $request->discount,
+            'sale_price_name' => $request->sale_price_name,
+            'based_price' => $request->based_price,
+            'discount_sales' => $request->discount_sales,
+            'markup' => $request->markup,
+            'other_pricelist' => $request->other_pricelist,
+            'round_of_to' => $request->round_of_to,
+            'extra_fee' => $request->extra_fee,
+            'fixed_price' => $request->fixed_price,
+            'min_oty' => $request->min_oty,
+            'strat_date' => $request->strat_date,
+            'end_date' => $request->end_date,
+        ];
+
+        // Update the product entry with the new data
+        $product->update($data);
+
+        // Return a JSON response with the product ID on success
+        return response()->json(['id' => $product->id]);
+    }
+        
+// Sales Team Page....................    
+
+    public function sales_team_index()
+    {   
+        
+    // Fetch all sales teams
+    $sales_teams = SaleTeam::all();
+    $sales_teams = SaleTeam::orderBy('id', 'asc')->get();
+    // Pass the data to the view
+    return view('Sale.sales_team_index', ['sales_teams' => $sales_teams]);
+
+    } 
 
     public function Teams_create($id = null)
     {
-        $data = SaleTeam::where('id', $id)->first();
-        $teams = User::where('is_confirmed', '1')->get();
-        return view('Sale.teamcreat' , compact('teams','data'));
+        // Fetch all users who are confirmed
+        $teams = User::select('id', 'name', 'email', 'last_login_ip', 'is_confirmed', 'user_image')->get();
+        $data = SaleTeam::with('user')->find($id);
+    
+        // Get member IDs as an array
+        $existingMemberIds = $data && $data->member_id ? explode(',', $data->member_id) : [];
+    
+        // Fetch member details
+        $getMember = User::whereIn('id', $existingMemberIds)->get(); // Fetch User details for the given IDs
+    
+        return view('Sale.teamcreat', compact('teams', 'data', 'existingMemberIds', 'getMember'));
     }
-
+    
     public function teams_store(Request $request)
     {
-        
+        // dd($request->all());
         $sales_type = is_array($request->sales_type) ? implode(',', $request->sales_type) : null;
+
+        // If `member_id` is an array, implode it into a string
+        $member_id = is_array($request->input('recode_ids')) ? implode(',', $request->input('recode_ids')) : $request->input('recode_ids');
 
         $team = SaleTeam::updateOrCreate(
             ['id' => $request->team_id],
@@ -359,15 +411,38 @@ class SalesController extends Controller
                 'sales_type' => $sales_type, // Store the comma-separated string
                 'team_leader' => $request->team_leader,
                 'email' => $request->email,
-                'accept_emails_from' => $request->acceptm,
+                'accept_emails_from' => $request->accept,
                 'invoicing_target'=> $request->invoiced,
-
+                'member_id' => $member_id // Store as a string
             ]
         );
 
-        return response()->json($team);
-    }
-   
+        $action = $request->team_id ? 'updated' : 'created';
+        $message = $action === 'updated' ? 'Sales team updated successfully' : 'Sales team created successfully';
 
+        return response()->json(['message' => $message, 'salesTeam' => $team]);
+    }
     
+
+    public function deleteMember(Request $request)
+    {
+        $memberId = $request->input('member_id');
+        $teamId = $request->input('team_id');
+
+        // Find the team and remove the member ID
+        $team = SaleTeam::find($teamId);
+        if ($team) {
+            $existingMemberIds = $team->member_id ? explode(',', $team->member_id) : [];
+            $updatedMemberIds = array_diff($existingMemberIds, [$memberId]); // Remove the ID
+
+            // Update the member_id field
+            $team->member_id = implode(',', $updatedMemberIds);
+            $team->save();
+
+            return response()->json(['message' => 'Member deleted successfully']);
+        }
+
+        return response()->json(['message' => 'Team not found'], 404);
+    }
+
 }

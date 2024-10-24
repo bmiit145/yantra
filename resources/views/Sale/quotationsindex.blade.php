@@ -2,7 +2,7 @@
 @section('content')
 @section('title', 'Sales')
 @section('head_breadcrumb_title', '')
-@section('head_new_btn_link', route('orders.create'))
+@section('head_new_btn_link', route('quotations.create'))
 @section('image_url', asset('images/Sales.png'))
 @section('navbar_menu')
     <li class="dropdown">
@@ -57,26 +57,6 @@
         </div>
     </li>
 @endsection
-
-<div class="card" style="padding: 1%">
-    <div class="table-responsive text-nowrap">
-        <table id="example" class="display nowrap">
-            <thead>
-                <tr>
-                    <th>Order Date</th>
-                    <th>Customer</th>
-                    <th>Salesperson</th>
-                    <th>Activities</th>
-                    <th>Invoice Status</th>
-                    <th>Amount to Invoice</th>
-                </tr>
-            </thead>
-            <tbody id="bill_list">
-                <!-- Dynamic rows will be inserted here -->
-            </tbody>
-        </table>
-    </div>
-</div>
 
 
 

@@ -4,6 +4,16 @@
 @section('calendar', route('crm.pipeline.calendar'))
 @section('activity', route('crm.pipeline.activity'))
 @section('char_area', route('crm.pipeline.graph'))
+@section('content')
+@section('title', 'Sales')
+@section('head_breadcrumb_title')
+    <a href="{{ route('salesteam.index') }}">Sales Team</a>
+    <br>
+    <small>New</small>
+@endsection
+@section('head_new_btn_link', route('salesteam.create'))
+@section('image_url', asset('images/Sales.png'))
+@section('navbar_menu')
 
 @section('navbar_menu')
 <li class="dropdown">
@@ -47,23 +57,47 @@
 
 @section('head_breadcrumb_title', 'Pipeline')
 @section('head')
-@vite([
-'resources/css/crm_2.css',
-])
+@vite(['resources/css/crm_2.css',])
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
 @endsection
 @section('content')
 
 <style>
-    #search-input {
-        display: none;
-    }
+
+span.badge.bg-success,span.badge.bg-info {
+    color: #fff;
+    padding: 5px 15px;
+    font-size: 14px;
+    line-height: 1.2;
+    border-radius: 100px;
+}
 
     .crmright_head_main__1 {
         display: none;
     }
-
+    .modal .modal-dialog .o_form_sheet .form-control {
+        border-radius: 100px;
+        padding: 8px 20px;
+    }
+    button.oe_kanban_card_removeicon {
+        display: none;
+    }
+    .oe_kanban_card.oe_kanban_global_click:hover button.oe_kanban_card_removeicon {
+        display: block;
+    }
     .seeting {
         display: none;
+    }
+
+    .o-autocomplete--input{
+        border: transparent;
     }
 
 </style>
@@ -73,29 +107,55 @@
         <div class="o_form_view_container">
             <div class="o_content">
                 <div class="o_form_renderer o_form_editable d-flex d-print-block flex-nowrap h-100">
+                    <input type="hidden" id="team_id" value="{{ isset($data) ? $data->id : '' }}" name="team_id">
                     <div class="o_form_sheet_bg">
                         <div class="o_form_statusbar position-relative d-flex justify-content-between mb-0 mb-md-2 pb-2 pb-md-0">
                             <div class="o_statusbar_buttons d-flex align-items-center align-content-around flex-wrap gap-1"></div>
                         </div>
-                        <div class="o_form_sheet position-relative">
+                        <div class="o_form_sheet position-relative" id="myForm">
                             <div class="oe_button_box" name="button_box"></div>
                             <div class="oe_title"><label class="o_form_label" for="name_0">Sales Team</label>
                                 <h1>
-                                    <div name="name" class="o_field_widget o_required_modifier o_field_char text-break"><input class="o_input o_field_translate" id="name_0" type="text" autocomplete="off" placeholder="e.g. North America"></div>
+                                    <div name="name" class="o_field_widget o_required_modifier o_field_char text-break">
+                                        <input class="o_input o_field_translate" id="name_0" type="text" 
+                                               value="{{ isset($data->name) ? $data->name : '' }}" 
+                                               autocomplete="off" placeholder="e.g. North America">
+                                    </div>                            
                                 </h1>
-                                <div name="options_active" class="o_row"><span name="opportunities">
+                                @php
+                                    // Convert the sales_type string (comma-separated) to an array
+                                    $selected_sales_types = isset($data) && $data->sales_type ? explode(',', $data->sales_type) : [];
+                                @endphp
+
+                                <div name="options_active" class="o_row">
+                                    <span name="opportunities">
                                         <div name="use_opportunities" class="o_field_widget o_field_boolean">
                                             <div class="o-checkbox form-check d-inline-block">
-                                                <input type="checkbox" value="pipline" class="form-check-input" name="sales_type[]" id="use_opportunities_1" checked>
-                                            <label class="form-check-label" for="use_opportunities_1"></label></div>
-                                        </div><label class="o_form_label" for="use_opportunities_1">Pipeline<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Check this box to manage a presales process with opportunities.&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                    </span><span name="leads">
+                                                <input type="checkbox" value="pipline" class="form-check-input" name="sales_type[]" 
+                                                    id="use_opportunities_1" 
+                                                    {{ in_array('pipline', $selected_sales_types) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="use_opportunities_10"></label>
+                                            </div>
+                                        </div>
+                                        <label class="o_form_label" for="use_opportunities_10">Pipeline
+                                            <sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Check this box to manage a presales process with opportunities.&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup>
+                                        </label>
+                                    </span>
+
+                                    <span name="leads">
                                         <div name="use_leads" class="o_field_widget o_field_boolean">
                                             <div class="o-checkbox form-check d-inline-block">
-                                                <input type="checkbox" value="leads" class="form-check-input" name="sales_type[]" id="use_leads_1">
-                                            <label class="form-check-label" for="use_leads_1"></label></div>
-                                        </div><label class="o_form_label" for="use_leads_1">Leads<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Check this box to filter and qualify incoming requests as leads before converting them into opportunities and assigning them to a salesperson.&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label>
-                                    </span></div>
+                                                <input type="checkbox" value="leads" class="form-check-input" name="sales_type[]" 
+                                                    id="use_leads_1" 
+                                                    {{ in_array('leads', $selected_sales_types) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="use_leads_1"></label>
+                                            </div>
+                                        </div>
+                                        <label class="o_form_label" for="use_leads_1">Leads
+                                            <sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Check this box to filter and qualify incoming requests as leads before converting them into opportunities and assigning them to a salesperson.&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup>
+                                        </label>
+                                    </span>
+                                </div>
                             </div>
                             <div class="o_group row align-items-start">
                                 <div class="o_inner_group grid col-lg-6">
@@ -110,13 +170,15 @@
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete ">
-                                                            <select type="text" class="o-autocomplete--input o_input form-control" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="user_id_0" placeholder="" aria-expanded="false">
-                                                                <option value="" style="display:none"></option>
-                                                                @foreach($teams as $team)
-                                                                <option value="{{$team->id}}">{{$team->name}}</option>
-                                                                @endforeach
-                                                                
-                                                            </select>
+                                                                <select type="text" class="o-autocomplete--input o_input form-control" autocomplete="off" role="combobox" aria-autocomplete="list" aria-haspopup="listbox" id="user_id_0" style="border:transparent;">
+                                                                    <option value="" style="display:none; border:none;"></option>
+                                                                    @foreach($teams as $team)
+                                                                        <option value="{{ $team->id }}" 
+                                                                                {{ isset($data) && $data->team_leader == $team->id ? 'selected' : '' }}>
+                                                                            {{ $team->name }}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -138,7 +200,7 @@
                                                     <div class="o_field_many2one_extra"></div>
                                                 </div>
                                                 <div class="oe_edit_only" name="edit_alias" dir="ltr">
-                                                    <div name="alias_name" class="o_field_widget o_field_char oe_inline"><input class="o_input" id="alias_name_0" type="text" autocomplete="off" placeholder="Email"></div><div name="alias_domain_id" class="o_field_widget o_field_many2one oe_inline">
+                                                    <div name="alias_name" class="o_field_widget o_field_char oe_inline"><input class="o_input" id="alias_name_0" value="{{ isset($data->email) ? $data->email : '' }}"  type="text" autocomplete="off" placeholder="Email"></div><div name="alias_domain_id" class="o_field_widget o_field_many2one oe_inline">
                                                         
                                                         <div class="o_field_many2one_extra"></div>
                                                     </div>
@@ -149,12 +211,13 @@
                                     <div class="o_wrap_field d-flex d-sm-contents flex-column mb-3 mb-sm-0 div_hide_2">
                                         <div class="o_cell o_wrap_label flex-grow-1 flex-sm-grow-0 w-100 text-break text-900"><label class="o_form_label" for="alias_contact_0">Accept Emails From<sup class="text-info p-1" data-tooltip-template="web.FieldTooltip" data-tooltip-info="{&quot;field&quot;:{&quot;help&quot;:&quot;Policy to post a message on the document using the mailgateway.\n- everyone: everyone can post\n- partners: only authenticated partners\n- followers: only followers of the related document or members of following channels\n&quot;}}" data-tooltip-touch-tap-to-show="true">?</sup></label></div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
-                                            <div name="alias_contact" class="o_field_widget o_required_modifier o_field_selection"><select class="o_input pe-3" id="alias_contact_0">
+                                            <div name="alias_contact" class="o_field_widget o_required_modifier o_field_selection">
+                                                <select class="o_input pe-3" id="alias_contact_0">
                                                     <option value="false" style="display:none"></option>
-                                                    <option value="&quot;everyone&quot;">Everyone</option>
-                                                    <option value="&quot;partners&quot;">Authenticated Partners</option>
-                                                    <option value="&quot;followers&quot;">Followers only</option>
-                                                    <option value="&quot;employees&quot;">Authenticated Employees</option>
+                                                    <option value="everyone" {{ isset($data) && $data->accept_emails_from == 'everyone' ? 'selected' : '' }}>Everyone</option>
+                                                    <option value="partners" {{ isset($data) && $data->accept_emails_from == 'partners' ? 'selected' : '' }}>Authenticated Partners</option>
+                                                    <option value="followers" {{ isset($data) && $data->accept_emails_from == 'followers' ? 'selected' : '' }}>Followers only</option>
+                                                    <option value="employees" {{ isset($data) && $data->accept_emails_from == 'employees' ? 'selected' : '' }}>Authenticated Employees</option>
                                                 </select></div>
                                         </div>
                                     </div>
@@ -164,7 +227,7 @@
                                             <div class="o_row">
                                                 <div name="invoiced_target" class="o_field_widget o_field_monetary oe_inline">
                                                     <div class="text-nowrap d-inline-flex w-100 align-items-baseline position-relative"><span class="o_input position-absolute pe-none d-flex w-100"><span class="opacity-0 d-inline-block overflow-hidden mw-100 o_monetary_ghost_value"></span></span>
-                                                    <input class="o_input flex-grow-1 flex-shrink-1" autocomplete="off" placeholder="0.00" id="invoiced_target_0" type="text"></div>
+                                                    <input class="o_input flex-grow-1 flex-shrink-1" autocomplete="off" value="{{ isset($data->invoicing_target) ? $data->invoicing_target : '' }}"  placeholder="0.00" id="invoiced_target_0" type="text"></div>
                                                 </div><span class="flex-grow-1">/ Month</span>
                                             </div>
                                         </div>
@@ -182,39 +245,130 @@
                                         <div name="member_ids" class="o_field_widget o_field_many2many w-100">
                                             <div class="o_kanban_view o_field_x2many o_field_x2many_kanban">
                                                 <div class="o_x2m_control_panel d-empty-none mb-4">
-                                                    <div class="o_cp_buttons gap-1" role="toolbar" aria-label="Control panel buttons"><button type="button" class="btn btn-secondary o-kanban-button-new">Add</button></div>
+                                                    <div class="o_cp_buttons gap-1" role="toolbar"
+                                                        aria-label="Control panel buttons">
+                                                        <button type="button"
+                                                            class="btn btn-secondary o-kanban-button-new"
+                                                            id="addSalespersonBtn" data-bs-toggle="modal"
+                                                            data-bs-target="#salespersonModal">Add </button>
+                                                    </div>
+                                                    <form id="salesTeamForm">
+                                                        <input type="hidden" id="salesperson_id" value="{{ isset($data) ? $data->id : '' }}">
+                                                        <div class="container mt-5">
+                                                            <!-- Modal Structure -->
+                                                            <div class="modal fade" id="salespersonModal" tabindex="-1" aria-labelledby="salespersonModalLabel" aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                                    <div class="modal-content">
+
+                                                                        <!-- Modal Header -->
+                                                                        <header class="modal-header">
+                                                                            <h4 class="modal-title"
+                                                                                id="salespersonModalLabel">Add:
+                                                                                Salespersons</h4>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </header>
+                                                                        </header>
+
+                                                                        <!-- Modal Body -->
+                                                                        <main class="modal-body">
+                                                                            <div class="o_form_sheet position-relative" id="myForm">
+                                                                                <!-- Search Bar -->
+                                                                                <div class="mb-3" style=" text-align: center;display: flex; justify-content: space-around;">
+                                                                                    <input type="text" id="searchInput" placeholder="Search..." class="form-control" style=" width: 300px; border-color: lightblue; margin-left: 0; margin-right: 0;">
+                                                                                </div>
+                                                                        
+                                                                                <!-- Content goes here (table etc.) -->
+                                                                                <div class="o_list_view o_view_controller">
+                                                                                    <!-- Sample Table Structure -->
+                                                                                    <table class="table table-striped">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th><input type="checkbox" id="selectAllCheckbox"></th>
+                                                                                                <th class="d-none">id</th>
+                                                                                                <th>Name</th>
+                                                                                                <th>Login</th>
+                                                                                                <th>Language</th>
+                                                                                                <th>Latest Authentication</th>
+                                                                                                <th>Status</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody id="tableBody">
+                                                                                            @foreach ($teams as $team)
+                                                                                            <tr data-id="datapoint_{{ $team->id }}">
+                                                                                                <td><input type="checkbox" class="selectRowCheckbox"></td>
+                                                                                                <td class="d-none">{{$team->id}}</td>
+                                                                                                <td>{{ $team->name }}</td>
+                                                                                                <td>{{ $team->email }}</td>
+                                                                                                <td>English (IN)</td> <!-- Static as per the requirements -->
+                                                                                                <td>{{ $team->last_login_ip ?? '' }}</td>
+                                                                                                <td>
+                                                                                                    @if($team->is_confirmed == 1)
+                                                                                                        <span class="badge bg-success">Confirmed</span>
+                                                                                                    @else
+                                                                                                        <span class="badge bg-info">Never Connected</span>
+                                                                                                    @endif
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            @endforeach
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                        
+                                                                                <!-- Pagination Control -->
+                                                                                <nav>
+                                                                                    <ul class="pagination justify-content-end" id="paginationControls">
+                                                                                        <li class="page-item"><a class="page-link" href="#" onclick="changePage(currentPage - 1)">Previous</a></li>
+                                                                                        <!-- Dynamic page numbers will be injected here -->
+                                                                                        <li class="page-item"><a class="page-link" href="#" onclick="changePage(currentPage + 1)">Next</a></li>
+                                                                                    </ul>
+                                                                                </nav>
+                                                                            </div>
+                                                                        </main>
+
+                                                                        <!-- Modal Footer -->
+                                                                        <footer class="modal-footer">
+                                                                            <button type="button" class="btn btn-primary" id="selectButton" disabled>Select</button>
+                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                        </footer>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                    
+                                                </div>
+                                                <div class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record">
+                                                    @foreach ($getMember as $record)
+                                                    <article data-id="{{ $record->id }}" class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record" tabindex="0">
+                                                        <div class="oe_kanban_card oe_kanban_global_click" style="border: 1px solid #d8dadd;width: auto;padding: 8px; position: relative;">
+                                                            <!-- Delete Button on the left side -->
+                                                            <button class="oe_kanban_card_removeicon btn btn-sm delete-record" style="position: absolute; right: 4px; top: 4px;" data-id="{{ $record->id }}">
+                                                            
+                                                              <i class="fa fa-trash-o"></i> 
+                                                            </button>
+                                                
+                                                            <div class="o_kanban_card_content d-flex">
+                                                                <div>
+                                                                    <img class="o_kanban_image o_image_64_cover" alt="Avatar" src="{{ $record->user_image ?? '/images/placeholder.png' }}">
+                                                                </div>
+                                                                <div class="oe_kanban_details d-flex flex-column ms-3">
+                                                                    <input type="hidden" value="{{ $record->id }}" name="recode_id[]">
+                                                                    <strong class="o_kanban_record_title oe_partner_heading">
+                                                                        <span>{{ $record->name }}</span>
+                                                                    </strong>
+                                                                    <div class="d-flex align-items-baseline text-break">
+                                                                        <i class="fa fa-envelope me-1" role="img" aria-label="Email" title="Email"></i>
+                                                                        <span>{{ $record->email }}</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </article>
+                                                    @endforeach
                                                 </div>
                                                 <div class="o_kanban_renderer o_renderer d-flex o_kanban_ungrouped align-content-start flex-wrap justify-content-start">
-                                                    <article class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record" data-id="datapoint_147" tabindex="0">
-                                                        <div class="oe_kanban_card oe_kanban_global_click">
-                                                            <div class="o_kanban_card_content d-flex">
-                                                                <div><img class="o_kanban_image o_image_64_cover" alt="Avatar" loading="lazy" src="https://yantra-design4.odoo.com/web/image/res.users/2/avatar_128"></div>
-                                                                <div class="oe_kanban_details d-flex flex-column ms-3"><strong class="o_kanban_record_title oe_partner_heading"><span>info@yantradesign.co.in</span></strong><a class="nav-link p-0 oe_kanban_action oe_kanban_action_a" href="#"></a>
-                                                                    <div class="d-flex align-items-baseline text-break"><i class="fa fa-envelope me-1" role="img" aria-label="Email" title="Email"></i><span>info@yantradesign.co.in</span></div>
-                                                                </div>
-                                                                <div class="o_member_assignment">
-                                                                    <div name="lead_month_count" class="o_field_widget o_readonly_modifier o_field_gauge">
-                                                                        <div class="oe_gauge position-relative"><canvas width="100" height="80" style="display: block; box-sizing: border-box; height: 80px; width: 100px;"></canvas><span class="o_gauge_value position-absolute start-0 end-0 bottom-0 text-center">14</span></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </article>
-                                                    <article class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record" data-id="datapoint_153" tabindex="0">
-                                                        <div class="oe_kanban_card oe_kanban_global_click">
-                                                            <div class="o_kanban_card_content d-flex">
-                                                                <div><img class="o_kanban_image o_image_64_cover" alt="Avatar" loading="lazy" src="https://yantra-design4.odoo.com/web/image/res.users/6/avatar_128"></div>
-                                                                <div class="oe_kanban_details d-flex flex-column ms-3"><strong class="o_kanban_record_title oe_partner_heading"><span>Karan</span></strong><a class="nav-link p-0 oe_kanban_action oe_kanban_action_a" href="#"></a>
-                                                                    <div class="d-flex align-items-baseline text-break"><i class="fa fa-envelope me-1" role="img" aria-label="Email" title="Email"></i><span>karanplacecode12@gmail.com</span></div>
-                                                                </div>
-                                                                <div class="o_member_assignment">
-                                                                    <div name="lead_month_count" class="o_field_widget o_readonly_modifier o_field_gauge">
-                                                                        <div class="oe_gauge position-relative"><canvas width="100" height="80" style="display: block; box-sizing: border-box; height: 80px; width: 100px;"></canvas><span class="o_gauge_value position-absolute start-0 end-0 bottom-0 text-center">1</span></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </article>
+                                                    <div id="dynamicContentPlaceholder">
+                                                    </div>
                                                     <div class="o_kanban_record o_kanban_ghost flex-grow-1 flex-md-shrink-1 flex-shrink-0 my-0"></div>
                                                     <div class="o_kanban_record o_kanban_ghost flex-grow-1 flex-md-shrink-1 flex-shrink-0 my-0"></div>
                                                     <div class="o_kanban_record o_kanban_ghost flex-grow-1 flex-md-shrink-1 flex-shrink-0 my-0"></div>
@@ -290,79 +444,428 @@
     </div>
 </div>
 
+@endsection
+@push('scripts')
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/35.1.0/classic/ckeditor.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+<!-- Main Save BUtton Hide And Show -->
+
 <script>
-$(document).ready(function() {
-    // When the page loads, check if the checkbox is unchecked
-    toggleDivVisibility();
+    $(document).ready(function() {
+        const form = $('#myForm');
+        const saveButton = $('#main_save_btn');
+        const discardButton = $('#main_discard_btn');
 
-    // Event listener for checkbox changes
-    $('#use_opportunities_1, #use_leads_1').on('change', function() {
-        toggleDivVisibility();
+        // Initialize default values for inputs
+        const inputs = form.find('input, select, textarea');
+        inputs.each(function() {
+            if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                $(this).data('defaultChecked', $(this).is(':checked'));
+            } else {
+                $(this).data('defaultValue', $(this).val());
+            }
+        });
+
+        // Function to check for changes
+        function checkChanges() {
+            let hasChanged = false;
+
+            inputs.each(function() {
+                if ($(this).is(':checkbox') || $(this).is(':radio')) {
+                    if ($(this).is(':checked') !== $(this).data('defaultChecked')) {
+                        hasChanged = true;
+                    }
+                } else if ($(this).is('select')) {
+                    if ($(this).val() !== $(this).data('defaultValue')) {
+                        hasChanged = true;
+                    }
+                } else {
+                    if ($(this).val() !== $(this).data('defaultValue')) {
+                        hasChanged = true;
+                    }
+                }
+            });
+
+            saveButton.toggle(hasChanged);
+            discardButton.toggle(hasChanged);
+        }
+
+        // Event listeners for input and change events
+        form.on('input change', checkChanges);
+
+        // Handle paste and drop events on the textarea
+        $('textarea#description').on('paste', function(event) {
+            const clipboardData = event.originalEvent.clipboardData;
+            const items = clipboardData.items;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    alert('Image pasted!');
+                    saveButton.show(); // Show the save button
+                    break; // Exit after finding the first image
+                }
+            }
+
+            checkChanges(); // Check for changes when pasting
+        });
+
+        // Handle drop event
+        $('textarea#description').on('drop', function(event) {
+            event.preventDefault(); // Prevent default behavior (e.g., opening the file)
+            const dataTransfer = event.originalEvent.dataTransfer;
+            const items = dataTransfer.items;
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    alert('Image dropped!');
+                    saveButton.show(); // Show the save button
+                    break; // Exit after finding the first image
+                }
+            }
+
+            checkChanges(); // Check for changes when dropping
+        });
+
+        // Handle star selection for priority
+        $('.o_priority_star').on('click', function(e) {
+            e.preventDefault();
+            const selectedValue = $(this).data('value');
+
+            // Remove 'fa-star' class from all stars and add 'fa-star-o'
+            $('.o_priority_star').removeClass('fa-star').addClass('fa-star-o');
+
+            // Add 'fa-star' class to the selected star and all stars before it
+            $(this).addClass('fa-star');
+            $(this).prevAll('.o_priority_star').addClass('fa-star');
+
+            // Update the default value for change detection
+            inputs.each(function() {
+                if ($(this).attr('data-value') === selectedValue) {
+                    $(this).data('defaultValue',
+                        selectedValue); // Update default value for change detection
+                }
+            });
+
+            checkChanges(); // Check for changes after updating the priority
+        });
+
+        discardButton.on('click', function() {
+            location.reload();
+        });
+
+        // Select2 initialization
+        $('.o-autocomplete--input').select2();
+
+        // Reset button visibility on form load
+        saveButton.hide();
+        discardButton.hide();
     });
-
-    function toggleDivVisibility() {
-        // Check if the checkbox for opportunities is unchecked
-        if (!$('#use_opportunities_1, #use_leads_1').is(':checked')) {
-            // Hide the related divs
-            $('.div_hide_1').attr('style', 'display:none !important');
-            $('.div_hide_2').attr('style', 'display:none !important');
-        } else {
-            // Show the related divs
-          $('.div_hide_1').show();
-            $('.div_hide_2').show();
-        }
-
-        // Check if the checkbox for leads is unchecked (you can add more conditions if needed)
-        if (!$('#use_leads_1').is(':checked')) {
-            // You can hide more divs related to 'Leads' here
-            console.log("Leads checkbox is unchecked");
-        }
-    }
-});
-
 </script>
+
+<!-- Store And Fatch Data -->
 <script>
     $(document).ready(function(){
         $('#main_save_btn').click(function(event) {
-            console.log('clicked');
+            event.preventDefault(); // Prevent default form submission
+
             var name =  $('#name_0').val();
-            var team_leader =  $('#user_id_0').val();
+            var team_leader = $('#user_id_0').val();
             var email =  $('#alias_name_0').val();
             var accept =  $('#alias_contact_0').val();
             var invoiced =  $('#invoiced_target_0').val();
             var sales_type = $('input[name="sales_type[]"]:checked').map(function() {
                 return this.value;
             }).get();
-
-             if (!name) {
-                toastr.error('fields is required');
+            var team_id = $('#team_id').val(); // Ensure team_id is retrieved from the form
+            var recode_ids = $('input[name="recode_id[]"]').map(function() {
+                return this.value;
+            }).get();
+            console.log(recode_ids,'recode_ids')
+            // Validate if the name field is empty
+            if (!name) {
+                toastr.error('Name field is required');
                 $('#name_0').css({
                     'border-color': 'red',
                     'background-color': '#ff99993d'
                 });
-                return; // Stop form submission
+                return; // Stop form submission if validation fails
             }
 
-        $.ajax({
-            url: "{{route('sales.teams_store')}}",
-            type: 'POST',
-            data: {
-                name: name,
-                team_leader: team_leader,
-                email: email,
-                accept: accept,
-                invoiced: invoiced,
-                sales_type : sales_type,
-                _token: "{{ csrf_token() }}"
-            },
-            success: function(data){
-                console.log(data);
-            }
-        });
-            
+            // Perform the AJAX request
+            $.ajax({
+                url: "{{ route('salesteam.store') }}", // Laravel route for saving data
+                type: 'POST',
+                data: {
+                    team_id: team_id, 
+                    name: name,
+                    team_leader: team_leader,  
+                    email: email,
+                    accept: accept,
+                    invoiced: invoiced,
+                    sales_type: sales_type,
+                    recode_ids : recode_ids,
+                    _token: "{{ csrf_token() }}" // Add CSRF token for security
+                },
+                success: function(response) {
+                    toastr.success(response.message); // Show success message
+                    // setTimeout(function() {
+                    //     // Redirect to the index page after successful save
+                    //     window.location.href = "{{ route('salesteam.index') }}"; // Redirect to your desired route
+                    // }, 2000); // 2 seconds delay for showing the success message
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Something went wrong!'); // Handle errors
+                }
+            });
+
         });
     });
 </script>
 
+<!-- pipline And Leads Check Box Conditions -->
+<script>
+    $(document).ready(function() {
+        // When the page loads, check if the checkbox is unchecked
+        toggleDivVisibility();
 
-@endsection
+        // Event listener for checkbox changes
+        $('#use_opportunities_1, #use_leads_1').on('change', function() {
+            toggleDivVisibility();
+        });
+
+        function toggleDivVisibility() {
+            // Check if neither opportunities nor leads checkboxes are checked
+            if (!$('#use_opportunities_1').is(':checked') && !$('#use_leads_1').is(':checked')) {
+                // Hide the related divs
+                $('.div_hide_1').attr("style", "display:none !important");
+                $('.div_hide_2').attr("style", "display:none !important");
+            } else {
+                // Show the related divs if either checkbox is checked
+                $('.div_hide_1').show();
+                $('.div_hide_2').show();
+            }
+
+            // Additional check for the leads checkbox if needed
+            if (!$('#use_leads_1').is(':checked')) {
+                console.log("Leads checkbox is unchecked");
+                // Hide any other specific divs for leads if necessary
+            }
+        }
+    });
+</script>
+
+<!-- Second Model Scripting -->
+<script>
+    $(document).ready(function() {
+       
+        // Handle "Select All" checkbox
+        $('#selectAllCheckbox').on('change', function() {
+            $('.selectRowCheckbox').prop('checked', this.checked);
+        });
+
+        // Individual checkbox change handler
+        $('.selectRowCheckbox').on('change', function() {
+            $('#selectAllCheckbox').prop('checked', $('.selectRowCheckbox:checked').length === $('.selectRowCheckbox').length);
+            $('#selectButton').prop('disabled', $('.selectRowCheckbox:checked').length === 0);
+        });
+
+        // When the Select button is clicked
+        $('#selectButton').on('click', function() {
+            const selectedRecords = [];
+            $('.selectRowCheckbox:checked').each(function() {
+                const row = $(this).closest('tr');
+                const member_id = row.find('td:nth-child(2)').text(); // Hidden ID
+                const name = row.find('td:nth-child(3)').text(); // Name
+                const email = row.find('td:nth-child(4)').text(); // Email
+
+                selectedRecords.push({ name, email, member_id });
+                console.log(member_id);
+            });
+
+            // Inject the selected records into the Kanban view dynamically
+            const kanbanContainer = $('#dynamicContentPlaceholder');
+            selectedRecords.forEach(record => {
+                const kanbanCard = `
+                    <div class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record">
+                        <article class="o_kanban_record d-flex cursor-pointer flex-grow-1 flex-md-shrink-1 flex-shrink-0 o_legacy_kanban_record" tabindex="0">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_card_content d-flex">
+                                    <div>
+                                        <img class="o_kanban_image o_image_64_cover" alt="Avatar" src="${record.user_image || '/images/placeholder.png'}">
+                                    </div>
+                                    <div class="oe_kanban_details d-flex flex-column ms-3">
+                                        <input type="hidden" value="${record.member_id}" name="recode_id[]">
+                                        <strong class="o_kanban_record_title oe_partner_heading">
+                                            <span>${record.name}</span>
+                                        </strong>
+                                        <div class="d-flex align-items-baseline text-break">
+                                            <i class="fa fa-envelope me-1" role="img" aria-label="Email" title="Email"></i>
+                                            <span>${record.email}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>`;
+                kanbanContainer.append(kanbanCard);
+            });
+
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance($('#salespersonModal'));
+            if (modal) {
+                modal.hide();
+            }
+
+            // Clear selections after closing
+            clearSelections();
+        });
+
+        // Clear selections function
+        function clearSelections() {
+            $('.selectRowCheckbox').prop('checked', false);
+            $('#selectButton').prop('disabled', true); // Disable the select button
+        }
+
+        // Handle modal show to clear selections
+        $('#salespersonModal').on('show.bs.modal', clearSelections);
+    });
+
+</script>
+    
+<!-- delete Record in kanban bar list -->
+<script>
+    $(document).ready(function() {
+        $('.delete-record').click(function(event) {
+            event.preventDefault(); // Prevent default action
+
+            var memberId = $(this).data('id'); // Get the ID of the member to be deleted
+            var teamId = $('#team_id').val(); // Get the current team ID
+
+            // Confirm deletion
+            if (confirm('Are you sure you want to delete this member?')) {
+                $.ajax({
+                    url: "{{ route('salesteam.destroy') }}", // Laravel route for deletion
+                    type: 'DELETE',
+                    data: {
+                        member_id: memberId,
+                        team_id: teamId,
+                        _token: "{{ csrf_token() }}" // Add CSRF token for security
+                    },
+                    success: function(response) {
+                        toastr.success(response.message); // Show success message
+                        // Remove the member from the kanban view
+                        $('article[data-id="' + memberId + '"]').remove();
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error('Something went wrong while deleting the member!'); // Handle errors
+                    }
+                });
+            }
+        });
+    });
+</script>
+    
+<script>
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const filter = this.value.toLowerCase();
+        const rows = document.querySelectorAll('#tableBody tr');
+
+        rows.forEach(row => {
+            const name = row.cells[2].textContent.toLowerCase(); // Name in the third cell
+            const email = row.cells[3].textContent.toLowerCase(); // Email in the fourth cell
+
+            // Check if either name or email includes the search term
+            if (name.includes(filter) || email.includes(filter)) {
+                row.style.display = ''; // Show row if it matches
+            } else {
+                row.style.display = 'none'; // Hide row if it doesn't match
+            }
+        });
+});
+</script>
+
+
+<script>
+            let currentPage = 1;
+        const rowsPerPage = 2; // Adjust this as needed
+        let teams = @json($teams); // Assuming you pass this from your backend
+
+        function renderTable() {
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const paginatedTeams = teams.slice(startIndex, endIndex);
+            
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            paginatedTeams.forEach(team => {
+                const row = `<tr data-id="datapoint_${team.id}">
+                                <td><input type="checkbox" class="selectRowCheckbox"></td>
+                                <td class="d-none">${team.id}</td>
+                                <td>${team.name}</td>
+                                <td>${team.email}</td>
+                                <td>English (IN)</td>
+                                <td>${team.last_login_ip || ''}</td>
+                                <td>
+                                    ${team.is_confirmed == 1 ? 
+                                        '<span class="badge bg-success">Confirmed</span>' : 
+                                        '<span class="badge bg-info">Never Connected</span>'}
+                                </td>
+                            </tr>`;
+                tableBody.innerHTML += row;
+            });
+
+            updatePaginationControls();
+        }
+
+        function updatePaginationControls() {
+            const paginationControls = document.getElementById('paginationControls');
+            paginationControls.innerHTML = `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(currentPage - 1)">Previous</a>
+                </li>
+            `;
+
+            const pageCount = Math.ceil(teams.length / rowsPerPage);
+            for (let i = 1; i <= pageCount; i++) {
+                paginationControls.innerHTML += `
+                    <li class="page-item ${currentPage === i ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>`;
+            }
+
+            paginationControls.innerHTML += `
+                <li class="page-item ${currentPage === pageCount ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(currentPage + 1)">Next</a>
+                </li>
+            `;
+        }
+
+        function changePage(page) {
+            const pageCount = Math.ceil(teams.length / rowsPerPage);
+            if (page < 1 || page > pageCount) return; // Out of bounds
+            currentPage = page;
+            renderTable();
+        }
+
+        // Initial render
+        renderTable();
+</script>
+@endpush
+
+
