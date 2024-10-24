@@ -434,6 +434,54 @@
         position: absolute;
         margin-top: -21px;
     }
+
+    .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 586px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        top: auto;
+        right: auto;
+        overflow-y: hidden;
+        text-decoration: none;
+        color: black;
+    }
+
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+
+    .search-result{
+        color: #714B67;
+    }
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
+    }
+    .lead-separator {
+        height: 10px; /* Adjust height as needed */
+        background-color: transparent; /* Change to any color if you want a visible line */
+    }
+    .fa-star{
+        color: black;
+    }
+    .o_searchview_input {
+        color: black;
+    }
 </style>
 
 <!-- Bootstrap CSS -->
@@ -444,6 +492,26 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css">
+
+@endsection
+
+
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Lead</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
 
 @endsection
 
@@ -2676,6 +2744,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Clone the item, remove the checkmark span and get the trimmed text
@@ -2813,6 +2882,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Get the text of the clicked "Lost" span
@@ -2945,6 +3015,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Clone the item, remove the checkmark span and get the trimmed text
@@ -3041,7 +3112,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
                 if ($tag.find('.tag-item').length > 0) {
                     if ($('.remove-LTFtag').length === 0) {
-                        $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                        $tag.append(' <span class="remove-LTFtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                     }
                 } else {
                     $('.remove-LTFtag').remove();
@@ -3097,6 +3168,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 e.stopPropagation();
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
                 var $item = $(this);
 
                 // Clone the item, remove the checkmark span and get the trimmed text
@@ -3189,7 +3261,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
                 if ($tag.find('.tag-item').length > 0) {
                     if ($('.remove-CRtag').length === 0) {
-                        $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                        $tag.append(' <span class="remove-CRtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                     }
                 } else {
                     $('.remove-CRtag').remove();
@@ -3231,12 +3303,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         var operatesValue = $('#customer_filter_operates').val();
         var span_id = $('#span_id').val();
 
-        // Clear existing filters and UI elements
-        $('.selected-items .o_searchview_facet').remove();
+        // Clear existing filters and UI elements        
         $('.o-dropdown-item-3').attr('aria-checked', 'false');
         $('.o-dropdown-item-3 .checkmark').hide();
         $('.group_by_tag').remove();
         $('.o-dropdown-item_1 .checkmark').hide();
+        $('.remove-input-filter').remove();
 
         handleTagSelection(filterType, operatesValue, filterValue, span_id);
 
@@ -3304,7 +3376,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                         ${generateUserAvatar(lead.get_user?.profile, userInitial, bgColor)}
                                     </div>
                                 </div>
-                                <div class="flex-grow-1">
+                                <div class="flex-grow-1" style="margin-left:10px;">
                                     ${generateLeadInfo(lead)}
                                 </div>
                             </div>
@@ -3606,7 +3678,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         $('#search-input').val('').attr('placeholder', 'Search...');
                     }
                 } else {
-                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                    var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span></span>';
                     if ($tag.length === 0) {
                         $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                     } else {
@@ -4804,5 +4876,419 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             accordionValues.style.display = 'none';
         });
     </script>
+
+    <script>
+   $(document).ready(function() {
+    
+    // Initialize the DataTable and assign it to the variable 'table'
+    // var table = $('#example').DataTable();
+
+    $('.dropdown-item').on('click', function() {
+        var searchType = $(this).find('b.get-value').text();
+        var currentValue = $(this).find('.search-result').text().trim();
+
+        $.ajax({
+            url: '{{ route('activity.input.filter') }}',
+            method: 'GET',
+            data: { 
+                searchType: searchType,
+                currentValue: currentValue
+            },
+            success: function (response) {
+                console.log('AJAX Response:', response);
+                onFilterSuccess(response);
+                $('.input_search_menu_wapper').hide();
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error:', error);
+                $('#activityTableBody').html('<tr><td colspan="6" class="text-center">An error occurred while fetching activities.</td></tr>');
+                $('.input_search_menu_wapper').hide();
+            }
+        });
+
+        // Hide the modal after the request
+        $('#customFilterModal').modal('hide');
+
+        const now = new Date();
+        const todayString = now.toDateString();
+
+        function onFilterSuccess(response) {
+            if (response.success && Array.isArray(response.data)) {
+                if (response.data.length === 0) {
+                    $('#activityTableBody').html('<tr><td colspan="6" class="text-center">No activities found.</td></tr>');
+                } else {
+                    const html = generateActivityHtml(response.data);
+                    $('#activityTableBody').html(html);
+                }
+            } else {
+                console.error('Unexpected response format:', response);
+            }
+        }
+
+        function generateActivityHtml(activities) {
+            console.log(activities);
+            if (!Array.isArray(activities)) {
+                console.error('Activities is not an array:', activities);
+                return '';
+            }
+
+            const groupedActivities = groupByLead(activities);
+            let html = '';
+
+            Object.entries(groupedActivities).forEach(([leadId, activities]) => {
+                const lead = activities[0];
+                const bgColor = getBgColor(new Date(lead.due_date));
+                const userInitial = getUserInitial(lead.get_lead_title.get_user?.email);
+
+                html += `
+                    <tr class="o_data_row h-100">
+                        <td class="o_activity_record p-2 cursor-pointer">
+                            <div>
+                                <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
+                                    <div class="d-flex align-items-center gap-1" data-tooltip="${lead.get_user?.email || 'Unknown User'}">
+                                        ${generateUserAvatar(lead.get_user?.profile, userInitial, bgColor)}
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1" style="margin-left:10px;">
+                                    ${generateLeadInfo(lead)}
+                                </div>
+                            </div>
+                        </td>
+                        ${generateActivityCells(activities, lead.lead_id, bgColor)}
+                    </tr>
+                `;
+            });
+
+            return html;
+        }
+
+        function groupByLead(activities) {
+            return activities.reduce((acc, activity) => {
+                const leadId = activity.lead_id;
+                acc[leadId] = acc[leadId] || [];
+                acc[leadId].push(activity);
+                return acc;
+            }, {});
+        }
+
+        function generateUserAvatar(profile, initial, bgColor) {
+            return profile ?
+                `<img class="rounded" src="${profile}" alt="User Profile">` :
+                `<div class="placeholder-circle rounded d-flex align-items-center justify-content-center" style="background-color: ${bgColor}; width:32px;height:32px;color:white">
+                    <span>${initial}</span>
+                </div>`;
+        }
+
+        function generateLeadInfo(lead) {
+            return `
+                <div class="d-flex justify-content-between">
+                    <div class="d-block text-truncate o_text_block o_text_bold">${lead.product_name}</div>
+                    <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
+                        <span>₹${lead.probability || '0.00'}</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="d-block text-truncate text-muted o_text_block"></div>
+                    <div name="stage_id" class="o_field_widget o_field_badge d-inline-block">
+                        <span class="badge rounded-pill">New</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateActivityCells(activities, leadId, bgColor) {
+            const activityTypes = ['email', 'call', 'meeting', 'to-do', 'upload_document', 'request_signature'];
+            return activityTypes.map(type => generateActivityCell(type, activities, leadId, bgColor)).join('');
+        }
+
+        function generateActivityCell(activityType, activities, leadId, bgColor) {
+            const filteredActivities = activities.filter(activity => activity.activity_type === activityType);
+            if (filteredActivities.length === 0) return `<td></td>`; // Empty cell
+
+            const counts = countActivities(filteredActivities);
+            const activityDueDate = new Date(filteredActivities[0].due_date);
+            const cellColor = getBgColor((activityDueDate - new Date()) / (1000 * 60 * 60 * 24));
+
+            return `
+                <td class="o_activity_summary_cell" data-id="${leadId}" data-activity_type="${activityType}">
+                    <div class="text-center text-white" style="background-color: ${cellColor}; cursor: pointer;">
+                        <small>${activityDueDate.toLocaleDateString()}</small>
+                    </div>
+                    <div class="o_popover popover d-none" style="max-width: 354px !important;">
+                        <div class="o-mail-ActivityListPopover d-flex flex-column">
+                            ${generateActivityDetails(counts, filteredActivities)}
+                        </div>
+                    </div>
+                </td>
+            `;
+        }
+
+        function countActivities(activities) {
+            const now = new Date();
+            const todayString = now.toDateString(); // Store today’s date string for comparison
+
+            return {
+                overdue: activities.filter(activity => new Date(activity.due_date) < now).length,
+                today: activities.filter(activity => new Date(activity.due_date).toDateString() === todayString).length,
+                planned: activities.filter(activity => new Date(activity.due_date) > now).length
+            };
+        }
+
+       function generateActivityDetails(counts, activities) {
+    let details = '';
+
+    // Overdue Activities
+    details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Overdue (${counts.overdue})</b></div>`;
+    details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+    activities.filter(activity => new Date(activity.due_date) < new Date() && new Date(activity.due_date).toDateString() !== todayString).forEach(activity => {
+        details += `
+            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                    ${getUserInitial(activity.get_user.email)}
+                </span>
+                <div class="mt-1 flex-grow-1">
+                    &nbsp;&nbsp;<small>${activity.get_user.email} - Overdue</small>
+                </div>
+                ${activity.activity_type === 'upload_document' ? `
+                    <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                        onclick="document.getElementById('upload_overdue_file_${activity.id}').click();">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    <input type="file" class="d-none" id="upload_overdue_file_${activity.id}" accept="*"
+                        onchange="uploadFile('upload_overdue_file_${activity.id}', ${activity.id})">
+                ` : `
+                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                        data-target="#overdue_feedback_${activity.id}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                `}
+                <div class="d-flex align-items-center ml-2"> 
+                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="py-2 px-3 d-none" id="overdue_feedback_${activity.id}">
+                    <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                              placeholder="Write Feedback"></textarea>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                data-id="${activity.id}" style="background-color:#714B67;border:none;">Done</button>
+                        <button type="button" class="btn btn-sm btn-link filter-feedback-discard" style="color:#017e84;"
+                                data-target="#overdue_feedback_${activity.id}">Discard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    details += `</div>`;
+
+    // Today Activities
+    details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Today (${counts.today})</b></div>`;
+    details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+    activities.filter(activity => new Date(activity.due_date).toDateString() === todayString).forEach(activity => {
+        details += `
+            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                    ${getUserInitial(activity.get_user.email)}
+                </span>
+                <div class="mt-1 flex-grow-1">
+                    &nbsp;&nbsp;<small>${activity.get_user.email} - Today</small>
+                </div>
+                ${activity.activity_type === 'upload_document' ? `
+                    <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                        onclick="document.getElementById('upload_today_file_${activity.id}').click();">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    <input type="file" class="d-none" id="upload_today_file_${activity.id}" accept="*"
+                        onchange="uploadFile('upload_today_file_${activity.id}', ${activity.id})">
+                ` : `
+                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                        data-target="#today_feedback_${activity.id}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                `}
+                <div class="d-flex align-items-center ml-2"> 
+                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="py-2 px-3 d-none" id="today_feedback_${activity.id}">
+                    <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                              placeholder="Write Feedback"></textarea>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                data-id="${activity.id}">Done</button>
+                        <button type="button" class="btn btn-sm btn-link filter-feedback-discard" 
+                               data-target="#today_feedback_${activity.id}">Discard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    details += `</div>`;
+
+    // Planned Activities
+    details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Planned (${counts.planned})</b></div>`;
+    details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+    activities.filter(activity => new Date(activity.due_date) > new Date()).forEach(activity => {
+        details += `
+            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                    ${getUserInitial(activity.get_user.email)}
+                </span>
+                <div class="mt-1 flex-grow-1">
+                    &nbsp;&nbsp;<small>${activity.get_user.email} - Planned - ${activity.due_date}</small>
+                </div>
+                ${activity.activity_type === 'upload_document' ? `
+                    <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                        onclick="document.getElementById('upload_planned_file_${activity.id}').click();">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    <input type="file" class="d-none" id="upload_planned_file_${activity.id}" accept="*"
+                        onchange="uploadFile('upload_planned_file_${activity.id}', ${activity.id})">
+                ` : `
+                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                        data-target="#planned_feedback_${activity.id}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                `}
+                <div class="d-flex align-items-center ml-2"> 
+                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="py-2 px-3 d-none" id="planned_feedback_${activity.id}">
+                    <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                              placeholder="Write Feedback"></textarea>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                data-id="${activity.id}">Done</button>
+                        <button type="button" class="btn btn-sm btn-link filter-feedback-discard" 
+                                data-target="#planned_feedback_${activity.id}">Discard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    details += `</div>`;
+
+    return details;
+}
+
+        function getBgColor(days) {
+            if (days < 0) return '#dc3545'; // Red for overdue
+            if (days === 0) return '#ffc107'; // Yellow for today
+            return '#28a745'; // Green for planned
+        }
+
+        function getUserInitial(email) {
+            return email ? email.charAt(0).toUpperCase() : '?';
+        }
+    });
+
+    // Event delegation for .o_activity_summary_cell click
+    $(document).on('click', '.o_activity_summary_cell', function (event) {
+        event.stopPropagation(); // Prevent click from bubbling to document
+
+        // Get the popover inside the clicked cell
+        let $popover = $(this).find('.o_popover');
+
+        // Hide all other popovers
+        $('.o_popover').addClass('d-none');
+
+        // Check if the popover is currently visible
+        if ($popover.hasClass('d-none')) {
+            // Show the popover for the clicked cell
+            $popover.removeClass('d-none');
+            let offset = $(this).offset();
+            $popover.css({
+                top: offset.top + $(this).outerHeight(),
+                left: offset.left
+            });
+        } else {
+            // If already visible, hide the popover on second click
+            $popover.addClass('d-none');
+        }
+    });
+
+    // Close the popover when clicking outside
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.o_activity_summary_cell').length) {
+            $('.o_popover').addClass('d-none');
+        }
+    });
+
+    $('.input-filter-click li').on('click', function() {
+        $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item_1  .checkmark').remove();
+        $('.o-dropdown-item-2  .checkmark').remove();
+        $('.remove-input-filter').remove();
+        $('.lost_span:contains("Lost")').find('.checkmark').remove();
+        $('.LTFActivities .checkmark').remove();
+        $('.tag').remove();
+        $('.tag1').remove();
+        $('.LTFtag').remove();
+        $('.group_by_tag').remove();
+        $('.CRtag').remove();
+        $('.tag5').remove();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').remove();
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}" style="height:25px;margin-top:auto;">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> 
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i>
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small>
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+    // Handle removal of tags
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).closest('.tag1').remove(); // Remove the tag on click
+    });
+});
+
+</script>
+
+<script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
+</script>
 
 @endpush

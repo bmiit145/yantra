@@ -109,6 +109,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-filter-activities', [CRMController::class, 'pipelineFilterActivities'])->name('crm.pipeline.filter.activities');
     Route::post('/pipeline-activity-custom-filter', [CRMController::class, 'pipelineActivityCustomFilter'])->name('crm.pipeline.activity.custom.filter');
 
+    Route::get('/pipeline-input-filter', [CRMController::class, 'pipelineInputFilter'])->name('crm.pipeline.input.filter');
+    Route::get('/pipeline-list-input-filter', [CRMController::class, 'pipelineListInputFilter'])->name('crm.pipeline.list.input.filter');
+    Route::get('/pipeline-calendar-input-filter', [CRMController::class, 'pipelineCalendarInputFilter'])->name('crm.pipeline.calendar.input.filter');
+    Route::post('/pipeline-activity-input-filter', [CRMController::class, 'pipelineActivityInputFilter'])->name('crm.pipeline.activity.input.filter');
+    Route::get('/pipeline-graph-input-filter', [CRMController::class, 'pipelineGraphInputFilter'])->name('crm.pipeline.graph.input.filter');
+    Route::post('/pipeline-graph-custom-filter', [CRMController::class, 'pipelineCustomInputFilter'])->name('crm.pipeline.custom.input.filter');
+
 
     // sale
     Route::post('sale/setPriority' , [CRMController::class, 'setPriority'])->name('sale.setPriority');
@@ -240,6 +247,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/leads-search', [LeadController::class, 'leadSearchFilter'])->name('lead.search.filter');
     Route::get('/leads-kanban-search', [LeadController::class, 'leadKanbanSearchFilter'])->name('lead.kanban.search.filter');
+    Route::get('/leads-calendar-search', [LeadController::class, 'leadCalendarSearchFilter'])->name('lead.calendar.search.filter');
 
 
 
@@ -296,6 +304,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/activity-custom-filter', [ActivityController::class, 'activityCustomFilter'])->name('activity.custom.filter');
     Route::get('/filter-activities', [ActivityController::class, 'filterActivities'])->name('activity.filter.activities');
     Route::post('/filter-activity-custom-filter', [ActivityController::class, 'filterActivityCustomFilter'])->name('filter-activity.custom.filter');
+    Route::get('/input-filter-activity', [ActivityController::class, 'leadActivitySearchFilter'])->name('activity.input.filter');
 
 
 

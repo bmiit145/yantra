@@ -931,6 +931,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1068,6 +1069,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Get the text of the clicked "Lost" span
@@ -1110,7 +1112,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         '</a>' +
                         '<span class="tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
-                        '<span class="remove-lost-tag" style="cursor:pointer">×</span>' +
+                        '<span class="remove-lost-tag" style="cursor:pointer;margin-left:6px;">×</span>' +
                         '</span>' +
                         '</div>'
                     );
@@ -1118,7 +1120,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     // Add new tag with close button
                     var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' +
                         selectedValue +
-                        '<span class="remove-lost-tag" style="cursor:pointer">×</span></span>';
+                        '<span class="remove-lost-tag" style="cursor:pointer;margin-left:6px;">×</span></span>';
                     $tag.append(newTagHtml);
                 }
 
@@ -1155,7 +1157,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             var $tag = $('.tag1');
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-lost-tag').length === 0) {
-                    $tag.append(' <span class="remove-lost-tag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-lost-tag" style="cursor:pointer;margin-left:6px;">&times;</span>');
                 }
             } else {
                 $('.remove-lost-tag').remove();
@@ -1200,6 +1202,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1296,7 +1299,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-LTFtag').length === 0) {
-                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-LTFtag').remove();
@@ -1352,6 +1355,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1444,7 +1448,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-CRtag').length === 0) {
-                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-CRtag').remove();
@@ -1485,11 +1489,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 var operatesValue = $('#customer_filter_operates').val();
                 var span_id = $('#span_id').val();
 
-                $('.selected-items .o_searchview_facet').remove();
+                // $('.selected-items .o_searchview_facet').remove();
                 $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
                 $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
                 $('.group_by_tag').remove();
                 $('.o-dropdown-item_1  .checkmark').hide();
+                $('.remove-input-filter').remove();
 
                 
 
@@ -1614,7 +1619,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     $('#search-input').val('').attr('placeholder', 'Search...');
                 }
             } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span></span>';
                 if ($tag.length === 0) {
                     $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                 } else {
@@ -2257,125 +2262,118 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
     // var table = $('#example').DataTable();
 
     $('.dropdown-item').on('click', function() {
-    var searchType = $(this).find('b.get-value').text();
-    var currentValue = $(this).find('.search-result').text().trim();
+        var searchType = $(this).find('b.get-value').text();
+        var currentValue = $(this).find('.search-result').text().trim();
 
-    $.ajax({
-        url: '{{route('lead.kanban.search.filter')}}',
-        type: 'GET',
-        data: { 
-            searchType: searchType,
-            currentValue: currentValue
-        },
-        success: function (response) {
-                        console.log(response); // Debug the response
-                        
-                        if (response.success && Array.isArray(response.data)) {
-                            let events = [];
-                            let activityMap = {}; // Map to track activities by ID
+        $.ajax({
+            url: '{{route('lead.calendar.search.filter')}}',
+            type: 'GET',
+            data: { 
+                searchType: searchType,
+                currentValue: currentValue
+            },
+            success: function (response) {
+                console.log(response); // Log the response for debugging
+                
+                if (response.success && Array.isArray(response.data)) {
+                    let events = [];
+                    let activityMap = {}; // Map to track activities by ID
 
-                            response.data.forEach(item => {
-                                if (Array.isArray(item.activities)) {
-                                    item.activities.forEach(activity => {
-                                        if (activity.due_date) {
-                                            const dueDate = moment(activity.due_date);
-                                            if (dueDate.isValid()) {
-                                                const dateString = dueDate.format('YYYY-MM-DD');
+                    response.data.forEach(item => {
+                        if (Array.isArray(item.activities)) {
+                            item.activities.forEach(activity => {
+                                if (activity.due_date) {
+                                    const dueDate = moment(activity.due_date);
+                                    if (dueDate.isValid()) {
+                                        const dateString = dueDate.format('YYYY-MM-DD');
 
-                                                // Check for duplicates using event ID
-                                                if (!activityMap[activity.id]) {
+                                        // Check for duplicates using event ID
+                                        if (!activityMap[activity.id]) {
+                                            activityMap[activity.id] = {
+                                                item: item,
+                                                dueDate: dueDate,
+                                                status: dateString // Store the date string
+                                            };
+                                        } else {
+                                            // Compare and update based on date
+                                            if (dueDate.isBefore(moment()) && activityMap[activity.id].dueDate.isAfter(moment())) {
+                                                // Prioritize late activities over future ones
+                                                activityMap[activity.id] = {
+                                                    item: item,
+                                                    dueDate: dueDate,
+                                                    status: dateString
+                                                };
+                                            } else if (dueDate.isBefore(moment()) && activityMap[activity.id].dueDate.isBefore(moment())) {
+                                                // If both are late, keep the one that is closest to now
+                                                if (dueDate.isAfter(activityMap[activity.id].dueDate)) {
                                                     activityMap[activity.id] = {
                                                         item: item,
                                                         dueDate: dueDate,
-                                                        status: dateString // Store the date string
+                                                        status: dateString
                                                     };
-                                                } else {
-                                                    // Compare and update based on date
-                                                    if (dueDate.isBefore(moment()) && activityMap[activity.id].dueDate.isAfter(moment())) {
-                                                        // Prioritize late activities over future ones
-                                                        activityMap[activity.id] = {
-                                                            item: item,
-                                                            dueDate: dueDate,
-                                                            status: dateString
-                                                        };
-                                                    } else if (dueDate.isBefore(moment()) && activityMap[activity.id].dueDate.isBefore(moment())) {
-                                                        // If both are late, keep the one that is closest to now
-                                                        if (dueDate.isAfter(activityMap[activity.id].dueDate)) {
-                                                            activityMap[activity.id] = {
-                                                                item: item,
-                                                                dueDate: dueDate,
-                                                                status: dateString
-                                                            };
-                                                        }
-                                                    }
                                                 }
-                                            } else {
-                                                console.warn(`Invalid due_date for activity ID ${activity.id}:`, activity.due_date);
                                             }
                                         }
-                                    });
+                                    } else {
+                                        console.warn(`Invalid due_date for activity ID ${activity.id}:`, activity.due_date);
+                                    }
                                 }
                             });
-
-                            
-
-                            // Prepare events from the filtered map
-                            for (const key in activityMap) {
-                                const { item, dueDate } = activityMap[key];
-                                events.push({
-                                    id: key,
-                                    title: item.product_name || "Event",
-                                    start: dueDate.format('YYYY-MM-DD'),
-                                    end: dueDate.format('YYYY-MM-DD'),
-                                    color: '#0000ff',
-                                    lead_id: item.id,
-                                });
-                            }
-
-                            $('#editEvent').off('click').on('click', function () {
-                                const eventId = $(this).data(lead_id);
-                                window.location.href = '{{ route("lead.create") }}/' + eventId;
-                            });
-
-                            console.log(events,'fdhfdjhfdjhjh'); // Log events to see their structure
-                            
-                            // Clear existing events
-                            $('#calendar').fullCalendar('removeEventSources');
-                            
-                            // Add only the filtered events with due_date
-                            if (events.length > 0) {
-                                $('#calendar').fullCalendar('addEventSource', events);
-                            } else {
-                                console.log("No events to display.");
-                            }
-                        } else {
-                            console.error('Invalid events format in response');
                         }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error: ', error);
-                        console.error('Response Text: ', xhr.responseText);
-                    }
-    });
+                    });
 
-    $('.input_search_menu_wapper').hide();
-});
+                    // Prepare events from the filtered map
+                    for (const key in activityMap) {
+                        const { item, dueDate } = activityMap[key];
+                        events.push({
+                            id: key,
+                            title: item.product_name || "Event",
+                            start: dueDate.format('YYYY-MM-DD'),
+                            end: dueDate.format('YYYY-MM-DD'),
+                            color: '#0000ff' // Set the color for the event
+                        });
+                    }
+
+                    console.log(events); // Log events to see their structure
+                    
+                    // Clear existing events
+                    $('#calendar').fullCalendar('removeEventSources');
+                    
+                    // Add only the filtered events with due_date
+                    if (events.length > 0) {
+                        $('#calendar').fullCalendar('addEventSource', events);
+                    } else {
+                        console.log("No events to display.");
+                    }
+                } else {
+                    console.error('Invalid events format in response');
+                }
+
+                // Close the modal after processing
+                $('.input_search_menu_wapper').hide();
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+                // Close the modal on error
+                $('.input_search_menu_wapper').hide();
+            }
+        });    
+    });
 
     $('.input-filter-click li').on('click', function() {
         $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
-        $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
-        $('.o-dropdown-item_1  .checkmark').hide();
-        $('.remove-input-filter').hide();
-        $('.o-dropdown-item-2 .checkmark').hide();
-        $('.lost_span:contains("Lost")').find('.checkmark').hide();
-        $('.LTFActivities .checkmark').hide();
-        $('.tag').hide();
-        $('.tag1').hide();
-        $('.LTFtag').hide();
-        $('.group_by_tag').hide();
-        $('.CRtag').hide();
-        $('.tag5').hide();
-        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+        $('.o-dropdown-item_1  .checkmark').remove();
+        $('.o-dropdown-item-2  .checkmark').remove();
+        $('.remove-input-filter').remove();
+        $('.lost_span:contains("Lost")').find('.checkmark').remove();
+        $('.LTFActivities .checkmark').remove();
+        $('.tag').remove();
+        $('.tag1').remove();
+        $('.LTFtag').remove();
+        $('.group_by_tag').remove();
+        $('.CRtag').remove();
+        $('.tag5').remove();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').remove();
         var searchType = $(this).find('b.get-value').text();
         var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
         var currentIndex = $('.tag1').length; // Count current tags for the new index

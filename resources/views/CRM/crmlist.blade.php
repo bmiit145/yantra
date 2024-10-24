@@ -394,6 +394,25 @@
 </div>
 @endsection
 
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Opportunity</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
+
+@endsection
+
 <!-- Modal -->
 <div class="modal fade" id="customFilterModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
     aria-labelledby="customFilterModalLabel" aria-hidden="true">
@@ -822,6 +841,51 @@
         cursor: pointer;
         position: absolute;
         margin-top: -21px;
+    }
+
+    .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 586px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        top: auto;
+        right: auto;
+        overflow-y: hidden;
+        text-decoration: none;
+        color: black;
+    }
+
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+
+    .search-result{
+        color: #714B67;
+    }
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
+    }
+    .lead-separator {
+        height: 10px; /* Adjust height as needed */
+        background-color: transparent; /* Change to any color if you want a visible line */
+    }
+    .fa-star{
+        color: black;
     }
 </style>
 
@@ -1299,8 +1363,7 @@
     }); --}}
 
     $(document).on('click', '.custom-filter-remove', function () {
-        $('#search-input').val('').attr('placeholder', 'Search...');
-        table.ajax.reload();
+        $('#search-input').val('').attr('placeholder', 'Search...');        
     });
 
     // CSRF token setup for AJAX requests
@@ -1319,6 +1382,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1415,7 +1479,7 @@
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-tag').length === 0) {
-                    $tag.append(' <span class="remove-tag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-tag" style="cursor:pointer"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-tag').remove();
@@ -1456,6 +1520,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Get the text of the clicked "Lost" span
@@ -1588,6 +1653,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1684,7 +1750,7 @@
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-LTFtag').length === 0) {
-                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-LTFtag" style="cursor:pointer"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-LTFtag').remove();
@@ -1745,6 +1811,7 @@
             e.stopPropagation();
             $('.group_by_tag').remove();
             $('.o-dropdown-item_1  .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
 
             // Clone the item, remove the checkmark span and get the trimmed text
@@ -1837,7 +1904,7 @@
             }
             if ($tag.find('.tag-item').length > 0) {
                 if ($('.remove-CRtag').length === 0) {
-                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer">&times;</span>');
+                    $tag.append(' <span class="remove-CRtag" style="cursor:pointer"><i class="fa fa-close"></span>');
                 }
             } else {
                 $('.remove-CRtag').remove();
@@ -1881,9 +1948,10 @@
                 var operatesValue = $('#customer_filter_operates').val();
                 var span_id = $('#span_id').val();
 
-                $('.selected-items .o_searchview_facet').remove();
+                // $('.selected-items .o_searchview_facet').remove();
                 $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
                 $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+                $('.remove-input-filter').remove();
 
                 
 
@@ -2027,7 +2095,7 @@
                     $('#search-input').val('').attr('placeholder', 'Search...');
                 }
             } else {
-                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;">×</span></span>';
+                var newTagHtml = '<span class="tag-item" data-value="' + selectedValue + '">' + selectedValue + '<span class="custom-filter-remove" style="cursor:pointer;margin-left:6px;"><i class="fa fa-close"></span></span>';
                 if ($tag.length === 0) {
                     $('#search-input').before('<span class="tag5">' + newTagHtml + '</span>');
                 } else {
@@ -2092,6 +2160,7 @@
             if ($('.tag5').children().length === 0) {
                 $('.tag5').remove();
             }
+            location.reload();
 
 
             // Optionally, you could send a request to update the filters on the server if necessary
@@ -2109,6 +2178,7 @@
             $('.LTFActivities .checkmark').hide();
             $('.CRtag').remove();
             $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+            $('.remove-input-filter').remove();
             var $item = $(this);
             var selectedValue = $item.clone().find('.checkmark').remove().end().text().trim();
             handleTagSelectionGrop(selectedValue, $item);
@@ -2166,7 +2236,7 @@
                             '<span class="setting_icon setting_icon_hover setting-icon"><i class="fa fa-fw fa-cog"></i></span>' +
                             '</a>' +
                             newTagHtml +
-                            '<span class="remove_tag_group_by" style="cursor:pointer">×</span>' +
+                            '<span class="remove_tag_group_by" style="cursor:pointer"></span>' +
                             '</span>'
                         );
                     } else {
@@ -2207,7 +2277,7 @@
                     html += ' > ';
                 }
             });
-            html += ' <span class="remove_tag_group_by" style="cursor:pointer">&times;</span>';
+            html += ' <span class="remove_tag_group_by" style="cursor:pointer"><i class="fa fa-close"></span>';
             $tag.html(html);
             updateRemoveTagButtonGrop();
         }
@@ -2798,6 +2868,197 @@
     // Initially hide the accordion values
     accordionValues.style.display = 'none';
 });
+</script>
+
+
+<script>
+   $(document).ready(function() {
+    
+    // Initialize the DataTable and assign it to the variable 'table'
+    var table = $('#example').DataTable();
+
+    $('.dropdown-item').on('click', function() {
+
+        var searchType = $(this).find('b.get-value').text();
+
+        var currentValue = $(this).find('.search-result').text().trim();
+
+
+        $.ajax({
+                    url: '{{route('crm.pipeline.list.input.filter')}}',
+                    type: 'GET',
+                    data: { 
+                searchType: searchType,
+                currentValue: currentValue
+            },
+                    success: function (response) {
+                        console.log(response);
+                        var $tableBody = $('#lead-table-body');
+                        var $tableFooter = $('#lead-table-footer'); // Assuming you have a footer element to hide/show
+
+                        // Clear existing table data
+                        $tableBody.empty();
+
+                        // Initialize total variables
+                        var totalExpectedRevenue = 0; // Initialize total expected revenue
+                        var totalRecurringMrr = 0; // Initialize total recurring MRR
+                        var totalRecurringRevenue = 0; // Initialize total recurring revenue
+
+                        if (response.data.length === 0) {
+                            // Display the message if no data is found
+                            $tableBody.append(`<tr><td colspan="25" class="text-center">No data found!</td></tr>`);
+                            
+                            // Hide the footer if no data is found
+                            $tableFooter.hide();
+                        } else {
+                            var index = 1;
+
+                            // Loop through the response and create table rows
+                            response.data.forEach(function (item) {
+                                var rowHtml = `<tr class="lead-row" data-id="${item.id}" data-index="${index++}">`;
+
+                                // Append data only for the visible columns
+                                if (table.column(0).visible()) rowHtml += `<td class="d-none">${index++}</td>`;
+                                if (table.column(1).visible()) rowHtml += `<td>${item.created_at || ''}</td>`;
+                                if (table.column(2).visible()) rowHtml += `<td>${item.opportunity || ''}</td>`;
+                                if (table.column(3).visible()) rowHtml += `<td>${item.contact_id ? (item.contact?.name || '') : ''}</td>`;
+                                if (table.column(4).visible()) rowHtml += `<td>${item.contact_name || ''}</td>`;
+                                if (table.column(5).visible()) rowHtml += `<td>${item.email || ''}</td>`;
+                                if (table.column(6).visible()) rowHtml += `<td>${item.phone || ''}</td>`;
+                                if (table.column(7).visible()) rowHtml += `<td>${item.city || ''}</td>`;
+                                if (table.column(8).visible()) rowHtml += `<td>${item.state ? (item.get_state?.name || '') : ''}</td>`;
+                                if (table.column(9).visible()) rowHtml += `<td>${item.country ? (item.get_country?.name || '') : ''}</td>`;
+                                if (table.column(10).visible()) rowHtml += `<td>${item.sales_person ? (item.sales_person?.email || '') : ''}</td>`;
+                                if (table.column(11).visible()) rowHtml += `<td>${item.sales || ''}</td>`;
+                                if (table.column(12).visible()) rowHtml += `<td>${item.priority || ''}</td>`;
+                                if (table.column(13).visible()) rowHtml += `<td>${item.campaign_id ? (item.get_campaign?.name || '') : ''}</td>`;
+                                if (table.column(14).visible()) rowHtml += `<td>${item.medium_id ? (item.get_medium?.name || '') : ''}</td>`;
+                                if (table.column(15).visible()) rowHtml += `<td>${item.source_id ? (item.get_source?.name || '') : ''}</td>`;
+                                if (table.column(16).visible()) {
+                                    rowHtml += `<td>${item.expected_revenue || ''}</td>`;
+                                    totalExpectedRevenue += parseFloat(item.expected_revenue) || 0; // Sum expected revenue
+                                }
+                                if (table.column(17).visible()) rowHtml += `<td>${item.deadline || ''}</td>`;
+                                
+                                var recurringRevenue = parseFloat(item.recurring_revenue) || 0;
+                                var months = parseFloat(item.get_recurring_plan?.months) || 0; // Assuming you have the plan in item
+                                var expertMrr = (months > 0) ? (recurringRevenue / months).toFixed(2) : '';
+                                
+                                if (table.column(18).visible()) {
+                                    rowHtml += `<td>${expertMrr}</td>`;
+                                    totalRecurringMrr += parseFloat(expertMrr) || 0; // Sum recurring MRR
+                                }
+                                if (table.column(19).visible()) {
+                                    rowHtml += `<td>${item.recurring_revenue || '' }</td>`;
+                                    totalRecurringRevenue += recurringRevenue; // Sum recurring revenue
+                                }
+                                if (table.column(20).visible()) rowHtml += `<td>${item.plan_name ? (item.get_recurring_plan.plan_name || '') : ''}</td>`;
+                                if (table.column(21).visible()) rowHtml += `<td>${item.title ? (item.stage.title || '') : ''}</td>`;
+                                if (table.column(22).visible()) rowHtml += `<td>${item.probability || ''}</td>`;
+                                if (table.column(23).visible()) rowHtml += `<td>${item.loslost_reasont || ''}</td>`;
+                                if (table.column(24).visible()) rowHtml += `<td>${item.sales_team || ''}</td>`;
+                                if (table.column(25).visible()) rowHtml += `<td></td>`;
+                                
+                                rowHtml += `</tr>`;
+                                $tableBody.append(rowHtml);
+                            });
+
+                            // Show the footer since we have data
+                            $tableFooter.show();
+                        }
+
+                        // Update footer with totals
+                        $(table.column(16).footer()).html('₹ ' + totalExpectedRevenue.toFixed(2));
+                        $(table.column(18).footer()).html('₹ ' + totalRecurringMrr.toFixed(2));
+                        $(table.column(19).footer()).html('₹ ' + totalRecurringRevenue.toFixed(2));
+
+                        // Attach click event handler to rows
+                        $('#lead-table-body .lead-row').on('click', function () {
+                            var leadId = $(this).data('id');
+                             var index = $(this).data('index');
+                            window.location.href = `/lead-add/${leadId}/${index}`; 
+                        });
+
+                        // Apply the column visibility settings
+                        table.columns().every(function () {
+                            var column = this;
+                            var index = column.index();
+                            var isVisible = column.visible();
+                            column.visible(isVisible);
+                        });
+                        $('#customFilterModal').removeClass('show').css('display', 'none');
+                    },
+                    error: function () {
+                        console.error('Failed to fetch data');
+                         $('#customFilterModal').modal('hide');
+                    }
+                });
+        $('.input_search_menu_wapper').hide();
+    });
+
+    $('.input-filter-click li').on('click', function() {
+        $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+        $('.o-dropdown-item_1  .checkmark').hide();
+        $('.remove-input-filter').remove();
+        $('.o-dropdown-item-2 .checkmark').hide();
+        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+        $('.LTFActivities .checkmark').hide();
+        $('.tag').hide();
+        $('.tag1').hide();
+        $('.LTFtag').hide();
+        $('.group_by_tag').hide();
+        $('.CRtag').hide();
+        $('.tag5').hide();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}" style="height:25px;margin-top:auto;">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> 
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i>
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small>
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+    // Handle removal of tags
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).closest('.tag1').remove(); // Remove the tag on click
+    });
+});
+
+</script>
+
+<script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
 </script>
 
 
