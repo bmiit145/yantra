@@ -127,7 +127,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('orders/new' , [SalesController::class, 'create'])->name('orders.create');
 
     Route::get('Quotations' , [SalesController::class, 'quotations_index'])->name('quotations.index');
-    Route::get('Quotations/new' , [SalesController::class, 'quotations_create'])->name('quotations.create');
+    Route::get('get_product' , [SalesController::class, 'get_product'])->name('quotations.get_product');
+    Route::get('Quotations/new/{id?}' , [SalesController::class, 'quotations_create'])->name('quotations.create');
+    Route::post('QuotationStore' , [SalesController::class, 'QuotationStore'])->name('quotations.store');
+    Route::post('store_quotation_product' , [SalesController::class, 'store_quotation_product'])->name('quotations.store_quotation_product');
 
     Route::get('products' , [SalesController::class, 'product_index'])->name('product.index');
     Route::get('products/list' , [SalesController::class, 'product_index_list'])->name('product.list');

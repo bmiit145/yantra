@@ -43,4 +43,9 @@ class products_new_items extends Model
         'category_id',
         'tags_id',
     ];
+
+    public function sales_tax()
+    {
+        return $this->hasOne(sales_taxes::class,'id','sales_tax_id');
+    }
 }

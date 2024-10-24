@@ -22,7 +22,10 @@ use App\Models\Campaign;
 use App\Models\Medium;
 use App\Models\Source;
 use App\Models\pricelist_all;
+use App\Models\QuotationsOrderLine;
+use App\Models\Quotations;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\Activity;
 
 class SalesController extends Controller
@@ -42,7 +45,7 @@ class SalesController extends Controller
         return view('Sale.quotationsindex');
     } 
 
-    public function quotations_create()
+    public function quotations_create($id = null)
     {
         $customer = Contact::select('id','name')->get();
         $pricelist = pricelist_all::all();
@@ -54,9 +57,12 @@ class SalesController extends Controller
         $campaigns = Campaign::select('id', 'name')->get();
         $mediums = Medium::select('id', 'name')->get();
         $source = Source::select('id', 'name')->get();
+        $products_new_items = products_new_items::all();
+        $data = Quotations::where('quotation_id', $id)->first();
+        $sales_taxes = sales_taxes::all();
         
 
-        return view('Sale.quotationsnew', compact('customer', 'pricelist', 'payment','user','Sale','tags','opportunitys','campaigns','mediums','source'));
+        return view('Sale.quotationsnew', compact('data','customer', 'pricelist', 'sales_taxes','payment','user','Sale','tags','opportunitys','campaigns','mediums','source','products_new_items'));
     }
 
 
@@ -455,4 +461,90 @@ class SalesController extends Controller
 
         return view('Sale.categoriesnew', compact('category'));
     }
+
+    public function QuotationStore(Request $request)
+    {
+    
+        $lead = Quotations::updateOrCreate(
+            ['quotation_id' => $request->quotation_id],
+            [
+                'customer_id' => $request->partner_id,
+                'gst_treatment' => $request->l10n_in_gst_treatment,
+                'expiration_date' => $request->validity_date,
+                'pricelist_id' => $request->pricelist_id,
+                'Payment_terms' => $request->payment_term_id,
+                'order_date' => $request->order_date_0,
+            ]
+        );
+
+        // Quotation ID sathe unique number generate karo (S00008)
+        $quotationNumber = sprintf('S%05d', $lead->id); // Example: S00008
+
+        // Lead update karo pachhi quotation_number sathe
+        $lead->update([
+            'quotation_id' => $quotationNumber
+        ]);
+
+        // Lead store karva pachi message prepare karo
+        $action = $request->lead_id ? 'updated' : 'created';
+        $message = $action === 'updated' ? 'Lead updated successfully' : 'Lead created successfully';
+
+        // Fetch original data agar update chhe to
+        if ($request->lead_id) {
+            $originalData = Quotations::find($request->lead_id)->getOriginal();
+            $changes = [];
+
+            // Define kariye ke kaya fields check karva che
+            $fields = ['product_name', 'probability', 'company_name', 'address_1', 'address_2', 'city', 'state', 'zip', 'country', 'website_link', 'sales_person', 'sales_team', 'contact_name', 'title', 'email', 'job_postion', 'phone', 'mobile', 'tag_id'];
+
+            // Fields iterate kari check karo ke su changes thay che
+            foreach ($fields as $field) {
+                if (isset($originalData[$field]) && $originalData[$field] != $lead->$field) {
+                    $changes[$field] = [
+                        'old' => $originalData[$field] ?? 'None',
+                        'new' => $lead->$field ?? 'None'
+                    ];
+                }
+            }
+
+            // Message ma changes add karo agar koi changes chhe to
+            if (!empty($changes)) {
+                $message .= '. Changes: ' . json_encode($changes, JSON_PRETTY_PRINT);
+            }
+        }
+
+        // Log karo quotation number sathe
+        Log::info($message, [
+            'lead_id' => $lead->id,
+            'quotation_number' => $quotationNumber,
+            'data' => $lead->toArray()
+        ]);
+
+        // Response ma quotation number return karo
+        return response()->json([
+            'message' => $message,
+            'quotation_number' => $quotationNumber
+        ]);
+    }
+
+    public function get_product(Request $request)
+    {
+        $product = products_new_items::with(['sales_tax'])->where('id', $request->selectedProduct)->first();
+        return response()->json($product);
+    }
+
+    public function  store_quotation_product(Request $request)
+    {
+         $product = new QuotationsOrderLine;
+         $product->quotation_id = $request->id;
+         $product->product_id = $request->product_id;
+         $product->quantity = $request->quantity;
+         $product->unit_price = $request->unit_price_id;
+         $product->taxes = $request->tex;
+         $product->tax_excl  = $request->tax_excl;
+         $product->tax_incl = $request->tax_incl ;
+         $product->save();
+          return response()->json(['message' => 'Product added successfully']);
+    }
+
 }

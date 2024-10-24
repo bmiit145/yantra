@@ -72,24 +72,30 @@
 
 <style>
     .daterangepicker select.monthselect {
-    margin-right: 2%;
-    width: 92%;
-    border-color: lightblue;
-    text-align: center;
-}
-element.style {
-    top: 250px;
-    left: 755.219px;
-    right: auto;
-    display: block;
-    width: 300px;
-}
-.daterangepicker select.yearselect {
-    width: 92%;
-    border-color: lightblue;
-    top: auto;
-    text-align: center;
-}
+        margin-right: 2%;
+        width: 92%;
+        border-color: lightblue;
+        text-align: center;
+    }
+
+    element.style {
+        top: 250px;
+        left: 755.219px;
+        right: auto;
+        display: block;
+        width: 300px;
+    }
+
+    .daterangepicker select.yearselect {
+        width: 92%;
+        border-color: lightblue;
+        top: auto;
+        text-align: center;
+    }
+    .o_list_renderer .o_list_table thead .o_list_number_th{
+        text-align: left;
+    }
+
 </style>
 
 
@@ -109,11 +115,12 @@ element.style {
                                         Order</button><button type="button" class="btn btn-secondary o_arrow_button" role="radio" disabled="" aria-label="Not active state" aria-checked="false" data-value="sent">Quotation Sent</button><button type="button" class="btn btn-secondary o_arrow_button o_arrow_button_current o_last" role="radio" disabled="" aria-label="Current state" aria-checked="true" aria-current="step" data-value="draft">Quotation</button><button type="button" class="btn btn-secondary dropdown-toggle o_arrow_button o_last o-dropdown dropdown d-none" disabled="" aria-expanded="false"> ... </button><button type="button" class="btn btn-secondary dropdown-toggle o-dropdown dropdown d-none" disabled="" aria-expanded="false">Quotation</button></div>
                             </div>
                         </div>
+                        <input type="hidden" value="{{ isset($data) ? $data->quotation_id : '' }}" id="quotation_id">
                         <div class="o_form_sheet position-relative" id="myForm">
                             <div class="oe_title">
                                 <h1>
                                     <div name="name" class="o_field_widget o_readonly_modifier o_required_modifier o_field_char">
-                                        <span>New</span>
+                                        <span>{{ isset($data) ? $data->quotation_id : 'New' }}</span>
                                     </div>
                                 </h1>
                             </div>
@@ -132,8 +139,10 @@ element.style {
                                                                 <option value="">Type to find a customer...
                                                                 </option>
                                                                 @foreach ($customer as $cus)
-                                                                <option value="{{ $cus->id }}">
-                                                                    {{ $cus->name }}</option>
+                                                                    <option value="{{ $cus->id }}" 
+                                                                        @if(isset($data->customer_id) && $data->customer_id == $cus->id) selected @endif>
+                                                                        {{ $cus->name }}
+                                                                    </option>
                                                                 @endforeach
 
                                                             </select>
@@ -153,22 +162,35 @@ element.style {
                                             <div name="l10n_in_gst_treatment" class="o_field_widget o_required_modifier o_field_selection">
                                                 <select class="o_input pe-3" id="l10n_in_gst_treatment_0">
                                                     <option value="false" style="display:none"></option>
-                                                    <option value="&quot;regular&quot;">Registered Business -
-                                                        Regular</option>
-                                                    <option value="&quot;composition&quot;">Registered Business -
-                                                        Composition</option>
-                                                    <option value="&quot;unregistered&quot;">Unregistered Business
+                                                    
+                                                    <option value="regular" @if(isset($data->gst_treatment) && $data->gst_treatment == 'regular') selected @endif>
+                                                        Registered Business - Regular
                                                     </option>
-                                                    <option value="&quot;consumer&quot;">Consumer</option>
-                                                    <option value="&quot;overseas&quot;">Overseas</option>
-                                                    <option value="&quot;special_economic_zone&quot;">Special
-                                                        Economic Zone</option>
-                                                    <option value="&quot;deemed_export&quot;">Deemed Export
+                                                    <option value="composition" @if(isset($data->gst_treatment) && $data->gst_treatment == 'composition') selected @endif>
+                                                        Registered Business - Composition
                                                     </option>
-                                                    <option value="&quot;uin_holders&quot;">UIN Holders</option>
+                                                    <option value="unregistered" @if(isset($data->gst_treatment) && $data->gst_treatment == 'unregistered') selected @endif>
+                                                        Unregistered Business
+                                                    </option>
+                                                    <option value="consumer" @if(isset($data->gst_treatment) && $data->gst_treatment == 'consumer') selected @endif>
+                                                        Consumer
+                                                    </option>
+                                                    <option value="overseas" @if(isset($data->gst_treatment) && $data->gst_treatment == 'overseas') selected @endif>
+                                                        Overseas
+                                                    </option>
+                                                    <option value="special_economic_zone" @if(isset($data->gst_treatment) && $data->gst_treatment == 'special_economic_zone') selected @endif>
+                                                        Special Economic Zone
+                                                    </option>
+                                                    <option value="deemed_export" @if(isset($data->gst_treatment) && $data->gst_treatment == 'deemed_export') selected @endif>
+                                                        Deemed Export
+                                                    </option>
+                                                    <option value="uin_holders" @if(isset($data->gst_treatment) && $data->gst_treatment == 'uin_holders') selected @endif>
+                                                        UIN Holders
+                                                    </option>
                                                 </select>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="o_inner_group grid col-lg-6">
@@ -178,7 +200,7 @@ element.style {
                                         </div>
                                         <div class="o_cell o_wrap_input flex-grow-1 flex-sm-grow-0 text-break" style="width: 100%;">
                                             <div name="validity_date" class="o_field_widget o_field_date">
-                                                <div class="d-flex gap-2 align-items-center"><input type="text" class="o_input cursor-pointer" autocomplete="off" id="validity_date_0" data-field="validity_date"></div>
+                                                <div class="d-flex gap-2 align-items-center"><input type="text" value="{{ isset($data) ? $data->expiration_date : '' }}" class="o_input cursor-pointer" autocomplete="off" id="validity_date_0" data-field="validity_date"></div>
                                             </div>
                                         </div>
                                     </div>
@@ -214,11 +236,12 @@ element.style {
                                                     <div class="o_field_many2one_selection">
                                                         <div class="o_input_dropdown">
                                                             <div class="o-autocomplete dropdown">
-                                                                <select class="o-autocomplete--input o_input" id="pricelist_id_0">
+                                                                <select class="o-autocomplete--input o_input" style="width: 200px;" id="pricelist_id_0">
                                                                     <option value=""></option>
-                                                                    @foreach ($pricelist as $price)
-                                                                    <option value="{{ $price->id }}">
-                                                                        {{ $price->pricelist_name }}</option>
+                                                                   @foreach ($pricelist as $price)
+                                                                        <option value="{{ $price->id }}" @if(isset($data->pricelist_id) && $data->pricelist_id == $price->id) selected @endif>
+                                                                            {{ $price->pricelist_name }}
+                                                                        </option>
                                                                     @endforeach
                                                                 </select>
                                                             </div>
@@ -238,11 +261,12 @@ element.style {
                                                 <div class="o_field_many2one_selection">
                                                     <div class="o_input_dropdown">
                                                         <div class="o-autocomplete dropdown">
-                                                            <select class="o-autocomplete--input o_input" id="payment_term_id_0">
+                                                            <select class="o-autocomplete--input o_input" style="width: 200px;" id="payment_term_id_0">
                                                                 <option value=""></option>
                                                                 @foreach ($payment as $pay)
-                                                                <option value="{{ $pay->id }}">
-                                                                    {{ $pay->name }}</option>
+                                                                    <option value="{{ $pay->id }}" @if(isset($data->Payment_terms) && $data->Payment_terms == $pay->id) selected @endif>
+                                                                        {{ $pay->name }}
+                                                                    </option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
@@ -277,68 +301,75 @@ element.style {
                                 <div class="tab-content">
                                     <div id="order_lines" class="tab-pane fade show active">
                                         <div class="o_list_renderer o_renderer table-responsive" tabindex="-1">
-                                            <table class="o_section_and_note_list_view o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped" style="table-layout: fixed;">
+                                            <table class="o_section_and_note_list_view o_list_table table table-sm table-hover position-relative mb-0 o_list_table_ungrouped table-striped" >
                                                 <thead>
                                                     <tr>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="sequence" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th o_handle_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;sequence&quot;,&quot;label&quot;:&quot;Sequence&quot;,&quot;type&quot;:&quot;integer&quot;,&quot;widget&quot;:&quot;handle&quot;,&quot;widgetDescription&quot;:&quot;Handle&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 29px;"></th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="product_template_id" class="align-middle cursor-default o_sol_product_many2one_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_template_id&quot;,&quot;label&quot;:&quot;Product Template&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:&quot;sol_product_many2one&quot;,&quot;widgetDescription&quot;:&quot;Many2one&quot;,&quot;context&quot;:&quot;{                                         'partner_id': parent.partner_id,                                         'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom':product_uom,                                         'company_id': parent.company_id,                                         'default_list_price': price_unit,                                         'default_description_sale': name                                     }&quot;,&quot;domain&quot;:&quot;[('sale_ok', '=', True)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;not product_updatable&quot;,&quot;required&quot;:&quot;not display_type and not is_downpayment&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;product.template&quot;}}" style="width: 144px;">
-                                                            <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Product</span><i class="d-none fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                      
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="product_template_id" class="align-middle cursor-default o_sol_product_many2one_cell opacity-trigger-hover w-print-auto" >
+                                                            <div class="d-flex" data-tooltip-template="web.ListHeaderTooltip"><span class="d-block min-w-0 text-truncate flex-grow-1">Product</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="name" class="align-middle o_column_sortable position-relative cursor-pointer o_section_and_note_text_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;name&quot;,&quot;label&quot;:&quot;Description&quot;,&quot;type&quot;:&quot;text&quot;,&quot;widget&quot;:&quot;section_and_note_text&quot;,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}" style="width: 144px;">
-                                                            <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Description</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="name" class="align-middle o_column_sortable position-relative cursor-pointer o_section_and_note_text_cell opacity-trigger-hover w-print-auto" >
+                                                            <div class="d-flex" data-tooltip-template="web.ListHeaderTooltip"><span class="d-block min-w-0 text-truncate flex-grow-1">Description</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="product_uom_qty" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_uom_qty&quot;,&quot;label&quot;:&quot;Quantity&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{                                         'partner_id': parent.partner_id,                                         'quantity': product_uom_qty,                                         'pricelist': parent.pricelist_id,                                         'uom': product_uom,                                         'company_id': parent.company_id                                     }&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;is_downpayment&quot;,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}" style="width: 133px;">
-                                                            <div class="d-flex flex-row-reverse"><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Quantity</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="product_uom_qty" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" style="width: 102px;">
+                                                            <div class="d-flex flex-row-reverse" data-tooltip-template="web.ListHeaderTooltip" ><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Quantity</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th style="width: 29px;"></th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="product_uom" class="align-middle o_column_sortable position-relative cursor-pointer opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;product_uom&quot;,&quot;label&quot;:&quot;Unit of Measure&quot;,&quot;type&quot;:&quot;many2one&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{'company_id': parent.company_id}&quot;,&quot;domain&quot;:&quot;[('category_id', '=', product_uom_category_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;product_uom_readonly&quot;,&quot;required&quot;:&quot;not display_type and not is_downpayment&quot;,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;uom.uom&quot;}}" style="width: 144px;">
-                                                            <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">UoM</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="price_unit" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" style="width: 102px;">
+                                                            <div class="d-flex flex-row-reverse" data-tooltip-template="web.ListHeaderTooltip" ><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Unit Price</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="price_unit" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;price_unit&quot;,&quot;label&quot;:&quot;Unit Price&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;qty_invoiced > 0&quot;,&quot;required&quot;:&quot;True&quot;,&quot;changeDefault&quot;:false}}" style="width: 133px;">
-                                                            <div class="d-flex flex-row-reverse"><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Unit
-                                                                    Price</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="tax_id" class="align-middle cursor-default o_many2many_tags_cell opacity-trigger-hover w-print-auto" style="width: 144px;">
+                                                            <div class="d-flex" data-tooltip-template="web.ListHeaderTooltip"  title=""><span class="d-block min-w-0 text-truncate flex-grow-1">Taxes</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="tax_id" class="align-middle cursor-default o_many2many_tags_cell opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;tax_id&quot;,&quot;label&quot;:&quot;Taxes&quot;,&quot;type&quot;:&quot;many2many&quot;,&quot;widget&quot;:&quot;many2many_tags&quot;,&quot;widgetDescription&quot;:&quot;Tags&quot;,&quot;context&quot;:&quot;{'active_test': True}&quot;,&quot;domain&quot;:&quot;[('type_tax_use', '=', 'sale'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id)]&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;qty_invoiced > 0 or is_downpayment&quot;,&quot;required&quot;:null,&quot;changeDefault&quot;:false,&quot;relation&quot;:&quot;account.tax&quot;}}" style="width: 144px;">
-                                                            <div class="d-flex"><span class="d-block min-w-0 text-truncate flex-grow-1">Taxes</span><i class="d-none fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="price_subtotal" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" style="width: 114px;">
+                                                            <div class="d-flex flex-row-reverse" data-tooltip-template="web.ListHeaderTooltip"  title=""><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Tax excl.</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="discount" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;discount&quot;,&quot;label&quot;:&quot;Discount (%)&quot;,&quot;type&quot;:&quot;float&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:null,&quot;column_invisible&quot;:null,&quot;readonly&quot;:null,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 133px;">
-                                                            <div class="d-flex flex-row-reverse"><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Disc.%</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="price_total" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" style="width: 114px;">
+                                                            <div class="d-flex flex-row-reverse" data-tooltip-template="web.ListHeaderTooltip" title=""><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Tax incl.</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="price_subtotal" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" data-tooltip-template="web.ListHeaderTooltip" data-tooltip-info="{&quot;viewMode&quot;:&quot;list&quot;,&quot;resModel&quot;:&quot;sale.order.line&quot;,&quot;debug&quot;:false,&quot;field&quot;:{&quot;name&quot;:&quot;price_subtotal&quot;,&quot;label&quot;:&quot;Subtotal&quot;,&quot;type&quot;:&quot;monetary&quot;,&quot;widget&quot;:null,&quot;context&quot;:&quot;{}&quot;,&quot;invisible&quot;:&quot;is_downpayment&quot;,&quot;column_invisible&quot;:null,&quot;readonly&quot;:&quot;True&quot;,&quot;required&quot;:null,&quot;changeDefault&quot;:false}}" style="width: 144px;">
-                                                            <div class="d-flex flex-row-reverse"><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Tax
-                                                                    excl.</span><i class="fa fa-lg fa-angle-down opacity-0 opacity-75-hover"></i>
-                                                            </div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
+                                                        <th data-tooltip-delay="1000" tabindex="-1" data-name="price_total" class="align-middle o_column_sortable position-relative cursor-pointer o_list_number_th opacity-trigger-hover w-print-auto" style="width: 114px;">
+                                                            <div class="d-flex flex-row-reverse" data-tooltip-template="web.ListHeaderTooltip" title=""><span class="d-block min-w-0 text-truncate flex-grow-1 o_list_number_th">Action</span></div><span class="o_resize position-absolute top-0 end-0 bottom-0 ps-1 bg-black-25 opacity-0 opacity-50-hover z-1"></span>
                                                         </th>
-                                                        <th class="o_list_controller o_list_actions_header w-print-0 p-print-0 position-sticky end-0" style="width: 32px;">
-                                                            <div class="o_optional_columns_dropdown d-print-none text-center border-top-0">
-                                                                <button class="btn p-0 o-dropdown dropdown-toggle dropdown" tabindex="-1" aria-expanded="false"><i class="o_optional_columns_dropdown_toggle oi oi-fw oi-settings-adjust"></i></button>
-                                                            </div>
-                                                        </th>
+                                                     
                                                     </tr>
                                                 </thead>
                                                 <tbody class="ui-sortable">
-                                                    <tr>
-                                                        <td></td>
-                                                        <td class="o_field_x2many_list_row_add" colspan="10"><a href="#" role="button" tabindex="0">Add a
-                                                                product</a><a href="#" role="button" class="ml16" tabindex="0">Add a section</a><a href="#" role="button" class="ml16" tabindex="0">Add a note</a><button class="btn px-4 btn-link ml16" name="action_add_from_catalog" type="object" tabindex="0"><span>Catalog</span></button></td>
+                                                   <tr class=" product_add_tr" style="display: none;">
+                                                        <td> <select class="o-autocomplete--input o_input get_product"placeholder="Type to find a product...">
+                                                                 <option>Type to find a product...</option>
+                                                                @foreach($products_new_items as $pro)
+                                                                    <option value="{{$pro->id}}">{{$pro->name}}</option>
+                                                                @endforeach                            
+                                                            <select>
+                                                            <input type="hidden" id="order_type">
+                                                        </td>
+                                                        <td><input class="o_input" id="description_id"></td>
+                                                        <td><input class="o_input" id="quantity_id" value="1.00"></td>
+                                                        <td><input class="o_input" value="0.00" id="unit_price_id"></td>
+                                                        <td><select class="o-autocomplete--input o_input " id="sales_tax_id" placeholder="Type to find a product...">
+                                                                 <option></option>
+                                                                @foreach($sales_taxes as $tax)
+                                                                    <option value="{{$tax->id}}">{{$tax->tax_name}}</option>
+                                                                @endforeach                            
+                                                            <select></td>
+                                                        <td><input class="o_input" value="0.00" id="tax_excl"></td>
+                                                        <td><input class="o_input" value="0.00" id="tax_incl"></td>
+                                                        <td><a class="product_save"><i class="fa fa-cloud-upload fa-fw"></i></a></td>
+                                                      
+                                                   </tr>
+                                                    <tr class=" product_notes_tr" style="display: none;">
+                                                        <td class="o_field_x2many_list_row_add" colspan="8">
+                                                                <input class="o_input">
+                                                        </td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="11">&ZeroWidthSpace;</td>
+                                                        <td class="o_field_x2many_list_row_add" colspan="8">
+                                                                <a href="#" role="button" class="add_product" tabindex="0">Add a product</a>
+                                                                <a href="#" role="button" class="ml16 add_section" tabindex="0">Add a section</a>
+                                                                <a href="#" role="button" class="ml16 add_a_note" tabindex="0">Add a note</a>
+                                                                <button class="btn px-4 btn-link ml16 catalog" name="action_add_from_catalog" type="object" tabindex="0"><span>Catalog</span>
+                                                                </button>
+                                                        </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td colspan="11">&ZeroWidthSpace;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td colspan="11">&ZeroWidthSpace;</td>
-                                                    </tr>
-
                                                 </tbody>
                                                 <tfoot class="o_list_footer cursor-default">
                                                     <tr>
@@ -347,7 +378,6 @@ element.style {
                                                         <td></td>
                                                         <td></td>
                                                         <td class="w-print-auto"></td>
-                                                        <td></td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -822,7 +852,7 @@ element.style {
                                         </div>
                                     </div>
                                     <div id="notes" class="tab-pane fade">
-                                        <textarea name="" id="" cols="30" rows="10" placeholder="Type &quot;/&quot; for commands"></textarea>
+                                        <textarea name="" id="" cols="30" rows="10" id="notes_value" placeholder="Type &quot;/&quot; for commands"></textarea>
                                     </div>
                                 </div>
 
@@ -1507,6 +1537,153 @@ element.style {
 <script src="https://cdn.jsdelivr.net/npm/moment/moment.min.js"></script>
 
 
+{{-- ---- backend code  -------------------------- --}}
+<script>
+    $(document).ready(function() {
+        // Add Product button click event
+       $('#main_save_btn').on('click', function() {
+
+            var formData = {
+                partner_id: $('#partner_id_0').val(),
+                l10n_in_gst_treatment: $('#l10n_in_gst_treatment_0').val(),
+                validity_date: $('#validity_date_0').val(),
+                pricelist_id: $('#pricelist_id_0').val(),
+                payment_term_id: $('#payment_term_id_0').val(),
+                user_id: $('#user_id_0').val(),
+                team_id: $('#team_id_0').val(),
+                require_signature: $('#require_signature_0').val(),
+                require_payment: $('#require_payment_0').val(),
+                prepayment_input: $('#prepayment_input').val(),
+                client_order_ref: $('#client_order_ref_0').val(),
+                tag_ids: $('#tag_ids_0').val(),
+                fiscal_position_id: $('#fiscal_position_id_0').val(),
+                incoterm: $('#incoterm_0').val(),
+                incoterm_location: $('#incoterm_location_0').val(),
+                picking_policy: $('#picking_policy_0').val(),
+                commitment_date: $('#commitment_date_0').val(),
+                origin: $('#origin_0').val(),
+                opportunity_id: $('#opportunity_id_0').val(),
+                campaign_id: $('#campaign_id_0').val(),
+                medium_id: $('#medium_id_0').val(),
+                source_id: $('#source_id_0').val(),
+                notes_value: $('#notes_value').val(),
+                quotation_id: $('#quotation_id').val(),
+                _token: '{{ csrf_token() }}' // Add CSRF token for security
+            };
+
+            // Ajax request
+            $.ajax({
+                url: "{{ route('quotations.store') }}",
+                type: "POST",
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    // Handle success response
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.add_product').on('click', function(){
+             var order_type = $('#order_type').val();
+             if(order_type == 2){
+                toastr.error('first');
+             }else{
+              $('.product_add_tr').show();
+
+             }
+            $('#order_type').val(1);
+        });
+
+        $('.add_section').on('click', function(){
+            $('.product_add_tr').show();
+            $('#order_type').val(2);
+        });
+        
+        $('.add_a_note').on('click', function(){
+            $('.product_notes_tr').show();
+            $('#order_type').val(3);
+        });
+
+        $('.catalog').on('click', function(){
+            $('.product_notes_tr').show();
+            $('#order_type').val(4);
+        });
+
+
+        $('.get_product').on('change', function() {
+          console.log('get_product');
+            var selectedProduct = $(this).val(); 
+              $.ajax({
+                url: "{{ route('quotations.get_product') }}",
+                type: "get",
+                data: {
+                    selectedProduct : selectedProduct,
+                },
+                dataType: 'json',
+                success: function(response) {
+                    console.log(response);
+                    $('#description_id').val(response.name);
+                    $('#unit_price_id').val(response.sales_price);
+                    $('#sales_tax_id').val(response.sales_tax_id);
+                    $('#tax_excl').val(response.sales_price * 1);
+                    $('#tax_incl').val(response.sales_price * 1 * response.sales_tax.tax_rate )
+
+                },  
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+         
+        
+        $('#quantity_id').on('change', function(){
+             var selectValue = $(this).val(); 
+             var unit_price_value = $('#unit_price_id').val();
+             var tax_excld = selectValue * unit_price_value;
+             $('#tax_excl').val(tax_excld)
+        });
+
+        $('.product_save').on('click', function(){
+                var id = $('#quotation_id').val();
+                var product_id = $('.get_product').val();
+                var quantity = $('#quantity_id').val();
+                var unit_price_id = $('#unit_price_id').val();
+                var tex = $('#sales_tax_id').val();
+                var tax_excl = $('#tax_excl').val();
+                var tax_incl = $('#tax_incl').val();
+
+                 $.ajax({
+                    url: "{{ route('quotations.store_quotation_product') }}",
+                    type: "post",
+                    data: {
+                        id : id,
+                        product_id : product_id,
+                        quantity : quantity,
+                        unit_price_id : unit_price_id,
+                        tex : tex,
+                        tax_excl : tax_excl,
+                        tax_incl  : tax_incl
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        console.log(response);
+
+                    },  
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+        });
+
+        
+        });
+
+</script>
 <script>
     $(document).ready(function() {
         // On checkbox toggle
@@ -1521,6 +1698,8 @@ element.style {
                 $('#prepayment_input').val('');
             }
         });
+
+        
     });
 
 </script>
