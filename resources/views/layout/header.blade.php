@@ -262,19 +262,22 @@
 
         @section('header_left_side')
         <div class="new_btn_info">
-            <a class="head_new_btn" href="@yield('head_new_btn_link', '#')">New</a>
+            <a class="head_new_btn" href="@yield('head_new_btn_link', '#')">@yield('head_new_btn_name', 'New')</a>
+        </div>
+        <div class="new_btn_info_cancel" style="display:none">
+            <a class="btn btn-secondary" href="@yield('cancel_link', '#')">@yield('cancel_name', '#')<a>
         </div>
         <div class="head_breadcrumb_info">
             {{-- <p class="head_breadcrumb_title">@yield('head_breadcrumb_title', 'sabsdhd')</p> --}}
             <div class="o_breadcrumb d-flex flex-row flex-md-column align-self-stretch justify-content-between min-w-0">
-                <ol class="breadcrumb flex-nowrap text-nowrap lh-sm">
+                <ol class="breadcrumb flex-nowrap text-nowrap lh-sm redirect-button">
                     <li class="breadcrumb-item d-inline-flex min-w-0 o_back_button" data-hotkey="b" style="position: relative;">
                         <a class="fw-bold text-truncate" href="@yield('redirect_button', '#')" data-tooltip="Back to &quot;Leads&quot;" title="">@yield('redirect_name')</a>
                     </li>
                 </ol>
                 <div class="d-flex gap-1 text-truncate">
                     <div class="o_last_breadcrumb_item active d-flex gap-2 align-items-center min-w-0 lh-sm">
-                        <span class="min-w-0 text-truncate">@yield('head_breadcrumb_title', 'sabsdhd')</span>
+                        <span class="min-w-0 text-truncate head_breadcrumb_title">@yield('head_breadcrumb_title', 'sabsdhd')</span>
                     </div>
                     <div class="o_control_panel_breadcrumbs_actions d-inline-flex d-print-none ">
                         <div class="o_cp_action_menus d-flex align-items-center pe-2 gap-1">
@@ -282,38 +285,38 @@
                                 <button class="d-print-none btn p-0 ms-1 lh-sm border-0" id="dropdownMenuButton" aria-expanded="false" title="">
                                     <i class="fa fa-cog"></i>
                                 </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="dropdown-menu-setting" aria-labelledby="dropdownMenuButton">
 
                                     @yield('setting_menu')
                            
                                  
                                 </div>
-                              
+                                @if(isset($data->id))
                                 <button style="display: none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
                                     <i class="fa fa-cloud-upload fa-fw"></i>
                                 </button>
                                 <button style="display:none;" type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_discard_btn_id', 'main_discard_btn')" data-hotkey="s" data-tooltip="Discard all changes" aria-label="Discard all changes" title="Discard all changes">
-                                    <i class="fa fa-times"></i>
+                                   <i class="fa-solid fa-rotate-left"></i>
                                 </button>
+                                @else
+                                <button type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_save_btn_id', 'main_save_btn')" data-hotkey="s" data-tooltip="Save manually" aria-label="Save manually" title="Save Button">
+                                    <i class="fa fa-cloud-upload fa-fw"></i>
+                                </button>
+                                <button  type="button" class="o_form_button_save btn btn-light px-1 py-0 lh-sm @yield('save_class', " #")" id="@yield('header_discard_btn_id', 'main_discard_btn')" data-hotkey="s" data-tooltip="Discard all changes" aria-label="Discard all changes" title="Discard all changes">
+                                   <i class="fa-solid fa-rotate-left"></i>
+                                </button>
+                                @endif
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            @if(isset($data->is_lost) && $data->is_lost == 1)
-            @if(isset($allData) && $allData > 1)
+            
+            
             <div class="o-form-buttonbox d-print-none position-relative d-flex w-md-auto o_not_full" style="margin-left:42%;position: absolute !important;">
-                <a href="{{ route('leads.similar', ['productName' => $data->product_name]) }}">
-                    <button invisible="duplicate_lead_count < 1" class="btn oe_stat_button btn-outline-secondary flex-grow-1 flex-lg-grow-0" name="action_show_potential_duplicates" type="object"><i class="o_button_icon fa fa-fw fa-star"></i>
-                        <div class="o_stat_info">
-                            <div name="duplicate_lead_count" class="o_field_widget o_readonly_modifier o_field_integer o_stat_value">
-                                <span>{{ $allData ?? '' }}</span></div><span class="o_stat_text">Similar Leads</span>
-                        </div>
-                    </button>
-                </a>
-            </div>
-            @endif
-            @endif
+                @yield('similar_lead_div')                
+            </div>            
 
         </div>
 
@@ -379,13 +382,13 @@
         });
 
     document.getElementById('dropdownMenuButton').addEventListener('click', function() {
-        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const dropdownMenu = document.querySelector('.dropdown-menu-setting');
         dropdownMenu.classList.toggle('show'); // Toggle the 'show' class to display/hide the menu
     });
 
     // Optional: Close dropdown when clicking outside of it
     window.addEventListener('click', function(event) {
-        const dropdownMenu = document.querySelector('.dropdown-menu');
+        const dropdownMenu = document.querySelector('.dropdown-menu-setting');
         if (!event.target.closest('#dropdownMenuButton')) {
             dropdownMenu.classList.remove('show');
         }

@@ -51,13 +51,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/pipeline-list',[CRMController::class,'pipelineList'])->name('crm.pipeline.list');
     Route::post('/pipeline-list-data',[CRMController::class,'pipelineListData'])->name('crm.pipeline.list.data');
-    Route::get('/pipeline-create/{id?}',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
+    Route::get('/pipeline-create/{id?}/{index?}',[CRMController::class,'pipelineCreate'])->name('crm.pipeline.create');
     Route::post('/pipeline-store',[CRMController::class,'pipelineStore'])->name('crm.pipeline.store');
     Route::get('/customer/{id}', [CRMController::class, 'getCustomerDetails'])->name('getCustomerDetails');
     Route::post('/update-stage', [CRMController::class,'updateStage'])->name('crm.updateStage');
     Route::post('/add-lost-reason', [CRMController::class, 'addLostReason'])->name('crm.pipeline.addLostReason');
     Route::post('/pipeline/manageLostReasons', [CRMController::class, 'pipelineManageLostReasons'])->name('crm.pipeline.markAsLost');
-    Route::post('/pipeline-restore/{id}', [CRMController::class, 'restoreIsLost'])->name('crm.pipeline.restore');;
+    Route::post('/pipeline-restore/{id}', [CRMController::class, 'restoreIsLost'])->name('crm.pipeline.restore');
+    Route::post('/pipeline-send_message_by_pipline', [CRMController::class, 'send_message_by_pipline'])->name('crm.pipeline.send_message_by_pipline');
     // CRM pipeline Activities
     Route::post('/pipeline-schedule-activity', [CRMController::class, 'pipelineScheduleActivityStore'])->name('crm.pipeline.scheduleActivityStore');
     Route::get('/pipeline-activities-edit/{id?}', [CRMController::class, 'pipelineActivitiesEdit'])->name('crm.pipeline.activitiesEdit');
@@ -71,8 +72,42 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pipeline-graph', [CRMController::class, 'pipelineGraph'])->name('crm.pipeline.graph');
     Route::post('/setColor', [CRMController::class, 'setColor'])->name('crm.setColor');
     Route::get('/pipelineDelete', [CRMController::class, 'pipelineDelete'])->name('crm.delete');
+    Route::get('/pipeline-importpipline', [CRMController::class, 'importpipline'])->name('crm.importpipline');
+    Route::post('/pipeline-import', [CRMController::class, 'import'])->name('crm.import');
+    Route::get('/exportCrm', [CRMController::class, 'exportCrm'])->name('crm.exportCrm');
+    Route::post('/DuplicatePipline', [CRMController::class, 'DuplicatePipline'])->name('crm.DuplicatePipline');
+    Route::post('/DeletePipline', [CRMController::class, 'DeletePipline'])->name('crm.DeletePipline');
+    Route::post('/invite_followers', [CRMController::class, 'invite_followers'])->name('crm.invite_followers');
+    Route::post('/click_follow', [CRMController::class, 'click_follow'])->name('crm.click_follow');
+    Route::post('/send_message', [CRMController::class, 'send_message'])->name('crm.send_message');
+    Route::post('/log_notes', [CRMController::class, 'log_notes'])->name('crm.log_notes');
+    Route::get('/delete_send_message', [CRMController::class, 'delete_send_message'])->name('crm.delete_send_message');
+    Route::get('/click_star', [CRMController::class, 'click_star'])->name('crm.click_star');
+    Route::get('/delete_send_message_notes', [CRMController::class, 'delete_send_message_notes'])->name('crm.delete_send_message_notes');
+    Route::get('/click_star_notes', [CRMController::class, 'click_star_notes'])->name('crm.click_star_notes');
+    Route::get('/crm-downloadAllImagessend_message', [CRMController::class, 'downloadAllImagessend_message'])->name('crm.downloadAllImagessend_message');
+    Route::get('/crm-downloadAllImages', [CRMController::class, 'downloadAllImages'])->name('crm.downloadAllImages');
+    Route::POST('/attachmentsAdd', [CRMController::class, 'attachmentsAdd'])->name('crm.attachmentsAdd');
+    Route::delete('/attachmentsDeleteFile', [CRMController::class, 'attachmentsDeleteFile'])->name('crm.attachmentsDeleteFile');
+    Route::get('/pipeline/similar/{opportunityName}', [CRMController::class, 'pipelineShowSimilarLeads'])->name('crm.pipeline.similar');
     
 
+    // CRM pipeline Filter
+
+    Route::get('/pipeline-filter', [CRMController::class, 'pipelineFilter'])->name('crm.pipeline.filter');
+    Route::post('/pipeline-filter-group-by', [CRMController::class, 'pipelineFilterGroupBy'])->name('crm.pipeline.filter.group.by');
+    Route::post('/pipeline-custom-filter', [CRMController::class, 'pipelineCustomFilter'])->name('crm.pipeline.custom.filter');
+    Route::post('/pipeline-favorites-filter',[CRMController::class,'pipelineFavoritesFilter'])->name('crm.pipeline.favorites.filter');
+    Route::delete('/pipeline-delete-favorites/{id}', [CRMController::class, 'pipelineDeleteFavoritesFilter']);
+
+    Route::get('/calendar-pipeline-filter', [CRMController::class, 'calendarPipelineFilter'])->name('crm.calendar.pipeline.filter');
+    Route::get('/calendar-custom-pipeline-filter', [CRMController::class, 'calendarCustomPipelineFilter'])->name('crm.calendar.custom.pipeline.filter');
+
+    Route::get('/graph-pipeline-filter', [CRMController::class, 'graphPipelineFilter'])->name('crm.graph.pipeline.filter');
+    Route::get('/lead-graph-group-pipeline-filter', [CRMController::class, 'leadGrapgGroupPipelineFilter'])->name('lead.lead.grapg.group.pipeline.filter');
+
+    Route::get('/pipeline-filter-activities', [CRMController::class, 'pipelineFilterActivities'])->name('crm.pipeline.filter.activities');
+    Route::post('/pipeline-activity-custom-filter', [CRMController::class, 'pipelineActivityCustomFilter'])->name('crm.pipeline.activity.custom.filter');
 
 
     // sale
@@ -183,6 +218,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-activities', [LeadController::class, 'activities'])->name('lead.activities');
     Route::post('/custom-filter', [LeadController::class, 'customFilter'])->name('lead.custom.filter');
     Route::post('/lead-send_message', [LeadController::class, 'send_message'])->name('lead.send_message');
+    Route::post('/lead-send_message', [LeadController::class, 'send_message'])->name('lead.send_message');
     Route::post('/lead-send_message_by_lead', [LeadController::class, 'send_message_by_lead'])->name('lead.send_message_by_lead');
     Route::post('/lead-deleteImage', [LeadController::class, 'deleteImage'])->name('lead.deleteImage');
     Route::post('/lead-deleteImage1', [LeadController::class, 'deleteImage1'])->name('lead.deleteImage1');
@@ -195,11 +231,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-click_star_notes', [LeadController::class, 'click_star_notes'])->name('lead.click_star_notes');
     Route::get('/lead-exportLead', [LeadController::class, 'exportLead'])->name('lead.exportLead');
     Route::get('/lead-import', [LeadController::class, 'importlead'])->name('lead.importlead');
+    Route::post('/lead-import-store', [LeadController::class, 'import'])->name('lead.import');
     Route::get('/lead-downloadAllImagessend_message', [LeadController::class, 'downloadAllImagessend_message'])->name('lead.downloadAllImagessend_message');
 
     // Favorites Filter Route
     Route::post('/lead-favorites-filter',[LeadController::class,'favoritesFilter'])->name('lead.favorites.filter');
     Route::delete('/delete-lead-favorites/{id}', [LeadController::class, 'deleteFavoritesFilter']);
+
+    Route::get('/leads-search', [LeadController::class, 'leadSearchFilter'])->name('lead.search.filter');
+    Route::get('/leads-kanban-search', [LeadController::class, 'leadKanbanSearchFilter'])->name('lead.kanban.search.filter');
 
 
 
@@ -216,7 +256,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/upload-file', [LeadController::class, 'uploadFile'])->name('lead.uploadFile');
     Route::post('/lead/delete-document', [LeadController::class, 'deleteDocument'])->name('lead.deleteDocument');
     Route::post('/lead/click_follow', [LeadController::class, 'click_follow'])->name('lead.click_follow');
-    Route::post('/lead/invite-followers', [LeadController::class, 'invite_followers'])->name('lead.invite_followers');
+    Route::post('/lead/invite-followers', [LeadController::class, 'invite_flowers'])->name('lead.invite_followers');
     Route::post('/lead/remove_follower', [LeadController::class, 'removeFollower'])->name('lead.remove_follower');
     Route::post('/attachments/add', [LeadController::class, 'attachmentsAdd'])->name('lead.attachmentsAdd');
     Route::delete('/attachments/delete-file', [LeadController::class, 'attachmentsDeleteFile'])->name('lead.attachmentsDeleteFile');
@@ -263,6 +303,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-graph-filter', [GraphController::class, 'leadGrapgFilter'])->name('lead.leadGrapgFilter');
     Route::get('/lead-graph-custom-filter', [GraphController::class, 'leadGrapgCustomFilter'])->name('lead.leadGrapgCustomFilter');
     Route::get('/lead-graph-group-filter', [GraphController::class, 'leadGrapgGroupFilter'])->name('lead.leadGrapgGroupFilter');
+    Route::get('/lead-measures_filter', [GraphController::class, 'measures_filter'])->name('lead.measures_filter');
+    Route::get('/lead-leadSearchFilter-graph', [GraphController::class, 'leadSearchFilter'])->name('lead.leadSearchFilter-graph');
 
 
     // setting

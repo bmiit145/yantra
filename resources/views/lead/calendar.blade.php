@@ -161,32 +161,35 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         </div>
         @foreach ($getFavoritesFilter as $favoritesFilter)    
             <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
-            role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
+                role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" 
+                data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
                 <span class="d-flex p-0 align-items-center justify-content-between">
                     <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
-                        <span class="float-end checkmark" style="display:none;">✔</span>
+                        <span class="checkmark" style="display:none;">✔</span>
                     </span>
-                    <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
                 </span>
             </span>
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="display: none;">
-                <div class="modal-dialog modal-dialog-centered modal-md">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure that you want to remove this filter?
-                        </div>
-                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                            <button type="button" class="btn btn-primary" style="background-color:#714B67;border: none;font-weight: 500;" id="confirmDelete">Delete Filter</button>
-                            <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
-                        </div>
+            <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}"></i>
+        @endforeach
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure that you want to remove this filter?
+                    </div>
+                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                        <button type="button" class="btn btn-primary" id="confirmDelete" style="background-color:#714B67;border: none;font-weight: 500;">Delete Filter</button>
+                        <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
-        @endforeach
+        </div>
         <div role="separator" class="dropdown-divider"></div>
         <div class="o_accordion position-relative">
             <button id="save-current-search" class="o_menu_item o_accordion_toggle search-dropdown-item o-navigable o_add_favorite text-truncate" tabindex="0" aria-expanded="false">
@@ -216,6 +219,25 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         </div>
     </div>
 </div>
+@endsection
+
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Lead</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
+
 @endsection
 
 <!-- Modal -->
@@ -639,6 +661,63 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         text-decoration: none;
         display: block;
         cursor: pointer;
+    }
+    #dropdownMenuButton{
+        display: none;
+    }
+    .o-dropdown-item-3 {
+        margin-left: -22px;
+    }
+
+    .delete-item {
+       margin-left: 133px !important;
+        cursor: pointer;
+        position: absolute;
+        margin-top: -21px;
+    }
+    .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 586px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 999;
+        top: auto;
+        right: auto;
+        overflow-y: hidden;
+        text-decoration: none;
+        color: black;
+    }
+
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+
+    .search-result{
+        color: #714B67;
+    }
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
+    }
+    .lead-separator {
+        height: 10px; /* Adjust height as needed */
+        background-color: transparent; /* Change to any color if you want a visible line */
+    }
+    .fa-star{
+        color: black;
     }
 </style>
 
@@ -1772,10 +1851,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 type: 'DELETE',
                 success: function(response) {
                     toastr.success('Favorite deleted successfully!'); // Show success message
-                    $('#deleteModal').modal('hide'); // Hide the modal
-
-                    // Remove the item from the UI
                     $(`span[data-id="${itemId}"]`).remove();
+                    $(`i[data-id="${itemId}"]`).remove();
+                    if (response.favorite.is_default === '1') {
+                        $('.selected-items .o_searchview_facet').remove();
+                    }
+                    $('#deleteModal').modal('hide');
                 },
                 error: function(xhr) {
                     console.error('Error:', xhr);
@@ -2168,4 +2249,180 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         accordionValues.style.display = 'none';
     });
     </script>
+
+<script>
+   $(document).ready(function() {
+    
+    // Initialize the DataTable and assign it to the variable 'table'
+    // var table = $('#example').DataTable();
+
+    $('.dropdown-item').on('click', function() {
+    var searchType = $(this).find('b.get-value').text();
+    var currentValue = $(this).find('.search-result').text().trim();
+
+    $.ajax({
+        url: '{{route('lead.kanban.search.filter')}}',
+        type: 'GET',
+        data: { 
+            searchType: searchType,
+            currentValue: currentValue
+        },
+        success: function (response) {
+                        console.log(response); // Debug the response
+                        
+                        if (response.success && Array.isArray(response.data)) {
+                            let events = [];
+                            let activityMap = {}; // Map to track activities by ID
+
+                            response.data.forEach(item => {
+                                if (Array.isArray(item.activities)) {
+                                    item.activities.forEach(activity => {
+                                        if (activity.due_date) {
+                                            const dueDate = moment(activity.due_date);
+                                            if (dueDate.isValid()) {
+                                                const dateString = dueDate.format('YYYY-MM-DD');
+
+                                                // Check for duplicates using event ID
+                                                if (!activityMap[activity.id]) {
+                                                    activityMap[activity.id] = {
+                                                        item: item,
+                                                        dueDate: dueDate,
+                                                        status: dateString // Store the date string
+                                                    };
+                                                } else {
+                                                    // Compare and update based on date
+                                                    if (dueDate.isBefore(moment()) && activityMap[activity.id].dueDate.isAfter(moment())) {
+                                                        // Prioritize late activities over future ones
+                                                        activityMap[activity.id] = {
+                                                            item: item,
+                                                            dueDate: dueDate,
+                                                            status: dateString
+                                                        };
+                                                    } else if (dueDate.isBefore(moment()) && activityMap[activity.id].dueDate.isBefore(moment())) {
+                                                        // If both are late, keep the one that is closest to now
+                                                        if (dueDate.isAfter(activityMap[activity.id].dueDate)) {
+                                                            activityMap[activity.id] = {
+                                                                item: item,
+                                                                dueDate: dueDate,
+                                                                status: dateString
+                                                            };
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                console.warn(`Invalid due_date for activity ID ${activity.id}:`, activity.due_date);
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+                            
+
+                            // Prepare events from the filtered map
+                            for (const key in activityMap) {
+                                const { item, dueDate } = activityMap[key];
+                                events.push({
+                                    id: key,
+                                    title: item.product_name || "Event",
+                                    start: dueDate.format('YYYY-MM-DD'),
+                                    end: dueDate.format('YYYY-MM-DD'),
+                                    color: '#0000ff',
+                                    lead_id: item.id,
+                                });
+                            }
+
+                            $('#editEvent').off('click').on('click', function () {
+                                const eventId = $(this).data(lead_id);
+                                window.location.href = '{{ route("lead.create") }}/' + eventId;
+                            });
+
+                            console.log(events,'fdhfdjhfdjhjh'); // Log events to see their structure
+                            
+                            // Clear existing events
+                            $('#calendar').fullCalendar('removeEventSources');
+                            
+                            // Add only the filtered events with due_date
+                            if (events.length > 0) {
+                                $('#calendar').fullCalendar('addEventSource', events);
+                            } else {
+                                console.log("No events to display.");
+                            }
+                        } else {
+                            console.error('Invalid events format in response');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error: ', error);
+                        console.error('Response Text: ', xhr.responseText);
+                    }
+    });
+
+    $('.input_search_menu_wapper').hide();
+});
+
+    $('.input-filter-click li').on('click', function() {
+        $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
+        $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
+        $('.o-dropdown-item_1  .checkmark').hide();
+        $('.remove-input-filter').hide();
+        $('.o-dropdown-item-2 .checkmark').hide();
+        $('.lost_span:contains("Lost")').find('.checkmark').hide();
+        $('.LTFActivities .checkmark').hide();
+        $('.tag').hide();
+        $('.tag1').hide();
+        $('.LTFtag').hide();
+        $('.group_by_tag').hide();
+        $('.CRtag').hide();
+        $('.tag5').hide();
+        $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain remove-input-filter" data-span_id="${currentIndex}" style="height:25px;margin-top:auto;">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> 
+                    <span class="setting-icon position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i>
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small>
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+    // Handle removal of tags
+    $(document).on('click', '.remove-lost-tag', function() {
+        $(this).closest('.tag1').remove(); // Remove the tag on click
+    });
+});
+
+</script>
+
+<script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
+</script>
 @endpush

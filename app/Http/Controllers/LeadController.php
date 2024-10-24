@@ -37,8 +37,11 @@ use League\CommonMark\Node\Block\Document;
 use App\Mail\SendMessageMail;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 use App\Exports\LeadExport;
+use App\Imports\LeadImport;
 
 class LeadController extends Controller
 {
@@ -579,7 +582,6 @@ class LeadController extends Controller
             $activity = new Activity();
             if ($request->action == 'schedule') {
                 $activity->lead_id = $request->lead_id;
-                $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
                 $activity->due_date = $request->due_date;
                 $activity->summary = $request->summary;
@@ -589,7 +591,6 @@ class LeadController extends Controller
                 $activity->save();
             } else if ($request->action == 'done') {
                 $activity->lead_id = $request->lead_id;
-                $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
                 $activity->due_date = $request->due_date;
                 $activity->summary = $request->summary;
@@ -599,7 +600,6 @@ class LeadController extends Controller
                 $activity->save();
             } else if ($request->action == 'next') {
                 $activity->lead_id = $request->lead_id;
-                $activity->pipeline_id = $request->pipeline_id;
                 $activity->activity_type = $request->activity_type;
                 $activity->due_date = $request->due_date;
                 $activity->summary = $request->summary;
@@ -939,7 +939,7 @@ class LeadController extends Controller
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
-                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('filter_tags', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -1021,22 +1021,24 @@ class LeadController extends Controller
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
-            case 'City':
-                $query->where('city', $operatesValue, $filterValue);
-                break;
+          
             default:
                 // Handle cases where the filterType does not match any case
                 break;
         }
         // Execute the query and get results
-        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
-        // Fetch results
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser','tags');
+ 
         $customFilter = $query->get();
-        // dd($customFilter);
-        // Return JSON response
+
+        $results = $customFilter->map(function ($lead) {
+            $lead->tag_names = $lead->tags()->pluck('name')->implode(', '); // Comma-separated tags
+            return $lead;
+        });
+    
         return response()->json([
             'success' => true,
-            'data' => $customFilter
+            'data' => $results
         ], 200);
     }
 
@@ -1626,15 +1628,19 @@ class LeadController extends Controller
 
     public function favoritesFilter(Request $request)
     {
-
-        $exists = Favorite::where('favorites_name', $request->favorites_name)->exists();
+        
+        $exists = Favorite::where('favorites_name', $request->favorites_name)
+                      ->where('filter_type', 'lead') // Ensure it checks within the pipeline type
+                      ->exists();
 
         if ($exists) {
             return response()->json(['message' => 'A filter with same name already exists.'], 409); // 409 Conflict
         }
 
         if ($request->is_default == 1) {
-            Favorite::where('is_default', 1)->update(['is_default' => 0]);
+            Favorite::where('is_default', 1)
+                    ->where('filter_type', 'lead') // Ensure it only affects pipeline favorites
+                    ->update(['is_default' => 0]);
         }
 
         $favorite = Favorite::create([
@@ -1653,7 +1659,7 @@ class LeadController extends Controller
 
         if ($favorite) {
             $favorite->delete();
-            return response()->json(['message' => 'Favorite deleted successfully!']);
+            return response()->json(['favorite' => $favorite , 'message' => 'Favorite deleted successfully!']);
         }
 
         return response()->json(['message' => 'Favorite not found.'], 404);
@@ -1676,16 +1682,384 @@ class LeadController extends Controller
         return response()->json(['message' => 'Lead deleted successfully.']);
     }
 
-     public function exportLead(Request $request)
-     {
-        return Excel::download(new LeadExport, 'Lead.xlsx');
-     }
+    public function exportLead()
+    {
+        // Create a new spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+    
+        // Set the headers
+        $headers = [
+            'Product Name',
+            'Contact Name',
+            'Company Name',
+            'Email',
+            'City',
+            'Country',
+            'Sales Person',
+            'Sales Team',
+            'Referred By',
+            'Medium',
+            'Tags',
+        ];
+    
+        // Set header values and styles
+        $headerStyle = [
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => '000000'],
+                'size' => 12,
+            ],
+        ];
+    
+        $columnWidths = [
+            'A' => 30,
+            'B' => 30,
+            'C' => 30,
+            'D' => 30,
+            'E' => 20,
+            'F' => 20,
+            'G' => 30,
+            'H' => 20,
+            'I' => 20,
+            'J' => 20,
+            'K' => 15,
+        ];
+    
+        // Add headers to the spreadsheet
+        foreach ($headers as $key => $header) {
+            $column = chr(65 + $key);
+            $sheet->setCellValue($column . '1', $header);
+            $sheet->getStyle($column . '1')->applyFromArray($headerStyle);
+            $sheet->getColumnDimension($column)->setWidth($columnWidths[$column]);
+        }
+    
+        // Fetch leads with eager loading
+        $leads = generate_lead::with(['getCountry', 'getMedium', 'getUser'])->get();
+    
+        $row = 2; // Start from the second row
+        foreach ($leads as $lead) {
+            $sheet->setCellValue('A' . $row, $lead->product_name);
+            $sheet->setCellValue('B' . $row, $lead->contact_name);
+            $sheet->setCellValue('C' . $row, $lead->company_name);
+            $sheet->setCellValue('D' . $row, $lead->email);
+            $sheet->setCellValue('E' . $row, $lead->city);
+            $sheet->setCellValue('F' . $row, optional($lead->getCountry)->name ?? ''); // Using optional to prevent errors
+            $sheet->setCellValue('G' . $row, optional($lead->getUser)->email ?? '');
+            $sheet->setCellValue('H' . $row, $lead->sales_team);
+            $sheet->setCellValue('I' . $row, $lead->referred_by);
+            $sheet->setCellValue('J' . $row, optional($lead->getMedium)->name ?? '');
+            
+            // Fetch and join tags
+            $tags = $lead->tags()->pluck('name')->toArray();
+            $sheet->setCellValue('K' . $row, implode(', ', $tags));
+            $row++;
+        }
+    
+        // Create a writer instance and save the file
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'generate_leads.xlsx';
+    
+        // Set the headers to force download
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Cache-Control: max-age=0');
+    
+        // Write the file to output
+        $writer->save('php://output');
+        exit;
+    }
+    
+    
 
      public function importlead()
      {
         return view('lead.importlead');
      }
-    
+
+     public function import(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'file' => 'required|mimes:xls,xlsx,csv'
+        ]);
+
+        // Get the uploaded file
+        $file = $request->file('file');
+
+        // Check the file extension to determine how to process the file
+        $extension = $file->getClientOriginalExtension();
+
+        if ($extension == 'csv') {
+            // Handle CSV file
+            $this->importFromCSV($file);
+        } else {
+            // Handle XLS or XLSX using PhpSpreadsheet
+            $this->importFromExcel($file);
+        }
+
+        return redirect()->route('lead.index')->with('success', 'File imported successfully.');
+    }
+
+    private function importFromCSV($file)
+    {
+        // Open the file
+        if (($handle = fopen($file->getRealPath(), 'r')) !== FALSE) {
+            // Skip the first row if it contains headers
+            $firstRow = true;
+
+            // Read each row of the CSV file
+            while (($row = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                if ($firstRow) {
+                    $firstRow = false;
+                    continue; // Skip header row
+                }
+
+                // Assuming your CSV columns align with the database fields
+                generate_lead::create([
+                'product_name' => $row[1],
+                'company_name' => $row[2],
+                'contact_name' => $row[3],
+                'email' => $row[4],
+                'job_postion' => $row[5],
+                'phone' => $row[6],
+                'mobile' => $row[7],
+                'address_1' => $row[8],
+                'address_2' => $row[9],
+                'city' => $row[10],
+                'state' => $row[11],
+                'zip' => $row[12],
+                'country' => $row[13],
+                'website_link' => $row[14],
+                'internal_notes' => $row[15],
+                'lead_type' => 1
+                ]);
+            }
+            fclose($handle);
+        }
+    }
+
+    private function importFromExcel($file)
+    {
+        // Load PhpSpreadsheet to handle Excel files
+        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file->getRealPath());
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $rows = $sheet->toArray();
+
+        // Skip the first row if it contains headers
+        foreach ($rows as $index => $row) {
+            if ($index == 0) {
+                continue; // Skip header row
+            }
+
+            // Insert data into the database
+            generate_lead::create([
+                'product_name' => $row[1],
+                'company_name' => $row[2],
+                'contact_name' => $row[3],
+                'email' => $row[4],
+                'job_postion' => $row[5],
+                'phone' => $row[6],
+                'mobile' => $row[7],
+                'address_1' => $row[8],
+                'address_2' => $row[9],
+                'city' => $row[10],
+                'state' => $row[11],
+                'zip' => $row[12],
+                'country' => $row[13],
+                'website_link' => $row[14],
+                'internal_notes' => $row[15],
+                'lead_type' => 1
+            ]);
+        }
+    }
+
+    public function leadSearchFilter(Request $request)
+    {
+        $operatesValue = $request->input('searchType');
+        $filterValue = $request->input('currentValue');
+
+        $query = generate_lead::query();
+
+        switch ($operatesValue) {
+            case 'Lead':
+                $query->where('product_name', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Tag':
+                $query->where('tag_id', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Salesperson':
+                $salespersonId = EncryptionService::encrypt($filterValue);
+                $user = User::where('email', $salespersonId)->first();
+                $query->whereHas('getUser', function ($q) use ($salespersonId) {
+                    $q->where('email', 'like', '%' . $salespersonId . '%');
+                });
+                break;
+            case 'Sales Team':
+                $query->where('sales_team', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Country':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    })
+                    ->orWhereHas('getAutoCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'State':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getState', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    })
+                        ->orWhereHas('getAutoState', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                });
+                break;
+            case 'City':
+                $query->where('city', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Phone/Mobile':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->where('phone', 'like', '%' . $filterValue . '%')
+                        ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Source':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getSource', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Medium':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getMedium', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Campaign':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCampaign', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Properties':
+                $query->where('priority', 'like', '%' . $filterValue . '%');
+                break;
+
+            default:
+            // Handle cases where the filterType does not match any case
+            break;
+        }
+
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
+
+        $leads = $query->get();
+
+        // $leads = $leads->get();
+
+        return response()->json($leads);
+    }
+
+    public function leadKanbanSearchFilter(Request $request)
+{
+    $operatesValue = $request->input('searchType');
+    $filterValue = $request->input('currentValue');
+
+    $query = generate_lead::query();
+
+    switch ($operatesValue) {
+        case 'Lead':
+            $query->where('product_name', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Tag':
+            $query->where('tag_id', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Salesperson':
+            $user = User::where('email', $filterValue)->first();
+            if ($user) {
+                $query->where('user_id', $user->id);
+            }
+            break;
+            case 'Country':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    })
+                    ->orWhereHas('getAutoCountry', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'State':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getState', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    })
+                        ->orWhereHas('getAutoState', function ($q) use ($filterValue) {
+                            $q->where('name', 'like', '%' . $filterValue . '%');
+                        });
+                });
+                break;
+            case 'City':
+                $query->where('city', 'like', '%' . $filterValue . '%');
+                break;
+            case 'Phone/Mobile':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->where('phone', 'like', '%' . $filterValue . '%')
+                        ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+                });
+                break;
+            case 'Source':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getSource', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Medium':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getMedium', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Campaign':
+                $query->where(function ($q) use ($filterValue) {
+                    $q->whereHas('getCampaign', function ($q) use ($filterValue) {
+                        $q->where('name', 'like', '%' . $filterValue . '%');
+                    });
+                });
+                break;
+            case 'Properties':
+                $query->where('priority', 'like', '%' . $filterValue . '%');
+                break;
+        default:
+            break;
+    }
+
+    $query->with('activities', 'getUser'); // Ensure related models are loaded
+    $leads = $query->get();
+
+    // Format the response as needed
+    $groupedLeads = []; // You may want to group leads by a specific attribute
+
+    foreach ($leads as $lead) {
+        $groupName = $lead->some_group_attribute; // Define your grouping logic here
+        if (!isset($groupedLeads[$groupName])) {
+            $groupedLeads[$groupName] = [];
+        }
+        $groupedLeads[$groupName][] = $lead;
+    }
+
+    return response()->json(['data' => $groupedLeads]);
+}
 
 }
 

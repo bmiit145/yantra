@@ -6,8 +6,7 @@
 
     <div class="crm_head_centerside">
         @yield('header_centerside')
-        <form>
-            <!-- <input type="text" id="search-input" name="search" placeholder="Search.."> -->
+        <form id="search-form"> 
             <div class="o_cp_searchview d-flex input-group" role="search">
                 <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1 border-end-0"
                     role="search" aria-autocomplete="list">
@@ -30,35 +29,9 @@
             <ul class="search_menu_wapper" style="display: none;background: transparent;" id="search-dropdown">
                 @yield('search_div')
             </ul>
-            <!-- <span class="heade_search_icon"><svg fill="#000000" height="64px" width="64px" version="1.1"
-                                                 id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                                                 xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <g>
-                                    <g>
-                                        <path
-                                            d="M387.478,340.255c-13.413,17.894-29.328,33.81-47.222,47.222L464.778,512L512,464.778L387.478,340.255z">
-                                        </path>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path
-                                            d="M200.348,0C89.876,0,0,89.876,0,200.348s89.876,200.348,200.348,200.348s200.348-89.876,200.348-200.348 S310.82,0,200.348,0z M200.348,350.609c-82.854,0-150.261-67.407-150.261-150.261S117.494,50.087,200.348,50.087 s150.261,67.407,150.261,150.261S283.202,350.609,200.348,350.609z">
-                                        </path>
-                                    </g>
-                                </g>
-                                <g>
-                                    <g>
-                                        <path
-                                            d="M200.348,83.478c-64.442,0-116.87,52.428-116.87,116.87s52.428,116.87,116.87,116.87s116.87-52.428,116.87-116.87 S264.79,83.478,200.348,83.478z">
-                                        </path>
-                                    </g>
-                                </g>
-                            </g>
-                        </svg></span> -->
+            <ul class="input_search_menu_wapper" style="display: none;background: transparent;" id="input-dropdown">
+                @yield('input_dropdown_div')
+            </ul>
         </form>
     </div>
 
@@ -385,3 +358,31 @@
 <div>
     @yield('menu_bar')
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const inputSearchDropdown = document.getElementsByClassName('input_search_menu_wapper')[0]; // Get the first element
+        const searchDropdown = document.getElementById('search-dropdown');
+
+        searchInput.addEventListener('input', function() {
+            // Show the dropdown when there is input
+            if (searchInput.value.trim()) {
+                // alert('dff');
+                console.log('hello');
+                
+                searchDropdown.style.display = 'none'; // You may want to change this logic depending on your needs
+                inputSearchDropdown.style.display = 'block';
+            } else {
+                inputSearchDropdown.style.display = 'none';
+            }
+        });
+        
+        // Optional: Hide the dropdown when clicking outside of it
+        document.addEventListener('click', function(event) {
+            if (!searchInput.contains(event.target) && !inputSearchDropdown.contains(event.target)) {
+                inputSearchDropdown.style.display = 'none';
+            }
+        });
+    });
+</script>

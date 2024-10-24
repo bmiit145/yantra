@@ -403,6 +403,37 @@
         background-color: transparent;
         border: 0;
     }
+    .btn-primary {
+        background-color: #714B67 !important;
+        border:none !important;
+    }
+    .feedback-discard{
+        color:#017e84!important;
+    }
+
+    #main_save_btn{
+        display: none; 
+    }
+
+    #main_discard_btn{
+        display: none; 
+    }
+    .redirect-button{
+        display: none !important;
+    }
+    #dropdownMenuButton{
+        display: none;
+    }
+    .o-dropdown-item-3 {
+        margin-left: -22px;
+    }
+
+    .delete-item {
+       margin-left: 133px !important;
+        cursor: pointer;
+        position: absolute;
+        margin-top: -21px;
+    }
 </style>
 
 <!-- Bootstrap CSS -->
@@ -533,40 +564,36 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             <h5 class="o_dropdown_title d-inline">Favorites</h5>
         </div>
         @foreach ($getFavoritesFilter as $favoritesFilter)    
-                                                        <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate" role="menuitemcheckbox"
-                tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}"
+            <span class="o-dropdown-item-3 dropdown-item o-navigable o_menu_item text-truncate"
+                role="menuitemcheckbox" tabindex="0" aria-checked="{{ $favoritesFilter->is_default ? 'true' : 'false' }}" 
                 data-id="{{ $favoritesFilter->id }}" data-name="{{ $favoritesFilter->favorites_name }}">
                 <span class="d-flex p-0 align-items-center justify-content-between">
                     <span class="text-truncate flex-grow-1" title="">{{ $favoritesFilter->favorites_name ?? '' }}
-                        <span class="float-end checkmark" style="display:none;">✔</span>
+                        <span class="checkmark" style="display:none;">✔</span>
                     </span>
-                    <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}"
-                        data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
                 </span>
             </span>
-            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true"
-                style="display: none;">
-                <div class="modal-dialog modal-dialog-centered modal-md">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure that you want to remove this filter?
-                        </div>
-                        <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                            <button type="button" class="btn btn-primary"
-                                style="background-color:#714B67;border: none;font-weight: 500;" id="confirmDelete">Delete
-                                Filter</button>
-                            <button type="button" class="btn btn-secondary text-black"
-                                style="background-color:#e7e9ed;border: none;font-weight: 500;"
-                                data-bs-dismiss="modal">Cancel</button>
-                        </div>
+            <i class="ms-1 fa fa-trash-o delete-item" title="Delete item" data-id="{{ $favoritesFilter->id }}"></i>
+        @endforeach
+
+        <!-- Delete Confirmation Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Warning</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure that you want to remove this filter?
+                    </div>
+                    <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
+                        <button type="button" class="btn btn-primary" id="confirmDelete" style="background-color:#714B67;border: none;font-weight: 500;">Delete Filter</button>
+                        <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border: none;font-weight: 500;" data-bs-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
-        @endforeach
+        </div>
         <div role="separator" class="dropdown-divider"></div>
         <div class="o_accordion position-relative">
             <button id="save-current-search"
@@ -1511,33 +1538,40 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                                                                                     ({{ $plannedCount }})</b>
                                                                             </div>
                                                                             @foreach($plannedActivities as $value)
-                                                                                                            <div class="d-flex align-items-center flex-wrap mx-3">
-                                                                                                                <span
-                                                                                                                    class="avatar-initials rounded d-flex align-items-center justify-content-center">
-                                                                                                                    {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
-                                                                                                                </span>
-                                                                                                                <div class="mt-1">
-                                                                                                                    @php
-                                                                                                                        $dueDate = \Carbon\Carbon::parse($value->due_date);
-                                                                                                                        $status = 'Planned';
-                                                                                                                        $bgColor = '#28a745';
-                                                                                                                    @endphp
-                                                                                                                    <small class="text-truncate" style="color: {{ $bgColor }};">
-                                                                                                                        {{$lead->getUser->email}} - {{ $status }} -
-                                                                                                                        {{ $dueDate->format('d-m-y') }}
-                                                                                                                    </small>
-                                                                                                                </div>
-                                                                                                                <div class="py-2 px-3 d-none planned_feedback_div">
-                                                                                                                    <textarea class="form-control" style="min-height: 70px;width:300px"
-                                                                                                                        rows="3" placeholder="Write Feedback"></textarea>
-                                                                                                                    <div class="mt-2">
-                                                                                                                        <button type="button" class="btn btn-sm btn-primary mx-2"
-                                                                                                                            aria-label="Done"> Done </button>
-                                                                                                                        <button type="button" class="btn btn-sm btn-link"> Discard </button>
-                                                                                                                    </div>
-                                                                                                                </div>
+                                                                                <div class="d-flex align-items-center flex-wrap mx-3 hideDiv"
+                                                                                    data-id="{{ $value->id }}">
+                                                                                    <span
+                                                                                        class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                                                                                        {{ strtoupper($lead->getUser->name[0] ?? strtoupper($currentUser->name[0] ?? '')) }}
+                                                                                    </span>
+                                                                                    <div class="mt-1 flex-grow-1">
+                                                                                        &nbsp;&nbsp;<small>{{ $lead->getUser->email }} - Planned</small>
+                                                                                    </div>
+                                                                                    <button
+                                                                                        class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link"
+                                                                                        data-target="#planned_feedback_{{ $value->id }}"><i
+                                                                                            class="fa fa-check"></i></button>
+                                                                                    <button
+                                                                                        class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link"><i
+                                                                                            class="fa fa-pencil"></i></button>
+                                                                                    <button
+                                                                                        class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link"><i
+                                                                                            class="fa fa-times"></i></button>
+                                                                                    <div class="py-2 px-3 d-none" id="planned_feedback_{{ $value->id }}">
+                                                                                        <textarea class="form-control feedback-textarea"
+                                                                                            style="min-height: 70px;width:300px" rows="3"
+                                                                                            placeholder="Write Feedback"></textarea>
+                                                                                        <div class="mt-2">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-sm btn-primary mx-2 feedback-submit"
+                                                                                                data-id="{{ $value->id }}"> Done </button>
+                                                                                            <button type="button" class="btn btn-sm btn-link feedback-discard"
+                                                                                                data-target="#planned_feedback_{{ $value->id }}">Discard
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
                                                                             @endforeach
-                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="popover-arrow end-auto"></div>
@@ -1986,7 +2020,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     </div>
                 </div>
                 <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                    <button type="submit" class="btn btn-primary" style="background-color:#714B67;border:none;">Save Changes</button>
+                    <button type="submit" class="btn btn-primary" style="background-color:#714B67;border:none;">Save</button>
                     <button type="button" class="btn btn-secondary text-black" style="background-color:#e7e9ed;border:none;" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </form>
@@ -2047,13 +2081,13 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 <!-- Modal -->
 <div class="modal fade" id="activitiesAddModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="activitiesAddModalLable" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="activitiesAddModalLable">Schedule Activity</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="scheduleForm">
+            <form id="scheduleForm" action="{{ route('lead.scheduleActivityStore') }}" method="POST" enctype="application/x-www-form-urlencoded">
                 <div class="modal-body">
                     <div class="row col-md-12">
                         <div class="col-md-6">
@@ -2125,11 +2159,11 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     </div>
                 </div>
                 <div class="modal-footer modal-footer-custom gap-1" style="justify-content: start;">
-                    <button type="submit" class="btn btn-primary">Schedule</button>
-                    <!-- <button type="submit" class="btn btn-secondary">Schedule & Mark as Done</button>
-            <button type="submit" class="btn btn-secondary">Done & Schedule Next</button> -->
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                </div>
+            <button type="submit" class="btn btn-primary" id="schedule">Schedule</button>
+            <button type="submit" class="btn btn-secondary" id="schedule_and_mark_done">Schedule & Mark as Done</button>
+            <button type="submit" class="btn btn-secondary" id="done_and_schedule_next">Done & Schedule Next</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
             </form>
         </div>
     </div>
@@ -2151,8 +2185,9 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $(document).ready(function () {
             $("#edit_log_note").summernote();
+             $("#log_note").summernote();
         });
-        $(function () {
+        $(document).ready(function () {
 
             $.ajaxSetup({
                 headers: {
@@ -2288,7 +2323,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 let details = '';
 
                 // Overdue Activities
-                details += `<div><b>Overdue (${counts.overdue})</b></div>`;
+                details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Overdue (${counts.overdue})</b></div>`;
                 details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
                 activities.filter(activity => new Date(activity.due_date) < new Date()).forEach(activity => {
                     details += `
@@ -2336,7 +2371,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 details += `</div>`;
 
                 // Today Activities
-                details += `<div><b>Today (${counts.today})</b></div>`;
+                details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Today (${counts.today})</b></div>`;
                 details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
                 activities.filter(activity => new Date(activity.due_date).toDateString() === new Date().toDateString()).forEach(activity => {
                     details += `
@@ -2384,7 +2419,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 details += `</div>`;
 
                 // Planned Activities
-                details += `<div><b>Planned (${counts.planned})</b></div>`;
+                details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Planned (${counts.planned})</b></div>`;
                 details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
                 activities.filter(activity => new Date(activity.due_date) > new Date()).forEach(activity => {
                     details += `
@@ -2445,28 +2480,33 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             // Function to attach click events for the summary cells
             function attachClickEvent() {
                 $(document).on('click', '.o_activity_summary_cell', function (event) {
-                    const popover = $(this).find('.o_popover');
-                    const isVisible = !popover.hasClass('d-none');
+                    event.stopPropagation(); // Prevent click from bubbling to document
 
-                    // Hide all popovers first
+                    // Get the popover inside the clicked cell
+                    let $popover = $(this).find('.o_popover');
+
+                    // Hide all other popovers
                     $('.o_popover').addClass('d-none');
 
-                    // If the clicked popover is not visible, show it
-                    if (!isVisible) {
-                        popover.removeClass('d-none');
-                        // Position the popover
-                        const offset = $(this).offset();
-                        popover.css({
+                    // Check if the popover is currently visible
+                    if ($popover.hasClass('d-none')) {
+                        // Show the popover for the clicked cell
+                        $popover.removeClass('d-none');
+                        let offset = $(this).offset();
+                        $popover.css({
                             top: offset.top + $(this).outerHeight(),
                             left: offset.left
                         });
+                    } else {
+                        // If already visible, hide the popover on second click
+                        $popover.addClass('d-none');
                     }
                 });
 
                 // Optional: Close the popover when clicking outside
-                $(document).on('click', function (event) {
-                    if (!$(event.target).closest('.o_activity_summary_cell').length) {
-                        $('.o_popover').addClass('d-none'); // Hide all popovers
+                $(document).on('click', function (e) {
+                    if (!$(e.target).closest('.o_activity_summary_cell').length) {
+                        $('.o_popover').addClass('d-none');
                     }
                 });
             }
@@ -2514,6 +2554,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}'
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         if (hideDiv.length) { // Check if hideDiv exists
                             hideDiv.addClass('d-none'); // Hide the div
@@ -2554,6 +2595,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
            
 
             $(document).on('click', '.filter-edit-btn', function () {
+                $('.popover').hide();
                 var activityId = $(this).closest('.hideDiv').data('id');
 
                 // Fetch activity details using AJAX
@@ -2602,6 +2644,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}' // Include CSRF token for security
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         button.closest('.hideDiv').addClass('d-none'); // Hide the activity after deletion
 
@@ -3179,51 +3222,367 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 $('#creationDateDropdown1 .o-dropdown-item_2 .checkmark').hide();
             });
 
+   $(document).ready(function () {
+    $('.add_filter').on('click', function (event) {
+        event.preventDefault();
 
-            $('.add_filter').on('click', function (event) {
-                event.preventDefault();
-                var filterType = $('#customer_filter_select').val();
-                var filterValue = $('#customer_filter_input_value').val();
-                var operatesValue = $('#customer_filter_operates').val();
-                var span_id = $('#span_id').val();
+        var filterType = $('#customer_filter_select').val();
+        var filterValue = $('#customer_filter_input_value').val();
+        var operatesValue = $('#customer_filter_operates').val();
+        var span_id = $('#span_id').val();
 
-                $('.selected-items .o_searchview_facet').remove();
-                $('.o-dropdown-item-3').attr('aria-checked', 'false'); // Reset all aria-checked attributes
-                $('.o-dropdown-item-3 .checkmark').hide(); // Hide all checkmarks
-                $('.group_by_tag').remove();
-                $('.o-dropdown-item_1  .checkmark').hide();
+        // Clear existing filters and UI elements
+        $('.selected-items .o_searchview_facet').remove();
+        $('.o-dropdown-item-3').attr('aria-checked', 'false');
+        $('.o-dropdown-item-3 .checkmark').hide();
+        $('.group_by_tag').remove();
+        $('.o-dropdown-item_1 .checkmark').hide();
 
+        handleTagSelection(filterType, operatesValue, filterValue, span_id);
 
+        var data = {
+            filterType: filterType,
+            filterValue: filterValue,
+            operatesValue: operatesValue,
+            _token: $('meta[name="csrf-token"]').attr('content') // CSRF Token
+        };
 
-                handleTagSelection(filterType, operatesValue, filterValue, span_id);
+        $.ajax({
+            url: '{{ route('filter-activity.custom.filter') }}',
+            method: 'POST',
+            data: data,
+            success: function (response) {
+                console.log('AJAX Response:', response);
+                onFilterSuccess(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error:', error);
+                $('#activityTableBody').html('<tr><td colspan="6" class="text-center">An error occurred while fetching activities.</td></tr>');
+            }
+        });
 
-                // Prepare data to send
-                var data = {
-                    filterType: filterType,
-                    filterValue: filterValue,
-                    operatesValue: operatesValue
-                };
+        // Hide the modal after the request
+        $('#customFilterModal').modal('hide');
 
-                 $.ajax({
-                    url: '{{ route('filter-activity.custom.filter') }}',
-                    method: 'POST',
-                    data: data,
-                    success: function (response) {
-                        console.log(response);
-                    },
-                    error: function (error) {
-                       console.log(error);
-                    }
-                });
+        const now = new Date();
+        const todayString = now.toDateString();
 
-                // Send AJAX request
-               
+        function onFilterSuccess(response) {
+            if (response.success && Array.isArray(response.data)) {
+                if (response.data.length === 0) {
+                    $('#activityTableBody').html('<tr><td colspan="6" class="text-center">No activities found.</td></tr>');
+                } else {
+                    const html = generateActivityHtml(response.data);
+                    $('#activityTableBody').html(html);
+                }
+            } else {
+                console.error('Unexpected response format:', response);
+            }
+        }
 
-                // Hide the modal after the request
-                $('#customFilterModal').modal('hide');
+        function generateActivityHtml(activities) {
+            console.log(activities);
+            if (!Array.isArray(activities)) {
+                console.error('Activities is not an array:', activities);
+                return '';
+            }
 
-                
+            const groupedActivities = groupByLead(activities);
+            let html = '';
+
+            Object.entries(groupedActivities).forEach(([leadId, activities]) => {
+                const lead = activities[0];
+                const bgColor = getBgColor(new Date(lead.due_date));
+                const userInitial = getUserInitial(lead.get_user?.email);
+
+                html += `
+                    <tr class="o_data_row h-100">
+                        <td class="o_activity_record p-2 cursor-pointer">
+                            <div>
+                                <div name="user_id" class="o_field_widget o_field_many2one_avatar_user d-inline-block">
+                                    <div class="d-flex align-items-center gap-1" data-tooltip="${lead.get_user?.email || 'Unknown User'}">
+                                        ${generateUserAvatar(lead.get_user?.profile, userInitial, bgColor)}
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    ${generateLeadInfo(lead)}
+                                </div>
+                            </div>
+                        </td>
+                        ${generateActivityCells(activities, lead.lead_id, bgColor)}
+                    </tr>
+                `;
             });
+
+            return html;
+        }
+
+        function groupByLead(activities) {
+            return activities.reduce((acc, activity) => {
+                const leadId = activity.lead_id;
+                acc[leadId] = acc[leadId] || [];
+                acc[leadId].push(activity);
+                return acc;
+            }, {});
+        }
+
+        function generateUserAvatar(profile, initial, bgColor) {
+            return profile ?
+                `<img class="rounded" src="${profile}" alt="User Profile">` :
+                `<div class="placeholder-circle rounded d-flex align-items-center justify-content-center" style="background-color: ${bgColor}; width:32px;height:32px;color:white">
+                    <span>${initial}</span>
+                </div>`;
+        }
+
+        function generateLeadInfo(lead) {
+            return `
+                <div class="d-flex justify-content-between">
+                    <div class="d-block text-truncate o_text_block o_text_bold">${lead.product_name}</div>
+                    <div name="expected_revenue" class="o_field_widget o_field_empty o_field_monetary d-block text-truncate text-muted">
+                        <span>₹${lead.probability || '0.00'}</span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="d-block text-truncate text-muted o_text_block"></div>
+                    <div name="stage_id" class="o_field_widget o_field_badge d-inline-block">
+                        <span class="badge rounded-pill">New</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateActivityCells(activities, leadId, bgColor) {
+            const activityTypes = ['email', 'call', 'meeting', 'to-do', 'upload_document', 'request_signature'];
+            return activityTypes.map(type => generateActivityCell(type, activities, leadId, bgColor)).join('');
+        }
+
+        function generateActivityCell(activityType, activities, leadId, bgColor) {
+            const filteredActivities = activities.filter(activity => activity.activity_type === activityType);
+            if (filteredActivities.length === 0) return `<td></td>`; // Empty cell
+
+            const counts = countActivities(filteredActivities);
+            const activityDueDate = new Date(filteredActivities[0].due_date);
+            const cellColor = getBgColor((activityDueDate - new Date()) / (1000 * 60 * 60 * 24));
+
+            return `
+                <td class="o_activity_summary_cell" data-id="${leadId}" data-activity_type="${activityType}">
+                    <div class="text-center text-white" style="background-color: ${cellColor}; cursor: pointer;">
+                        <small>${activityDueDate.toLocaleDateString()}</small>
+                    </div>
+                    <div class="o_popover popover d-none" style="max-width: 354px !important;">
+                        <div class="o-mail-ActivityListPopover d-flex flex-column">
+                            ${generateActivityDetails(counts, filteredActivities)}
+                        </div>
+                    </div>
+                </td>
+            `;
+        }
+
+        function countActivities(activities) {
+            const now = new Date();
+            const todayString = now.toDateString(); // Store today’s date string for comparison
+
+            return {
+                overdue: activities.filter(activity => new Date(activity.due_date) < now).length,
+                today: activities.filter(activity => new Date(activity.due_date).toDateString() === todayString).length,
+                planned: activities.filter(activity => new Date(activity.due_date) > now).length
+            };
+        }
+
+       function generateActivityDetails(counts, activities) {
+    let details = '';
+
+    // Overdue Activities
+    details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Overdue (${counts.overdue})</b></div>`;
+    details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+    activities.filter(activity => new Date(activity.due_date) < new Date() && new Date(activity.due_date).toDateString() !== todayString).forEach(activity => {
+        details += `
+            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                    ${getUserInitial(activity.get_user.email)}
+                </span>
+                <div class="mt-1 flex-grow-1">
+                    &nbsp;&nbsp;<small>${activity.get_user.email} - Overdue</small>
+                </div>
+                ${activity.activity_type === 'upload_document' ? `
+                    <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                        onclick="document.getElementById('upload_overdue_file_${activity.id}').click();">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    <input type="file" class="d-none" id="upload_overdue_file_${activity.id}" accept="*"
+                        onchange="uploadFile('upload_overdue_file_${activity.id}', ${activity.id})">
+                ` : `
+                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                        data-target="#overdue_feedback_${activity.id}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                `}
+                <div class="d-flex align-items-center ml-2"> 
+                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="py-2 px-3 d-none" id="overdue_feedback_${activity.id}">
+                    <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                              placeholder="Write Feedback"></textarea>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                data-id="${activity.id}" style="background-color:#714B67;border:none;">Done</button>
+                        <button type="button" class="btn btn-sm btn-link filter-feedback-discard" style="color:#017e84;"
+                                data-target="#overdue_feedback_${activity.id}">Discard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    details += `</div>`;
+
+    // Today Activities
+    details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Today (${counts.today})</b></div>`;
+    details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+    activities.filter(activity => new Date(activity.due_date).toDateString() === todayString).forEach(activity => {
+        details += `
+            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                    ${getUserInitial(activity.get_user.email)}
+                </span>
+                <div class="mt-1 flex-grow-1">
+                    &nbsp;&nbsp;<small>${activity.get_user.email} - Today</small>
+                </div>
+                ${activity.activity_type === 'upload_document' ? `
+                    <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                        onclick="document.getElementById('upload_today_file_${activity.id}').click();">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    <input type="file" class="d-none" id="upload_today_file_${activity.id}" accept="*"
+                        onchange="uploadFile('upload_today_file_${activity.id}', ${activity.id})">
+                ` : `
+                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                        data-target="#today_feedback_${activity.id}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                `}
+                <div class="d-flex align-items-center ml-2"> 
+                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="py-2 px-3 d-none" id="today_feedback_${activity.id}">
+                    <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                              placeholder="Write Feedback"></textarea>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                data-id="${activity.id}">Done</button>
+                        <button type="button" class="btn btn-sm btn-link filter-feedback-discard" 
+                               data-target="#today_feedback_${activity.id}">Discard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    details += `</div>`;
+
+    // Planned Activities
+    details += `<div class="overflow-auto d-flex align-items-baseline ms-3 me-1 mt-2"><b>Planned (${counts.planned})</b></div>`;
+    details += `<div class="o-mail-ActivityListPopoverItem d-flex flex-column border-bottom py-2">`;
+    activities.filter(activity => new Date(activity.due_date) > new Date()).forEach(activity => {
+        details += `
+            <div class="d-flex align-items-center flex-wrap mx-3 hideDiv" data-id="${activity.id}">
+                <span class="avatar-initials rounded d-flex align-items-center justify-content-center">
+                    ${getUserInitial(activity.get_user.email)}
+                </span>
+                <div class="mt-1 flex-grow-1">
+                    &nbsp;&nbsp;<small>${activity.get_user.email} - Planned - ${activity.due_date}</small>
+                </div>
+                ${activity.activity_type === 'upload_document' ? `
+                    <button class="o-mail-ActivityListPopoverItem-upload btn btn-sm btn-success btn-link"
+                        onclick="document.getElementById('upload_planned_file_${activity.id}').click();">
+                        <i class="fa fa-upload"></i>
+                    </button>
+                    <input type="file" class="d-none" id="upload_planned_file_${activity.id}" accept="*"
+                        onchange="uploadFile('upload_planned_file_${activity.id}', ${activity.id})">
+                ` : `
+                    <button class="o-mail-ActivityListPopoverItem-markAsDone btn btn-sm btn-success btn-link filter-mark-done"
+                        data-target="#planned_feedback_${activity.id}">
+                        <i class="fa fa-check"></i>
+                    </button>
+                `}
+                <div class="d-flex align-items-center ml-2"> 
+                    <button class="o-mail-ActivityListPopoverItem-editbtn btn btn-sm btn-success btn-link filter-edit-btn">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+                    <button class="o-mail-ActivityListPopoverItem-cancel btn btn-sm btn-danger btn-link ml-1 filter-cancel-btn">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="py-2 px-3 d-none" id="planned_feedback_${activity.id}">
+                    <textarea class="form-control filter-feedback-textarea" style="min-height: 70px; width: 300px" rows="3" 
+                              placeholder="Write Feedback"></textarea>
+                    <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary mx-2 feedback-submit" 
+                                data-id="${activity.id}">Done</button>
+                        <button type="button" class="btn btn-sm btn-link filter-feedback-discard" 
+                                data-target="#planned_feedback_${activity.id}">Discard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    details += `</div>`;
+
+    return details;
+}
+
+        function getBgColor(days) {
+            if (days < 0) return '#dc3545'; // Red for overdue
+            if (days === 0) return '#ffc107'; // Yellow for today
+            return '#28a745'; // Green for planned
+        }
+
+        function getUserInitial(email) {
+            return email ? email.charAt(0).toUpperCase() : '?';
+        }
+    });
+
+    // Event delegation for .o_activity_summary_cell click
+    $(document).on('click', '.o_activity_summary_cell', function (event) {
+        event.stopPropagation(); // Prevent click from bubbling to document
+
+        // Get the popover inside the clicked cell
+        let $popover = $(this).find('.o_popover');
+
+        // Hide all other popovers
+        $('.o_popover').addClass('d-none');
+
+        // Check if the popover is currently visible
+        if ($popover.hasClass('d-none')) {
+            // Show the popover for the clicked cell
+            $popover.removeClass('d-none');
+            let offset = $(this).offset();
+            $popover.css({
+                top: offset.top + $(this).outerHeight(),
+                left: offset.left
+            });
+        } else {
+            // If already visible, hide the popover on second click
+            $popover.addClass('d-none');
+        }
+    });
+
+    // Close the popover when clicking outside
+    $(document).on('click', function (e) {
+        if (!$(e.target).closest('.o_activity_summary_cell').length) {
+            $('.o_popover').addClass('d-none');
+        }
+    });
+});
+
 
             function handleTagSelection(filterType, operatesValue, filterValue, span_id) {
                 console.log(filterType, operatesValue, filterValue, span_id);
@@ -3484,10 +3843,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     type: 'DELETE',
                     success: function (response) {
                         toastr.success('Favorite deleted successfully!'); // Show success message
-                        $('#deleteModal').modal('hide'); // Hide the modal
-
-                        // Remove the item from the UI
                         $(`span[data-id="${itemId}"]`).remove();
+                        $(`i[data-id="${itemId}"]`).remove();
+                        if (response.favorite.is_default === '1') {
+                            $('.selected-items .o_searchview_facet').remove();
+                        }
+                        $('#deleteModal').modal('hide');
                     },
                     error: function (xhr) {
                         console.error('Error:', xhr);
@@ -3649,6 +4010,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}'
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         button.closest('.hideDiv').addClass('d-none'); // Hide popover after submission
 
@@ -3683,6 +4045,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });            
 
             $('.o-mail-ActivityListPopoverItem-editbtn').on('click', function () {
+                $('.popover').hide();
                 var activityId = $(this).closest('.hideDiv').data('id');
 
                 // Fetch activity details using AJAX
@@ -3753,6 +4116,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                         _token: '{{ csrf_token() }}' // Include CSRF token for security
                     },
                     success: function (response) {
+                        location.reload(); // Reload the page
                         toastr.success(response.message);
                         button.closest('.hideDiv').addClass('d-none'); // Hide the activity after deletion
 
@@ -3817,10 +4181,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
 
         $(document).ready(function () {
             $('.o_activity_summary_cell').on('click', function (e) {
+                e.stopPropagation(); // Prevent click from bubbling to document
+
                 // Get the popover inside the clicked cell
                 let $popover = $(this).find('.o_popover');
 
-                // Check if the popover is currently visible
+                        // Check if the popover is currently visible
                 if ($popover.hasClass('d-none')) {
                     // Hide all other popovers
                     $('.o_popover').addClass('d-none');
@@ -3849,7 +4215,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             });
 
             $('#scheduleActivityModal').on('shown.bs.modal', function () {
-                var selectedLeadId = null;
+                
                 var table = $('#example').DataTable({
                     processing: true
                     , serverSide: true
@@ -4075,19 +4441,12 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                             }
                         }
                     }
-                        // Uncomment and modify the following column if needed
-                        // {
-                        //     data: 'id',
-                        //     width: "20%",
-                        //     render: function(data, type, row) {
-                        //         return `<a href="${row.id}">View</a>`;
-                        //     }
-                        // }
                     ]
                     , createdRow: function (row, data, dataIndex) {
                         $(row).attr('data-id', data.id);
                     }
                 });
+                let selectedLeadId;
                 $('#example tbody').on('click', 'tr', function () {
                     selectedLeadId = $(this).data('id'); // Store the selected lead ID
                     $('#activitiesAddModal').modal('show'); // Show the modal
@@ -4098,32 +4457,79 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     selectedLeadId = null; // Clear the selected lead ID
                 });
 
-                $('#scheduleForm').on('submit', function (e) {
-                    e.preventDefault();
+                $('#schedule').on('click', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                let action = 'schedule'; // Set the action for the "Schedule" button
 
-                    // Append the selected lead ID to the form data
-                    var formData = $(this).serializeArray();
-                    formData.push({ name: 'lead_id', value: selectedLeadId });
-
-                    $.ajax({
-                        url: '{{ route('lead.scheduleActivityStore') }}', // Replace with your route to handle activity addition
-                        type: 'POST',
-                        data: $.param(formData), // Convert the data to a query string format
-                        success: function (response) {
-                            // Close the modal and refresh DataTable if needed
-                            $('#activitiesAddModal').modal('hide');
-                            $('#scheduleActivityModal').modal('hide');
-                            location.reload();
-                        },
-                        error: function (xhr) {
-                            // Handle errors if any
-                            console.error('An error occurred:', xhr.responseText);
-                        }
-                    });
+                
+                // Perform AJAX request
+                $.ajax({
+                    url: $('#scheduleForm').attr('action'), // Use the form's action
+                    method: 'POST',
+                    data: $('#scheduleForm').serialize() + '&action=' + action + '&lead_id=' + selectedLeadId,
+                    success: function(response) {
+                        toastr.success(response.message);
+                        $('#activitiesAddModal').modal('hide'); // Hide the modal
+                        location.reload(); // Reload the page
+                    },
+                    error: function(xhr) {
+                        // Handle any errors
+                        alert('An error occurred while scheduling the activity.');
+                    }
                 });
             });
 
-        });
+            $('#schedule_and_mark_done').on('click', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                let action = 'done'; // Set the action for the "Schedule & Mark as Done" button
+
+                // Perform AJAX request
+                $.ajax({
+                    url: $('#scheduleForm').attr('action'), // Use the form's action
+                    method: 'POST',
+                    data: $('#scheduleForm').serialize() + '&action=' + action + '&lead_id=' + selectedLeadId,
+                    success: function(response) {
+                        toastr.success(response.message);
+                        $('#activitiesAddModal').modal('hide'); // Hide the modal
+                        location.reload(); // Reload the page
+                    },
+                    error: function(xhr) {
+                        // Handle any errors
+                        alert('An error occurred while scheduling the activity.');
+                    }
+                });
+            });
+
+            $('#done_and_schedule_next').on('click', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                let action = 'next'; // Set the action for the "Done & Schedule Next" button
+
+                // Perform AJAX request
+                $.ajax({
+                    url: $('#scheduleForm').attr('action'), // Use the form's action
+                    method: 'POST',
+                    data: $('#scheduleForm').serialize() + '&action=' + action + '&lead_id=' + selectedLeadId,
+                    success: function(response) {
+                        toastr.success(response.message);
+                        // Store a flag in localStorage to indicate the modal should reopen
+                        localStorage.setItem('reopenModal', 'true');
+                        location.reload(); // Reload the page
+                    },
+                    error: function(xhr) {
+                        // Handle any errors
+                        alert('An error occurred while scheduling the activity.');
+                    }
+                });
+            });
+
+            // Check localStorage on page load to reopen the modal if needed
+            if (localStorage.getItem('reopenModal') === 'true') {
+                $('#activitiesAddModal').modal('show'); // Show the modal
+                localStorage.removeItem('reopenModal'); // Clear the flag
+            }
+                });
+
+            });
 
     </script>
 

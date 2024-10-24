@@ -391,4 +391,105 @@ class GraphController extends Controller
 
         return response()->json(['counts' => $formattedCounts]);
     }
+
+    public function leadSearchFilter(Request $request)
+{
+    $operatesValue = $request->input('searchType');
+    $filterValue = $request->input('currentValue');
+
+    $query = generate_lead::query();
+
+    switch ($operatesValue) {
+        case 'Lead':
+            $query->where('product_name', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Tag':
+            $query->where('tag_id', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Salesperson':
+            $salespersonId = EncryptionService::encrypt($filterValue);
+            $user = User::where('email', $salespersonId)->first();
+            $query->whereHas('getUser', function ($q) use ($salespersonId) {
+                $q->where('email', 'like', '%' . $salespersonId . '%');
+            });
+            break;
+        case 'Sales Team':
+            $query->where('sales_team', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Country':
+            $query->where(function ($q) use ($filterValue) {
+                $q->whereHas('getCountry', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                })
+                ->orWhereHas('getAutoCountry', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                });
+            });
+            break;
+        case 'State':
+            $query->where(function ($q) use ($filterValue) {
+                $q->whereHas('getState', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                })
+                ->orWhereHas('getAutoState', function ($q) use ($filterValue) {
+                    $q->where('name', 'like', '%' . $filterValue . '%');
+                });
+            });
+            break;
+        case 'City':
+            $query->where('city', 'like', '%' . $filterValue . '%');
+            break;
+        case 'Phone/Mobile':
+            $query->where(function ($q) use ($filterValue) {
+                $q->where('phone', 'like', '%' . $filterValue . '%')
+                    ->orWhere('mobile', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Source':
+            $query->whereHas('getSource', function ($q) use ($filterValue) {
+                $q->where('name', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Medium':
+            $query->whereHas('getMedium', function ($q) use ($filterValue) {
+                $q->where('name', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Campaign':
+            $query->whereHas('getCampaign', function ($q) use ($filterValue) {
+                $q->where('name', 'like', '%' . $filterValue . '%');
+            });
+            break;
+        case 'Properties':
+            $query->where('priority', 'like', '%' . $filterValue . '%');
+            break;
+
+        default:
+            // Handle cases where the filterType does not match any case
+            break;
+    }
+
+    // Eager load relationships\
+    $query->selectRaw('users.email as sales_person, COUNT(*) as lead_count')
+    ->leftJoin('users', 'generate_lead.sales_person', '=', 'users.id') // Adjust based on your schema
+    ->groupBy('users.email');
+
+    // Get leads
+    $customFilter = $query->get();
+
+    // Prepare the data for the response
+    $chartData = $customFilter->map(function ($item) {
+        return [
+            'sales_person' => $item->sales_person ? base64_decode($item->sales_person) : 'Unassigned',
+            'lead_count' => $item->lead_count // This will be your count
+        ];
+    });
+
+    // Return JSON response
+    return response()->json([
+        'success' => true,
+        'data' => $chartData
+    ], 200);
+}
+
 }
