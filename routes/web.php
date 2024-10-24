@@ -288,6 +288,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/lead-graph-filter', [GraphController::class, 'leadGrapgFilter'])->name('lead.leadGrapgFilter');
     Route::get('/lead-graph-custom-filter', [GraphController::class, 'leadGrapgCustomFilter'])->name('lead.leadGrapgCustomFilter');
     Route::get('/lead-graph-group-filter', [GraphController::class, 'leadGrapgGroupFilter'])->name('lead.leadGrapgGroupFilter');
+    Route::get('/lead-measures_filter', [GraphController::class, 'measures_filter'])->name('lead.measures_filter');
+    Route::get('/lead-leadSearchFilter-graph', [GraphController::class, 'leadSearchFilter'])->name('lead.leadSearchFilter-graph');
 
 
     // setting

@@ -939,7 +939,7 @@ class LeadController extends Controller
                 $query->where('zip', $operatesValue, $filterValue);
                 break;
             case 'Tags':
-                $query->whereHas('tags', function ($q) use ($operatesValue, $filterValue) {
+                $query->whereHas('filter_tags', function ($q) use ($operatesValue, $filterValue) {
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
@@ -1021,22 +1021,24 @@ class LeadController extends Controller
                     $q->where('name', $operatesValue, $filterValue);
                 });
                 break;
-            case 'City':
-                $query->where('city', $operatesValue, $filterValue);
-                break;
+          
             default:
                 // Handle cases where the filterType does not match any case
                 break;
         }
         // Execute the query and get results
-        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser');
-        // Fetch results
+        $query->with('activities', 'getCountry', 'getAutoCountry', 'getState', 'getAutoState', 'getTilte', 'getUser','tags');
+ 
         $customFilter = $query->get();
-        // dd($customFilter);
-        // Return JSON response
+
+        $results = $customFilter->map(function ($lead) {
+            $lead->tag_names = $lead->tags()->pluck('name')->implode(', '); // Comma-separated tags
+            return $lead;
+        });
+    
         return response()->json([
             'success' => true,
-            'data' => $customFilter
+            'data' => $results
         ], 200);
     }
 

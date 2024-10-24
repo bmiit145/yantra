@@ -15,6 +15,12 @@ class generate_lead extends Model
                         'title','email','job_postion','phone','mobile','tag_id','priority','is_lost','lost_reason','closing_note','lead_type','campaign_id','medium_id','source_id','referred_by','assignment_date','closed_date','internal_notes'];
 
 
+
+    public function filter_tags()
+    {
+        return $this->belongsToMany(Tag::class, 'lead_tag', 'lead_id', 'tag_id');
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -101,7 +107,7 @@ class generate_lead extends Model
 
     public function filterTags()
     {        
-        return $this->hasMany(Tag::class, 'id','tag_id');
+        return $this->belongsToMany(Tag::class, 'tag_id', 'id');
     }
 
     public function getUser()

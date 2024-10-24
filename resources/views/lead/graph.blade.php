@@ -54,6 +54,65 @@
 
 @endsection
 
+<style> .dropdown-menu-setting {
+        display: none;
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: auto;
+        left: auto;
+        border: 1px solid rgba(0, 0, 0, .15);
+        border-radius: .25rem;
+    }
+    .dropdown-menu-setting.show {
+        display: block !important;
+    }
+
+    .dropdown-menu-setting a {
+        color: black;
+           padding: 5px 16px;
+        text-decoration: none;
+        display: block;
+        cursor: pointer;
+    }
+
+    .o_searchview_facet {
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .o_searchview_facet:hover {
+        background-color: #714B67; /* Background color on hover */
+    }
+
+    .o_searchview_facet_label {
+        background-color: #714B67; /* Primary button color */
+        color: white; /* Text color */
+        border: none;
+    }
+
+    .o_facet_remove {
+        cursor: pointer;
+    }
+
+ .input-filter-dropdown-menu{
+        position: absolute;
+        background-color: #F9F9F9;
+        min-width: 685px !important;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        top: auto;
+        right: auto;
+        overflow-y: scroll;
+        text-decoration: none;
+        color: black;
+    }
+
+    .input-filter-dropdown-menu li a{
+        color: black;
+    }
+    </style>
 
 @section('search_div')
 <div class="o_popover popover mw-100 o-dropdown--menu search-dropdown-menu mx-0 o_search_bar_menu d-flex flex-wrap flex-lg-nowrap w-100 w-md-auto mx-md-auto mt-2 py-3"
@@ -86,16 +145,16 @@
                 style="display: none; position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; width: 100%;">
                 <?php   
                         // Get the current date
-$currentMonth = date('F '); // e.g., September 2024
-$lastMonth = date('F ', strtotime('-1 month')); // Last month
-$twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
-$threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
-                    ?>
-                <?php
-// Get the current year
-$currentYear = date('Y'); // e.g., 2024
-$lastYear = date('Y', strtotime('-1 year')); // Last year
-$twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
+                        $currentMonth = date('F '); // e.g., September 2024
+                        $lastMonth = date('F ', strtotime('-1 month')); // Last month
+                        $twoMonthsAgo = date('F ', strtotime('-2 months')); // Two months ago
+                        $threeMonthsAgo = date('F ', strtotime('-3 months')); // Three months ago
+                                            ?>
+                                        <?php
+                        // Get the current year
+                        $currentYear = date('Y'); // e.g., 2024
+                        $lastYear = date('Y', strtotime('-1 year')); // Last year
+                        $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                     ?>
                 <span class="o-dropdown-item_2  creation_time"> <span class="float-end checkmark"
                         style="display:none;">✔</span><?php echo $currentMonth; ?></span>
@@ -339,6 +398,25 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         </div>
     </div>
 </div>
+@endsection
+
+@section('input_dropdown_div')
+
+<ul class="o-dropdown--menu input-filter-dropdown-menu input-filter-click o_searchview_autocomplete" role="menu">
+    <li class="o_menu_item dropdown-item" id="73"><a href="#"> Search <b class="get-value">Lead</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <!-- <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">Tag</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> -->
+    <li class="o_menu_item dropdown-item" id="75"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Salesperson</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="76"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Sales Team</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li> 
+    <li class="o_menu_item dropdown-item" id="77"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Country</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="74"><a href="#"> Search <b class="get-value">State</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="78"><a href="#"> Search <b class="get-value">City</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="79"><a href="#"> Search <b class="get-value">Phone/Mobile</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="81"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Source</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="82"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Medium</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+    <li class="o_menu_item dropdown-item" id="83"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Campaign</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b> </a></li>
+    <li class="o_menu_item dropdown-item" id="84"><a href="#" class="o_expand"></a><a href="#"> Search <b class="get-value">Properties</b> for: <b class="fst-italic text-primary"><span class="search-result"></span></b></a></li>
+</ul>
+
 @endsection
 
 <!-- Modal -->
@@ -787,20 +865,51 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
         position: absolute;
         margin-top: -21px;
     }
+    .o_graph_renderer_dropdown .dropdown-menu-setting {
+        position: unset;
+    }
+    .o_graph_renderer_dropdown.btn-group {
+        flex-direction: column;
+    }
+        .o_graph_canvas_container.flex-grow-1.position-relative.px-3.pb-3 {
+            padding-top: 50px;
+            z-index: -1;
+        }
+    .o_graph_renderer_inner {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin: 20px 0 0 0 !important;
+    padding: 0 15px;
+}
 </style>
 
 <div class="o_content">
 
     <div class="o_graph_renderer o_renderer h-100 d-flex flex-column border-top undefined">
-        <div class="d-flex d-print-none gap-1 flex-shrink-0 mt-2 mx-3 mb-3 overflow-x-auto">
-            <div class="btn-group" role="toolbar" aria-label="Main actions">
-                <button class="btn btn-primary o-dropdown dropdown-toggle dropdown" aria-expanded="false"> Measures <i
-                        class="fa fa-caret-down ms-1"></i></button>
+        <div class="o_graph_renderer_inner d-flex d-print-none gap-1 flex-shrink-0 mt-2 mx-3 mb-3 overflow-x-auto">
+            <div class="o_graph_renderer_dropdown btn-group" role="toolbar" aria-label="Main actions">
+                    <button class="btn btn-primary dropdown-toggle"  id="dropdownMenu"  aria-expanded="false">
+                        Measures <i class="fa fa-caret-down ms-1"></i>
+                    </button>
+                        <div class="dropdown-menu-setting" id="dropdownContent" aria-labelledby="dropdownMenuButton">
+                 
+                           <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="day_to_assign" role="menuitem" tabindex="0">Day to Assign</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="day_to_close" role="menuitem" tabindex="0">Day to close</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="day_to_covert" role="menuitem" tabindex="0">Days To Convert</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="exceedede_closing_days" role="menuitem" tabindex="0">Exceeded Closing Days</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="expected_mrr" role="menuitem" tabindex="0">Expected MRR</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="expected_revenue" role="menuitem" tabindex="0">Expected Revenue</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="probability" role="menuitem" tabindex="0">Probability</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="prorated_mrr" role="menuitem" tabindex="0">Prorated MRR</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="prorated_RR" role="menuitem" tabindex="0">Prorated Recurring Revenues</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="prorated_revenue" role="menuitem" tabindex="0">Prorated Revenue</a>
+                            <a class="o-dropdown-item-filter dropdown-item o-navigable o_menu_item" data-value="recurring_revenues" role="menuitem" tabindex="0">Recurring Revenues</a>
+                    </div>
             </div>
-            <div class="btn-group" role="toolbar" aria-label="Insert in Spreadsheet">
-                <button class="btn btn-secondary o_graph_insert_spreadsheet"> Insert in Spreadsheet </button>
-            </div>
-            <div class="btn-group" role="toolbar" aria-label="Change graph">
+         
+            <div class="" role="toolbar" aria-label="Change graph">
                 <button class="btn btn-secondary fa fa-bar-chart o_graph_button active" data-tooltip="Bar Chart"
                     aria-label="Bar Chart" data-mode="bar"></button>
                 <button class="btn btn-secondary fa fa-line-chart o_graph_button" data-tooltip="Line Chart"
@@ -808,16 +917,7 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 <button class="btn btn-secondary fa fa-pie-chart o_graph_button" data-tooltip="Pie Chart"
                     aria-label="Pie Chart" data-mode="pie"></button>
             </div>
-            {{-- <div class="btn-group" role="toolbar" aria-label="Change graph">
-                <button class="btn btn-secondary fa fa-database o_graph_button" data-tooltip="Stacked"
-                    aria-label="Stacked"></button>
-            </div>
-            <div class="btn-group" role="toolbar" aria-label="Sort graph" name="toggleOrderToolbar">
-                <button class="btn btn-secondary fa fa-sort-amount-desc o_graph_button" data-tooltip="Descending"
-                    aria-label="Descending"></button>
-                <button class="btn btn-secondary fa fa-sort-amount-asc o_graph_button" data-tooltip="Ascending"
-                    aria-label="Ascending"></button>
-            </div> --}}
+         
         </div>
         <div class="o_graph_canvas_container flex-grow-1 position-relative px-3 pb-3" style="">
             <canvas id="leadChart"></canvas>
@@ -1923,6 +2023,31 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
                 }
             });
 
+                  
+            $('.dropdown-item').on('click', function() {
+
+                var searchType = $(this).find('b.get-value').text();
+
+                var currentValue = $(this).find('.search-result').text().trim();
+
+
+                $.ajax({
+                    url: '{{route('lead.leadSearchFilter-graph')}}',
+                    type: 'GET',
+                    data: { 
+                        searchType: searchType,
+                        currentValue: currentValue
+                    },
+                    success: function (response) {
+                        console.log(response, 'serchfilter');
+                               updateChart3(response.data);
+                    },
+                    error: function() {
+                        console.error('Failed to fetch data');
+                    }
+                });
+                $('.input_search_menu_wapper').hide();
+            });
 
             // Send selected tags to the server and process response
             function filter(selectedTags) {
@@ -2414,5 +2539,66 @@ $twoYearsAgo = date('Y', strtotime('-2 years')); // Two years ago
             accordionValues.style.display = 'none';
         });
     </script>
+
+ <script>
+        $(document).ready(function() {
+            $('#dropdownMenu').click(function() {
+                $('#dropdownContent').toggleClass('show'); // Toggle dropdown visibility
+            });
+
+            // Close the dropdown if the user clicks outside of it
+            $(document).click(function(event) {
+                if (!$(event.target).closest('.btn-group').length) {
+                    $('#dropdownContent').removeClass('show'); // Hide dropdown
+                }
+            });
+        });
+
+        $('.input-filter-click li').on('click', function() {
+        var searchType = $(this).find('b.get-value').text();
+        var selectedValue = $(this).find('.search-result').text().trim(); // Get the selected value from the dropdown
+        var currentIndex = $('.tag1').length; // Count current tags for the new index
+
+        // Append the tag with searchType and selectedValue
+        $('#search-input').before(
+            `<div class="o_searchview_facet position-relative d-inline-flex align-items-stretch rounded-2 bg-200 text-nowrap opacity-trigger-hover o_facet_with_domain" data-span_id="${currentIndex}">
+                <div class="position-absolute start-0 top-0 bottom-0 end-0 bg-view border rounded-2 shadow opacity-0 opacity-100-hover"></div>
+                <div class="o_searchview_facet_label position-relative rounded-start-2 px-1 rounded-end-0 p-0 btn btn-primary" style="background-color:#714B67 !important" role="button">
+                    <small class="px-1">${searchType}</small> <!-- Display searchType -->
+                    <span class="position-absolute start-0 top-0 bottom-0 end-0 bg-inherit opacity-0 opacity-100-hover px-2 transition-base">
+                        <i class="fa fa-fw fa-cog"></i> <!-- Optional icon -->
+                    </span>
+                </div>
+                <div class="o_facet_values position-relative d-flex flex-wrap align-items-center ps-2 rounded-end-2 text-wrap">
+                    <small class="o_facet_value">${selectedValue}</small> <!-- Display selectedValue -->
+                    <button class="o_facet_remove fa fa-close btn btn-link py-0 px-2 text-danger d-print-none remove-lost-tag" role="button" aria-label="Remove" title="Remove" style="cursor:pointer"></button> <!-- Close button -->
+                </div>
+            </div>`
+        );
+
+        // Optionally clear the input or manage it as needed
+        $('#search-input').val(''); // Clear the input field
+    });
+
+
+  
+    </script>
+
+    <script>
+    const searchInput = document.getElementById('search-input');
+
+    searchInput.addEventListener('input', (event) => {
+        const searchValue = event.target.value;
+        console.log(searchValue);
+
+        // Get all elements with the class 'search-result'
+        const searchResults = document.getElementsByClassName('search-result');
+
+        // Update the text content for each element
+        for (let i = 0; i < searchResults.length; i++) {
+            searchResults[i].textContent = searchValue; // Update each <span> element
+        }
+    });
+</script>
 
 @endpush
